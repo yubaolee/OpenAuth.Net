@@ -7,7 +7,6 @@ using OpenAuth.App.Interface;
 using OpenAuth.App.Request;
 using OpenAuth.App.Response;
 using OpenAuth.Repository.Domain;
-using Quartz.Listener;
 using SqlSugar;
 
 
@@ -51,6 +50,15 @@ namespace OpenAuth.App
             }
 
             Repository.InsertRange(objs);
+            SugarClient.Insertable(new FlowInstanceOperationHistory
+            {
+                InstanceId = obj.InstanceId,
+                CreateUserId = loginContext.User.Id,
+                CreateUserName = loginContext.User.Name,
+                CreateDate = DateTime.Now,
+                Content = $"【加签】流程加签给：{string.Join(",", objs.Select(u => u.ApproverName))}"
+            }).ExecuteCommand();
+
         }
 
         public void Update(AddApproverReq application)
