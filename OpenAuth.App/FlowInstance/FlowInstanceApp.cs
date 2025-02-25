@@ -2,7 +2,7 @@
  * @Author: yubaolee <yubaolee@163.com> | ahfu~ <954478625@qq.com>
  * @Date: 2024-12-13 16:55:17
  * @Description: 工作流实例表操作
- * @LastEditTime: 2025-02-19 11:43:24
+ * @LastEditTime: 2025-02-25 22:42:53
  * Copyright (c) 2024 by yubaolee | ahfu~ , All Rights Reserved.
  */
 
@@ -507,7 +507,15 @@ namespace OpenAuth.App
         {
             var user = _auth.GetCurrentUser().User;
             FlowInstance flowInstance = Get(reqest.FlowInstanceId);
-            if (flowInstance.MakerList != "1" && !flowInstance.MakerList.Contains(user.Id))
+
+            var approvers = _flowApproverApp.GetApproverIds(new QueryApproverReq
+            {
+                FlowInstanceId = reqest.FlowInstanceId,
+                ActivityId = flowInstance.ActivityId
+            });
+
+            if (flowInstance.MakerList != "1" && !flowInstance.MakerList.Contains(user.Id) &&
+                !approvers.Contains(user.Id))
             {
                 throw new Exception("当前用户没有驳回该节点权限");
             }

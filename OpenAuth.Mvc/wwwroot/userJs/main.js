@@ -1,32 +1,29 @@
 /*
  * @Author: yubaolee <yubaolee@163.com> | ahfu~ <954478625@qq.com>
  * @Date: 2023-12-25 14:43:53
- * @LastEditTime: 2024-12-03 14:00:32
+ * @LastEditTime: 2025-02-25 19:46:11
  * @Description: 
  * Copyright (c) 2024 by yubaolee | ahfu~ , All Rights Reserved.  
  */
 layui.config({
-	base : "/js/"
-}).use(['form','element','layer','jquery'],function(){
-	var form = layui.form,
-		layer = parent.layer === undefined ? layui.layer : parent.layer,
-		element = layui.element,
-		$ = layui.jquery;
+    base: "/js/"
+}).use(['form', 'element', 'layer', 'jquery'], function () {
+    var $ = layui.jquery;
 
-	$(".panel a").on("click",function(){
-		window.parent.addTab($(this));
-	})
+    $(".panel a").on("click", function () {
+        window.parent.addTab($(this));
+    })
 
 
-	//用户数
-	$.getJSON("/UserManager/Load?limit=1&page=1",
-		function(data){
-			$(".userAll span").text(data.count);
-		}
-	)
+    //用户数
+    $.getJSON("/UserManager/Load?limit=1&page=1",
+        function (data) {
+            $(".userAll span").text(data.count);
+        }
+    )
 
     //机构
-	$.getJSON("/UserSession/GetOrgs",
+    $.getJSON("/UserSession/GetOrgs",
         function (data) {
             $(".orgs span").text(data.Result.length);
         }
@@ -60,13 +57,13 @@ layui.config({
         }
     )
 
-	//数字格式化
-	$(".panel span").each(function(){
-		$(this).html($(this).text()>9999 ? ($(this).text()/10000).toFixed(2) + "<em>万</em>" : $(this).text());	
-	})
+    //数字格式化
+    $(".panel span").each(function () {
+        $(this).html($(this).text() > 9999 ? ($(this).text() / 10000).toFixed(2) + "<em>万</em>" : $(this).text());
+    })
 
-	//系统基本参数
-    $(".version").text("v6.5");      //当前版本
+    //系统基本参数
+    $(".version").text("v7.1");      //当前版本
     $(".author").text("yubaolee");        //开发作者
     $(".homePage").text("/Home/Index");    //网站首页
     $(".server").text("centos docker");        //服务器环境
