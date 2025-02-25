@@ -324,29 +324,31 @@ namespace OpenAuth.App
         {
             var sql = $@"
             select u.*
-            from `USER` u
+            from sysuser u
                      join (select distinct SecondId as UserId
                            from Relevance
-                           where `Key` = '{Define.INSTANCE_NOTICE_USER}'
+                           where `key` = '{Define.INSTANCE_NOTICE_USER}'
                              and FirstId = '{instanceId}'
                            union
                            select distinct FirstId as UserId
                            from Relevance a
                                     inner join (select SecondId as RoleId
                                                 from Relevance
-                                                where `Key` = '{Define.INSTANCE_NOTICE_ROLE}'
+                                                where `key` = '{Define.INSTANCE_NOTICE_ROLE}'
                                                   and FirstId = '{instanceId}') b on a.SecondId = b.RoleId
-                           where `Key` = 'UserRole') userids on u.Id = userids.UserId";
+                           where `key` = 'UserRole') userids on u.Id = userids.UserId";
 
             if (UnitWork.GetDbContext().Database.GetDbConnection().GetType().Name == "SqlConnection")
             {
-                sql = sql.Replace(" `USER` ", " [USER] ");
-                sql = sql.Replace("`Key`", "[Key]");
+                sql = sql.Replace("`key`", "[Key]");
             }
             else if (UnitWork.GetDbContext().Database.GetDbConnection().GetType().Name == "OracleConnection")
             {
-                sql = sql.Replace(" `USER` ", " \"USER\" ");
-                sql = sql.Replace("`Key`", "\"Key\"");
+                sql = sql.Replace("`key`", "\"KEY\"");
+            }
+            else if (UnitWork.GetDbContext().Database.GetDbConnection().GetType().Name == "NpgsqlConnection")
+            {
+                sql = sql.Replace("`key`", "\"key\"");
             }
             
             var users = UnitWork.FromSql<SysUser>(sql);
