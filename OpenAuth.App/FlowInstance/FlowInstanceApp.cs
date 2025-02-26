@@ -2,7 +2,7 @@
  * @Author: yubaolee <yubaolee@163.com> | ahfu~ <954478625@qq.com>
  * @Date: 2024-12-13 16:55:17
  * @Description: 工作流实例表操作
- * @LastEditTime: 2025-02-25 22:42:53
+ * @LastEditTime: 2025-02-26 10:39:03
  * Copyright (c) 2024 by yubaolee | ahfu~ , All Rights Reserved.
  */
 
@@ -617,6 +617,12 @@ namespace OpenAuth.App
                           from SysUser
                           where fi.MakerList like '%' || Id || '%') ";
             }
+            else if (SugarClient.CurrentConnectionConfig.DbType == DbType.PostgreSQL)
+            {
+                groupConcatSql = $@" (select string_agg(Account, ',')
+                          from SysUser
+                          where fi.MakerList like '%' || Id || '%') ";
+            }
 
             string sql = String.Empty;
 
@@ -705,17 +711,17 @@ namespace OpenAuth.App
                             select distinct FirstId as InstanceId
                             from Relevance rel
                                      inner join FlowInstance flow on rel.FirstId = flow.Id and flow.IsFinish = 1
-                            where `Key` = '{Define.INSTANCE_NOTICE_USER}'
+                            where `key` = '{Define.INSTANCE_NOTICE_USER}'
                               and SecondId = '{user.User.Id}'
                             union
                             select distinct a.FirstId as InstanceId
                             from Relevance a
                                      inner join (select SecondId as RoleId
                                                  from Relevance
-                                                 where `Key` = 'UserRole'
+                                                 where `key` = 'UserRole'
                                                    and FirstId = '{user.User.Id}') b on a.SecondId = b.RoleId
                                      inner join FlowInstance flow on a.FirstId = flow.Id and flow.IsFinish = 1
-                            where a.`Key` = '{Define.INSTANCE_NOTICE_ROLE}') UniqueInstanceIds
+                            where a.`key` = '{Define.INSTANCE_NOTICE_ROLE}') UniqueInstanceIds
                                   ON fi.Id = UniqueInstanceIds.InstanceId
                     ";
             }
@@ -723,11 +729,14 @@ namespace OpenAuth.App
             switch (SugarClient.CurrentConnectionConfig.DbType)
             {
                 case DbType.SqlServer:
-                    sql = sql.Replace("`Key`", "[Key]");
+                    sql = sql.Replace("`key`", "[Key]");
                     sql = sql.Replace("from dual", "");
                     break;
                 case DbType.Oracle:
-                    sql = sql.Replace("`Key`", "\"KEY\"");
+                    sql = sql.Replace("`key`", "\"KEY\"");
+                    break;
+                case DbType.PostgreSQL:
+                    sql = sql.Replace("`key`", "key");
                     break;
             }
 

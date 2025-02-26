@@ -56,7 +56,7 @@ namespace OpenAuth.App
                 CreateUserId = loginContext.User.Id,
                 CreateUserName = loginContext.User.Name,
                 CreateDate = DateTime.Now,
-                Content = $"【加签】流程加签给：{string.Join(",", objs.Select(u => u.ApproverName))}"
+                Content = $"【加签】{loginContext.User.Name}加签给：{string.Join(",", objs.Select(u => u.ApproverName))}"
             }).ExecuteCommand();
 
         }
