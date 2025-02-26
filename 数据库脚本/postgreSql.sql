@@ -5,14 +5,14 @@
 -- ----------------------------
 DROP TABLE IF EXISTS public.Application;
 CREATE TABLE public.Application (
-  Id varchar(50) COLLATE pg_catalog.default NOT NULL,
-  Name varchar(255) COLLATE pg_catalog.default NOT NULL,
-  AppSecret varchar(255) COLLATE pg_catalog.default,
-  Description varchar(255) COLLATE pg_catalog.default,
-  Icon varchar(255) COLLATE pg_catalog.default,
-  Disable int2 NOT NULL,
-  CreateTime date NOT NULL,
-  CreateUser varchar(50) COLLATE pg_catalog.default
+                                    Id varchar(50) COLLATE pg_catalog.default NOT NULL,
+                                    Name varchar(255) COLLATE pg_catalog.default NOT NULL,
+                                    AppSecret varchar(255) COLLATE pg_catalog.default,
+                                    Description varchar(255) COLLATE pg_catalog.default,
+                                    Icon varchar(255) COLLATE pg_catalog.default,
+                                    Disable int2 NOT NULL,
+                                    CreateTime date NOT NULL,
+                                    CreateUser varchar(50) COLLATE pg_catalog.default
 )
 ;
 COMMENT ON COLUMN public.Application.Id IS 'AppId';
@@ -33,26 +33,26 @@ INSERT INTO public.Application VALUES ('119', 'XXX管理平台', 'manageryubaole
 
 DROP TABLE IF EXISTS FlowApprover;
 CREATE TABLE FlowApprover(
-    Id VARCHAR(50) NOT NULL,
-    InstanceId VARCHAR(50) NOT NULL,
-    ActivityId VARCHAR(50) NOT NULL,
-    Reason VARCHAR(200),
-    CreateDate TIMESTAMP,
-    CreateUserId VARCHAR(50),
-    CreateUserName VARCHAR(50),
-    Status INTEGER NOT NULL,
-    ApproveType INTEGER NOT NULL,
-    ApproverId VARCHAR(50) NOT NULL,
-    ApproverName VARCHAR(50),
-    OrderNo INTEGER,
-    VerifyDate TIMESTAMP,
-    VerifyComment VARCHAR(200),
-    CascadeId VARCHAR(100) NOT NULL,
-    ParentId VARCHAR(50),
-    ParentName VARCHAR(100),
-    Name VARCHAR(100),
-    ReturnToSignNode int2,
-    PRIMARY KEY (Id)
+                             Id VARCHAR(50) NOT NULL,
+                             InstanceId VARCHAR(50) NOT NULL,
+                             ActivityId VARCHAR(50) NOT NULL,
+                             Reason VARCHAR(200),
+                             CreateDate TIMESTAMP,
+                             CreateUserId VARCHAR(50),
+                             CreateUserName VARCHAR(50),
+                             Status INTEGER NOT NULL,
+                             ApproveType INTEGER NOT NULL,
+                             ApproverId VARCHAR(50) NOT NULL,
+                             ApproverName VARCHAR(50),
+                             OrderNo INTEGER,
+                             VerifyDate TIMESTAMP,
+                             VerifyComment VARCHAR(200),
+                             CascadeId VARCHAR(100) NOT NULL,
+                             ParentId VARCHAR(50),
+                             ParentName VARCHAR(100),
+                             Name VARCHAR(100),
+                             ReturnToSignNode int2,
+                             PRIMARY KEY (Id)
 );
 
 COMMENT ON TABLE FlowApprover IS '工作流加签';
@@ -82,28 +82,28 @@ COMMENT ON COLUMN FlowApprover.ReturnToSignNode IS '是否回到加签节点';
 -- ----------------------------
 DROP TABLE IF EXISTS public.BuilderTable;
 CREATE TABLE public.BuilderTable (
-  Id varchar(50) COLLATE pg_catalog.default NOT NULL,
-  TableName varchar(200) COLLATE pg_catalog.default NOT NULL,
-  Remark varchar(200) COLLATE pg_catalog.default,
-  DetailTableName varchar(200) COLLATE pg_catalog.default,
-  DetailComment varchar(200) COLLATE pg_catalog.default,
-  ClassName varchar(200) COLLATE pg_catalog.default NOT NULL,
-  Namespace varchar(300) COLLATE pg_catalog.default,
-  ModuleCode varchar(255) COLLATE pg_catalog.default,
-  ModuleName varchar(200) COLLATE pg_catalog.default,
-  Folder varchar(500) COLLATE pg_catalog.default,
-  Options varchar(1000) COLLATE pg_catalog.default,
-  TypeId varchar(50) COLLATE pg_catalog.default,
-  TypeName varchar(20) COLLATE pg_catalog.default,
-  CreateTime timestamp(6) NOT NULL,
-  CreateUserId varchar(50) COLLATE pg_catalog.default,
-  UpdateTime timestamp(6),
-  UpdateUserId varchar(50) COLLATE pg_catalog.default,
-  UpdateUserName varchar(50) COLLATE pg_catalog.default,
-  CreateUserName varchar(50) COLLATE pg_catalog.default,
-  ForeignKey varchar(50) COLLATE pg_catalog.default,
-  IsDynamicHeader int2,
-  ParentTableId varchar(50) COLLATE pg_catalog.default
+                                     Id varchar(50) COLLATE pg_catalog.default NOT NULL,
+                                     TableName varchar(200) COLLATE pg_catalog.default NOT NULL,
+                                     Remark varchar(200) COLLATE pg_catalog.default,
+                                     DetailTableName varchar(200) COLLATE pg_catalog.default,
+                                     DetailComment varchar(200) COLLATE pg_catalog.default,
+                                     ClassName varchar(200) COLLATE pg_catalog.default NOT NULL,
+                                     Namespace varchar(300) COLLATE pg_catalog.default,
+                                     ModuleCode varchar(255) COLLATE pg_catalog.default,
+                                     ModuleName varchar(200) COLLATE pg_catalog.default,
+                                     Folder varchar(500) COLLATE pg_catalog.default,
+                                     Options varchar(1000) COLLATE pg_catalog.default,
+                                     TypeId varchar(50) COLLATE pg_catalog.default,
+                                     TypeName varchar(20) COLLATE pg_catalog.default,
+                                     CreateTime timestamp(6) NOT NULL,
+                                     CreateUserId varchar(50) COLLATE pg_catalog.default,
+                                     UpdateTime timestamp(6),
+                                     UpdateUserId varchar(50) COLLATE pg_catalog.default,
+                                     UpdateUserName varchar(50) COLLATE pg_catalog.default,
+                                     CreateUserName varchar(50) COLLATE pg_catalog.default,
+                                     ForeignKey varchar(50) COLLATE pg_catalog.default,
+                                     IsDynamicHeader int2,
+                                     ParentTableId varchar(50) COLLATE pg_catalog.default
 )
 ;
 COMMENT ON COLUMN public.BuilderTable.Id IS '编号';
@@ -145,35 +145,35 @@ INSERT INTO public.BuilderTable VALUES ('fc52b31a-fc29-42b6-b53c-99463644fff2', 
 -- ----------------------------
 DROP TABLE IF EXISTS public.BuilderTableColumn;
 CREATE TABLE public.BuilderTableColumn (
-  Id varchar(50) COLLATE pg_catalog.default NOT NULL,
-  TableId varchar(50) COLLATE pg_catalog.default NOT NULL,
-  TableName varchar(255) COLLATE pg_catalog.default,
-  ColumnName varchar(200) COLLATE pg_catalog.default,
-  Remark varchar(200) COLLATE pg_catalog.default,
-  ColumnType varchar(100) COLLATE pg_catalog.default,
-  EntityType varchar(50) COLLATE pg_catalog.default,
-  EntityName varchar(200) COLLATE pg_catalog.default,
-  IsKey int2 NOT NULL,
-  IsIncrement int2 NOT NULL,
-  IsRequired int2 NOT NULL,
-  IsInsert int2 NOT NULL,
-  IsEdit int2 NOT NULL,
-  IsList int2 NOT NULL,
-  IsQuery int2 NOT NULL,
-  QueryType varchar(200) COLLATE pg_catalog.default,
-  HtmlType varchar(200) COLLATE pg_catalog.default,
-  DataSource varchar(255) COLLATE pg_catalog.default,
-  EditType varchar(200) COLLATE pg_catalog.default,
-  Sort int4 NOT NULL,
-  CreateTime timestamp(6) NOT NULL,
-  CreateUserId varchar(50) COLLATE pg_catalog.default,
-  UpdateTime timestamp(6),
-  UpdateUserId varchar(50) COLLATE pg_catalog.default,
-  EditRow int4,
-  EditCol int4,
-  UpdateUserName varchar(50) COLLATE pg_catalog.default,
-  CreateUserName varchar(50) COLLATE pg_catalog.default,
-  MaxLength int4
+                                           Id varchar(50) COLLATE pg_catalog.default NOT NULL,
+                                           TableId varchar(50) COLLATE pg_catalog.default NOT NULL,
+                                           TableName varchar(255) COLLATE pg_catalog.default,
+                                           ColumnName varchar(200) COLLATE pg_catalog.default,
+                                           Remark varchar(200) COLLATE pg_catalog.default,
+                                           ColumnType varchar(100) COLLATE pg_catalog.default,
+                                           EntityType varchar(50) COLLATE pg_catalog.default,
+                                           EntityName varchar(200) COLLATE pg_catalog.default,
+                                           IsKey int2 NOT NULL,
+                                           IsIncrement int2 NOT NULL,
+                                           IsRequired int2 NOT NULL,
+                                           IsInsert int2 NOT NULL,
+                                           IsEdit int2 NOT NULL,
+                                           IsList int2 NOT NULL,
+                                           IsQuery int2 NOT NULL,
+                                           QueryType varchar(200) COLLATE pg_catalog.default,
+                                           HtmlType varchar(200) COLLATE pg_catalog.default,
+                                           DataSource varchar(255) COLLATE pg_catalog.default,
+                                           EditType varchar(200) COLLATE pg_catalog.default,
+                                           Sort int4 NOT NULL,
+                                           CreateTime timestamp(6) NOT NULL,
+                                           CreateUserId varchar(50) COLLATE pg_catalog.default,
+                                           UpdateTime timestamp(6),
+                                           UpdateUserId varchar(50) COLLATE pg_catalog.default,
+                                           EditRow int4,
+                                           EditCol int4,
+                                           UpdateUserName varchar(50) COLLATE pg_catalog.default,
+                                           CreateUserName varchar(50) COLLATE pg_catalog.default,
+                                           MaxLength int4
 )
 ;
 COMMENT ON COLUMN public.BuilderTableColumn.Id IS '编号';
@@ -318,20 +318,20 @@ INSERT INTO public.BuilderTableColumn VALUES ('fd03c732-f369-4b79-a1be-dc16ee053
 -- ----------------------------
 DROP TABLE IF EXISTS public.Category;
 CREATE TABLE public.Category (
-  Id varchar(50) COLLATE pg_catalog.default NOT NULL,
-  Name varchar(255) COLLATE pg_catalog.default NOT NULL,
-  DtCode varchar(50) COLLATE pg_catalog.default NOT NULL,
-  DtValue varchar(50) COLLATE pg_catalog.default,
-  Enable int2 NOT NULL,
-  SortNo int4 NOT NULL,
-  Description varchar(500) COLLATE pg_catalog.default,
-  TypeId varchar(50) COLLATE pg_catalog.default,
-  CreateTime timestamp(6) NOT NULL,
-  CreateUserId varchar(50) COLLATE pg_catalog.default NOT NULL,
-  CreateUserName varchar(200) COLLATE pg_catalog.default NOT NULL,
-  UpdateTime timestamp(6),
-  UpdateUserId varchar(50) COLLATE pg_catalog.default,
-  UpdateUserName varchar(200) COLLATE pg_catalog.default
+                                 Id varchar(50) COLLATE pg_catalog.default NOT NULL,
+                                 Name varchar(255) COLLATE pg_catalog.default NOT NULL,
+                                 DtCode varchar(50) COLLATE pg_catalog.default NOT NULL,
+                                 DtValue varchar(50) COLLATE pg_catalog.default,
+                                 Enable int2 NOT NULL,
+                                 SortNo int4 NOT NULL,
+                                 Description varchar(500) COLLATE pg_catalog.default,
+                                 TypeId varchar(50) COLLATE pg_catalog.default,
+                                 CreateTime timestamp(6) NOT NULL,
+                                 CreateUserId varchar(50) COLLATE pg_catalog.default NOT NULL,
+                                 CreateUserName varchar(200) COLLATE pg_catalog.default NOT NULL,
+                                 UpdateTime timestamp(6),
+                                 UpdateUserId varchar(50) COLLATE pg_catalog.default,
+                                 UpdateUserName varchar(200) COLLATE pg_catalog.default
 )
 ;
 COMMENT ON COLUMN public.Category.Name IS '分类名称或描述';
@@ -383,9 +383,9 @@ INSERT INTO public.Category VALUES ('fe1f7181-d3d0-4b0e-b9b3-5d05b503ff0e', '医
 -- ----------------------------
 DROP TABLE IF EXISTS public.CategoryType;
 CREATE TABLE public.CategoryType (
-  Id varchar(50) COLLATE pg_catalog.default NOT NULL,
-  Name varchar(255) COLLATE pg_catalog.default NOT NULL,
-  CreateTime timestamp(6) NOT NULL
+                                     Id varchar(50) COLLATE pg_catalog.default NOT NULL,
+                                     Name varchar(255) COLLATE pg_catalog.default NOT NULL,
+                                     CreateTime timestamp(6) NOT NULL
 )
 ;
 COMMENT ON COLUMN public.CategoryType.Id IS '分类表ID';
@@ -411,19 +411,19 @@ INSERT INTO public.CategoryType VALUES ('USERTYPE', '按用户类型分类', '20
 -- ----------------------------
 DROP TABLE IF EXISTS public.DataPrivilegeRule;
 CREATE TABLE public.DataPrivilegeRule (
-  Id varchar(50) COLLATE pg_catalog.default NOT NULL,
-  SourceCode varchar(50) COLLATE pg_catalog.default NOT NULL,
-  SubSourceCode varchar(50) COLLATE pg_catalog.default,
-  Description varchar(255) COLLATE pg_catalog.default NOT NULL,
-  SortNo int4 NOT NULL,
-  PrivilegeRules varchar(1000) COLLATE pg_catalog.default NOT NULL,
-  Enable int2 NOT NULL,
-  CreateTime timestamp(6) NOT NULL,
-  CreateUserId varchar(50) COLLATE pg_catalog.default NOT NULL,
-  CreateUserName varchar(200) COLLATE pg_catalog.default,
-  UpdateTime timestamp(6),
-  UpdateUserId varchar(50) COLLATE pg_catalog.default,
-  UpdateUserName varchar(200) COLLATE pg_catalog.default
+                                          Id varchar(50) COLLATE pg_catalog.default NOT NULL,
+                                          SourceCode varchar(50) COLLATE pg_catalog.default NOT NULL,
+                                          SubSourceCode varchar(50) COLLATE pg_catalog.default,
+                                          Description varchar(255) COLLATE pg_catalog.default NOT NULL,
+                                          SortNo int4 NOT NULL,
+                                          PrivilegeRules varchar(1000) COLLATE pg_catalog.default NOT NULL,
+                                          Enable int2 NOT NULL,
+                                          CreateTime timestamp(6) NOT NULL,
+                                          CreateUserId varchar(50) COLLATE pg_catalog.default NOT NULL,
+                                          CreateUserName varchar(200) COLLATE pg_catalog.default,
+                                          UpdateTime timestamp(6),
+                                          UpdateUserId varchar(50) COLLATE pg_catalog.default,
+                                          UpdateUserName varchar(200) COLLATE pg_catalog.default
 )
 ;
 COMMENT ON COLUMN public.DataPrivilegeRule.Id IS '数据ID';
@@ -444,42 +444,42 @@ COMMENT ON TABLE public.DataPrivilegeRule IS '系统授权规制表';
 -- ----------------------------
 -- Records of DataPrivilegeRule
 -- ----------------------------
-INSERT INTO public.DataPrivilegeRule VALUES ('5098523e-f038-4bc8-850f-9629cac3e4f6', 'Form', '', '只能看到用户自己对应部门的表单,System可以看到所有', 0, '{Operation:or,Filters:[{Key:OrgId,Value:"{loginOrg}",Contrast:in,names:"",Text:""}]}', 1, '2020-03-18 23:36:04.517485', '00000000-0000-0000-0000-000000000000', '', '2020-03-19 21:14:34.28475', '00000000-0000-0000-0000-000000000000', '');
-INSERT INTO public.DataPrivilegeRule VALUES ('6a96c5d9-a226-459d-a4e1-aefcbefc6915', 'WmsInboundOrderTbl', '', '【管理员】角色可以看所有人的订单，【测试】只能看自己创建的订单', 0, '{Operation:or,Filters:[{Key:"{loginRole}",Value:"09ee2ffa-7463-4938-ae0b-1cb4e80c7c13,77e6d0c3-f9e1-4933-92c3-c1c6eef75593",Contrast:contains,names:"",Text:"管理员,神"}],Children:[{Operation:and,Filters:[{Key:"{loginRole}",Value:"0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d",Contrast:contains,Text:测试},{Key:CreateUserId,Value:"{loginUser}",Contrast:"==",Text:""}]}]}', 1, '2019-11-23 01:02:32', '00000000-0000-0000-0000-000000000000', '', '2019-11-23 01:02:32', '', '');
-INSERT INTO public.DataPrivilegeRule VALUES ('ab177ea0-89f3-429e-8f0f-7a00819d8ef3', 'FlowScheme', '', 'System可以看到所有流程设计，【管理员】可以看到部门的，其他人只能看到自己的', 0, '{Operation:or,Filters:[{Key:CreateUserId,Value:"{loginUser}",Contrast:"==",Text:""}],Children:[{Operation:and,Filters:[{Key:OrgId,Value:"{loginOrg}",Contrast:in,Text:""},{Key:"{loginRole}",Value:"09ee2ffa-7463-4938-ae0b-1cb4e80c7c13",Contrast:contains,Text:管理员}]}]}', 1, '2020-03-19 21:17:30.454232', '00000000-0000-0000-0000-000000000000', '', '2020-03-19 21:57:46.733876', '00000000-0000-0000-0000-000000000000', '');
-INSERT INTO public.DataPrivilegeRule VALUES ('e7c95fb1-91f7-422e-a11a-73cea0c404b9', 'Resource', NULL, '【管理员】角色可以看所有人的资源，【测试】只能看自己创建的资源，账号test3/test4只能看属于（XXX管理平台）的资源', 0, '{Operation:or,Filters:[{Key:"{loginRole}",Value:"09ee2ffa-7463-4938-ae0b-1cb4e80c7c13",Contrast:contains,Text:管理员}],Children:[{Operation:and,Filters:[{Key:"{loginRole}",Value:"0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d",Contrast:contains,Text:测试},{Key:CreateUserId,Value:"{loginUser}",Contrast:"==",Text:""}]},{Operation:and,Filters:[{Key:AppName,Value:XXX管理平台,Contrast:"==",Text:""},{Key:"{loginUser}",Value:"229f3a49-ab27-49ce-b383-9f10ca23a9d5,1df68dfd-3b6d-4491-872f-00a0fc6c5a64",Contrast:in,Text:"test3,test4"}]}]}', 1, '2019-10-29 11:05:02', '00000000-0000-0000-0000-000000000000', '', '2019-11-23 01:00:19', '00000000-0000-0000-0000-000000000000', '');
+INSERT INTO public.DataPrivilegeRule VALUES ('5098523e-f038-4bc8-850f-9629cac3e4f6', 'Form', '', '只能看到用户自己对应部门的表单,System可以看到所有', 0, '{"Operation":"or","Filters":[{"Key":"OrgId","Value":"{loginOrg}","Contrast":"in","names":"","Text":""}]}', 1, '2020-03-18 23:36:04.517485', '00000000-0000-0000-0000-000000000000', '', '2020-03-19 21:14:34.28475', '00000000-0000-0000-0000-000000000000', '');
+INSERT INTO public.DataPrivilegeRule VALUES ('6a96c5d9-a226-459d-a4e1-aefcbefc6915', 'WmsInboundOrderTbl', '', '【管理员】角色可以看所有人的订单，【测试】只能看自己创建的订单', 0, '{"Operation":"or","Filters":[{"Key":"{loginRole}","Value":"09ee2ffa-7463-4938-ae0b-1cb4e80c7c13,77e6d0c3-f9e1-4933-92c3-c1c6eef75593","Contrast":"contains","names":"","Text":"管理员,神"}],"Children":[{"Operation":"and","Filters":[{"Key":"{loginRole}","Value":"0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d","Contrast":"contains","Text":"测试"},{"Key":"CreateUserId","Value":"{loginUser}","Contrast":"==","Text":""}]}]}', 1, '2019-11-23 01:02:32', '00000000-0000-0000-0000-000000000000', '', '2019-11-23 01:02:32', '', '');
+INSERT INTO public.DataPrivilegeRule VALUES ('ab177ea0-89f3-429e-8f0f-7a00819d8ef3', 'FlowScheme', '', 'System可以看到所有流程设计，【管理员】可以看到部门的，其他人只能看到自己的', 0, '{"Operation":"or","Filters":[{"Key":"CreateUserId","Value":"{loginUser}","Contrast":"==","Text":""}],"Children":[{"Operation":"and","Filters":[{"Key":"OrgId","Value":"{loginOrg}","Contrast":"in","Text":""},{"Key":"{loginRole}","Value":"09ee2ffa-7463-4938-ae0b-1cb4e80c7c13","Contrast":"contains","Text":"管理员"}]}]}', 1, '2020-03-19 21:17:30.454232', '00000000-0000-0000-0000-000000000000', '', '2020-03-19 21:57:46.733876', '00000000-0000-0000-0000-000000000000', '');
+INSERT INTO public.DataPrivilegeRule VALUES ('e7c95fb1-91f7-422e-a11a-73cea0c404b9', 'Resource', NULL, '【管理员】角色可以看所有人的资源，【测试】只能看自己创建的资源，账号test3/test4只能看属于（XXX管理平台）的资源', 0, '{"Operation":"or","Filters":[{"Key":"{loginRole}","Value":"09ee2ffa-7463-4938-ae0b-1cb4e80c7c13","Contrast":"contains","Text":"管理员"}],"Children":[{"Operation":"and","Filters":[{"Key":"{loginRole}","Value":"0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d","Contrast":"contains","Text":"测试"},{"Key":"CreateUserId","Value":"{loginUser}","Contrast":"==","Text":""}]},{"Operation":"and","Filters":[{"Key":"AppName","Value":"XXX管理平台","Contrast":"==","Text":""},{"Key":"{loginUser}","Value":"229f3a49-ab27-49ce-b383-9f10ca23a9d5,1df68dfd-3b6d-4491-872f-00a0fc6c5a64","Contrast":"in","Text":"test3,test4"}]}]}', 1, '2019-10-29 11:05:02', '00000000-0000-0000-0000-000000000000', '', '2019-11-23 01:00:19', '00000000-0000-0000-0000-000000000000', '');
 
 -- ----------------------------
 -- Table structure for FlowInstance
 -- ----------------------------
 DROP TABLE IF EXISTS public.FlowInstance;
 CREATE TABLE public.FlowInstance (
-  Id varchar(50) COLLATE pg_catalog.default NOT NULL,
-  InstanceSchemeId varchar(50) COLLATE pg_catalog.default,
-  Code varchar(200) COLLATE pg_catalog.default,
-  CustomName varchar(200) COLLATE pg_catalog.default,
-  ActivityId varchar(50) COLLATE pg_catalog.default,
-  ActivityType int4,
-  ActivityName varchar(200) COLLATE pg_catalog.default,
-  PreviousId varchar(50) COLLATE pg_catalog.default,
-  SchemeContent text COLLATE pg_catalog.default,
-  SchemeId varchar(50) COLLATE pg_catalog.default,
-  DbName varchar(50) COLLATE pg_catalog.default,
-  FrmData text COLLATE pg_catalog.default,
-  FrmType int4 NOT NULL,
-  FrmContentData text COLLATE pg_catalog.default,
-  FrmContentParse text COLLATE pg_catalog.default,
-  FrmId varchar(50) COLLATE pg_catalog.default,
-  SchemeType varchar(50) COLLATE pg_catalog.default,
-  Disabled int4 NOT NULL,
-  CreateDate timestamp(6) NOT NULL,
-  CreateUserId varchar(50) COLLATE pg_catalog.default,
-  CreateUserName varchar(50) COLLATE pg_catalog.default,
-  FlowLevel int4 NOT NULL,
-  Description varchar(200) COLLATE pg_catalog.default,
-  IsFinish int4 NOT NULL,
-  MakerList text COLLATE pg_catalog.default,
-  OrgId varchar(50) COLLATE pg_catalog.default
+                                     Id varchar(50) COLLATE pg_catalog.default NOT NULL,
+                                     InstanceSchemeId varchar(50) COLLATE pg_catalog.default,
+                                     Code varchar(200) COLLATE pg_catalog.default,
+                                     CustomName varchar(200) COLLATE pg_catalog.default,
+                                     ActivityId varchar(50) COLLATE pg_catalog.default,
+                                     ActivityType int4,
+                                     ActivityName varchar(200) COLLATE pg_catalog.default,
+                                     PreviousId varchar(50) COLLATE pg_catalog.default,
+                                     SchemeContent text COLLATE pg_catalog.default,
+                                     SchemeId varchar(50) COLLATE pg_catalog.default,
+                                     DbName varchar(50) COLLATE pg_catalog.default,
+                                     FrmData text COLLATE pg_catalog.default,
+                                     FrmType int4 NOT NULL,
+                                     FrmContentData text COLLATE pg_catalog.default,
+                                     FrmContentParse text COLLATE pg_catalog.default,
+                                     FrmId varchar(50) COLLATE pg_catalog.default,
+                                     SchemeType varchar(50) COLLATE pg_catalog.default,
+                                     Disabled int4 NOT NULL,
+                                     CreateDate timestamp(6) NOT NULL,
+                                     CreateUserId varchar(50) COLLATE pg_catalog.default,
+                                     CreateUserName varchar(50) COLLATE pg_catalog.default,
+                                     FlowLevel int4 NOT NULL,
+                                     Description varchar(200) COLLATE pg_catalog.default,
+                                     IsFinish int4 NOT NULL,
+                                     MakerList text COLLATE pg_catalog.default,
+                                     OrgId varchar(50) COLLATE pg_catalog.default
 )
 ;
 COMMENT ON COLUMN public.FlowInstance.Id IS '主键Id';
@@ -513,31 +513,31 @@ COMMENT ON TABLE public.FlowInstance IS '工作流流程实例表';
 -- ----------------------------
 -- Records of FlowInstance
 -- ----------------------------
-INSERT INTO public.FlowInstance VALUES ('034ad4f0-95e6-40bf-b3c5-38bd60b542d9', '', '1564334796391', '会签2019-07-29 01:26:40', '1564334444885', 4, 'node_7', '1564334437844', '{title:newFlow_1,initNum:16,lines:[{id:1564334446774,type:sl,from:1564334430924,to:1564334435460,name:"",dash:false,Compares:null},{id:1564334447796,type:sl,from:1564334435460,to:1564334437844,name:"",dash:false,Compares:null},{id:1564334448572,type:sl,from:1564334437844,to:1564334439828,name:"",dash:false,Compares:null},{id:1564334449628,type:sl,from:1564334437844,to:1564334440404,name:"",dash:false,Compares:null},{id:1564334450572,type:sl,from:1564334439828,to:1564334441965,name:"",dash:false,Compares:null},{id:1564334451684,type:sl,from:1564334440404,to:1564334441965,name:"",dash:false,Compares:null},{id:1564334453900,type:sl,from:1564334441965,to:1564334444885,name:"",dash:false,Compares:null}],nodes:[{id:1564334430924,name:node_1,type:"start round mix",left:17,top:12,width:26,height:26,alt:true,setInfo:null},{id:1564334435460,name:node_2,type:node,left:141,top:49,width:104,height:26,alt:true,setInfo:{NodeDesignate:null,NodeDesignateData:null,NodeCode:null,NodeName:null,ThirdPartyUrl:null,NodeRejectType:null,Taged:1,UserName:test,UserId:"6ba79766-faa0-4259-8139-a4a6d35784e0",Description:"",TagedTime:"2019-07-29 01:28",NodeConfluenceType:null,ConfluenceOk:null,ConfluenceNo:null}},{id:1564334437844,name:"会签入口，设置会签类型",type:fork,left:141,top:138,width:104,height:76,alt:true,setInfo:{NodeDesignate:ALL_USER,NodeDesignateData:{users:[],roles:[],orgs:null},NodeCode:null,NodeName:null,ThirdPartyUrl:"",NodeRejectType:null,Taged:1,UserName:admin,UserId:"49df1602-f5f3-4d52-afb7-3802da619558",Description:"",TagedTime:"2019-07-29 01:30",NodeConfluenceType:all,ConfluenceOk:1,ConfluenceNo:null}},{id:1564334439828,name:admin,type:node,left:23,top:272,width:104,height:36,alt:true,setInfo:{NodeDesignate:SPECIAL_USER,NodeDesignateData:{users:["49df1602-f5f3-4d52-afb7-3802da619558"],roles:[],orgs:null},NodeCode:null,NodeName:null,ThirdPartyUrl:"",NodeRejectType:null,Taged:1,UserName:admin,UserId:"49df1602-f5f3-4d52-afb7-3802da619558",Description:"",TagedTime:"2019-07-29 01:30",NodeConfluenceType:all,ConfluenceOk:null,ConfluenceNo:null}},{id:1564334440404,name:test,type:node,left:234,top:265,width:104,height:36,alt:true,setInfo:{NodeDesignate:SPECIAL_USER,NodeDesignateData:{users:["6ba79766-faa0-4259-8139-a4a6d35784e0"],roles:[],orgs:null},NodeCode:null,NodeName:null,ThirdPartyUrl:"",NodeRejectType:null,Taged:null,UserName:null,UserId:null,Description:null,TagedTime:null,NodeConfluenceType:all,ConfluenceOk:null,ConfluenceNo:null}},{id:1564334441965,name:默认所有人,type:join,left:140,top:406,width:104,height:56,alt:true,setInfo:{NodeDesignate:ALL_USER,NodeDesignateData:{users:[],roles:[],orgs:null},NodeCode:null,NodeName:null,ThirdPartyUrl:"",NodeRejectType:null,Taged:1,UserName:admin,UserId:"49df1602-f5f3-4d52-afb7-3802da619558",Description:"",TagedTime:"2019-07-29 01:30",NodeConfluenceType:all,ConfluenceOk:null,ConfluenceNo:null}},{id:1564334444885,name:node_7,type:"end round",left:351,top:420,width:26,height:26,alt:true,setInfo:null}],areas:[]}', '73819920-f085-4003-8874-4361b6461c92', '', '{REASON:身体原因,DAYS:1,CUSTOME_NAME:玉宝}', 0, '[{type:text,name:REASON,title:REASON,value:身体原因,leipiplugins:text,orghide:0,orgalign:left,orgwidth:150,orgtype:text,style:"text-align: left; width: 150px;",content:"<input name=\"leipiNewField\" type=\"text\" title=\"REASON\" value=\"身体原因\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"},{leipiplugins:select,name:DAYS,title:DAYS,size:1,orgwidth:150,style:"width: 150px;",value:"1,3,5,10",selected:selected,content:"<span leipiplugins=\"select\"><select name=\"leipiNewField\" title=\"DAYS\" leipiplugins=\"select\" size=\"1\" orgwidth=\"150\" style=\"width: 150px;\"><option value=\"1\" selected=\"selected\">1</option><option value=\"3\">3</option><option value=\"5\">5</option><option value=\"10\">10</option></select>&nbsp;&nbsp;</span>"},{type:text,name:CUSTOME_NAME,title:CUSTOME_NAME,value:玉宝,leipiplugins:text,orghide:0,orgalign:left,orgwidth:150,orgtype:text,style:"text-align: left; width: 150px;",content:"<input name=\"leipiNewField\" type=\"text\" title=\"CUSTOME_NAME\" value=\"玉宝\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', '<p style="text-align: center;"><span style="font-size: 36px;">请假条</span></p><p><span style="font-size: 36px;"><br/></span></p><p style="text-align: center;">因{REASON}，本人想请假{DAYS}天，望领导批准！</p><p><br/></p><p style="text-align: center;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;谢谢！</p><p><br/></p><p style="text-align: right;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 申请人：{CUSTOME_NAME}</p>', 'ef89f96a-af33-407c-b02e-897faf46ecf0', '', 0, '2019-07-29 01:26:45', '00000000-0000-0000-0000-000000000000', 'System', 0, '', 1, '', NULL);
-INSERT INTO public.FlowInstance VALUES ('0ae5abe6-f571-4e08-b264-667dc27c5025', '', '1564334583446', '带复杂表单的2019-07-29 01:23:03', '1564334557205', 2, 'node_2', '1564334555981', '{title:newFlow_1,nodes:[{name:node_1,left:66,top:46,type:"start round mix",id:1564334555981,width:26,height:26,alt:true},{name:node_2,left:50,top:145,type:node,id:1564334557205,width:104,height:26,alt:true},{name:node_3,left:56,top:206,type:node,id:1564334557764,width:104,height:26,alt:true},{name:node_4,left:66,top:294,type:"end round",id:1564334559716,width:26,height:26,alt:true}],lines:[{type:sl,from:1564334555981,to:1564334557205,id:1564334561500,name:"",dash:false,alt:true},{type:sl,from:1564334557205,to:1564334557764,id:1564334562229,name:"",dash:false,alt:true},{type:sl,from:1564334557764,to:1564334559716,id:1564334563268,name:"",dash:false,alt:true}],areas:[],initNum:8}', '989bd1f3-29f0-43cd-ad01-b55654907dbb', 'FrmLeaveReq', '{id:"",userName:李玉宝,requestType:事假,startDate:"2019-07-08T16:00:00.000Z",startTime:"2019-07-28T17:23:14.000Z",endDate:"2019-07-24T16:00:00.000Z",endTime:"2019-07-28T17:23:18.000Z",requestComment:"太累了，就是想休息一下",attachment:"",files:[],extendInfo:""}', 1, '', '', '8faff4e5-b729-44d2-ac26-e899a228f63d', '', 0, '2019-07-29 01:23:57', '00000000-0000-0000-0000-000000000000', 'System', 0, '这种结构只能企业版使用', 0, '1', NULL);
-INSERT INTO public.FlowInstance VALUES ('88156170-41a6-45d1-99dc-40dc37a82bc9', '', '1573007376219', '按角色执行2019-11-06 10:31:28', '1564334332325', 2, '管理员', '1564334327861', '{title:newFlow_1,nodes:[{name:node_1,left:99,top:32,type:"start round mix",id:1564334327861,width:26,height:26,alt:true},{name:node_2,left:70,top:295,type:"end round",id:1564334330157,width:26,height:26,alt:true},{name:管理员,left:43,top:131,type:node,id:1564334332325,width:104,height:36,alt:true,setInfo:{NodeConfluenceType:all,NodeDesignate:SPECIAL_ROLE,ThirdPartyUrl:"",NodeDesignateData:{users:[],roles:["09ee2ffa-7463-4938-ae0b-1cb4e80c7c13"]}}},{name:测试人员,left:185,top:226,type:node,id:1564334333133,width:104,height:36,alt:true,setInfo:{NodeConfluenceType:all,NodeDesignate:SPECIAL_ROLE,ThirdPartyUrl:"",NodeDesignateData:{users:[],roles:["0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d"]}}}],lines:[{type:sl,from:1564334327861,to:1564334332325,id:1564334335789,name:"",dash:false,alt:true},{type:sl,from:1564334332325,to:1564334333133,id:1564334336629,name:"",dash:false,alt:true},{type:sl,from:1564334333133,to:1564334330157,id:1564334337805,name:"",dash:false,alt:true}],areas:[],initNum:9}', '0b21f59c-7809-4275-acb4-8e8c08e0167e', '', '{REASON:身体原因,DAYS:1,CUSTOME_NAME:玉宝}', 0, '[{type:text,name:REASON,title:REASON,value:身体原因,leipiplugins:text,orghide:0,orgalign:left,orgwidth:150,orgtype:text,style:"text-align: left; width: 150px;",content:"<input name=\"leipiNewField\" type=\"text\" title=\"REASON\" value=\"身体原因\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"},{leipiplugins:select,name:DAYS,title:DAYS,size:1,orgwidth:150,style:"width: 150px;",value:"1,3,5,10",selected:selected,content:"<span leipiplugins=\"select\"><select name=\"leipiNewField\" title=\"DAYS\" leipiplugins=\"select\" size=\"1\" orgwidth=\"150\" style=\"width: 150px;\"><option value=\"1\" selected=\"selected\">1</option><option value=\"3\">3</option><option value=\"5\">5</option><option value=\"10\">10</option></select>&nbsp;&nbsp;</span>"},{type:text,name:CUSTOME_NAME,title:CUSTOME_NAME,value:玉宝,leipiplugins:text,orghide:0,orgalign:left,orgwidth:150,orgtype:text,style:"text-align: left; width: 150px;",content:"<input name=\"leipiNewField\" type=\"text\" title=\"CUSTOME_NAME\" value=\"玉宝\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', '<p style="text-align: center;"><span style="font-size: 36px;">请假条</span></p><p><span style="font-size: 36px;"><br/></span></p><p style="text-align: center;">因{REASON}，本人想请假{DAYS}天，望领导批准！</p><p><br/></p><p style="text-align: center;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;谢谢！</p><p><br/></p><p style="text-align: right;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 申请人：{CUSTOME_NAME}</p>', 'ef89f96a-af33-407c-b02e-897faf46ecf0', '', 0, '2019-11-06 10:31:35', '00000000-0000-0000-0000-000000000000', 'System', 0, '', 0, '1df68dfd-3b6d-4491-872f-00a0fc6c5a64,49df1602-f5f3-4d52-afb7-3802da619558', NULL);
-INSERT INTO public.FlowInstance VALUES ('0ee22872-f120-4c5a-84ec-7f4e36bd0141', '', '1564334742060', '带分支条件的请假2019-07-29 01:25:44', '1564334139783', 4, 'node_2', '1564334156607', '{title:newFlow_1,initNum:16,lines:[{id:1564334158551,type:sl,from:1564334138399,to:1564334153687,name:"",dash:false,Compares:null},{id:1564334159304,type:sl,from:1564334153687,to:1564334154471,name:"",dash:false,Compares:[{Operation:"<",FieldName:DAYS,FieldType:null,Value:3}]},{id:1564334160383,type:sl,from:1564334153687,to:1564334155295,name:"",dash:false,Compares:[{Operation:">=",FieldName:DAYS,FieldType:null,Value:3}]},{id:1564334161911,type:sl,from:1564334154471,to:1564334156607,name:"",dash:false,Compares:null},{id:1564334163959,type:sl,from:1564334155295,to:1564334156607,name:"",dash:false,Compares:null},{id:1564334165255,type:sl,from:1564334156607,to:1564334139783,name:"",dash:false,Compares:null}],nodes:[{id:1564334138399,name:node_1,type:"start round mix",left:44,top:27,width:26,height:26,alt:true,setInfo:null},{id:1564334139783,name:node_2,type:"end round",left:50,top:295,width:26,height:26,alt:true,setInfo:null},{id:1564334153687,name:所有人可以审批,type:node,left:163,top:43,width:104,height:56,alt:true,setInfo:{NodeDesignate:ALL_USER,NodeDesignateData:{users:[],roles:[],orgs:null},NodeCode:null,NodeName:null,ThirdPartyUrl:"",NodeRejectType:null,Taged:1,UserName:超级管理员,UserId:"00000000-0000-0000-0000-000000000000",Description:"",TagedTime:"2019-07-29 01:26",NodeConfluenceType:all,ConfluenceOk:null,ConfluenceNo:null}},{id:1564334154471,name:小于3的test可以审批,type:node,left:23,top:141,width:167,height:76,alt:true,setInfo:{NodeDesignate:SPECIAL_USER,NodeDesignateData:{users:["6ba79766-faa0-4259-8139-a4a6d35784e0"],roles:[],orgs:null},NodeCode:null,NodeName:null,ThirdPartyUrl:"",NodeRejectType:null,Taged:1,UserName:test,UserId:"6ba79766-faa0-4259-8139-a4a6d35784e0",Description:"",TagedTime:"2019-07-29 01:28",NodeConfluenceType:all,ConfluenceOk:null,ConfluenceNo:null}},{id:1564334155295,name:大于3的admin可以审批,type:node,left:288,top:146,width:143,height:56,alt:true,setInfo:{NodeDesignate:SPECIAL_USER,NodeDesignateData:{users:["49df1602-f5f3-4d52-afb7-3802da619558"],roles:[],orgs:null},NodeCode:null,NodeName:null,ThirdPartyUrl:"",NodeRejectType:null,Taged:null,UserName:null,UserId:null,Description:null,TagedTime:null,NodeConfluenceType:all,ConfluenceOk:null,ConfluenceNo:null}},{id:1564334156607,name:默认,type:node,left:171,top:291,width:104,height:36,alt:true,setInfo:{NodeDesignate:ALL_USER,NodeDesignateData:{users:[],roles:[],orgs:null},NodeCode:null,NodeName:null,ThirdPartyUrl:"",NodeRejectType:null,Taged:1,UserName:admin,UserId:"49df1602-f5f3-4d52-afb7-3802da619558",Description:"",TagedTime:"2019-07-29 01:30",NodeConfluenceType:all,ConfluenceOk:null,ConfluenceNo:null}}],areas:[]}', 'bfd4f0f9-6f61-4af9-977e-cbcf7c30dd35', '', '{REASON:身体原因,DAYS:1,CUSTOME_NAME:玉宝}', 0, '[{type:text,name:REASON,title:REASON,value:身体原因,leipiplugins:text,orghide:0,orgalign:left,orgwidth:150,orgtype:text,style:"text-align: left; width: 150px;",content:"<input name=\"leipiNewField\" type=\"text\" title=\"REASON\" value=\"身体原因\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"},{leipiplugins:select,name:DAYS,title:DAYS,size:1,orgwidth:150,style:"width: 150px;",value:"1,3,5,10",selected:selected,content:"<span leipiplugins=\"select\"><select name=\"leipiNewField\" title=\"DAYS\" leipiplugins=\"select\" size=\"1\" orgwidth=\"150\" style=\"width: 150px;\"><option value=\"1\" selected=\"selected\">1</option><option value=\"3\">3</option><option value=\"5\">5</option><option value=\"10\">10</option></select>&nbsp;&nbsp;</span>"},{type:text,name:CUSTOME_NAME,title:CUSTOME_NAME,value:玉宝,leipiplugins:text,orghide:0,orgalign:left,orgwidth:150,orgtype:text,style:"text-align: left; width: 150px;",content:"<input name=\"leipiNewField\" type=\"text\" title=\"CUSTOME_NAME\" value=\"玉宝\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', '<p style="text-align: center;"><span style="font-size: 36px;">请假条</span></p><p><span style="font-size: 36px;"><br/></span></p><p style="text-align: center;">因{REASON}，本人想请假{DAYS}天，望领导批准！</p><p><br/></p><p style="text-align: center;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;谢谢！</p><p><br/></p><p style="text-align: right;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 申请人：{CUSTOME_NAME}</p>', 'ef89f96a-af33-407c-b02e-897faf46ecf0', '', 0, '2019-07-29 01:25:56', '00000000-0000-0000-0000-000000000000', 'System', 0, '这个时执行完成的', 1, '', NULL);
-INSERT INTO public.FlowInstance VALUES ('20be4e87-0e9e-467c-9011-3c6ccd650931', '', '1564334643592', '会签2019-07-29 01:24:05', '1564334435460', 2, 'node_2', '1564334430924', '{title:newFlow_1,nodes:[{name:node_1,left:17,top:12,type:"start round mix",id:1564334430924,width:26,height:26,alt:true},{name:node_2,left:141,top:49,type:node,id:1564334435460,width:104,height:26,alt:true},{name:"会签入口，设置会签类型",left:141,top:138,type:fork,id:1564334437844,width:104,height:76,alt:true,setInfo:{NodeConfluenceType:all,NodeDesignate:ALL_USER,ThirdPartyUrl:"",NodeDesignateData:{users:[],roles:[]}}},{name:admin,left:23,top:272,type:node,id:1564334439828,width:104,height:36,alt:true,setInfo:{NodeConfluenceType:all,NodeDesignate:SPECIAL_USER,ThirdPartyUrl:"",NodeDesignateData:{users:["49df1602-f5f3-4d52-afb7-3802da619558"],roles:[]}}},{name:test,left:234,top:265,type:node,id:1564334440404,width:104,height:36,alt:true,setInfo:{NodeConfluenceType:all,NodeDesignate:SPECIAL_USER,ThirdPartyUrl:"",NodeDesignateData:{users:["6ba79766-faa0-4259-8139-a4a6d35784e0"],roles:[]}}},{name:默认所有人,left:140,top:406,type:join,id:1564334441965,width:104,height:56,alt:true,setInfo:{NodeConfluenceType:all,NodeDesignate:ALL_USER,ThirdPartyUrl:"",NodeDesignateData:{users:[],roles:[]}}},{name:node_7,left:351,top:420,type:"end round",id:1564334444885,width:26,height:26,alt:true}],lines:[{type:sl,from:1564334430924,to:1564334435460,id:1564334446774,name:"",dash:false,alt:true},{type:sl,from:1564334435460,to:1564334437844,id:1564334447796,name:"",dash:false,alt:true},{type:sl,from:1564334437844,to:1564334439828,id:1564334448572,name:"",dash:false,alt:true},{type:sl,from:1564334437844,to:1564334440404,id:1564334449628,name:"",dash:false,alt:true},{type:sl,from:1564334439828,to:1564334441965,id:1564334450572,name:"",dash:false,alt:true},{type:sl,from:1564334440404,to:1564334441965,id:1564334451684,name:"",dash:false,alt:true},{type:sl,from:1564334441965,to:1564334444885,id:1564334453900,name:"",dash:false,alt:true}],areas:[],initNum:16}', '73819920-f085-4003-8874-4361b6461c92', '', '{REASON:身体原因,DAYS:3,CUSTOME_NAME:玉宝}', 0, '[{type:text,name:REASON,title:REASON,value:身体原因,leipiplugins:text,orghide:0,orgalign:left,orgwidth:150,orgtype:text,style:"text-align: left; width: 150px;",content:"<input name=\"leipiNewField\" type=\"text\" title=\"REASON\" value=\"身体原因\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"},{leipiplugins:select,name:DAYS,title:DAYS,size:1,orgwidth:150,style:"width: 150px;",value:"1,3,5,10",selected:selected,content:"<span leipiplugins=\"select\"><select name=\"leipiNewField\" title=\"DAYS\" leipiplugins=\"select\" size=\"1\" orgwidth=\"150\" style=\"width: 150px;\"><option value=\"1\" selected=\"selected\">1</option><option value=\"3\">3</option><option value=\"5\">5</option><option value=\"10\">10</option></select>&nbsp;&nbsp;</span>"},{type:text,name:CUSTOME_NAME,title:CUSTOME_NAME,value:玉宝,leipiplugins:text,orghide:0,orgalign:left,orgwidth:150,orgtype:text,style:"text-align: left; width: 150px;",content:"<input name=\"leipiNewField\" type=\"text\" title=\"CUSTOME_NAME\" value=\"玉宝\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', '<p style="text-align: center;"><span style="font-size: 36px;">请假条</span></p><p><span style="font-size: 36px;"><br/></span></p><p style="text-align: center;">因{REASON}，本人想请假{DAYS}天，望领导批准！</p><p><br/></p><p style="text-align: center;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;谢谢！</p><p><br/></p><p style="text-align: right;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 申请人：{CUSTOME_NAME}</p>', 'ef89f96a-af33-407c-b02e-897faf46ecf0', '', 0, '2019-07-29 01:24:14', '00000000-0000-0000-0000-000000000000', 'System', 0, '', 0, '1', NULL);
-INSERT INTO public.FlowInstance VALUES ('d4f8d2b9-6374-4c10-8d3c-1ca540bc309b', '', '1572341191142', '带复杂表单的2019-10-29 17:26:42', '1564334557205', 2, 'node_2', '1564334555981', '{title:newFlow_1,nodes:[{name:node_1,left:66,top:46,type:"start round mix",id:1564334555981,width:26,height:26,alt:true},{name:node_2,left:50,top:145,type:node,id:1564334557205,width:104,height:26,alt:true},{name:node_3,left:56,top:206,type:node,id:1564334557764,width:104,height:26,alt:true},{name:node_4,left:66,top:294,type:"end round",id:1564334559716,width:26,height:26,alt:true}],lines:[{type:sl,from:1564334555981,to:1564334557205,id:1564334561500,name:"",dash:false},{type:sl,from:1564334557205,to:1564334557764,id:1564334562229,name:"",dash:false},{type:sl,from:1564334557764,to:1564334559716,id:1564334563268,name:"",dash:false}],areas:[],initNum:8}', '989bd1f3-29f0-43cd-ad01-b55654907dbb', 'FrmLeaveReq', '{id:"",userName:1,requestType:病假,startDate:"2019-10-07T16:00:00.000Z",startTime:"2019-10-29T09:26:52.000Z",endDate:"2019-10-27T16:00:00.000Z",endTime:"2019-10-29T09:26:54.000Z",requestComment:111,attachment:"",files:[],extendInfo:""}', 1, '', '', '8faff4e5-b729-44d2-ac26-e899a228f63d', '', 0, '2019-10-29 17:27:06', '00000000-0000-0000-0000-000000000000', 'System', 0, '11', 0, '1', NULL);
-INSERT INTO public.FlowInstance VALUES ('61959fe9-377a-4e6c-9f5d-6b7018a80bca', '', '1564334700493', '带分支条件的请假2019-07-29 01:25:02', '1564334154471', 2, '小于3的test可以审批', '1564334153687', '{title:newFlow_1,initNum:16,lines:[{id:1564334158551,type:sl,from:1564334138399,to:1564334153687,name:"",dash:false,Compares:null},{id:1564334159304,type:sl,from:1564334153687,to:1564334154471,name:"",dash:false,Compares:[{Operation:"<",FieldName:DAYS,FieldType:null,Value:3}]},{id:1564334160383,type:sl,from:1564334153687,to:1564334155295,name:"",dash:false,Compares:[{Operation:">=",FieldName:DAYS,FieldType:null,Value:3}]},{id:1564334161911,type:sl,from:1564334154471,to:1564334156607,name:"",dash:false,Compares:null},{id:1564334163959,type:sl,from:1564334155295,to:1564334156607,name:"",dash:false,Compares:null},{id:1564334165255,type:sl,from:1564334156607,to:1564334139783,name:"",dash:false,Compares:null}],nodes:[{id:1564334138399,name:node_1,type:"start round mix",left:44,top:27,width:26,height:26,alt:true,setInfo:null},{id:1564334139783,name:node_2,type:"end round",left:50,top:295,width:26,height:26,alt:true,setInfo:null},{id:1564334153687,name:所有人可以审批,type:node,left:163,top:43,width:104,height:56,alt:true,setInfo:{NodeDesignate:ALL_USER,NodeDesignateData:{users:[],roles:[],orgs:null},NodeCode:null,NodeName:null,ThirdPartyUrl:"",NodeRejectType:null,Taged:1,UserName:test,UserId:"6ba79766-faa0-4259-8139-a4a6d35784e0",Description:"",TagedTime:"2019-07-29 01:29",NodeConfluenceType:all,ConfluenceOk:null,ConfluenceNo:null}},{id:1564334154471,name:小于3的test可以审批,type:node,left:23,top:141,width:167,height:76,alt:true,setInfo:{NodeDesignate:SPECIAL_USER,NodeDesignateData:{users:["6ba79766-faa0-4259-8139-a4a6d35784e0"],roles:[],orgs:null},NodeCode:null,NodeName:null,ThirdPartyUrl:"",NodeRejectType:null,Taged:null,UserName:null,UserId:null,Description:null,TagedTime:null,NodeConfluenceType:all,ConfluenceOk:null,ConfluenceNo:null}},{id:1564334155295,name:大于3的admin可以审批,type:node,left:288,top:146,width:143,height:56,alt:true,setInfo:{NodeDesignate:SPECIAL_USER,NodeDesignateData:{users:["49df1602-f5f3-4d52-afb7-3802da619558"],roles:[],orgs:null},NodeCode:null,NodeName:null,ThirdPartyUrl:"",NodeRejectType:null,Taged:null,UserName:null,UserId:null,Description:null,TagedTime:null,NodeConfluenceType:all,ConfluenceOk:null,ConfluenceNo:null}},{id:1564334156607,name:默认,type:node,left:171,top:291,width:104,height:36,alt:true,setInfo:{NodeDesignate:ALL_USER,NodeDesignateData:{users:[],roles:[],orgs:null},NodeCode:null,NodeName:null,ThirdPartyUrl:"",NodeRejectType:null,Taged:null,UserName:null,UserId:null,Description:null,TagedTime:null,NodeConfluenceType:all,ConfluenceOk:null,ConfluenceNo:null}}],areas:[]}', 'bfd4f0f9-6f61-4af9-977e-cbcf7c30dd35', '', '{REASON:身体原因,DAYS:1,CUSTOME_NAME:玉宝}', 0, '[{type:text,name:REASON,title:REASON,value:身体原因,leipiplugins:text,orghide:0,orgalign:left,orgwidth:150,orgtype:text,style:"text-align: left; width: 150px;",content:"<input name=\"leipiNewField\" type=\"text\" title=\"REASON\" value=\"身体原因\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"},{leipiplugins:select,name:DAYS,title:DAYS,size:1,orgwidth:150,style:"width: 150px;",value:"1,3,5,10",selected:selected,content:"<span leipiplugins=\"select\"><select name=\"leipiNewField\" title=\"DAYS\" leipiplugins=\"select\" size=\"1\" orgwidth=\"150\" style=\"width: 150px;\"><option value=\"1\" selected=\"selected\">1</option><option value=\"3\">3</option><option value=\"5\">5</option><option value=\"10\">10</option></select>&nbsp;&nbsp;</span>"},{type:text,name:CUSTOME_NAME,title:CUSTOME_NAME,value:玉宝,leipiplugins:text,orghide:0,orgalign:left,orgwidth:150,orgtype:text,style:"text-align: left; width: 150px;",content:"<input name=\"leipiNewField\" type=\"text\" title=\"CUSTOME_NAME\" value=\"玉宝\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', '<p style="text-align: center;"><span style="font-size: 36px;">请假条</span></p><p><span style="font-size: 36px;"><br/></span></p><p style="text-align: center;">因{REASON}，本人想请假{DAYS}天，望领导批准！</p><p><br/></p><p style="text-align: center;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;谢谢！</p><p><br/></p><p style="text-align: right;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 申请人：{CUSTOME_NAME}</p>', 'ef89f96a-af33-407c-b02e-897faf46ecf0', '', 0, '2019-07-29 01:25:16', '00000000-0000-0000-0000-000000000000', 'System', 0, '这是个天数比较少的分支', 0, '6ba79766-faa0-4259-8139-a4a6d35784e0', NULL);
-INSERT INTO public.FlowInstance VALUES ('7a1fb1a4-06a6-49d5-a311-b988aed776e1', '', '1564334976909', 'admin的会签2019-07-29 01:29:39', '1564334435460', 2, 'node_2', '1564334430924', '{title:newFlow_1,nodes:[{name:node_1,left:17,top:12,type:"start round mix",id:1564334430924,width:26,height:26,alt:true},{name:node_2,left:141,top:49,type:node,id:1564334435460,width:104,height:26,alt:true},{name:"会签入口，设置会签类型",left:141,top:138,type:fork,id:1564334437844,width:104,height:76,alt:true,setInfo:{NodeConfluenceType:all,NodeDesignate:ALL_USER,ThirdPartyUrl:"",NodeDesignateData:{users:[],roles:[]}}},{name:admin,left:23,top:272,type:node,id:1564334439828,width:104,height:36,alt:true,setInfo:{NodeConfluenceType:all,NodeDesignate:SPECIAL_USER,ThirdPartyUrl:"",NodeDesignateData:{users:["49df1602-f5f3-4d52-afb7-3802da619558"],roles:[]}}},{name:test,left:234,top:265,type:node,id:1564334440404,width:104,height:36,alt:true,setInfo:{NodeConfluenceType:all,NodeDesignate:SPECIAL_USER,ThirdPartyUrl:"",NodeDesignateData:{users:["6ba79766-faa0-4259-8139-a4a6d35784e0"],roles:[]}}},{name:默认所有人,left:140,top:406,type:join,id:1564334441965,width:104,height:56,alt:true,setInfo:{NodeConfluenceType:all,NodeDesignate:ALL_USER,ThirdPartyUrl:"",NodeDesignateData:{users:[],roles:[]}}},{name:node_7,left:351,top:420,type:"end round",id:1564334444885,width:26,height:26,alt:true}],lines:[{type:sl,from:1564334430924,to:1564334435460,id:1564334446774,name:"",dash:false,alt:true},{type:sl,from:1564334435460,to:1564334437844,id:1564334447796,name:"",dash:false,alt:true},{type:sl,from:1564334437844,to:1564334439828,id:1564334448572,name:"",dash:false,alt:true},{type:sl,from:1564334437844,to:1564334440404,id:1564334449628,name:"",dash:false,alt:true},{type:sl,from:1564334439828,to:1564334441965,id:1564334450572,name:"",dash:false,alt:true},{type:sl,from:1564334440404,to:1564334441965,id:1564334451684,name:"",dash:false,alt:true},{type:sl,from:1564334441965,to:1564334444885,id:1564334453900,name:"",dash:false,alt:true}],areas:[],initNum:16}', '73819920-f085-4003-8874-4361b6461c92', '', '{REASON:身体原因,DAYS:1,CUSTOME_NAME:玉宝}', 0, '[{type:text,name:REASON,title:REASON,value:身体原因,leipiplugins:text,orghide:0,orgalign:left,orgwidth:150,orgtype:text,style:"text-align: left; width: 150px;",content:"<input name=\"leipiNewField\" type=\"text\" title=\"REASON\" value=\"身体原因\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"},{leipiplugins:select,name:DAYS,title:DAYS,size:1,orgwidth:150,style:"width: 150px;",value:"1,3,5,10",selected:selected,content:"<span leipiplugins=\"select\"><select name=\"leipiNewField\" title=\"DAYS\" leipiplugins=\"select\" size=\"1\" orgwidth=\"150\" style=\"width: 150px;\"><option value=\"1\" selected=\"selected\">1</option><option value=\"3\">3</option><option value=\"5\">5</option><option value=\"10\">10</option></select>&nbsp;&nbsp;</span>"},{type:text,name:CUSTOME_NAME,title:CUSTOME_NAME,value:玉宝,leipiplugins:text,orghide:0,orgalign:left,orgwidth:150,orgtype:text,style:"text-align: left; width: 150px;",content:"<input name=\"leipiNewField\" type=\"text\" title=\"CUSTOME_NAME\" value=\"玉宝\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', '<p style="text-align: center;"><span style="font-size: 36px;">请假条</span></p><p><span style="font-size: 36px;"><br/></span></p><p style="text-align: center;">因{REASON}，本人想请假{DAYS}天，望领导批准！</p><p><br/></p><p style="text-align: center;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;谢谢！</p><p><br/></p><p style="text-align: right;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 申请人：{CUSTOME_NAME}</p>', 'ef89f96a-af33-407c-b02e-897faf46ecf0', '', 0, '2019-07-29 01:29:47', '49df1602-f5f3-4d52-afb7-3802da619558', 'admin', 0, '', 0, '1', NULL);
-INSERT INTO public.FlowInstance VALUES ('df6df6b5-53f7-4db4-931b-12e3352ef413', '', '1564334658879', '按角色执行2019-07-29 01:24:21', '1564334332325', 2, '管理员', '1564334327861', '{title:newFlow_1,nodes:[{name:node_1,left:99,top:32,type:"start round mix",id:1564334327861,width:26,height:26,alt:true},{name:node_2,left:70,top:295,type:"end round",id:1564334330157,width:26,height:26,alt:true},{name:管理员,left:43,top:131,type:node,id:1564334332325,width:104,height:36,alt:true,setInfo:{NodeConfluenceType:all,NodeDesignate:SPECIAL_ROLE,ThirdPartyUrl:"",NodeDesignateData:{users:[],roles:["09ee2ffa-7463-4938-ae0b-1cb4e80c7c13"]}}},{name:测试人员,left:185,top:226,type:node,id:1564334333133,width:104,height:36,alt:true,setInfo:{NodeConfluenceType:all,NodeDesignate:SPECIAL_ROLE,ThirdPartyUrl:"",NodeDesignateData:{users:[],roles:["0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d"]}}}],lines:[{type:sl,from:1564334327861,to:1564334332325,id:1564334335789,name:"",dash:false,alt:true},{type:sl,from:1564334332325,to:1564334333133,id:1564334336629,name:"",dash:false,alt:true},{type:sl,from:1564334333133,to:1564334330157,id:1564334337805,name:"",dash:false,alt:true}],areas:[],initNum:9}', '0b21f59c-7809-4275-acb4-8e8c08e0167e', '', '{REASON:身体原因,DAYS:1,CUSTOME_NAME:玉宝}', 0, '[{type:text,name:REASON,title:REASON,value:身体原因,leipiplugins:text,orghide:0,orgalign:left,orgwidth:150,orgtype:text,style:"text-align: left; width: 150px;",content:"<input name=\"leipiNewField\" type=\"text\" title=\"REASON\" value=\"身体原因\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"},{leipiplugins:select,name:DAYS,title:DAYS,size:1,orgwidth:150,style:"width: 150px;",value:"1,3,5,10",selected:selected,content:"<span leipiplugins=\"select\"><select name=\"leipiNewField\" title=\"DAYS\" leipiplugins=\"select\" size=\"1\" orgwidth=\"150\" style=\"width: 150px;\"><option value=\"1\" selected=\"selected\">1</option><option value=\"3\">3</option><option value=\"5\">5</option><option value=\"10\">10</option></select>&nbsp;&nbsp;</span>"},{type:text,name:CUSTOME_NAME,title:CUSTOME_NAME,value:玉宝,leipiplugins:text,orghide:0,orgalign:left,orgwidth:150,orgtype:text,style:"text-align: left; width: 150px;",content:"<input name=\"leipiNewField\" type=\"text\" title=\"CUSTOME_NAME\" value=\"玉宝\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', '<p style="text-align: center;"><span style="font-size: 36px;">请假条</span></p><p><span style="font-size: 36px;"><br/></span></p><p style="text-align: center;">因{REASON}，本人想请假{DAYS}天，望领导批准！</p><p><br/></p><p style="text-align: center;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;谢谢！</p><p><br/></p><p style="text-align: right;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 申请人：{CUSTOME_NAME}</p>', 'ef89f96a-af33-407c-b02e-897faf46ecf0', '', 0, '2019-07-29 01:24:26', '00000000-0000-0000-0000-000000000000', 'System', 0, '', 0, '49df1602-f5f3-4d52-afb7-3802da619558', NULL);
-INSERT INTO public.FlowInstance VALUES ('7c8ffe55-13fd-4236-9816-63eb7e22aa68', '', '1572350961242', '按角色执行2019-10-29 20:09:25', '1564334332325', 2, '管理员', '1564334327861', '{title:newFlow_1,nodes:[{name:node_1,left:99,top:32,type:"start round mix",id:1564334327861,width:26,height:26,alt:true},{name:node_2,left:70,top:295,type:"end round",id:1564334330157,width:26,height:26,alt:true},{name:管理员,left:43,top:131,type:node,id:1564334332325,width:104,height:36,alt:true,setInfo:{NodeConfluenceType:all,NodeDesignate:SPECIAL_ROLE,ThirdPartyUrl:"",NodeDesignateData:{users:[],roles:["09ee2ffa-7463-4938-ae0b-1cb4e80c7c13"]}}},{name:测试人员,left:185,top:226,type:node,id:1564334333133,width:104,height:36,alt:true,setInfo:{NodeConfluenceType:all,NodeDesignate:SPECIAL_ROLE,ThirdPartyUrl:"",NodeDesignateData:{users:[],roles:["0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d"]}}}],lines:[{type:sl,from:1564334327861,to:1564334332325,id:1564334335789,name:"",dash:false,alt:true},{type:sl,from:1564334332325,to:1564334333133,id:1564334336629,name:"",dash:false,alt:true},{type:sl,from:1564334333133,to:1564334330157,id:1564334337805,name:"",dash:false,alt:true}],areas:[],initNum:9}', '0b21f59c-7809-4275-acb4-8e8c08e0167e', '', '{REASON:身体原因,DAYS:5,CUSTOME_NAME:玉宝}', 0, '[{type:text,name:REASON,title:REASON,value:身体原因,leipiplugins:text,orghide:0,orgalign:left,orgwidth:150,orgtype:text,style:"text-align: left; width: 150px;",content:"<input name=\"leipiNewField\" type=\"text\" title=\"REASON\" value=\"身体原因\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"},{leipiplugins:select,name:DAYS,title:DAYS,size:1,orgwidth:150,style:"width: 150px;",value:"1,3,5,10",selected:selected,content:"<span leipiplugins=\"select\"><select name=\"leipiNewField\" title=\"DAYS\" leipiplugins=\"select\" size=\"1\" orgwidth=\"150\" style=\"width: 150px;\"><option value=\"1\" selected=\"selected\">1</option><option value=\"3\">3</option><option value=\"5\">5</option><option value=\"10\">10</option></select>&nbsp;&nbsp;</span>"},{type:text,name:CUSTOME_NAME,title:CUSTOME_NAME,value:玉宝,leipiplugins:text,orghide:0,orgalign:left,orgwidth:150,orgtype:text,style:"text-align: left; width: 150px;",content:"<input name=\"leipiNewField\" type=\"text\" title=\"CUSTOME_NAME\" value=\"玉宝\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', '<p style="text-align: center;"><span style="font-size: 36px;">请假条</span></p><p><span style="font-size: 36px;"><br/></span></p><p style="text-align: center;">因{REASON}，本人想请假{DAYS}天，望领导批准！</p><p><br/></p><p style="text-align: center;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;谢谢！</p><p><br/></p><p style="text-align: right;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 申请人：{CUSTOME_NAME}</p>', 'ef89f96a-af33-407c-b02e-897faf46ecf0', '', 0, '2019-10-29 20:10:45', '00000000-0000-0000-0000-000000000000', 'System', 0, '预约好突然', 0, '49df1602-f5f3-4d52-afb7-3802da619558,1df68dfd-3b6d-4491-872f-00a0fc6c5a64', NULL);
-INSERT INTO public.FlowInstance VALUES ('b918eb3a-0fd4-4df9-a3a3-0bbf2aa5746d', '', '1564334869743', 'test的普通请假2019-07-29 01:27:53', '1564334038904', 4, 'node_4', '1564334036152', '{title:newFlow_1,initNum:9,lines:[{id:1564334041040,type:sl,from:1564334032785,to:1564334035352,name:"",dash:false,Compares:null},{id:1564334041720,type:sl,from:1564334035352,to:1564334036152,name:"",dash:false,Compares:null},{id:1564334042927,type:sl,from:1564334036152,to:1564334038904,name:"",dash:false,Compares:null}],nodes:[{id:1564334032785,name:node_1,type:"start round mix",left:19,top:36,width:26,height:26,alt:true,setInfo:null},{id:1564334035352,name:所有人可以审批,type:node,left:133,top:50,width:104,height:56,alt:true,setInfo:{NodeDesignate:ALL_USER,NodeDesignateData:{users:[],roles:[],orgs:null},NodeCode:null,NodeName:null,ThirdPartyUrl:"http://xxxx.com/api/workflow/callback",NodeRejectType:null,Taged:1,UserName:超级管理员,UserId:"00000000-0000-0000-0000-000000000000",Description:"",TagedTime:"2019-10-29 14:44",NodeConfluenceType:all,ConfluenceOk:null,ConfluenceNo:null}},{id:1564334036152,name:所有人可以审批,type:node,left:139,top:123,width:104,height:56,alt:true,setInfo:{NodeDesignate:ALL_USER,NodeDesignateData:{users:[],roles:[],orgs:null},NodeCode:null,NodeName:null,ThirdPartyUrl:"",NodeRejectType:null,Taged:1,UserName:超级管理员,UserId:"00000000-0000-0000-0000-000000000000",Description:"",TagedTime:"2019-10-29 14:44",NodeConfluenceType:all,ConfluenceOk:null,ConfluenceNo:null}},{id:1564334038904,name:node_4,type:"end round",left:47,top:193,width:26,height:26,alt:true,setInfo:null}],areas:[]}', '61806396-9498-492b-bc22-9f9e95a389bc', '', '{REASON:身体原因,DAYS:1,CUSTOME_NAME:玉宝}', 0, '[{type:text,name:REASON,title:REASON,value:身体原因,leipiplugins:text,orghide:0,orgalign:left,orgwidth:150,orgtype:text,style:"text-align: left; width: 150px;",content:"<input name=\"leipiNewField\" type=\"text\" title=\"REASON\" value=\"身体原因\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"},{leipiplugins:select,name:DAYS,title:DAYS,size:1,orgwidth:150,style:"width: 150px;",value:"1,3,5,10",selected:selected,content:"<span leipiplugins=\"select\"><select name=\"leipiNewField\" title=\"DAYS\" leipiplugins=\"select\" size=\"1\" orgwidth=\"150\" style=\"width: 150px;\"><option value=\"1\" selected=\"selected\">1</option><option value=\"3\">3</option><option value=\"5\">5</option><option value=\"10\">10</option></select>&nbsp;&nbsp;</span>"},{type:text,name:CUSTOME_NAME,title:CUSTOME_NAME,value:玉宝,leipiplugins:text,orghide:0,orgalign:left,orgwidth:150,orgtype:text,style:"text-align: left; width: 150px;",content:"<input name=\"leipiNewField\" type=\"text\" title=\"CUSTOME_NAME\" value=\"玉宝\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', '<p style="text-align: center;"><span style="font-size: 36px;">请假条</span></p><p><span style="font-size: 36px;"><br/></span></p><p style="text-align: center;">因{REASON}，本人想请假{DAYS}天，望领导批准！</p><p><br/></p><p style="text-align: center;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;谢谢！</p><p><br/></p><p style="text-align: right;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 申请人：{CUSTOME_NAME}</p>', 'ef89f96a-af33-407c-b02e-897faf46ecf0', '', 0, '2019-07-29 01:28:05', '6ba79766-faa0-4259-8139-a4a6d35784e0', 'test', 0, '', 1, '', NULL);
-INSERT INTO public.FlowInstance VALUES ('be9b74cf-2e74-40f3-9ebf-3508f6e79bde', '', '1564334669608', '带分支条件的请假（很多天数）', '1564334153687', 2, '所有人可以审批', '1564334138399', '{title:newFlow_1,nodes:[{name:node_1,left:44,top:27,type:"start round mix",id:1564334138399,width:26,height:26,alt:true},{name:node_2,left:50,top:295,type:"end round",id:1564334139783,width:26,height:26,alt:true},{name:所有人可以审批,left:163,top:43,type:node,id:1564334153687,width:104,height:56,alt:true,setInfo:{NodeConfluenceType:all,NodeDesignate:ALL_USER,ThirdPartyUrl:"",NodeDesignateData:{users:[],roles:[]}}},{name:小于3的test可以审批,left:23,top:141,type:node,id:1564334154471,width:167,height:76,alt:true,setInfo:{NodeConfluenceType:all,NodeDesignate:SPECIAL_USER,ThirdPartyUrl:"",NodeDesignateData:{users:["6ba79766-faa0-4259-8139-a4a6d35784e0"],roles:[]}}},{name:大于3的admin可以审批,left:288,top:146,type:node,id:1564334155295,width:143,height:56,alt:true,setInfo:{NodeConfluenceType:all,NodeDesignate:SPECIAL_USER,ThirdPartyUrl:"",NodeDesignateData:{users:["49df1602-f5f3-4d52-afb7-3802da619558"],roles:[]}}},{name:默认,left:171,top:291,type:node,id:1564334156607,width:104,height:36,alt:true,setInfo:{NodeConfluenceType:all,NodeDesignate:ALL_USER,ThirdPartyUrl:"",NodeDesignateData:{users:[],roles:[]}}}],lines:[{type:sl,from:1564334138399,to:1564334153687,id:1564334158551,name:"",dash:false,alt:true},{type:sl,from:1564334153687,to:1564334154471,id:1564334159304,name:"",dash:false,alt:true,Compares:[{FieldName:DAYS,Operation:"<",Value:3}]},{type:sl,from:1564334153687,to:1564334155295,id:1564334160383,name:"",dash:false,alt:true,Compares:[{FieldName:DAYS,Operation:">=",Value:3}]},{type:sl,from:1564334154471,to:1564334156607,id:1564334161911,name:"",dash:false,alt:true},{type:sl,from:1564334155295,to:1564334156607,id:1564334163959,name:"",dash:false,alt:true},{type:sl,from:1564334156607,to:1564334139783,id:1564334165255,name:"",dash:false,alt:true}],areas:[],initNum:16}', 'bfd4f0f9-6f61-4af9-977e-cbcf7c30dd35', '', '{REASON:身体原因,DAYS:5,CUSTOME_NAME:玉宝}', 0, '[{type:text,name:REASON,title:REASON,value:身体原因,leipiplugins:text,orghide:0,orgalign:left,orgwidth:150,orgtype:text,style:"text-align: left; width: 150px;",content:"<input name=\"leipiNewField\" type=\"text\" title=\"REASON\" value=\"身体原因\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"},{leipiplugins:select,name:DAYS,title:DAYS,size:1,orgwidth:150,style:"width: 150px;",value:"1,3,5,10",selected:selected,content:"<span leipiplugins=\"select\"><select name=\"leipiNewField\" title=\"DAYS\" leipiplugins=\"select\" size=\"1\" orgwidth=\"150\" style=\"width: 150px;\"><option value=\"1\" selected=\"selected\">1</option><option value=\"3\">3</option><option value=\"5\">5</option><option value=\"10\">10</option></select>&nbsp;&nbsp;</span>"},{type:text,name:CUSTOME_NAME,title:CUSTOME_NAME,value:玉宝,leipiplugins:text,orghide:0,orgalign:left,orgwidth:150,orgtype:text,style:"text-align: left; width: 150px;",content:"<input name=\"leipiNewField\" type=\"text\" title=\"CUSTOME_NAME\" value=\"玉宝\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', '<p style="text-align: center;"><span style="font-size: 36px;">请假条</span></p><p><span style="font-size: 36px;"><br/></span></p><p style="text-align: center;">因{REASON}，本人想请假{DAYS}天，望领导批准！</p><p><br/></p><p style="text-align: center;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;谢谢！</p><p><br/></p><p style="text-align: right;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 申请人：{CUSTOME_NAME}</p>', 'ef89f96a-af33-407c-b02e-897faf46ecf0', '', 0, '2019-07-29 01:24:52', '00000000-0000-0000-0000-000000000000', 'System', 0, '', 0, '1', NULL);
-INSERT INTO public.FlowInstance VALUES ('ee589689-3ae0-4037-abec-ba70e566da16', '', '1564334720434', '普通的请假2019-07-29 01:25:24', '1564334035352', 2, '所有人可以审批', '1564334032785', '{title:newFlow_1,initNum:9,lines:[{id:1564334041040,type:sl,from:1564334032785,to:1564334035352,name:"",dash:false,Compares:null},{id:1564334041720,type:sl,from:1564334035352,to:1564334036152,name:"",dash:false,Compares:null},{id:1564334042927,type:sl,from:1564334036152,to:1564334038904,name:"",dash:false,Compares:null}],nodes:[{id:1564334032785,name:node_1,type:"start round mix",left:19,top:36,width:26,height:26,alt:true,setInfo:null},{id:1564334035352,name:所有人可以审批,type:node,left:133,top:50,width:104,height:56,alt:true,setInfo:{NodeDesignate:ALL_USER,NodeDesignateData:{users:[],roles:[],orgs:null},NodeCode:null,NodeName:null,ThirdPartyUrl:"http://xxxx.com/api/workflow/callback",NodeRejectType:null,Taged:2,UserName:test,UserId:"6ba79766-faa0-4259-8139-a4a6d35784e0",Description:最近有很多事情要处理,TagedTime:"2019-07-29 01:28",NodeConfluenceType:all,ConfluenceOk:null,ConfluenceNo:null}},{id:1564334036152,name:所有人可以审批,type:node,left:139,top:123,width:104,height:56,alt:true,setInfo:{NodeDesignate:ALL_USER,NodeDesignateData:{users:[],roles:[],orgs:null},NodeCode:null,NodeName:null,ThirdPartyUrl:"",NodeRejectType:null,Taged:null,UserName:null,UserId:null,Description:null,TagedTime:null,NodeConfluenceType:all,ConfluenceOk:null,ConfluenceNo:null}},{id:1564334038904,name:node_4,type:"end round",left:47,top:193,width:26,height:26,alt:true,setInfo:null}],areas:[]}', '61806396-9498-492b-bc22-9f9e95a389bc', '', '{REASON:身体原因,DAYS:1,CUSTOME_NAME:玉宝}', 0, '[{type:text,name:REASON,title:REASON,value:身体原因,leipiplugins:text,orghide:0,orgalign:left,orgwidth:150,orgtype:text,style:"text-align: left; width: 150px;",content:"<input name=\"leipiNewField\" type=\"text\" title=\"REASON\" value=\"身体原因\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"},{leipiplugins:select,name:DAYS,title:DAYS,size:1,orgwidth:150,style:"width: 150px;",value:"1,3,5,10",selected:selected,content:"<span leipiplugins=\"select\"><select name=\"leipiNewField\" title=\"DAYS\" leipiplugins=\"select\" size=\"1\" orgwidth=\"150\" style=\"width: 150px;\"><option value=\"1\" selected=\"selected\">1</option><option value=\"3\">3</option><option value=\"5\">5</option><option value=\"10\">10</option></select>&nbsp;&nbsp;</span>"},{type:text,name:CUSTOME_NAME,title:CUSTOME_NAME,value:玉宝,leipiplugins:text,orghide:0,orgalign:left,orgwidth:150,orgtype:text,style:"text-align: left; width: 150px;",content:"<input name=\"leipiNewField\" type=\"text\" title=\"CUSTOME_NAME\" value=\"玉宝\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', '<p style="text-align: center;"><span style="font-size: 36px;">请假条</span></p><p><span style="font-size: 36px;"><br/></span></p><p style="text-align: center;">因{REASON}，本人想请假{DAYS}天，望领导批准！</p><p><br/></p><p style="text-align: center;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;谢谢！</p><p><br/></p><p style="text-align: right;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 申请人：{CUSTOME_NAME}</p>', 'ef89f96a-af33-407c-b02e-897faf46ecf0', '', 0, '2019-07-29 01:25:30', '00000000-0000-0000-0000-000000000000', 'System', 0, '', 3, '1', NULL);
+INSERT INTO public.FlowInstance VALUES ('034ad4f0-95e6-40bf-b3c5-38bd60b542d9', '', '1564334796391', '会签2019-07-29 01:26:40', '1564334444885', 4, 'node_7', '1564334437844', '{"title":"newFlow_1","initNum":16,"lines":[{"id":"1564334446774","type":"sl","from":"1564334430924","to":"1564334435460","name":"","dash":false,"Compares":null},{"id":"1564334447796","type":"sl","from":"1564334435460","to":"1564334437844","name":"","dash":false,"Compares":null},{"id":"1564334448572","type":"sl","from":"1564334437844","to":"1564334439828","name":"","dash":false,"Compares":null},{"id":"1564334449628","type":"sl","from":"1564334437844","to":"1564334440404","name":"","dash":false,"Compares":null},{"id":"1564334450572","type":"sl","from":"1564334439828","to":"1564334441965","name":"","dash":false,"Compares":null},{"id":"1564334451684","type":"sl","from":"1564334440404","to":"1564334441965","name":"","dash":false,"Compares":null},{"id":"1564334453900","type":"sl","from":"1564334441965","to":"1564334444885","name":"","dash":false,"Compares":null}],"nodes":[{"id":"1564334430924","name":"node_1","type":"start round mix","left":17,"top":12,"width":26,"height":26,"alt":true,"setInfo":null},{"id":"1564334435460","name":"node_2","type":"node","left":141,"top":49,"width":104,"height":26,"alt":true,"setInfo":{"NodeDesignate":null,"NodeDesignateData":null,"NodeCode":null,"NodeName":null,"ThirdPartyUrl":null,"NodeRejectType":null,"Taged":1,"UserName":"test","UserId":"6ba79766-faa0-4259-8139-a4a6d35784e0","Description":"","TagedTime":"2019-07-29 01:28","NodeConfluenceType":null,"ConfluenceOk":null,"ConfluenceNo":null}},{"id":"1564334437844","name":"会签入口，设置会签类型","type":"fork","left":141,"top":138,"width":104,"height":76,"alt":true,"setInfo":{"NodeDesignate":"ALL_USER","NodeDesignateData":{"users":[],"roles":[],"orgs":null},"NodeCode":null,"NodeName":null,"ThirdPartyUrl":"","NodeRejectType":null,"Taged":1,"UserName":"admin","UserId":"49df1602-f5f3-4d52-afb7-3802da619558","Description":"","TagedTime":"2019-07-29 01:30","NodeConfluenceType":"all","ConfluenceOk":1,"ConfluenceNo":null}},{"id":"1564334439828","name":"admin","type":"node","left":23,"top":272,"width":104,"height":36,"alt":true,"setInfo":{"NodeDesignate":"SPECIAL_USER","NodeDesignateData":{"users":["49df1602-f5f3-4d52-afb7-3802da619558"],"roles":[],"orgs":null},"NodeCode":null,"NodeName":null,"ThirdPartyUrl":"","NodeRejectType":null,"Taged":1,"UserName":"admin","UserId":"49df1602-f5f3-4d52-afb7-3802da619558","Description":"","TagedTime":"2019-07-29 01:30","NodeConfluenceType":"all","ConfluenceOk":null,"ConfluenceNo":null}},{"id":"1564334440404","name":"test","type":"node","left":234,"top":265,"width":104,"height":36,"alt":true,"setInfo":{"NodeDesignate":"SPECIAL_USER","NodeDesignateData":{"users":["6ba79766-faa0-4259-8139-a4a6d35784e0"],"roles":[],"orgs":null},"NodeCode":null,"NodeName":null,"ThirdPartyUrl":"","NodeRejectType":null,"Taged":null,"UserName":null,"UserId":null,"Description":null,"TagedTime":null,"NodeConfluenceType":"all","ConfluenceOk":null,"ConfluenceNo":null}},{"id":"1564334441965","name":"默认所有人","type":"join","left":140,"top":406,"width":104,"height":56,"alt":true,"setInfo":{"NodeDesignate":"ALL_USER","NodeDesignateData":{"users":[],"roles":[],"orgs":null},"NodeCode":null,"NodeName":null,"ThirdPartyUrl":"","NodeRejectType":null,"Taged":1,"UserName":"admin","UserId":"49df1602-f5f3-4d52-afb7-3802da619558","Description":"","TagedTime":"2019-07-29 01:30","NodeConfluenceType":"all","ConfluenceOk":null,"ConfluenceNo":null}},{"id":"1564334444885","name":"node_7","type":"end round","left":351,"top":420,"width":26,"height":26,"alt":true,"setInfo":null}],"areas":[]}', '73819920-f085-4003-8874-4361b6461c92', '', '{"REASON":"身体原因","DAYS":"1","CUSTOME_NAME":"玉宝"}', 0, '[{"type":"text","name":"REASON","title":"REASON","value":"身体原因","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"REASON\" value=\"身体原因\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"},{"leipiplugins":"select","name":"DAYS","title":"DAYS","size":"1","orgwidth":"150","style":"width: 150px;","value":"1,3,5,10","selected":"selected","content":"<span leipiplugins=\"select\"><select name=\"leipiNewField\" title=\"DAYS\" leipiplugins=\"select\" size=\"1\" orgwidth=\"150\" style=\"width: 150px;\"><option value=\"1\" selected=\"selected\">1</option><option value=\"3\">3</option><option value=\"5\">5</option><option value=\"10\">10</option></select>&nbsp;&nbsp;</span>"},{"type":"text","name":"CUSTOME_NAME","title":"CUSTOME_NAME","value":"玉宝","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"CUSTOME_NAME\" value=\"玉宝\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', '<p style="text-align: center;"><span style="font-size: 36px;">请假条</span></p><p><span style="font-size: 36px;"><br/></span></p><p style="text-align: center;">因{REASON}，本人想请假{DAYS}天，望领导批准！</p><p><br/></p><p style="text-align: center;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;谢谢！</p><p><br/></p><p style="text-align: right;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 申请人：{CUSTOME_NAME}</p>', 'ef89f96a-af33-407c-b02e-897faf46ecf0', '', 0, '2019-07-29 01:26:45', '00000000-0000-0000-0000-000000000000', 'System', 0, '', 1, '', NULL);
+INSERT INTO public.FlowInstance VALUES ('0ae5abe6-f571-4e08-b264-667dc27c5025', '', '1564334583446', '带复杂表单的2019-07-29 01:23:03', '1564334557205', 2, 'node_2', '1564334555981', '{"title":"newFlow_1","nodes":[{"name":"node_1","left":66,"top":46,"type":"start round mix","id":"1564334555981","width":26,"height":26,"alt":true},{"name":"node_2","left":50,"top":145,"type":"node","id":"1564334557205","width":104,"height":26,"alt":true},{"name":"node_3","left":56,"top":206,"type":"node","id":"1564334557764","width":104,"height":26,"alt":true},{"name":"node_4","left":66,"top":294,"type":"end round","id":"1564334559716","width":26,"height":26,"alt":true}],"lines":[{"type":"sl","from":"1564334555981","to":"1564334557205","id":"1564334561500","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334557205","to":"1564334557764","id":"1564334562229","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334557764","to":"1564334559716","id":"1564334563268","name":"","dash":false,"alt":true}],"areas":[],"initNum":8}', '989bd1f3-29f0-43cd-ad01-b55654907dbb', 'FrmLeaveReq', '{"id":"","userName":"李玉宝","requestType":"事假","startDate":"2019-07-08T16:00:00.000Z","startTime":"2019-07-28T17:23:14.000Z","endDate":"2019-07-24T16:00:00.000Z","endTime":"2019-07-28T17:23:18.000Z","requestComment":"太累了，就是想休息一下","attachment":"","files":[],"extendInfo":""}', 1, '', '', '8faff4e5-b729-44d2-ac26-e899a228f63d', '', 0, '2019-07-29 01:23:57', '00000000-0000-0000-0000-000000000000', 'System', 0, '这种结构只能企业版使用', 0, '1', NULL);
+INSERT INTO public.FlowInstance VALUES ('88156170-41a6-45d1-99dc-40dc37a82bc9', '', '1573007376219', '按角色执行2019-11-06 10:31:28', '1564334332325', 2, '管理员', '1564334327861', '{"title":"newFlow_1","nodes":[{"name":"node_1","left":99,"top":32,"type":"start round mix","id":"1564334327861","width":26,"height":26,"alt":true},{"name":"node_2","left":70,"top":295,"type":"end round","id":"1564334330157","width":26,"height":26,"alt":true},{"name":"管理员","left":43,"top":131,"type":"node","id":"1564334332325","width":104,"height":36,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_ROLE","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":["09ee2ffa-7463-4938-ae0b-1cb4e80c7c13"]}}},{"name":"测试人员","left":185,"top":226,"type":"node","id":"1564334333133","width":104,"height":36,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_ROLE","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":["0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d"]}}}],"lines":[{"type":"sl","from":"1564334327861","to":"1564334332325","id":"1564334335789","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334332325","to":"1564334333133","id":"1564334336629","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334333133","to":"1564334330157","id":"1564334337805","name":"","dash":false,"alt":true}],"areas":[],"initNum":9}', '0b21f59c-7809-4275-acb4-8e8c08e0167e', '', '{"REASON":"身体原因","DAYS":"1","CUSTOME_NAME":"玉宝"}', 0, '[{"type":"text","name":"REASON","title":"REASON","value":"身体原因","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"REASON\" value=\"身体原因\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"},{"leipiplugins":"select","name":"DAYS","title":"DAYS","size":"1","orgwidth":"150","style":"width: 150px;","value":"1,3,5,10","selected":"selected","content":"<span leipiplugins=\"select\"><select name=\"leipiNewField\" title=\"DAYS\" leipiplugins=\"select\" size=\"1\" orgwidth=\"150\" style=\"width: 150px;\"><option value=\"1\" selected=\"selected\">1</option><option value=\"3\">3</option><option value=\"5\">5</option><option value=\"10\">10</option></select>&nbsp;&nbsp;</span>"},{"type":"text","name":"CUSTOME_NAME","title":"CUSTOME_NAME","value":"玉宝","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"CUSTOME_NAME\" value=\"玉宝\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', '<p style="text-align: center;"><span style="font-size: 36px;">请假条</span></p><p><span style="font-size: 36px;"><br/></span></p><p style="text-align: center;">因{REASON}，本人想请假{DAYS}天，望领导批准！</p><p><br/></p><p style="text-align: center;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;谢谢！</p><p><br/></p><p style="text-align: right;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 申请人：{CUSTOME_NAME}</p>', 'ef89f96a-af33-407c-b02e-897faf46ecf0', '', 0, '2019-11-06 10:31:35', '00000000-0000-0000-0000-000000000000', 'System', 0, '', 0, '1df68dfd-3b6d-4491-872f-00a0fc6c5a64,49df1602-f5f3-4d52-afb7-3802da619558', NULL);
+INSERT INTO public.FlowInstance VALUES ('0ee22872-f120-4c5a-84ec-7f4e36bd0141', '', '1564334742060', '带分支条件的请假2019-07-29 01:25:44', '1564334139783', 4, 'node_2', '1564334156607', '{"title":"newFlow_1","initNum":16,"lines":[{"id":"1564334158551","type":"sl","from":"1564334138399","to":"1564334153687","name":"","dash":false,"Compares":null},{"id":"1564334159304","type":"sl","from":"1564334153687","to":"1564334154471","name":"","dash":false,"Compares":[{"Operation":"<","FieldName":"DAYS","FieldType":null,"Value":"3"}]},{"id":"1564334160383","type":"sl","from":"1564334153687","to":"1564334155295","name":"","dash":false,"Compares":[{"Operation":">=","FieldName":"DAYS","FieldType":null,"Value":"3"}]},{"id":"1564334161911","type":"sl","from":"1564334154471","to":"1564334156607","name":"","dash":false,"Compares":null},{"id":"1564334163959","type":"sl","from":"1564334155295","to":"1564334156607","name":"","dash":false,"Compares":null},{"id":"1564334165255","type":"sl","from":"1564334156607","to":"1564334139783","name":"","dash":false,"Compares":null}],"nodes":[{"id":"1564334138399","name":"node_1","type":"start round mix","left":44,"top":27,"width":26,"height":26,"alt":true,"setInfo":null},{"id":"1564334139783","name":"node_2","type":"end round","left":50,"top":295,"width":26,"height":26,"alt":true,"setInfo":null},{"id":"1564334153687","name":"所有人可以审批","type":"node","left":163,"top":43,"width":104,"height":56,"alt":true,"setInfo":{"NodeDesignate":"ALL_USER","NodeDesignateData":{"users":[],"roles":[],"orgs":null},"NodeCode":null,"NodeName":null,"ThirdPartyUrl":"","NodeRejectType":null,"Taged":1,"UserName":"超级管理员","UserId":"00000000-0000-0000-0000-000000000000","Description":"","TagedTime":"2019-07-29 01:26","NodeConfluenceType":"all","ConfluenceOk":null,"ConfluenceNo":null}},{"id":"1564334154471","name":"小于3的test可以审批","type":"node","left":23,"top":141,"width":167,"height":76,"alt":true,"setInfo":{"NodeDesignate":"SPECIAL_USER","NodeDesignateData":{"users":["6ba79766-faa0-4259-8139-a4a6d35784e0"],"roles":[],"orgs":null},"NodeCode":null,"NodeName":null,"ThirdPartyUrl":"","NodeRejectType":null,"Taged":1,"UserName":"test","UserId":"6ba79766-faa0-4259-8139-a4a6d35784e0","Description":"","TagedTime":"2019-07-29 01:28","NodeConfluenceType":"all","ConfluenceOk":null,"ConfluenceNo":null}},{"id":"1564334155295","name":"大于3的admin可以审批","type":"node","left":288,"top":146,"width":143,"height":56,"alt":true,"setInfo":{"NodeDesignate":"SPECIAL_USER","NodeDesignateData":{"users":["49df1602-f5f3-4d52-afb7-3802da619558"],"roles":[],"orgs":null},"NodeCode":null,"NodeName":null,"ThirdPartyUrl":"","NodeRejectType":null,"Taged":null,"UserName":null,"UserId":null,"Description":null,"TagedTime":null,"NodeConfluenceType":"all","ConfluenceOk":null,"ConfluenceNo":null}},{"id":"1564334156607","name":"默认","type":"node","left":171,"top":291,"width":104,"height":36,"alt":true,"setInfo":{"NodeDesignate":"ALL_USER","NodeDesignateData":{"users":[],"roles":[],"orgs":null},"NodeCode":null,"NodeName":null,"ThirdPartyUrl":"","NodeRejectType":null,"Taged":1,"UserName":"admin","UserId":"49df1602-f5f3-4d52-afb7-3802da619558","Description":"","TagedTime":"2019-07-29 01:30","NodeConfluenceType":"all","ConfluenceOk":null,"ConfluenceNo":null}}],"areas":[]}', 'bfd4f0f9-6f61-4af9-977e-cbcf7c30dd35', '', '{"REASON":"身体原因","DAYS":"1","CUSTOME_NAME":"玉宝"}', 0, '[{"type":"text","name":"REASON","title":"REASON","value":"身体原因","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"REASON\" value=\"身体原因\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"},{"leipiplugins":"select","name":"DAYS","title":"DAYS","size":"1","orgwidth":"150","style":"width: 150px;","value":"1,3,5,10","selected":"selected","content":"<span leipiplugins=\"select\"><select name=\"leipiNewField\" title=\"DAYS\" leipiplugins=\"select\" size=\"1\" orgwidth=\"150\" style=\"width: 150px;\"><option value=\"1\" selected=\"selected\">1</option><option value=\"3\">3</option><option value=\"5\">5</option><option value=\"10\">10</option></select>&nbsp;&nbsp;</span>"},{"type":"text","name":"CUSTOME_NAME","title":"CUSTOME_NAME","value":"玉宝","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"CUSTOME_NAME\" value=\"玉宝\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', '<p style="text-align: center;"><span style="font-size: 36px;">请假条</span></p><p><span style="font-size: 36px;"><br/></span></p><p style="text-align: center;">因{REASON}，本人想请假{DAYS}天，望领导批准！</p><p><br/></p><p style="text-align: center;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;谢谢！</p><p><br/></p><p style="text-align: right;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 申请人：{CUSTOME_NAME}</p>', 'ef89f96a-af33-407c-b02e-897faf46ecf0', '', 0, '2019-07-29 01:25:56', '00000000-0000-0000-0000-000000000000', 'System', 0, '这个时执行完成的', 1, '', NULL);
+INSERT INTO public.FlowInstance VALUES ('20be4e87-0e9e-467c-9011-3c6ccd650931', '', '1564334643592', '会签2019-07-29 01:24:05', '1564334435460', 2, 'node_2', '1564334430924', '{"title":"newFlow_1","nodes":[{"name":"node_1","left":17,"top":12,"type":"start round mix","id":"1564334430924","width":26,"height":26,"alt":true},{"name":"node_2","left":141,"top":49,"type":"node","id":"1564334435460","width":104,"height":26,"alt":true},{"name":"会签入口，设置会签类型","left":141,"top":138,"type":"fork","id":"1564334437844","width":104,"height":76,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"ALL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":[]}}},{"name":"admin","left":23,"top":272,"type":"node","id":"1564334439828","width":104,"height":36,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":["49df1602-f5f3-4d52-afb7-3802da619558"],"roles":[]}}},{"name":"test","left":234,"top":265,"type":"node","id":"1564334440404","width":104,"height":36,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":["6ba79766-faa0-4259-8139-a4a6d35784e0"],"roles":[]}}},{"name":"默认所有人","left":140,"top":406,"type":"join","id":"1564334441965","width":104,"height":56,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"ALL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":[]}}},{"name":"node_7","left":351,"top":420,"type":"end round","id":"1564334444885","width":26,"height":26,"alt":true}],"lines":[{"type":"sl","from":"1564334430924","to":"1564334435460","id":"1564334446774","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334435460","to":"1564334437844","id":"1564334447796","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334437844","to":"1564334439828","id":"1564334448572","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334437844","to":"1564334440404","id":"1564334449628","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334439828","to":"1564334441965","id":"1564334450572","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334440404","to":"1564334441965","id":"1564334451684","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334441965","to":"1564334444885","id":"1564334453900","name":"","dash":false,"alt":true}],"areas":[],"initNum":16}', '73819920-f085-4003-8874-4361b6461c92', '', '{"REASON":"身体原因","DAYS":"3","CUSTOME_NAME":"玉宝"}', 0, '[{"type":"text","name":"REASON","title":"REASON","value":"身体原因","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"REASON\" value=\"身体原因\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"},{"leipiplugins":"select","name":"DAYS","title":"DAYS","size":"1","orgwidth":"150","style":"width: 150px;","value":"1,3,5,10","selected":"selected","content":"<span leipiplugins=\"select\"><select name=\"leipiNewField\" title=\"DAYS\" leipiplugins=\"select\" size=\"1\" orgwidth=\"150\" style=\"width: 150px;\"><option value=\"1\" selected=\"selected\">1</option><option value=\"3\">3</option><option value=\"5\">5</option><option value=\"10\">10</option></select>&nbsp;&nbsp;</span>"},{"type":"text","name":"CUSTOME_NAME","title":"CUSTOME_NAME","value":"玉宝","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"CUSTOME_NAME\" value=\"玉宝\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', '<p style="text-align: center;"><span style="font-size: 36px;">请假条</span></p><p><span style="font-size: 36px;"><br/></span></p><p style="text-align: center;">因{REASON}，本人想请假{DAYS}天，望领导批准！</p><p><br/></p><p style="text-align: center;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;谢谢！</p><p><br/></p><p style="text-align: right;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 申请人：{CUSTOME_NAME}</p>', 'ef89f96a-af33-407c-b02e-897faf46ecf0', '', 0, '2019-07-29 01:24:14', '00000000-0000-0000-0000-000000000000', 'System', 0, '', 0, '1', NULL);
+INSERT INTO public.FlowInstance VALUES ('d4f8d2b9-6374-4c10-8d3c-1ca540bc309b', '', '1572341191142', '带复杂表单的2019-10-29 17:26:42', '1564334557205', 2, 'node_2', '1564334555981', '{"title":"newFlow_1","nodes":[{"name":"node_1","left":66,"top":46,"type":"start round mix","id":"1564334555981","width":26,"height":26,"alt":true},{"name":"node_2","left":50,"top":145,"type":"node","id":"1564334557205","width":104,"height":26,"alt":true},{"name":"node_3","left":56,"top":206,"type":"node","id":"1564334557764","width":104,"height":26,"alt":true},{"name":"node_4","left":66,"top":294,"type":"end round","id":"1564334559716","width":26,"height":26,"alt":true}],"lines":[{"type":"sl","from":"1564334555981","to":"1564334557205","id":"1564334561500","name":"","dash":false},{"type":"sl","from":"1564334557205","to":"1564334557764","id":"1564334562229","name":"","dash":false},{"type":"sl","from":"1564334557764","to":"1564334559716","id":"1564334563268","name":"","dash":false}],"areas":[],"initNum":8}', '989bd1f3-29f0-43cd-ad01-b55654907dbb', 'FrmLeaveReq', '{"id":"","userName":"1","requestType":"病假","startDate":"2019-10-07T16:00:00.000Z","startTime":"2019-10-29T09:26:52.000Z","endDate":"2019-10-27T16:00:00.000Z","endTime":"2019-10-29T09:26:54.000Z","requestComment":"111","attachment":"","files":[],"extendInfo":""}', 1, '', '', '8faff4e5-b729-44d2-ac26-e899a228f63d', '', 0, '2019-10-29 17:27:06', '00000000-0000-0000-0000-000000000000', 'System', 0, '11', 0, '1', NULL);
+INSERT INTO public.FlowInstance VALUES ('61959fe9-377a-4e6c-9f5d-6b7018a80bca', '', '1564334700493', '带分支条件的请假2019-07-29 01:25:02', '1564334154471', 2, '小于3的test可以审批', '1564334153687', '{"title":"newFlow_1","initNum":16,"lines":[{"id":"1564334158551","type":"sl","from":"1564334138399","to":"1564334153687","name":"","dash":false,"Compares":null},{"id":"1564334159304","type":"sl","from":"1564334153687","to":"1564334154471","name":"","dash":false,"Compares":[{"Operation":"<","FieldName":"DAYS","FieldType":null,"Value":"3"}]},{"id":"1564334160383","type":"sl","from":"1564334153687","to":"1564334155295","name":"","dash":false,"Compares":[{"Operation":">=","FieldName":"DAYS","FieldType":null,"Value":"3"}]},{"id":"1564334161911","type":"sl","from":"1564334154471","to":"1564334156607","name":"","dash":false,"Compares":null},{"id":"1564334163959","type":"sl","from":"1564334155295","to":"1564334156607","name":"","dash":false,"Compares":null},{"id":"1564334165255","type":"sl","from":"1564334156607","to":"1564334139783","name":"","dash":false,"Compares":null}],"nodes":[{"id":"1564334138399","name":"node_1","type":"start round mix","left":44,"top":27,"width":26,"height":26,"alt":true,"setInfo":null},{"id":"1564334139783","name":"node_2","type":"end round","left":50,"top":295,"width":26,"height":26,"alt":true,"setInfo":null},{"id":"1564334153687","name":"所有人可以审批","type":"node","left":163,"top":43,"width":104,"height":56,"alt":true,"setInfo":{"NodeDesignate":"ALL_USER","NodeDesignateData":{"users":[],"roles":[],"orgs":null},"NodeCode":null,"NodeName":null,"ThirdPartyUrl":"","NodeRejectType":null,"Taged":1,"UserName":"test","UserId":"6ba79766-faa0-4259-8139-a4a6d35784e0","Description":"","TagedTime":"2019-07-29 01:29","NodeConfluenceType":"all","ConfluenceOk":null,"ConfluenceNo":null}},{"id":"1564334154471","name":"小于3的test可以审批","type":"node","left":23,"top":141,"width":167,"height":76,"alt":true,"setInfo":{"NodeDesignate":"SPECIAL_USER","NodeDesignateData":{"users":["6ba79766-faa0-4259-8139-a4a6d35784e0"],"roles":[],"orgs":null},"NodeCode":null,"NodeName":null,"ThirdPartyUrl":"","NodeRejectType":null,"Taged":null,"UserName":null,"UserId":null,"Description":null,"TagedTime":null,"NodeConfluenceType":"all","ConfluenceOk":null,"ConfluenceNo":null}},{"id":"1564334155295","name":"大于3的admin可以审批","type":"node","left":288,"top":146,"width":143,"height":56,"alt":true,"setInfo":{"NodeDesignate":"SPECIAL_USER","NodeDesignateData":{"users":["49df1602-f5f3-4d52-afb7-3802da619558"],"roles":[],"orgs":null},"NodeCode":null,"NodeName":null,"ThirdPartyUrl":"","NodeRejectType":null,"Taged":null,"UserName":null,"UserId":null,"Description":null,"TagedTime":null,"NodeConfluenceType":"all","ConfluenceOk":null,"ConfluenceNo":null}},{"id":"1564334156607","name":"默认","type":"node","left":171,"top":291,"width":104,"height":36,"alt":true,"setInfo":{"NodeDesignate":"ALL_USER","NodeDesignateData":{"users":[],"roles":[],"orgs":null},"NodeCode":null,"NodeName":null,"ThirdPartyUrl":"","NodeRejectType":null,"Taged":null,"UserName":null,"UserId":null,"Description":null,"TagedTime":null,"NodeConfluenceType":"all","ConfluenceOk":null,"ConfluenceNo":null}}],"areas":[]}', 'bfd4f0f9-6f61-4af9-977e-cbcf7c30dd35', '', '{"REASON":"身体原因","DAYS":"1","CUSTOME_NAME":"玉宝"}', 0, '[{"type":"text","name":"REASON","title":"REASON","value":"身体原因","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"REASON\" value=\"身体原因\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"},{"leipiplugins":"select","name":"DAYS","title":"DAYS","size":"1","orgwidth":"150","style":"width: 150px;","value":"1,3,5,10","selected":"selected","content":"<span leipiplugins=\"select\"><select name=\"leipiNewField\" title=\"DAYS\" leipiplugins=\"select\" size=\"1\" orgwidth=\"150\" style=\"width: 150px;\"><option value=\"1\" selected=\"selected\">1</option><option value=\"3\">3</option><option value=\"5\">5</option><option value=\"10\">10</option></select>&nbsp;&nbsp;</span>"},{"type":"text","name":"CUSTOME_NAME","title":"CUSTOME_NAME","value":"玉宝","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"CUSTOME_NAME\" value=\"玉宝\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', '<p style="text-align: center;"><span style="font-size: 36px;">请假条</span></p><p><span style="font-size: 36px;"><br/></span></p><p style="text-align: center;">因{REASON}，本人想请假{DAYS}天，望领导批准！</p><p><br/></p><p style="text-align: center;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;谢谢！</p><p><br/></p><p style="text-align: right;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 申请人：{CUSTOME_NAME}</p>', 'ef89f96a-af33-407c-b02e-897faf46ecf0', '', 0, '2019-07-29 01:25:16', '00000000-0000-0000-0000-000000000000', 'System', 0, '这是个天数比较少的分支', 0, '6ba79766-faa0-4259-8139-a4a6d35784e0', NULL);
+INSERT INTO public.FlowInstance VALUES ('7a1fb1a4-06a6-49d5-a311-b988aed776e1', '', '1564334976909', 'admin的会签2019-07-29 01:29:39', '1564334435460', 2, 'node_2', '1564334430924', '{"title":"newFlow_1","nodes":[{"name":"node_1","left":17,"top":12,"type":"start round mix","id":"1564334430924","width":26,"height":26,"alt":true},{"name":"node_2","left":141,"top":49,"type":"node","id":"1564334435460","width":104,"height":26,"alt":true},{"name":"会签入口，设置会签类型","left":141,"top":138,"type":"fork","id":"1564334437844","width":104,"height":76,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"ALL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":[]}}},{"name":"admin","left":23,"top":272,"type":"node","id":"1564334439828","width":104,"height":36,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":["49df1602-f5f3-4d52-afb7-3802da619558"],"roles":[]}}},{"name":"test","left":234,"top":265,"type":"node","id":"1564334440404","width":104,"height":36,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":["6ba79766-faa0-4259-8139-a4a6d35784e0"],"roles":[]}}},{"name":"默认所有人","left":140,"top":406,"type":"join","id":"1564334441965","width":104,"height":56,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"ALL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":[]}}},{"name":"node_7","left":351,"top":420,"type":"end round","id":"1564334444885","width":26,"height":26,"alt":true}],"lines":[{"type":"sl","from":"1564334430924","to":"1564334435460","id":"1564334446774","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334435460","to":"1564334437844","id":"1564334447796","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334437844","to":"1564334439828","id":"1564334448572","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334437844","to":"1564334440404","id":"1564334449628","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334439828","to":"1564334441965","id":"1564334450572","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334440404","to":"1564334441965","id":"1564334451684","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334441965","to":"1564334444885","id":"1564334453900","name":"","dash":false,"alt":true}],"areas":[],"initNum":16}', '73819920-f085-4003-8874-4361b6461c92', '', '{"REASON":"身体原因","DAYS":"1","CUSTOME_NAME":"玉宝"}', 0, '[{"type":"text","name":"REASON","title":"REASON","value":"身体原因","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"REASON\" value=\"身体原因\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"},{"leipiplugins":"select","name":"DAYS","title":"DAYS","size":"1","orgwidth":"150","style":"width: 150px;","value":"1,3,5,10","selected":"selected","content":"<span leipiplugins=\"select\"><select name=\"leipiNewField\" title=\"DAYS\" leipiplugins=\"select\" size=\"1\" orgwidth=\"150\" style=\"width: 150px;\"><option value=\"1\" selected=\"selected\">1</option><option value=\"3\">3</option><option value=\"5\">5</option><option value=\"10\">10</option></select>&nbsp;&nbsp;</span>"},{"type":"text","name":"CUSTOME_NAME","title":"CUSTOME_NAME","value":"玉宝","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"CUSTOME_NAME\" value=\"玉宝\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', '<p style="text-align: center;"><span style="font-size: 36px;">请假条</span></p><p><span style="font-size: 36px;"><br/></span></p><p style="text-align: center;">因{REASON}，本人想请假{DAYS}天，望领导批准！</p><p><br/></p><p style="text-align: center;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;谢谢！</p><p><br/></p><p style="text-align: right;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 申请人：{CUSTOME_NAME}</p>', 'ef89f96a-af33-407c-b02e-897faf46ecf0', '', 0, '2019-07-29 01:29:47', '49df1602-f5f3-4d52-afb7-3802da619558', 'admin', 0, '', 0, '1', NULL);
+INSERT INTO public.FlowInstance VALUES ('df6df6b5-53f7-4db4-931b-12e3352ef413', '', '1564334658879', '按角色执行2019-07-29 01:24:21', '1564334332325', 2, '管理员', '1564334327861', '{"title":"newFlow_1","nodes":[{"name":"node_1","left":99,"top":32,"type":"start round mix","id":"1564334327861","width":26,"height":26,"alt":true},{"name":"node_2","left":70,"top":295,"type":"end round","id":"1564334330157","width":26,"height":26,"alt":true},{"name":"管理员","left":43,"top":131,"type":"node","id":"1564334332325","width":104,"height":36,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_ROLE","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":["09ee2ffa-7463-4938-ae0b-1cb4e80c7c13"]}}},{"name":"测试人员","left":185,"top":226,"type":"node","id":"1564334333133","width":104,"height":36,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_ROLE","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":["0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d"]}}}],"lines":[{"type":"sl","from":"1564334327861","to":"1564334332325","id":"1564334335789","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334332325","to":"1564334333133","id":"1564334336629","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334333133","to":"1564334330157","id":"1564334337805","name":"","dash":false,"alt":true}],"areas":[],"initNum":9}', '0b21f59c-7809-4275-acb4-8e8c08e0167e', '', '{"REASON":"身体原因","DAYS":"1","CUSTOME_NAME":"玉宝"}', 0, '[{"type":"text","name":"REASON","title":"REASON","value":"身体原因","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"REASON\" value=\"身体原因\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"},{"leipiplugins":"select","name":"DAYS","title":"DAYS","size":"1","orgwidth":"150","style":"width: 150px;","value":"1,3,5,10","selected":"selected","content":"<span leipiplugins=\"select\"><select name=\"leipiNewField\" title=\"DAYS\" leipiplugins=\"select\" size=\"1\" orgwidth=\"150\" style=\"width: 150px;\"><option value=\"1\" selected=\"selected\">1</option><option value=\"3\">3</option><option value=\"5\">5</option><option value=\"10\">10</option></select>&nbsp;&nbsp;</span>"},{"type":"text","name":"CUSTOME_NAME","title":"CUSTOME_NAME","value":"玉宝","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"CUSTOME_NAME\" value=\"玉宝\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', '<p style="text-align: center;"><span style="font-size: 36px;">请假条</span></p><p><span style="font-size: 36px;"><br/></span></p><p style="text-align: center;">因{REASON}，本人想请假{DAYS}天，望领导批准！</p><p><br/></p><p style="text-align: center;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;谢谢！</p><p><br/></p><p style="text-align: right;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 申请人：{CUSTOME_NAME}</p>', 'ef89f96a-af33-407c-b02e-897faf46ecf0', '', 0, '2019-07-29 01:24:26', '00000000-0000-0000-0000-000000000000', 'System', 0, '', 0, '49df1602-f5f3-4d52-afb7-3802da619558', NULL);
+INSERT INTO public.FlowInstance VALUES ('7c8ffe55-13fd-4236-9816-63eb7e22aa68', '', '1572350961242', '按角色执行2019-10-29 20:09:25', '1564334332325', 2, '管理员', '1564334327861', '{"title":"newFlow_1","nodes":[{"name":"node_1","left":99,"top":32,"type":"start round mix","id":"1564334327861","width":26,"height":26,"alt":true},{"name":"node_2","left":70,"top":295,"type":"end round","id":"1564334330157","width":26,"height":26,"alt":true},{"name":"管理员","left":43,"top":131,"type":"node","id":"1564334332325","width":104,"height":36,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_ROLE","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":["09ee2ffa-7463-4938-ae0b-1cb4e80c7c13"]}}},{"name":"测试人员","left":185,"top":226,"type":"node","id":"1564334333133","width":104,"height":36,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_ROLE","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":["0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d"]}}}],"lines":[{"type":"sl","from":"1564334327861","to":"1564334332325","id":"1564334335789","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334332325","to":"1564334333133","id":"1564334336629","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334333133","to":"1564334330157","id":"1564334337805","name":"","dash":false,"alt":true}],"areas":[],"initNum":9}', '0b21f59c-7809-4275-acb4-8e8c08e0167e', '', '{"REASON":"身体原因","DAYS":"5","CUSTOME_NAME":"玉宝"}', 0, '[{"type":"text","name":"REASON","title":"REASON","value":"身体原因","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"REASON\" value=\"身体原因\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"},{"leipiplugins":"select","name":"DAYS","title":"DAYS","size":"1","orgwidth":"150","style":"width: 150px;","value":"1,3,5,10","selected":"selected","content":"<span leipiplugins=\"select\"><select name=\"leipiNewField\" title=\"DAYS\" leipiplugins=\"select\" size=\"1\" orgwidth=\"150\" style=\"width: 150px;\"><option value=\"1\" selected=\"selected\">1</option><option value=\"3\">3</option><option value=\"5\">5</option><option value=\"10\">10</option></select>&nbsp;&nbsp;</span>"},{"type":"text","name":"CUSTOME_NAME","title":"CUSTOME_NAME","value":"玉宝","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"CUSTOME_NAME\" value=\"玉宝\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', '<p style="text-align: center;"><span style="font-size: 36px;">请假条</span></p><p><span style="font-size: 36px;"><br/></span></p><p style="text-align: center;">因{REASON}，本人想请假{DAYS}天，望领导批准！</p><p><br/></p><p style="text-align: center;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;谢谢！</p><p><br/></p><p style="text-align: right;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 申请人：{CUSTOME_NAME}</p>', 'ef89f96a-af33-407c-b02e-897faf46ecf0', '', 0, '2019-10-29 20:10:45', '00000000-0000-0000-0000-000000000000', 'System', 0, '预约好突然', 0, '49df1602-f5f3-4d52-afb7-3802da619558,1df68dfd-3b6d-4491-872f-00a0fc6c5a64', NULL);
+INSERT INTO public.FlowInstance VALUES ('b918eb3a-0fd4-4df9-a3a3-0bbf2aa5746d', '', '1564334869743', 'test的普通请假2019-07-29 01:27:53', '1564334038904', 4, 'node_4', '1564334036152', '{"title":"newFlow_1","initNum":9,"lines":[{"id":"1564334041040","type":"sl","from":"1564334032785","to":"1564334035352","name":"","dash":false,"Compares":null},{"id":"1564334041720","type":"sl","from":"1564334035352","to":"1564334036152","name":"","dash":false,"Compares":null},{"id":"1564334042927","type":"sl","from":"1564334036152","to":"1564334038904","name":"","dash":false,"Compares":null}],"nodes":[{"id":"1564334032785","name":"node_1","type":"start round mix","left":19,"top":36,"width":26,"height":26,"alt":true,"setInfo":null},{"id":"1564334035352","name":"所有人可以审批","type":"node","left":133,"top":50,"width":104,"height":56,"alt":true,"setInfo":{"NodeDesignate":"ALL_USER","NodeDesignateData":{"users":[],"roles":[],"orgs":null},"NodeCode":null,"NodeName":null,"ThirdPartyUrl":"http://xxxx.com/api/workflow/callback","NodeRejectType":null,"Taged":1,"UserName":"超级管理员","UserId":"00000000-0000-0000-0000-000000000000","Description":"","TagedTime":"2019-10-29 14:44","NodeConfluenceType":"all","ConfluenceOk":null,"ConfluenceNo":null}},{"id":"1564334036152","name":"所有人可以审批","type":"node","left":139,"top":123,"width":104,"height":56,"alt":true,"setInfo":{"NodeDesignate":"ALL_USER","NodeDesignateData":{"users":[],"roles":[],"orgs":null},"NodeCode":null,"NodeName":null,"ThirdPartyUrl":"","NodeRejectType":null,"Taged":1,"UserName":"超级管理员","UserId":"00000000-0000-0000-0000-000000000000","Description":"","TagedTime":"2019-10-29 14:44","NodeConfluenceType":"all","ConfluenceOk":null,"ConfluenceNo":null}},{"id":"1564334038904","name":"node_4","type":"end round","left":47,"top":193,"width":26,"height":26,"alt":true,"setInfo":null}],"areas":[]}', '61806396-9498-492b-bc22-9f9e95a389bc', '', '{"REASON":"身体原因","DAYS":"1","CUSTOME_NAME":"玉宝"}', 0, '[{"type":"text","name":"REASON","title":"REASON","value":"身体原因","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"REASON\" value=\"身体原因\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"},{"leipiplugins":"select","name":"DAYS","title":"DAYS","size":"1","orgwidth":"150","style":"width: 150px;","value":"1,3,5,10","selected":"selected","content":"<span leipiplugins=\"select\"><select name=\"leipiNewField\" title=\"DAYS\" leipiplugins=\"select\" size=\"1\" orgwidth=\"150\" style=\"width: 150px;\"><option value=\"1\" selected=\"selected\">1</option><option value=\"3\">3</option><option value=\"5\">5</option><option value=\"10\">10</option></select>&nbsp;&nbsp;</span>"},{"type":"text","name":"CUSTOME_NAME","title":"CUSTOME_NAME","value":"玉宝","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"CUSTOME_NAME\" value=\"玉宝\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', '<p style="text-align: center;"><span style="font-size: 36px;">请假条</span></p><p><span style="font-size: 36px;"><br/></span></p><p style="text-align: center;">因{REASON}，本人想请假{DAYS}天，望领导批准！</p><p><br/></p><p style="text-align: center;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;谢谢！</p><p><br/></p><p style="text-align: right;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 申请人：{CUSTOME_NAME}</p>', 'ef89f96a-af33-407c-b02e-897faf46ecf0', '', 0, '2019-07-29 01:28:05', '6ba79766-faa0-4259-8139-a4a6d35784e0', 'test', 0, '', 1, '', NULL);
+INSERT INTO public.FlowInstance VALUES ('be9b74cf-2e74-40f3-9ebf-3508f6e79bde', '', '1564334669608', '带分支条件的请假（很多天数）', '1564334153687', 2, '所有人可以审批', '1564334138399', '{"title":"newFlow_1","nodes":[{"name":"node_1","left":44,"top":27,"type":"start round mix","id":"1564334138399","width":26,"height":26,"alt":true},{"name":"node_2","left":50,"top":295,"type":"end round","id":"1564334139783","width":26,"height":26,"alt":true},{"name":"所有人可以审批","left":163,"top":43,"type":"node","id":"1564334153687","width":104,"height":56,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"ALL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":[]}}},{"name":"小于3的test可以审批","left":23,"top":141,"type":"node","id":"1564334154471","width":167,"height":76,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":["6ba79766-faa0-4259-8139-a4a6d35784e0"],"roles":[]}}},{"name":"大于3的admin可以审批","left":288,"top":146,"type":"node","id":"1564334155295","width":143,"height":56,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":["49df1602-f5f3-4d52-afb7-3802da619558"],"roles":[]}}},{"name":"默认","left":171,"top":291,"type":"node","id":"1564334156607","width":104,"height":36,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"ALL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":[]}}}],"lines":[{"type":"sl","from":"1564334138399","to":"1564334153687","id":"1564334158551","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334153687","to":"1564334154471","id":"1564334159304","name":"","dash":false,"alt":true,"Compares":[{"FieldName":"DAYS","Operation":"<","Value":"3"}]},{"type":"sl","from":"1564334153687","to":"1564334155295","id":"1564334160383","name":"","dash":false,"alt":true,"Compares":[{"FieldName":"DAYS","Operation":">=","Value":"3"}]},{"type":"sl","from":"1564334154471","to":"1564334156607","id":"1564334161911","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334155295","to":"1564334156607","id":"1564334163959","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334156607","to":"1564334139783","id":"1564334165255","name":"","dash":false,"alt":true}],"areas":[],"initNum":16}', 'bfd4f0f9-6f61-4af9-977e-cbcf7c30dd35', '', '{"REASON":"身体原因","DAYS":"5","CUSTOME_NAME":"玉宝"}', 0, '[{"type":"text","name":"REASON","title":"REASON","value":"身体原因","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"REASON\" value=\"身体原因\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"},{"leipiplugins":"select","name":"DAYS","title":"DAYS","size":"1","orgwidth":"150","style":"width: 150px;","value":"1,3,5,10","selected":"selected","content":"<span leipiplugins=\"select\"><select name=\"leipiNewField\" title=\"DAYS\" leipiplugins=\"select\" size=\"1\" orgwidth=\"150\" style=\"width: 150px;\"><option value=\"1\" selected=\"selected\">1</option><option value=\"3\">3</option><option value=\"5\">5</option><option value=\"10\">10</option></select>&nbsp;&nbsp;</span>"},{"type":"text","name":"CUSTOME_NAME","title":"CUSTOME_NAME","value":"玉宝","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"CUSTOME_NAME\" value=\"玉宝\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', '<p style="text-align: center;"><span style="font-size: 36px;">请假条</span></p><p><span style="font-size: 36px;"><br/></span></p><p style="text-align: center;">因{REASON}，本人想请假{DAYS}天，望领导批准！</p><p><br/></p><p style="text-align: center;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;谢谢！</p><p><br/></p><p style="text-align: right;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 申请人：{CUSTOME_NAME}</p>', 'ef89f96a-af33-407c-b02e-897faf46ecf0', '', 0, '2019-07-29 01:24:52', '00000000-0000-0000-0000-000000000000', 'System', 0, '', 0, '1', NULL);
+INSERT INTO public.FlowInstance VALUES ('ee589689-3ae0-4037-abec-ba70e566da16', '', '1564334720434', '普通的请假2019-07-29 01:25:24', '1564334035352', 2, '所有人可以审批', '1564334032785', '{"title":"newFlow_1","initNum":9,"lines":[{"id":"1564334041040","type":"sl","from":"1564334032785","to":"1564334035352","name":"","dash":false,"Compares":null},{"id":"1564334041720","type":"sl","from":"1564334035352","to":"1564334036152","name":"","dash":false,"Compares":null},{"id":"1564334042927","type":"sl","from":"1564334036152","to":"1564334038904","name":"","dash":false,"Compares":null}],"nodes":[{"id":"1564334032785","name":"node_1","type":"start round mix","left":19,"top":36,"width":26,"height":26,"alt":true,"setInfo":null},{"id":"1564334035352","name":"所有人可以审批","type":"node","left":133,"top":50,"width":104,"height":56,"alt":true,"setInfo":{"NodeDesignate":"ALL_USER","NodeDesignateData":{"users":[],"roles":[],"orgs":null},"NodeCode":null,"NodeName":null,"ThirdPartyUrl":"http://xxxx.com/api/workflow/callback","NodeRejectType":null,"Taged":2,"UserName":"test","UserId":"6ba79766-faa0-4259-8139-a4a6d35784e0","Description":"最近有很多事情要处理","TagedTime":"2019-07-29 01:28","NodeConfluenceType":"all","ConfluenceOk":null,"ConfluenceNo":null}},{"id":"1564334036152","name":"所有人可以审批","type":"node","left":139,"top":123,"width":104,"height":56,"alt":true,"setInfo":{"NodeDesignate":"ALL_USER","NodeDesignateData":{"users":[],"roles":[],"orgs":null},"NodeCode":null,"NodeName":null,"ThirdPartyUrl":"","NodeRejectType":null,"Taged":null,"UserName":null,"UserId":null,"Description":null,"TagedTime":null,"NodeConfluenceType":"all","ConfluenceOk":null,"ConfluenceNo":null}},{"id":"1564334038904","name":"node_4","type":"end round","left":47,"top":193,"width":26,"height":26,"alt":true,"setInfo":null}],"areas":[]}', '61806396-9498-492b-bc22-9f9e95a389bc', '', '{"REASON":"身体原因","DAYS":"1","CUSTOME_NAME":"玉宝"}', 0, '[{"type":"text","name":"REASON","title":"REASON","value":"身体原因","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"REASON\" value=\"身体原因\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"},{"leipiplugins":"select","name":"DAYS","title":"DAYS","size":"1","orgwidth":"150","style":"width: 150px;","value":"1,3,5,10","selected":"selected","content":"<span leipiplugins=\"select\"><select name=\"leipiNewField\" title=\"DAYS\" leipiplugins=\"select\" size=\"1\" orgwidth=\"150\" style=\"width: 150px;\"><option value=\"1\" selected=\"selected\">1</option><option value=\"3\">3</option><option value=\"5\">5</option><option value=\"10\">10</option></select>&nbsp;&nbsp;</span>"},{"type":"text","name":"CUSTOME_NAME","title":"CUSTOME_NAME","value":"玉宝","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"CUSTOME_NAME\" value=\"玉宝\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', '<p style="text-align: center;"><span style="font-size: 36px;">请假条</span></p><p><span style="font-size: 36px;"><br/></span></p><p style="text-align: center;">因{REASON}，本人想请假{DAYS}天，望领导批准！</p><p><br/></p><p style="text-align: center;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;谢谢！</p><p><br/></p><p style="text-align: right;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 申请人：{CUSTOME_NAME}</p>', 'ef89f96a-af33-407c-b02e-897faf46ecf0', '', 0, '2019-07-29 01:25:30', '00000000-0000-0000-0000-000000000000', 'System', 0, '', 3, '1', NULL);
 
 -- ----------------------------
 -- Table structure for FlowInstanceOperationHistory
 -- ----------------------------
 DROP TABLE IF EXISTS public.FlowInstanceOperationHistory;
 CREATE TABLE public.FlowInstanceOperationHistory (
-  Id varchar(50) COLLATE pg_catalog.default NOT NULL,
-  InstanceId varchar(50) COLLATE pg_catalog.default NOT NULL,
-  Content varchar(200) COLLATE pg_catalog.default,
-  CreateDate timestamp(6) NOT NULL,
-  CreateUserId varchar(50) COLLATE pg_catalog.default,
-  CreateUserName varchar(50) COLLATE pg_catalog.default
+                                                     Id varchar(50) COLLATE pg_catalog.default NOT NULL,
+                                                     InstanceId varchar(50) COLLATE pg_catalog.default NOT NULL,
+                                                     Content varchar(200) COLLATE pg_catalog.default,
+                                                     CreateDate timestamp(6) NOT NULL,
+                                                     CreateUserId varchar(50) COLLATE pg_catalog.default,
+                                                     CreateUserName varchar(50) COLLATE pg_catalog.default
 )
 ;
 COMMENT ON COLUMN public.FlowInstanceOperationHistory.Id IS '主键Id';
@@ -580,19 +580,19 @@ INSERT INTO public.FlowInstanceOperationHistory VALUES ('efa37871-2d37-4bae-8e0d
 -- ----------------------------
 DROP TABLE IF EXISTS public.FlowInstanceTransitionHistory;
 CREATE TABLE public.FlowInstanceTransitionHistory (
-  Id varchar(50) COLLATE pg_catalog.default NOT NULL,
-  InstanceId varchar(50) COLLATE pg_catalog.default NOT NULL,
-  FromNodeId varchar(50) COLLATE pg_catalog.default,
-  FromNodeType int4,
-  FromNodeName varchar(200) COLLATE pg_catalog.default,
-  ToNodeId varchar(50) COLLATE pg_catalog.default,
-  ToNodeType int4,
-  ToNodeName varchar(200) COLLATE pg_catalog.default,
-  TransitionSate int4 NOT NULL,
-  IsFinish int4 NOT NULL,
-  CreateDate timestamp(6) NOT NULL,
-  CreateUserId varchar(50) COLLATE pg_catalog.default,
-  CreateUserName varchar(50) COLLATE pg_catalog.default
+                                                      Id varchar(50) COLLATE pg_catalog.default NOT NULL,
+                                                      InstanceId varchar(50) COLLATE pg_catalog.default NOT NULL,
+                                                      FromNodeId varchar(50) COLLATE pg_catalog.default,
+                                                      FromNodeType int4,
+                                                      FromNodeName varchar(200) COLLATE pg_catalog.default,
+                                                      ToNodeId varchar(50) COLLATE pg_catalog.default,
+                                                      ToNodeType int4,
+                                                      ToNodeName varchar(200) COLLATE pg_catalog.default,
+                                                      TransitionSate int4 NOT NULL,
+                                                      IsFinish int4 NOT NULL,
+                                                      CreateDate timestamp(6) NOT NULL,
+                                                      CreateUserId varchar(50) COLLATE pg_catalog.default,
+                                                      CreateUserName varchar(50) COLLATE pg_catalog.default
 )
 ;
 COMMENT ON COLUMN public.FlowInstanceTransitionHistory.Id IS '主键Id';
@@ -640,27 +640,27 @@ INSERT INTO public.FlowInstanceTransitionHistory VALUES ('f7f86afc-be9d-4521-b34
 -- ----------------------------
 DROP TABLE IF EXISTS public.FlowScheme;
 CREATE TABLE public.FlowScheme (
-  Id varchar(50) COLLATE pg_catalog.default NOT NULL,
-  SchemeCode varchar(50) COLLATE pg_catalog.default,
-  SchemeName varchar(200) COLLATE pg_catalog.default,
-  SchemeType varchar(50) COLLATE pg_catalog.default,
-  SchemeVersion varchar(50) COLLATE pg_catalog.default,
-  SchemeCanUser text COLLATE pg_catalog.default,
-  SchemeContent text COLLATE pg_catalog.default,
-  FrmId varchar(50) COLLATE pg_catalog.default,
-  FrmType int4 NOT NULL,
-  AuthorizeType int4 NOT NULL,
-  SortCode int4 NOT NULL,
-  DeleteMark int4 NOT NULL,
-  Disabled int4 NOT NULL,
-  Description varchar(200) COLLATE pg_catalog.default,
-  CreateDate timestamp(6) NOT NULL,
-  CreateUserId varchar(50) COLLATE pg_catalog.default,
-  CreateUserName varchar(50) COLLATE pg_catalog.default,
-  ModifyDate timestamp(6),
-  ModifyUserId varchar(50) COLLATE pg_catalog.default,
-  ModifyUserName varchar(50) COLLATE pg_catalog.default,
-  OrgId varchar(50) COLLATE pg_catalog.default
+                                   Id varchar(50) COLLATE pg_catalog.default NOT NULL,
+                                   SchemeCode varchar(50) COLLATE pg_catalog.default,
+                                   SchemeName varchar(200) COLLATE pg_catalog.default,
+                                   SchemeType varchar(50) COLLATE pg_catalog.default,
+                                   SchemeVersion varchar(50) COLLATE pg_catalog.default,
+                                   SchemeCanUser text COLLATE pg_catalog.default,
+                                   SchemeContent text COLLATE pg_catalog.default,
+                                   FrmId varchar(50) COLLATE pg_catalog.default,
+                                   FrmType int4 NOT NULL,
+                                   AuthorizeType int4 NOT NULL,
+                                   SortCode int4 NOT NULL,
+                                   DeleteMark int4 NOT NULL,
+                                   Disabled int4 NOT NULL,
+                                   Description varchar(200) COLLATE pg_catalog.default,
+                                   CreateDate timestamp(6) NOT NULL,
+                                   CreateUserId varchar(50) COLLATE pg_catalog.default,
+                                   CreateUserName varchar(50) COLLATE pg_catalog.default,
+                                   ModifyDate timestamp(6),
+                                   ModifyUserId varchar(50) COLLATE pg_catalog.default,
+                                   ModifyUserName varchar(50) COLLATE pg_catalog.default,
+                                   OrgId varchar(50) COLLATE pg_catalog.default
 )
 ;
 COMMENT ON COLUMN public.FlowScheme.Id IS '主键Id';
@@ -689,41 +689,41 @@ COMMENT ON TABLE public.FlowScheme IS '工作流模板信息表';
 -- ----------------------------
 -- Records of FlowScheme
 -- ----------------------------
-INSERT INTO public.FlowScheme VALUES ('0b21f59c-7809-4275-acb4-8e8c08e0167e', '1564334009729', '按角色执行', '', '', '', '{title:newFlow_1,nodes:[{name:node_1,left:99,top:32,type:"start round mix",id:1564334327861,width:26,height:26,alt:true},{name:node_2,left:70,top:295,type:"end round",id:1564334330157,width:26,height:26,alt:true},{name:管理员,left:43,top:131,type:node,id:1564334332325,width:104,height:36,alt:true,setInfo:{NodeConfluenceType:all,NodeDesignate:SPECIAL_ROLE,ThirdPartyUrl:"",NodeDesignateData:{users:[],roles:["09ee2ffa-7463-4938-ae0b-1cb4e80c7c13"]}}},{name:测试人员,left:185,top:226,type:node,id:1564334333133,width:104,height:36,alt:true,setInfo:{NodeConfluenceType:all,NodeDesignate:SPECIAL_ROLE,ThirdPartyUrl:"",NodeDesignateData:{users:[],roles:["0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d"]}}}],lines:[{type:sl,from:1564334327861,to:1564334332325,id:1564334335789,name:"",dash:false,alt:true},{type:sl,from:1564334332325,to:1564334333133,id:1564334336629,name:"",dash:false,alt:true},{type:sl,from:1564334333133,to:1564334330157,id:1564334337805,name:"",dash:false,alt:true}],areas:[],initNum:9}', 'ef89f96a-af33-407c-b02e-897faf46ecf0', 0, 0, 0, 0, 0, '节点按指定的角色执行而不是指定的人', '2019-07-29 01:19:25', '', '', '2019-07-29 01:19:25', '', '', NULL);
-INSERT INTO public.FlowScheme VALUES ('61806396-9498-492b-bc22-9f9e95a389bc', '1564334009729', '普通的请假', '', '', '', '{title:newFlow_1,nodes:[{name:node_1,left:19,top:36,type:"start round mix",id:1564334032785,width:26,height:26,alt:true},{name:所有人可以审批,left:133,top:50,type:node,id:1564334035352,width:104,height:56,alt:true,setInfo:{NodeConfluenceType:all,NodeDesignate:ALL_USER,ThirdPartyUrl:"http://xxxx.com/api/workflow/callback",NodeDesignateData:{users:[],roles:[]}}},{name:所有人可以审批,left:139,top:123,type:node,id:1564334036152,width:104,height:56,alt:true,setInfo:{NodeConfluenceType:all,NodeDesignate:ALL_USER,ThirdPartyUrl:"",NodeDesignateData:{users:[],roles:[]}}},{name:node_4,left:47,top:193,type:"end round",id:1564334038904,width:26,height:26,alt:true}],lines:[{type:sl,from:1564334032785,to:1564334035352,id:1564334041040,name:"",dash:false,alt:true},{type:sl,from:1564334035352,to:1564334036152,id:1564334041720,name:"",dash:false,alt:true},{type:sl,from:1564334036152,to:1564334038904,id:1564334042927,name:"",dash:false,alt:true}],areas:[],initNum:9}', 'ef89f96a-af33-407c-b02e-897faf46ecf0', 0, 0, 0, 0, 0, '非常简单的请假流程', '2019-07-29 01:14:48', '', '', '2019-07-29 01:14:48', '', '', NULL);
-INSERT INTO public.FlowScheme VALUES ('73819920-f085-4003-8874-4361b6461c92', '1564334009729', '会签', '', '', '', '{title:newFlow_1,nodes:[{name:node_1,left:17,top:12,type:"start round mix",id:1564334430924,width:26,height:26,alt:true},{name:node_2,left:141,top:49,type:node,id:1564334435460,width:104,height:26,alt:true},{name:"会签入口，设置会签类型",left:141,top:138,type:fork,id:1564334437844,width:104,height:76,alt:true,setInfo:{NodeConfluenceType:all,NodeDesignate:ALL_USER,ThirdPartyUrl:"",NodeDesignateData:{users:[],roles:[]}}},{name:admin,left:23,top:272,type:node,id:1564334439828,width:104,height:36,alt:true,setInfo:{NodeConfluenceType:all,NodeDesignate:SPECIAL_USER,ThirdPartyUrl:"",NodeDesignateData:{users:["49df1602-f5f3-4d52-afb7-3802da619558"],roles:[]}}},{name:test,left:234,top:265,type:node,id:1564334440404,width:104,height:36,alt:true,setInfo:{NodeConfluenceType:all,NodeDesignate:SPECIAL_USER,ThirdPartyUrl:"",NodeDesignateData:{users:["6ba79766-faa0-4259-8139-a4a6d35784e0"],roles:[]}}},{name:默认所有人,left:140,top:406,type:join,id:1564334441965,width:104,height:56,alt:true,setInfo:{NodeConfluenceType:all,NodeDesignate:ALL_USER,ThirdPartyUrl:"",NodeDesignateData:{users:[],roles:[]}}},{name:node_7,left:351,top:420,type:"end round",id:1564334444885,width:26,height:26,alt:true}],lines:[{type:sl,from:1564334430924,to:1564334435460,id:1564334446774,name:"",dash:false,alt:true},{type:sl,from:1564334435460,to:1564334437844,id:1564334447796,name:"",dash:false,alt:true},{type:sl,from:1564334437844,to:1564334439828,id:1564334448572,name:"",dash:false,alt:true},{type:sl,from:1564334437844,to:1564334440404,id:1564334449628,name:"",dash:false,alt:true},{type:sl,from:1564334439828,to:1564334441965,id:1564334450572,name:"",dash:false,alt:true},{type:sl,from:1564334440404,to:1564334441965,id:1564334451684,name:"",dash:false,alt:true},{type:sl,from:1564334441965,to:1564334444885,id:1564334453900,name:"",dash:false,alt:true}],areas:[],initNum:16}', 'ef89f96a-af33-407c-b02e-897faf46ecf0', 0, 0, 0, 0, 0, '需要多人审批的流程，比如需要多人全部批准该步骤才能通过，或至少有一个通过', '2019-07-29 01:22:03', '', '', '2019-07-29 01:22:03', '', '', NULL);
-INSERT INTO public.FlowScheme VALUES ('989bd1f3-29f0-43cd-ad01-b55654907dbb', '1564334009729', '带复杂表单的', '', '', '', '{title:newFlow_1,nodes:[{name:node_1,left:66,top:46,type:"start round mix",id:1564334555981,width:26,height:26,alt:true},{name:node_2,left:50,top:145,type:node,id:1564334557205,width:104,height:26,alt:true},{name:node_3,left:56,top:206,type:node,id:1564334557764,width:104,height:26,alt:true},{name:node_4,left:66,top:294,type:"end round",id:1564334559716,width:26,height:26,alt:true}],lines:[{type:sl,from:1564334555981,to:1564334557205,id:1564334561500,name:"",dash:false},{type:sl,from:1564334557205,to:1564334557764,id:1564334562229,name:"",dash:false},{type:sl,from:1564334557764,to:1564334559716,id:1564334563268,name:"",dash:false}],areas:[],initNum:8}', '8faff4e5-b729-44d2-ac26-e899a228f63d', 1, 0, 0, 0, 0, '这是一个带有复杂表单的流程，比如需要上传文件', '2019-07-29 01:22:45', '', '', '2019-10-29 17:25:20', '', '', NULL);
-INSERT INTO public.FlowScheme VALUES ('f11b7ef6-6da4-4cef-9e71-5e4e1454f30a', '1584630699021', '【研发小组】考核表', '', '', '', '{title:newFlow_1,nodes:[{name:node_1,left:116,top:70,type:"start round mix",id:1584630766237,width:26,height:26,alt:true},{name:node_2,left:118,top:148,type:node,id:1584630767445,width:104,height:26,alt:true,setInfo:{NodeName:node_2,NodeCode:node_2,NodeRejectType:0,NodeDesignate:ALL_USER,NodeConfluenceType:all,ThirdPartyUrl:"",NodeDesignateData:{users:[],roles:[],orgs:[]}}},{name:node_3,left:69,top:223,type:"end round",id:1584630769587,width:26,height:26,alt:true}],lines:[{type:sl,from:1584630766237,to:1584630767445,id:1584630772227,name:"",dash:false,alt:true},{type:sl,from:1584630767445,to:1584630769587,id:1584630773305,name:"",dash:false,alt:true}],areas:[],initNum:7}', '0411376a-18fd-4f52-bffb-22ae0d3fa21d', 0, 0, 1, 0, 0, '只有可以看到【研发小组】的【管理员】才能看到', '2020-03-19 23:13:03.027', '49df1602-f5f3-4d52-afb7-3802da619558', 'admin', '2020-03-19 23:13:03.027', '', '', '08f41bf6-4388-4b1e-bd3e-2ff538b44b1b');
-INSERT INTO public.FlowScheme VALUES ('bfd4f0f9-6f61-4af9-977e-cbcf7c30dd35', '1564334009729', '带分支条件的请假', '', '', '', '{title:newFlow_1,nodes:[{name:node_1,left:44,top:27,type:"start round mix",id:1564334138399,width:26,height:26,alt:true},{name:node_2,left:50,top:295,type:"end round",id:1564334139783,width:26,height:26,alt:true},{name:所有人可以审批,left:163,top:43,type:node,id:1564334153687,width:104,height:56,alt:true,setInfo:{NodeConfluenceType:all,NodeDesignate:ALL_USER,ThirdPartyUrl:"",NodeDesignateData:{users:[],roles:[]}}},{name:小于3的test可以审批,left:23,top:141,type:node,id:1564334154471,width:167,height:76,alt:true,setInfo:{NodeConfluenceType:all,NodeDesignate:SPECIAL_USER,ThirdPartyUrl:"",NodeDesignateData:{users:["6ba79766-faa0-4259-8139-a4a6d35784e0"],roles:[]}}},{name:大于3的admin可以审批,left:288,top:146,type:node,id:1564334155295,width:143,height:56,alt:true,setInfo:{NodeConfluenceType:all,NodeDesignate:SPECIAL_USER,ThirdPartyUrl:"",NodeDesignateData:{users:["49df1602-f5f3-4d52-afb7-3802da619558"],roles:[]}}},{name:默认,left:171,top:291,type:node,id:1564334156607,width:104,height:36,alt:true,setInfo:{NodeConfluenceType:all,NodeDesignate:ALL_USER,ThirdPartyUrl:"",NodeDesignateData:{users:[],roles:[]}}}],lines:[{type:sl,from:1564334138399,to:1564334153687,id:1564334158551,name:"",dash:false,alt:true},{type:sl,from:1564334153687,to:1564334154471,id:1564334159304,name:"",dash:false,alt:true,Compares:[{FieldName:DAYS,Operation:"<",Value:3}]},{type:sl,from:1564334153687,to:1564334155295,id:1564334160383,name:"",dash:false,alt:true,Compares:[{FieldName:DAYS,Operation:">=",Value:3}]},{type:sl,from:1564334154471,to:1564334156607,id:1564334161911,name:"",dash:false,alt:true},{type:sl,from:1564334155295,to:1564334156607,id:1564334163959,name:"",dash:false,alt:true},{type:sl,from:1564334156607,to:1564334139783,id:1564334165255,name:"",dash:false,alt:true}],areas:[],initNum:16}', 'ef89f96a-af33-407c-b02e-897faf46ecf0', 0, 0, 0, 0, 0, '在连接线上可以设置分支条件', '2019-07-29 01:17:46', '', '', '2019-07-29 01:17:46', '', '', NULL);
-INSERT INTO public.FlowScheme VALUES ('7831e5d0-0ecf-4539-99bc-cd7ecfc8f88f', '1584630806811', '【研发小组】爱好调研', '', '', '', '{title:newFlow_1,nodes:[{name:node_1,left:47,top:23,type:"start round mix",id:1584630842462,width:26,height:26,alt:true},{name:node_2,left:74,top:102,type:node,id:1584630843608,width:104,height:26,alt:true,setInfo:{NodeName:node_2,NodeCode:node_2,NodeRejectType:0,NodeDesignate:ALL_USER,NodeConfluenceType:all,ThirdPartyUrl:"",NodeDesignateData:{users:[],roles:[],orgs:[]}}},{name:node_3,left:41,top:179,type:"end round",id:1584630845368,width:26,height:26,alt:true}],lines:[{type:sl,from:1584630842462,to:1584630843608,id:1584630846980,name:"",dash:false,alt:true},{type:sl,from:1584630843608,to:1584630845368,id:1584630847962,name:"",dash:false,alt:true}],areas:[],initNum:7}', '0411376a-18fd-4f52-bffb-22ae0d3fa21d', 0, 0, 1, 0, 0, '只有【test】账号或可以看到【研发小组】的【管理员】才能看到', '2020-03-19 23:14:13.657', '6ba79766-faa0-4259-8139-a4a6d35784e0', 'test', '2020-03-19 23:14:13.657', '', '', '08f41bf6-4388-4b1e-bd3e-2ff538b44b1b');
-INSERT INTO public.FlowScheme VALUES ('fb1f3cac-a259-4969-9171-addbe22ab102', '1584631233711', '【研发小组】高层汇报', '', '', '', '{title:newFlow_1,nodes:[{name:node_1,left:52,top:43,type:"start round mix",id:1584631275414,width:26,height:26,alt:true},{name:node_2,left:57,top:113,type:node,id:1584631276803,width:104,height:26,alt:true,setInfo:{NodeName:node_2,NodeCode:node_2,NodeRejectType:0,NodeDesignate:ALL_USER,NodeConfluenceType:all,ThirdPartyUrl:"",NodeDesignateData:{users:[],roles:[],orgs:[]}}},{name:node_3,left:60,top:192,type:"end round",id:1584631278737,width:26,height:26,alt:true}],lines:[{type:sl,from:1584631275414,to:1584631276803,id:1584631280569,name:"",dash:false,alt:true},{type:sl,from:1584631276803,to:1584631278737,id:1584631281701,name:"",dash:false,alt:true}],areas:[],initNum:7}', '0411376a-18fd-4f52-bffb-22ae0d3fa21d', 0, 0, 1, 0, 0, '只有可以看到【研发小组】的【管理员】才能看到', '2020-03-19 23:21:43.27', '49df1602-f5f3-4d52-afb7-3802da619558', 'admin', '2020-03-19 23:21:43.27', '', '', '08f41bf6-4388-4b1e-bd3e-2ff538b44b1b');
-INSERT INTO public.FlowScheme VALUES ('1648a05b-013c-4dd0-8ecb-5695d08fb8f4', '1584630870659', '【研发小组】测试申请', '', '', '', '{title:newFlow_1,nodes:[{name:node_1,left:44,top:49,type:"start round mix",id:1584630893821,width:26,height:26,alt:true},{name:node_2,left:58,top:120,type:node,id:1584630895194,width:104,height:26,alt:true,setInfo:{NodeName:node_2,NodeCode:node_2,NodeRejectType:0,NodeDesignate:ALL_USER,NodeConfluenceType:all,ThirdPartyUrl:"",NodeDesignateData:{users:[],roles:[],orgs:[]}}},{name:node_3,left:42,top:219,type:"end round",id:1584630896886,width:26,height:26,alt:true}],lines:[{type:sl,from:1584630893821,to:1584630895194,id:1584630898567,name:"",dash:false,alt:true},{type:sl,from:1584630895194,to:1584630896886,id:1584630899588,name:"",dash:false,alt:true}],areas:[],initNum:7}', '0411376a-18fd-4f52-bffb-22ae0d3fa21d', 0, 0, 1, 0, 0, '只有【test3】账号或可以看到【研发小组】的【管理员】才能看到', '2020-03-19 23:15:03.49', '229f3a49-ab27-49ce-b383-9f10ca23a9d5', 'test3', '2020-03-19 23:15:03.49', '', '', '08f41bf6-4388-4b1e-bd3e-2ff538b44b1b');
+INSERT INTO public.FlowScheme VALUES ('0b21f59c-7809-4275-acb4-8e8c08e0167e', '1564334009729', '按角色执行', '', '', '', '{"title":"newFlow_1","nodes":[{"name":"node_1","left":99,"top":32,"type":"start round mix","id":"1564334327861","width":26,"height":26,"alt":true},{"name":"node_2","left":70,"top":295,"type":"end round","id":"1564334330157","width":26,"height":26,"alt":true},{"name":"管理员","left":43,"top":131,"type":"node","id":"1564334332325","width":104,"height":36,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_ROLE","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":["09ee2ffa-7463-4938-ae0b-1cb4e80c7c13"]}}},{"name":"测试人员","left":185,"top":226,"type":"node","id":"1564334333133","width":104,"height":36,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_ROLE","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":["0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d"]}}}],"lines":[{"type":"sl","from":"1564334327861","to":"1564334332325","id":"1564334335789","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334332325","to":"1564334333133","id":"1564334336629","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334333133","to":"1564334330157","id":"1564334337805","name":"","dash":false,"alt":true}],"areas":[],"initNum":9}', 'ef89f96a-af33-407c-b02e-897faf46ecf0', 0, 0, 0, 0, 0, '节点按指定的角色执行而不是指定的人', '2019-07-29 01:19:25', '', '', '2019-07-29 01:19:25', '', '', NULL);
+INSERT INTO public.FlowScheme VALUES ('61806396-9498-492b-bc22-9f9e95a389bc', '1564334009729', '普通的请假', '', '', '', '{"title":"newFlow_1","nodes":[{"name":"node_1","left":19,"top":36,"type":"start round mix","id":"1564334032785","width":26,"height":26,"alt":true},{"name":"所有人可以审批","left":133,"top":50,"type":"node","id":"1564334035352","width":104,"height":56,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"ALL_USER","ThirdPartyUrl":"http://xxxx.com/api/workflow/callback","NodeDesignateData":{"users":[],"roles":[]}}},{"name":"所有人可以审批","left":139,"top":123,"type":"node","id":"1564334036152","width":104,"height":56,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"ALL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":[]}}},{"name":"node_4","left":47,"top":193,"type":"end round","id":"1564334038904","width":26,"height":26,"alt":true}],"lines":[{"type":"sl","from":"1564334032785","to":"1564334035352","id":"1564334041040","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334035352","to":"1564334036152","id":"1564334041720","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334036152","to":"1564334038904","id":"1564334042927","name":"","dash":false,"alt":true}],"areas":[],"initNum":9}', 'ef89f96a-af33-407c-b02e-897faf46ecf0', 0, 0, 0, 0, 0, '非常简单的请假流程', '2019-07-29 01:14:48', '', '', '2019-07-29 01:14:48', '', '', NULL);
+INSERT INTO public.FlowScheme VALUES ('73819920-f085-4003-8874-4361b6461c92', '1564334009729', '会签', '', '', '', '{"title":"newFlow_1","nodes":[{"name":"node_1","left":17,"top":12,"type":"start round mix","id":"1564334430924","width":26,"height":26,"alt":true},{"name":"node_2","left":141,"top":49,"type":"node","id":"1564334435460","width":104,"height":26,"alt":true},{"name":"会签入口，设置会签类型","left":141,"top":138,"type":"fork","id":"1564334437844","width":104,"height":76,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"ALL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":[]}}},{"name":"admin","left":23,"top":272,"type":"node","id":"1564334439828","width":104,"height":36,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":["49df1602-f5f3-4d52-afb7-3802da619558"],"roles":[]}}},{"name":"test","left":234,"top":265,"type":"node","id":"1564334440404","width":104,"height":36,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":["6ba79766-faa0-4259-8139-a4a6d35784e0"],"roles":[]}}},{"name":"默认所有人","left":140,"top":406,"type":"join","id":"1564334441965","width":104,"height":56,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"ALL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":[]}}},{"name":"node_7","left":351,"top":420,"type":"end round","id":"1564334444885","width":26,"height":26,"alt":true}],"lines":[{"type":"sl","from":"1564334430924","to":"1564334435460","id":"1564334446774","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334435460","to":"1564334437844","id":"1564334447796","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334437844","to":"1564334439828","id":"1564334448572","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334437844","to":"1564334440404","id":"1564334449628","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334439828","to":"1564334441965","id":"1564334450572","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334440404","to":"1564334441965","id":"1564334451684","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334441965","to":"1564334444885","id":"1564334453900","name":"","dash":false,"alt":true}],"areas":[],"initNum":16}', 'ef89f96a-af33-407c-b02e-897faf46ecf0', 0, 0, 0, 0, 0, '需要多人审批的流程，比如需要多人全部批准该步骤才能通过，或至少有一个通过', '2019-07-29 01:22:03', '', '', '2019-07-29 01:22:03', '', '', NULL);
+INSERT INTO public.FlowScheme VALUES ('989bd1f3-29f0-43cd-ad01-b55654907dbb', '1564334009729', '带复杂表单的', '', '', '', '{"title":"newFlow_1","nodes":[{"name":"node_1","left":66,"top":46,"type":"start round mix","id":"1564334555981","width":26,"height":26,"alt":true},{"name":"node_2","left":50,"top":145,"type":"node","id":"1564334557205","width":104,"height":26,"alt":true},{"name":"node_3","left":56,"top":206,"type":"node","id":"1564334557764","width":104,"height":26,"alt":true},{"name":"node_4","left":66,"top":294,"type":"end round","id":"1564334559716","width":26,"height":26,"alt":true}],"lines":[{"type":"sl","from":"1564334555981","to":"1564334557205","id":"1564334561500","name":"","dash":false},{"type":"sl","from":"1564334557205","to":"1564334557764","id":"1564334562229","name":"","dash":false},{"type":"sl","from":"1564334557764","to":"1564334559716","id":"1564334563268","name":"","dash":false}],"areas":[],"initNum":8}', '8faff4e5-b729-44d2-ac26-e899a228f63d', 1, 0, 0, 0, 0, '这是一个带有复杂表单的流程，比如需要上传文件', '2019-07-29 01:22:45', '', '', '2019-10-29 17:25:20', '', '', NULL);
+INSERT INTO public.FlowScheme VALUES ('f11b7ef6-6da4-4cef-9e71-5e4e1454f30a', '1584630699021', '【研发小组】考核表', '', '', '', '{"title":"newFlow_1","nodes":[{"name":"node_1","left":116,"top":70,"type":"start round mix","id":"1584630766237","width":26,"height":26,"alt":true},{"name":"node_2","left":118,"top":148,"type":"node","id":"1584630767445","width":104,"height":26,"alt":true,"setInfo":{"NodeName":"node_2","NodeCode":"node_2","NodeRejectType":"0","NodeDesignate":"ALL_USER","NodeConfluenceType":"all","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":[],"orgs":[]}}},{"name":"node_3","left":69,"top":223,"type":"end round","id":"1584630769587","width":26,"height":26,"alt":true}],"lines":[{"type":"sl","from":"1584630766237","to":"1584630767445","id":"1584630772227","name":"","dash":false,"alt":true},{"type":"sl","from":"1584630767445","to":"1584630769587","id":"1584630773305","name":"","dash":false,"alt":true}],"areas":[],"initNum":7}', '0411376a-18fd-4f52-bffb-22ae0d3fa21d', 0, 0, 1, 0, 0, '只有可以看到【研发小组】的【管理员】才能看到', '2020-03-19 23:13:03.027', '49df1602-f5f3-4d52-afb7-3802da619558', 'admin', '2020-03-19 23:13:03.027', '', '', '08f41bf6-4388-4b1e-bd3e-2ff538b44b1b');
+INSERT INTO public.FlowScheme VALUES ('bfd4f0f9-6f61-4af9-977e-cbcf7c30dd35', '1564334009729', '带分支条件的请假', '', '', '', '{"title":"newFlow_1","nodes":[{"name":"node_1","left":44,"top":27,"type":"start round mix","id":"1564334138399","width":26,"height":26,"alt":true},{"name":"node_2","left":50,"top":295,"type":"end round","id":"1564334139783","width":26,"height":26,"alt":true},{"name":"所有人可以审批","left":163,"top":43,"type":"node","id":"1564334153687","width":104,"height":56,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"ALL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":[]}}},{"name":"小于3的test可以审批","left":23,"top":141,"type":"node","id":"1564334154471","width":167,"height":76,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":["6ba79766-faa0-4259-8139-a4a6d35784e0"],"roles":[]}}},{"name":"大于3的admin可以审批","left":288,"top":146,"type":"node","id":"1564334155295","width":143,"height":56,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":["49df1602-f5f3-4d52-afb7-3802da619558"],"roles":[]}}},{"name":"默认","left":171,"top":291,"type":"node","id":"1564334156607","width":104,"height":36,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"ALL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":[]}}}],"lines":[{"type":"sl","from":"1564334138399","to":"1564334153687","id":"1564334158551","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334153687","to":"1564334154471","id":"1564334159304","name":"","dash":false,"alt":true,"Compares":[{"FieldName":"DAYS","Operation":"<","Value":"3"}]},{"type":"sl","from":"1564334153687","to":"1564334155295","id":"1564334160383","name":"","dash":false,"alt":true,"Compares":[{"FieldName":"DAYS","Operation":">=","Value":"3"}]},{"type":"sl","from":"1564334154471","to":"1564334156607","id":"1564334161911","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334155295","to":"1564334156607","id":"1564334163959","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334156607","to":"1564334139783","id":"1564334165255","name":"","dash":false,"alt":true}],"areas":[],"initNum":16}', 'ef89f96a-af33-407c-b02e-897faf46ecf0', 0, 0, 0, 0, 0, '在连接线上可以设置分支条件', '2019-07-29 01:17:46', '', '', '2019-07-29 01:17:46', '', '', NULL);
+INSERT INTO public.FlowScheme VALUES ('7831e5d0-0ecf-4539-99bc-cd7ecfc8f88f', '1584630806811', '【研发小组】爱好调研', '', '', '', '{"title":"newFlow_1","nodes":[{"name":"node_1","left":47,"top":23,"type":"start round mix","id":"1584630842462","width":26,"height":26,"alt":true},{"name":"node_2","left":74,"top":102,"type":"node","id":"1584630843608","width":104,"height":26,"alt":true,"setInfo":{"NodeName":"node_2","NodeCode":"node_2","NodeRejectType":"0","NodeDesignate":"ALL_USER","NodeConfluenceType":"all","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":[],"orgs":[]}}},{"name":"node_3","left":41,"top":179,"type":"end round","id":"1584630845368","width":26,"height":26,"alt":true}],"lines":[{"type":"sl","from":"1584630842462","to":"1584630843608","id":"1584630846980","name":"","dash":false,"alt":true},{"type":"sl","from":"1584630843608","to":"1584630845368","id":"1584630847962","name":"","dash":false,"alt":true}],"areas":[],"initNum":7}', '0411376a-18fd-4f52-bffb-22ae0d3fa21d', 0, 0, 1, 0, 0, '只有【test】账号或可以看到【研发小组】的【管理员】才能看到', '2020-03-19 23:14:13.657', '6ba79766-faa0-4259-8139-a4a6d35784e0', 'test', '2020-03-19 23:14:13.657', '', '', '08f41bf6-4388-4b1e-bd3e-2ff538b44b1b');
+INSERT INTO public.FlowScheme VALUES ('fb1f3cac-a259-4969-9171-addbe22ab102', '1584631233711', '【研发小组】高层汇报', '', '', '', '{"title":"newFlow_1","nodes":[{"name":"node_1","left":52,"top":43,"type":"start round mix","id":"1584631275414","width":26,"height":26,"alt":true},{"name":"node_2","left":57,"top":113,"type":"node","id":"1584631276803","width":104,"height":26,"alt":true,"setInfo":{"NodeName":"node_2","NodeCode":"node_2","NodeRejectType":"0","NodeDesignate":"ALL_USER","NodeConfluenceType":"all","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":[],"orgs":[]}}},{"name":"node_3","left":60,"top":192,"type":"end round","id":"1584631278737","width":26,"height":26,"alt":true}],"lines":[{"type":"sl","from":"1584631275414","to":"1584631276803","id":"1584631280569","name":"","dash":false,"alt":true},{"type":"sl","from":"1584631276803","to":"1584631278737","id":"1584631281701","name":"","dash":false,"alt":true}],"areas":[],"initNum":7}', '0411376a-18fd-4f52-bffb-22ae0d3fa21d', 0, 0, 1, 0, 0, '只有可以看到【研发小组】的【管理员】才能看到', '2020-03-19 23:21:43.27', '49df1602-f5f3-4d52-afb7-3802da619558', 'admin', '2020-03-19 23:21:43.27', '', '', '08f41bf6-4388-4b1e-bd3e-2ff538b44b1b');
+INSERT INTO public.FlowScheme VALUES ('1648a05b-013c-4dd0-8ecb-5695d08fb8f4', '1584630870659', '【研发小组】测试申请', '', '', '', '{"title":"newFlow_1","nodes":[{"name":"node_1","left":44,"top":49,"type":"start round mix","id":"1584630893821","width":26,"height":26,"alt":true},{"name":"node_2","left":58,"top":120,"type":"node","id":"1584630895194","width":104,"height":26,"alt":true,"setInfo":{"NodeName":"node_2","NodeCode":"node_2","NodeRejectType":"0","NodeDesignate":"ALL_USER","NodeConfluenceType":"all","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":[],"orgs":[]}}},{"name":"node_3","left":42,"top":219,"type":"end round","id":"1584630896886","width":26,"height":26,"alt":true}],"lines":[{"type":"sl","from":"1584630893821","to":"1584630895194","id":"1584630898567","name":"","dash":false,"alt":true},{"type":"sl","from":"1584630895194","to":"1584630896886","id":"1584630899588","name":"","dash":false,"alt":true}],"areas":[],"initNum":7}', '0411376a-18fd-4f52-bffb-22ae0d3fa21d', 0, 0, 1, 0, 0, '只有【test3】账号或可以看到【研发小组】的【管理员】才能看到', '2020-03-19 23:15:03.49', '229f3a49-ab27-49ce-b383-9f10ca23a9d5', 'test3', '2020-03-19 23:15:03.49', '', '', '08f41bf6-4388-4b1e-bd3e-2ff538b44b1b');
 
 -- ----------------------------
 -- Table structure for Form
 -- ----------------------------
 DROP TABLE IF EXISTS public.Form;
 CREATE TABLE public.Form (
-  Id varchar(50) COLLATE pg_catalog.default NOT NULL,
-  Name varchar(200) COLLATE pg_catalog.default,
-  FrmType int4 NOT NULL,
-  WebId varchar(50) COLLATE pg_catalog.default,
-  Fields int4 NOT NULL,
-  ContentData text COLLATE pg_catalog.default,
-  ContentParse text COLLATE pg_catalog.default,
-  Content text COLLATE pg_catalog.default,
-  SortCode int4 NOT NULL,
-  DeleteMark int4 NOT NULL,
-  DbName varchar(50) COLLATE pg_catalog.default,
-  Disabled int4 NOT NULL,
-  Description varchar(200) COLLATE pg_catalog.default,
-  CreateDate timestamp(6) NOT NULL,
-  CreateUserId varchar(50) COLLATE pg_catalog.default,
-  CreateUserName varchar(50) COLLATE pg_catalog.default,
-  ModifyDate timestamp(6),
-  ModifyUserId varchar(50) COLLATE pg_catalog.default,
-  ModifyUserName varchar(50) COLLATE pg_catalog.default,
-  OrgId varchar(50) COLLATE pg_catalog.default
+                             Id varchar(50) COLLATE pg_catalog.default NOT NULL,
+                             Name varchar(200) COLLATE pg_catalog.default,
+                             FrmType int4 NOT NULL,
+                             WebId varchar(50) COLLATE pg_catalog.default,
+                             Fields int4 NOT NULL,
+                             ContentData text COLLATE pg_catalog.default,
+                             ContentParse text COLLATE pg_catalog.default,
+                             Content text COLLATE pg_catalog.default,
+                             SortCode int4 NOT NULL,
+                             DeleteMark int4 NOT NULL,
+                             DbName varchar(50) COLLATE pg_catalog.default,
+                             Disabled int4 NOT NULL,
+                             Description varchar(200) COLLATE pg_catalog.default,
+                             CreateDate timestamp(6) NOT NULL,
+                             CreateUserId varchar(50) COLLATE pg_catalog.default,
+                             CreateUserName varchar(50) COLLATE pg_catalog.default,
+                             ModifyDate timestamp(6),
+                             ModifyUserId varchar(50) COLLATE pg_catalog.default,
+                             ModifyUserName varchar(50) COLLATE pg_catalog.default,
+                             OrgId varchar(50) COLLATE pg_catalog.default
 )
 ;
 COMMENT ON COLUMN public.Form.Id IS '表单模板Id';
@@ -752,30 +752,30 @@ COMMENT ON TABLE public.Form IS '表单模板表';
 -- Records of Form
 -- ----------------------------
 INSERT INTO public.Form VALUES ('8faff4e5-b729-44d2-ac26-e899a228f63d', '系统内置的复杂请假条表单', 1, 'FrmLeaveReq', 0, '', '', '', 0, 0, '', 0, '企业版内置的复杂请假条表单', '2019-07-29 01:03:36', '', '', '2019-07-29 01:03:36', '', '', NULL);
-INSERT INTO public.Form VALUES ('b08bb00f-e1df-44f8-904f-58ee5b1f4eb4', '领料单', 0, '', 0, '[{leipiplugins:select,name:TOOLS,title:TOOLS,size:1,orgwidth:150,style:"width: 150px;",value:"电脑,平板,手机,签字笔",selected:selected,content:"<span leipiplugins=\"select\"><select name=\"leipiNewField\" title=\"TOOLS\" leipiplugins=\"select\" size=\"1\" orgwidth=\"150\" style=\"width: 150px;\"><option value=\"电脑\" selected=\"selected\">电脑</option><option value=\"平板\">平板</option><option value=\"手机\">手机</option><option value=\"签字笔\">签字笔</option></select>&nbsp;&nbsp;</span>"},{type:text,name:NUMBERS,title:NUMBERS,value:1,leipiplugins:text,orghide:0,orgalign:left,orgwidth:150,orgtype:int,style:"text-align: left; width: 150px;",content:"<input name=\"leipiNewField\" type=\"text\" title=\"NUMBERS\" value=\"1\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"int\" style=\"text-align: left; width: 150px;\"/>"},{name:APPLY_REASON,title:APPLY_REASON,leipiplugins:textarea,value:"",orgrich:0,orgfontsize:"",orgwidth:300,orgheight:80,style:"width:300px;height:80px;",content:"<textarea title=\"APPLY_REASON\" name=\"leipiNewField\" leipiplugins=\"textarea\" value=\"\" orgrich=\"0\" orgfontsize=\"\" orgwidth=\"300\" orgheight=\"80\" style=\"width:300px;height:80px;\"></textarea>"},{leipiplugins:checkboxs,name:"",title:NEEDRETURN,parse_name:checkboxs_0,value:"归还,无需归还",content:"<span leipiplugins=\"checkboxs\"  title=\"NEEDRETURN\"><input type=\"checkbox\" name=\"leipiNewField\" value=\"归还\"  checked=\"checked\"/>归还&nbsp;<input type=\"checkbox\" name=\"leipiNewField\" value=\"无需归还\"  />无需归还&nbsp;</span>",options:[{name:leipiNewField,value:归还,checked:checked,type:checkbox},{name:leipiNewField,value:无需归还,type:checkbox}]}]', '<p style="text-align: center;"><span style="font-size: 36px;">领料单</span></p><p><span style="font-size: 36px;"><br/></span></p><table data-sort=sortDisabled><tbody><tr class=firstRow><td width=534 valign=top style="word-break: break-all;"><span style="font-size: 24px;">名目</span></td><td width=534 valign=top style="word-break: break-all;"><span style="font-size: 24px;">数量</span></td><td width=534 valign=top style="word-break: break-all;"><span style="font-size: 24px;">说明</span></td></tr><tr><td width=534 valign=top>{TOOLS}</td><td width=534 valign=top>{NUMBERS}</td><td width=534 valign=top>{APPLY_REASON}</td></tr><tr><td valign=top rowspan=1 colspan=3 style="word-break: break-all;">{checkboxs_0}</td></tr></tbody></table><p style="text-align: center;"><br/></p>', '<p style="text-align: center;"><span style="font-size: 36px;">领料单</span></p><p><span style="font-size: 36px;"><br/></span></p><table data-sort=sortDisabled><tbody><tr class=firstRow><td width=534 valign=top style="word-break: break-all;"><span style="font-size: 24px;">名目</span></td><td width=534 valign=top style="word-break: break-all;"><span style="font-size: 24px;">数量</span></td><td width=534 valign=top style="word-break: break-all;"><span style="font-size: 24px;">说明</span></td></tr><tr><td width=534 valign=top>{|-<span leipiplugins=select><select name=leipiNewField title=TOOLS leipiplugins=select size=1 orgwidth=150 style="width: 150px;"><option value=电脑 selected=selected>电脑</option><option value=平板>平板</option><option value=手机>手机</option><option value=签字笔>签字笔</option></select>&nbsp;&nbsp;</span>-|}</td><td width=534 valign=top><input name=leipiNewField type=text title=NUMBERS value=1 leipiplugins=text orghide=0 orgalign=left orgwidth=150 orgtype=int style="text-align: left; width: 150px;"/></td><td width=534 valign=top><textarea title=APPLY_REASON name=leipiNewField leipiplugins=textarea value="" orgrich=0 orgfontsize="" orgwidth=300 orgheight=80 style="width:300px;height:80px;"></textarea></td></tr><tr><td valign=top rowspan=1 colspan=3 style="word-break: break-all;">{|-<span leipiplugins=checkboxs  title=NEEDRETURN><input type=checkbox name=leipiNewField value=归还  checked=checked/>归还&nbsp;<input type=checkbox name=leipiNewField value=无需归还  />无需归还&nbsp;</span>-|}</td></tr></tbody></table><p style="text-align: center;"><br/></p>', 0, 0, '', 0, '带有选择框文本框复选框等的领料单据', '2019-07-29 01:13:02', '', '', '2019-07-29 01:13:02', '', '', NULL);
-INSERT INTO public.Form VALUES ('ef89f96a-af33-407c-b02e-897faf46ecf0', '请假条表单', 0, '', 0, '[{type:text,name:REASON,title:REASON,value:身体原因,leipiplugins:text,orghide:0,orgalign:left,orgwidth:150,orgtype:text,style:"text-align: left; width: 150px;",content:"<input name=\"leipiNewField\" type=\"text\" title=\"REASON\" value=\"身体原因\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"},{leipiplugins:select,name:DAYS,title:DAYS,size:1,orgwidth:150,style:"width: 150px;",value:"1,3,5,10",selected:selected,content:"<span leipiplugins=\"select\"><select name=\"leipiNewField\" title=\"DAYS\" leipiplugins=\"select\" size=\"1\" orgwidth=\"150\" style=\"width: 150px;\"><option value=\"1\" selected=\"selected\">1</option><option value=\"3\">3</option><option value=\"5\">5</option><option value=\"10\">10</option></select>&nbsp;&nbsp;</span>"},{type:text,name:CUSTOME_NAME,title:CUSTOME_NAME,value:玉宝,leipiplugins:text,orghide:0,orgalign:left,orgwidth:150,orgtype:text,style:"text-align: left; width: 150px;",content:"<input name=\"leipiNewField\" type=\"text\" title=\"CUSTOME_NAME\" value=\"玉宝\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', '<p style="text-align: center;"><span style="font-size: 36px;">请假条</span></p><p><span style="font-size: 36px;"><br/></span></p><p style="text-align: center;">因{REASON}，本人想请假{DAYS}天，望领导批准！</p><p><br/></p><p style="text-align: center;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;谢谢！</p><p><br/></p><p style="text-align: right;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 申请人：{CUSTOME_NAME}</p>', '<p style="text-align: center;"><span style="font-size: 36px;">请假条</span></p><p><span style="font-size: 36px;"><br/></span></p><p style="text-align: center;">因<input name=leipiNewField type=text title=REASON value=身体原因 leipiplugins=text orghide=0 orgalign=left orgwidth=150 orgtype=text style="text-align: left; width: 150px;"/>，本人想请假{|-<span leipiplugins=select><select name=leipiNewField title=DAYS leipiplugins=select size=1 orgwidth=150 style="width: 150px;"><option value=1 selected=selected>1</option><option value=3>3</option><option value=5>5</option><option value=10>10</option></select>&nbsp;&nbsp;</span>-|}天，望领导批准！</p><p><br/></p><p style="text-align: center;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;谢谢！</p><p><br/></p><p style="text-align: right;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 申请人：<input name=leipiNewField type=text title=CUSTOME_NAME value=玉宝 leipiplugins=text orghide=0 orgalign=left orgwidth=150 orgtype=text style="text-align: left; width: 150px;"/></p>', 0, 0, '', 0, '带有选择框文本框的请假条', '2019-07-29 01:07:03', '', '', '2019-07-29 01:07:03', '', '', NULL);
-INSERT INTO public.Form VALUES ('febe218d-21a6-44b6-b7ce-b83e73556ad9', '审批流程', 0, 'FrmLeaveReq', 0, '[{type:text,name:姓名,title:姓名,value:"",leipiplugins:text,orghide:0,orgalign:left,orgwidth:150,orgtype:text,style:"text-align: left; width: 150px;",content:"<input name=\"leipiNewField\" type=\"text\" title=\"姓名\" value=\"\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', '<p>{姓名}</p>', '<p><input name=leipiNewField type=text title=姓名 value="" leipiplugins=text orghide=0 orgalign=left orgwidth=150 orgtype=text style="text-align: left; width: 150px;"/></p>', 0, 0, '', 0, '', '2019-10-29 13:57:35', '', '', '2019-10-29 13:57:35', '', '', NULL);
-INSERT INTO public.Form VALUES ('0411376a-18fd-4f52-bffb-22ae0d3fa21d', '【研发小组】新人报到', 0, '', 0, '[{type:text,name:USERNAME,title:USERNAME,value:"",leipiplugins:text,orghide:0,orgalign:left,orgwidth:150,orgtype:text,style:"text-align: left; width: 150px;",content:"<input name=\"leipiNewField\" type=\"text\" title=\"USERNAME\" value=\"\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', '<p>你的姓名：{USERNAME}</p>', '<p>你的姓名：<input name=leipiNewField type=text title=USERNAME value="" leipiplugins=text orghide=0 orgalign=left orgwidth=150 orgtype=text style="text-align: left; width: 150px;"/></p>', 1, 0, NULL, 0, '这个表单只有【研发小组】权限的人可以看到', '2020-03-18 22:56:01.55', '', '', '2020-03-18 22:56:44.1', '', '', '08f41bf6-4388-4b1e-bd3e-2ff538b44b1b');
-INSERT INTO public.Form VALUES ('318bb233-c9df-4374-9937-e55b71fbcf99', '【西南片区】报道', 0, '', 0, '[{type:text,name:USERNAME,title:USERNAME,value:"",leipiplugins:text,orghide:0,orgalign:left,orgwidth:150,orgtype:text,style:"text-align: left; width: 150px;",content:"<input name=\"leipiNewField\" type=\"text\" title=\"USERNAME\" value=\"\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', '<p>{USERNAME}，欢迎来到西南大区</p>', '<p><input name=leipiNewField type=text title=USERNAME value="" leipiplugins=text orghide=0 orgalign=left orgwidth=150 orgtype=text style="text-align: left; width: 150px;"/>，欢迎来到西南大区</p>', 1, 0, NULL, 0, '只有可以访问【西南片区】的用户可以看到', '2020-03-18 22:58:43.99', '', '', '2020-03-18 22:58:43.99', '', '', '60620558-89a2-4b28-8637-52f514773725');
+INSERT INTO public.Form VALUES ('b08bb00f-e1df-44f8-904f-58ee5b1f4eb4', '领料单', 0, '', 0, '[{"leipiplugins":"select","name":"TOOLS","title":"TOOLS","size":"1","orgwidth":"150","style":"width: 150px;","value":"电脑,平板,手机,签字笔","selected":"selected","content":"<span leipiplugins=\"select\"><select name=\"leipiNewField\" title=\"TOOLS\" leipiplugins=\"select\" size=\"1\" orgwidth=\"150\" style=\"width: 150px;\"><option value=\"电脑\" selected=\"selected\">电脑</option><option value=\"平板\">平板</option><option value=\"手机\">手机</option><option value=\"签字笔\">签字笔</option></select>&nbsp;&nbsp;</span>"},{"type":"text","name":"NUMBERS","title":"NUMBERS","value":"1","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"int","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"NUMBERS\" value=\"1\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"int\" style=\"text-align: left; width: 150px;\"/>"},{"name":"APPLY_REASON","title":"APPLY_REASON","leipiplugins":"textarea","value":"","orgrich":"0","orgfontsize":"","orgwidth":"300","orgheight":"80","style":"width:300px;height:80px;","content":"<textarea title=\"APPLY_REASON\" name=\"leipiNewField\" leipiplugins=\"textarea\" value=\"\" orgrich=\"0\" orgfontsize=\"\" orgwidth=\"300\" orgheight=\"80\" style=\"width:300px;height:80px;\"></textarea>"},{"leipiplugins":"checkboxs","name":"","title":"NEEDRETURN","parse_name":"checkboxs_0","value":"归还,无需归还","content":"<span leipiplugins=\"checkboxs\"  title=\"NEEDRETURN\"><input type=\"checkbox\" name=\"leipiNewField\" value=\"归还\"  checked=\"checked\"/>归还&nbsp;<input type=\"checkbox\" name=\"leipiNewField\" value=\"无需归还\"  />无需归还&nbsp;</span>","options":[{"name":"leipiNewField","value":"归还","checked":"checked","type":"checkbox"},{"name":"leipiNewField","value":"无需归还","type":"checkbox"}]}]', '<p style="text-align: center;"><span style="font-size: 36px;">领料单</span></p><p><span style="font-size: 36px;"><br/></span></p><table data-sort="sortDisabled"><tbody><tr class="firstRow"><td width="534" valign="top" style="word-break: break-all;"><span style="font-size: 24px;">名目</span></td><td width="534" valign="top" style="word-break: break-all;"><span style="font-size: 24px;">数量</span></td><td width="534" valign="top" style="word-break: break-all;"><span style="font-size: 24px;">说明</span></td></tr><tr><td width="534" valign="top">{TOOLS}</td><td width="534" valign="top">{NUMBERS}</td><td width="534" valign="top">{APPLY_REASON}</td></tr><tr><td valign="top" rowspan="1" colspan="3" style="word-break: break-all;">{checkboxs_0}</td></tr></tbody></table><p style="text-align: center;"><br/></p>', '<p style="text-align: center;"><span style="font-size: 36px;">领料单</span></p><p><span style="font-size: 36px;"><br/></span></p><table data-sort="sortDisabled"><tbody><tr class="firstRow"><td width="534" valign="top" style="word-break: break-all;"><span style="font-size: 24px;">名目</span></td><td width="534" valign="top" style="word-break: break-all;"><span style="font-size: 24px;">数量</span></td><td width="534" valign="top" style="word-break: break-all;"><span style="font-size: 24px;">说明</span></td></tr><tr><td width="534" valign="top">{|-<span leipiplugins="select"><select name="leipiNewField" title="TOOLS" leipiplugins="select" size="1" orgwidth="150" style="width: 150px;"><option value="电脑" selected="selected">电脑</option><option value="平板">平板</option><option value="手机">手机</option><option value="签字笔">签字笔</option></select>&nbsp;&nbsp;</span>-|}</td><td width="534" valign="top"><input name="leipiNewField" type="text" title="NUMBERS" value="1" leipiplugins="text" orghide="0" orgalign="left" orgwidth="150" orgtype="int" style="text-align: left; width: 150px;"/></td><td width="534" valign="top"><textarea title="APPLY_REASON" name="leipiNewField" leipiplugins="textarea" value="" orgrich="0" orgfontsize="" orgwidth="300" orgheight="80" style="width:300px;height:80px;"></textarea></td></tr><tr><td valign="top" rowspan="1" colspan="3" style="word-break: break-all;">{|-<span leipiplugins="checkboxs"  title="NEEDRETURN"><input type="checkbox" name="leipiNewField" value="归还"  checked="checked"/>归还&nbsp;<input type="checkbox" name="leipiNewField" value="无需归还"  />无需归还&nbsp;</span>-|}</td></tr></tbody></table><p style="text-align: center;"><br/></p>', 0, 0, '', 0, '带有选择框文本框复选框等的领料单据', '2019-07-29 01:13:02', '', '', '2019-07-29 01:13:02', '', '', NULL);
+INSERT INTO public.Form VALUES ('ef89f96a-af33-407c-b02e-897faf46ecf0', '请假条表单', 0, '', 0, '[{"type":"text","name":"REASON","title":"REASON","value":"身体原因","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"REASON\" value=\"身体原因\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"},{"leipiplugins":"select","name":"DAYS","title":"DAYS","size":"1","orgwidth":"150","style":"width: 150px;","value":"1,3,5,10","selected":"selected","content":"<span leipiplugins=\"select\"><select name=\"leipiNewField\" title=\"DAYS\" leipiplugins=\"select\" size=\"1\" orgwidth=\"150\" style=\"width: 150px;\"><option value=\"1\" selected=\"selected\">1</option><option value=\"3\">3</option><option value=\"5\">5</option><option value=\"10\">10</option></select>&nbsp;&nbsp;</span>"},{"type":"text","name":"CUSTOME_NAME","title":"CUSTOME_NAME","value":"玉宝","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"CUSTOME_NAME\" value=\"玉宝\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', '<p style="text-align: center;"><span style="font-size: 36px;">请假条</span></p><p><span style="font-size: 36px;"><br/></span></p><p style="text-align: center;">因{REASON}，本人想请假{DAYS}天，望领导批准！</p><p><br/></p><p style="text-align: center;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;谢谢！</p><p><br/></p><p style="text-align: right;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 申请人：{CUSTOME_NAME}</p>', '<p style="text-align: center;"><span style="font-size: 36px;">请假条</span></p><p><span style="font-size: 36px;"><br/></span></p><p style="text-align: center;">因<input name="leipiNewField" type="text" title="REASON" value="身体原因" leipiplugins="text" orghide="0" orgalign="left" orgwidth="150" orgtype="text" style="text-align: left; width: 150px;"/>，本人想请假{|-<span leipiplugins="select"><select name="leipiNewField" title="DAYS" leipiplugins="select" size="1" orgwidth="150" style="width: 150px;"><option value="1" selected="selected">1</option><option value="3">3</option><option value="5">5</option><option value="10">10</option></select>&nbsp;&nbsp;</span>-|}天，望领导批准！</p><p><br/></p><p style="text-align: center;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;谢谢！</p><p><br/></p><p style="text-align: right;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 申请人：<input name="leipiNewField" type="text" title="CUSTOME_NAME" value="玉宝" leipiplugins="text" orghide="0" orgalign="left" orgwidth="150" orgtype="text" style="text-align: left; width: 150px;"/></p>', 0, 0, '', 0, '带有选择框文本框的请假条', '2019-07-29 01:07:03', '', '', '2019-07-29 01:07:03', '', '', NULL);
+INSERT INTO public.Form VALUES ('febe218d-21a6-44b6-b7ce-b83e73556ad9', '审批流程', 0, 'FrmLeaveReq', 0, '[{"type":"text","name":"姓名","title":"姓名","value":"","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"姓名\" value=\"\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', '<p>{姓名}</p>', '<p><input name="leipiNewField" type="text" title="姓名" value="" leipiplugins="text" orghide="0" orgalign="left" orgwidth="150" orgtype="text" style="text-align: left; width: 150px;"/></p>', 0, 0, '', 0, '', '2019-10-29 13:57:35', '', '', '2019-10-29 13:57:35', '', '', NULL);
+INSERT INTO public.Form VALUES ('0411376a-18fd-4f52-bffb-22ae0d3fa21d', '【研发小组】新人报到', 0, '', 0, '[{"type":"text","name":"USERNAME","title":"USERNAME","value":"","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"USERNAME\" value=\"\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', '<p>你的姓名：{USERNAME}</p>', '<p>你的姓名：<input name="leipiNewField" type="text" title="USERNAME" value="" leipiplugins="text" orghide="0" orgalign="left" orgwidth="150" orgtype="text" style="text-align: left; width: 150px;"/></p>', 1, 0, NULL, 0, '这个表单只有【研发小组】权限的人可以看到', '2020-03-18 22:56:01.55', '', '', '2020-03-18 22:56:44.1', '', '', '08f41bf6-4388-4b1e-bd3e-2ff538b44b1b');
+INSERT INTO public.Form VALUES ('318bb233-c9df-4374-9937-e55b71fbcf99', '【西南片区】报道', 0, '', 0, '[{"type":"text","name":"USERNAME","title":"USERNAME","value":"","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"USERNAME\" value=\"\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', '<p>{USERNAME}，欢迎来到西南大区</p>', '<p><input name="leipiNewField" type="text" title="USERNAME" value="" leipiplugins="text" orghide="0" orgalign="left" orgwidth="150" orgtype="text" style="text-align: left; width: 150px;"/>，欢迎来到西南大区</p>', 1, 0, NULL, 0, '只有可以访问【西南片区】的用户可以看到', '2020-03-18 22:58:43.99', '', '', '2020-03-18 22:58:43.99', '', '', '60620558-89a2-4b28-8637-52f514773725');
 
 -- ----------------------------
 -- Table structure for FrmLeaveReq
 -- ----------------------------
 DROP TABLE IF EXISTS public.FrmLeaveReq;
 CREATE TABLE public.FrmLeaveReq (
-  Id varchar(50) COLLATE pg_catalog.default NOT NULL,
-  UserName varchar(10) COLLATE pg_catalog.default NOT NULL,
-  RequestType varchar(20) COLLATE pg_catalog.default NOT NULL,
-  StartDate date NOT NULL,
-  StartTime timestamp(6),
-  EndDate date NOT NULL,
-  EndTime timestamp(6),
-  RequestComment text COLLATE pg_catalog.default,
-  Attachment text COLLATE pg_catalog.default,
-  CreateDate timestamp(6) NOT NULL,
-  CreateUserId varchar(50) COLLATE pg_catalog.default,
-  CreateUserName varchar(50) COLLATE pg_catalog.default,
-  FlowInstanceId varchar(50) COLLATE pg_catalog.default
+                                    Id varchar(50) COLLATE pg_catalog.default NOT NULL,
+                                    UserName varchar(10) COLLATE pg_catalog.default NOT NULL,
+                                    RequestType varchar(20) COLLATE pg_catalog.default NOT NULL,
+                                    StartDate date NOT NULL,
+                                    StartTime timestamp(6),
+                                    EndDate date NOT NULL,
+                                    EndTime timestamp(6),
+                                    RequestComment text COLLATE pg_catalog.default,
+                                    Attachment text COLLATE pg_catalog.default,
+                                    CreateDate timestamp(6) NOT NULL,
+                                    CreateUserId varchar(50) COLLATE pg_catalog.default,
+                                    CreateUserName varchar(50) COLLATE pg_catalog.default,
+                                    FlowInstanceId varchar(50) COLLATE pg_catalog.default
 )
 ;
 COMMENT ON COLUMN public.FrmLeaveReq.Id IS 'ID';
@@ -804,22 +804,22 @@ INSERT INTO public.FrmLeaveReq VALUES ('59b5b72f-b8fb-44d4-bb24-319d02b2ab80', '
 -- ----------------------------
 DROP TABLE IF EXISTS public.Module;
 CREATE TABLE public.Module (
-  Id varchar(50) COLLATE pg_catalog.default NOT NULL,
-  CascadeId varchar(255) COLLATE pg_catalog.default NOT NULL,
-  Name varchar(255) COLLATE pg_catalog.default NOT NULL,
-  Url varchar(255) COLLATE pg_catalog.default NOT NULL,
-  HotKey varchar(255) COLLATE pg_catalog.default,
-  IsLeaf int2 NOT NULL,
-  IsAutoExpand int2 NOT NULL,
-  IconName varchar(255) COLLATE pg_catalog.default NOT NULL,
-  Status int4 NOT NULL,
-  ParentName varchar(255) COLLATE pg_catalog.default NOT NULL,
-  Vector varchar(255) COLLATE pg_catalog.default,
-  SortNo int4 NOT NULL,
-  ParentId varchar(50) COLLATE pg_catalog.default,
-  Code varchar(50) COLLATE pg_catalog.default,
-  IsSys int2 NOT NULL,
-  KeepAlive bool
+                               Id varchar(50) COLLATE pg_catalog.default NOT NULL,
+                               CascadeId varchar(255) COLLATE pg_catalog.default NOT NULL,
+                               Name varchar(255) COLLATE pg_catalog.default NOT NULL,
+                               Url varchar(255) COLLATE pg_catalog.default NOT NULL,
+                               HotKey varchar(255) COLLATE pg_catalog.default,
+                               IsLeaf int2 NOT NULL,
+                               IsAutoExpand int2 NOT NULL,
+                               IconName varchar(255) COLLATE pg_catalog.default NOT NULL,
+                               Status int4 NOT NULL,
+                               ParentName varchar(255) COLLATE pg_catalog.default NOT NULL,
+                               Vector varchar(255) COLLATE pg_catalog.default,
+                               SortNo int4 NOT NULL,
+                               ParentId varchar(50) COLLATE pg_catalog.default,
+                               Code varchar(50) COLLATE pg_catalog.default,
+                               IsSys int2 NOT NULL,
+                               KeepAlive bool
 )
 ;
 COMMENT ON COLUMN public.Module.Id IS '功能模块流水号';
@@ -868,18 +868,18 @@ INSERT INTO public.Module VALUES ('ef386d5d-cd58-43c0-a4ab-80afd0dbcd6c', '.0.1.
 -- ----------------------------
 DROP TABLE IF EXISTS public.ModuleElement;
 CREATE TABLE public.ModuleElement (
-  Id varchar(50) COLLATE pg_catalog.default NOT NULL,
-  DomId varchar(255) COLLATE pg_catalog.default NOT NULL,
-  Name varchar(255) COLLATE pg_catalog.default NOT NULL,
-  Attr text COLLATE pg_catalog.default,
-  Script text COLLATE pg_catalog.default,
-  Icon varchar(255) COLLATE pg_catalog.default NOT NULL,
-  Class varchar(255) COLLATE pg_catalog.default NOT NULL,
-  Remark varchar(200) COLLATE pg_catalog.default,
-  Sort int4 NOT NULL,
-  ModuleId varchar(50) COLLATE pg_catalog.default NOT NULL,
-  TypeName varchar(20) COLLATE pg_catalog.default,
-  TypeId varchar(50) COLLATE pg_catalog.default
+                                      Id varchar(50) COLLATE pg_catalog.default NOT NULL,
+                                      DomId varchar(255) COLLATE pg_catalog.default NOT NULL,
+                                      Name varchar(255) COLLATE pg_catalog.default NOT NULL,
+                                      Attr text COLLATE pg_catalog.default,
+                                      Script text COLLATE pg_catalog.default,
+                                      Icon varchar(255) COLLATE pg_catalog.default NOT NULL,
+                                      Class varchar(255) COLLATE pg_catalog.default NOT NULL,
+                                      Remark varchar(200) COLLATE pg_catalog.default,
+                                      Sort int4 NOT NULL,
+                                      ModuleId varchar(50) COLLATE pg_catalog.default NOT NULL,
+                                      TypeName varchar(20) COLLATE pg_catalog.default,
+                                      TypeId varchar(50) COLLATE pg_catalog.default
 )
 ;
 COMMENT ON COLUMN public.ModuleElement.Id IS '流水号';
@@ -962,26 +962,26 @@ INSERT INTO public.ModuleElement VALUES ('f8dde22a-2a37-47c4-8e67-70fb3af5303e',
 -- ----------------------------
 DROP TABLE IF EXISTS public.OpenJob;
 CREATE TABLE public.OpenJob (
-  Id varchar(50) COLLATE pg_catalog.default NOT NULL,
-  JobName varchar(200) COLLATE pg_catalog.default NOT NULL,
-  RunCount int4 NOT NULL,
-  ErrorCount int4 NOT NULL,
-  NextRunTime timestamp(6),
-  LastRunTime timestamp(6),
-  LastErrorTime timestamp(6),
-  JobType int4 NOT NULL,
-  JobCall varchar(500) COLLATE pg_catalog.default NOT NULL,
-  JobCallParams varchar(500) COLLATE pg_catalog.default,
-  Cron varchar(50) COLLATE pg_catalog.default NOT NULL,
-  Status int4 NOT NULL,
-  Remark varchar(128) COLLATE pg_catalog.default,
-  CreateTime timestamp(6) NOT NULL,
-  CreateUserId varchar(50) COLLATE pg_catalog.default NOT NULL,
-  CreateUserName varchar(200) COLLATE pg_catalog.default NOT NULL,
-  UpdateTime timestamp(6),
-  UpdateUserId varchar(50) COLLATE pg_catalog.default,
-  UpdateUserName varchar(200) COLLATE pg_catalog.default,
-  OrgId varchar(50) COLLATE pg_catalog.default
+                                Id varchar(50) COLLATE pg_catalog.default NOT NULL,
+                                JobName varchar(200) COLLATE pg_catalog.default NOT NULL,
+                                RunCount int4 NOT NULL,
+                                ErrorCount int4 NOT NULL,
+                                NextRunTime timestamp(6),
+                                LastRunTime timestamp(6),
+                                LastErrorTime timestamp(6),
+                                JobType int4 NOT NULL,
+                                JobCall varchar(500) COLLATE pg_catalog.default NOT NULL,
+                                JobCallParams varchar(500) COLLATE pg_catalog.default,
+                                Cron varchar(50) COLLATE pg_catalog.default NOT NULL,
+                                Status int4 NOT NULL,
+                                Remark varchar(128) COLLATE pg_catalog.default,
+                                CreateTime timestamp(6) NOT NULL,
+                                CreateUserId varchar(50) COLLATE pg_catalog.default NOT NULL,
+                                CreateUserName varchar(200) COLLATE pg_catalog.default NOT NULL,
+                                UpdateTime timestamp(6),
+                                UpdateUserId varchar(50) COLLATE pg_catalog.default,
+                                UpdateUserName varchar(200) COLLATE pg_catalog.default,
+                                OrgId varchar(50) COLLATE pg_catalog.default
 )
 ;
 COMMENT ON COLUMN public.OpenJob.Id IS 'Id';
@@ -1016,24 +1016,24 @@ INSERT INTO public.OpenJob VALUES ('f40fe48d-71a4-4f47-b324-6178d97abfb9', '定�
 -- ----------------------------
 DROP TABLE IF EXISTS public.Org;
 CREATE TABLE public.Org (
-  Id varchar(50) COLLATE pg_catalog.default NOT NULL,
-  CascadeId varchar(255) COLLATE pg_catalog.default NOT NULL,
-  Name varchar(255) COLLATE pg_catalog.default NOT NULL,
-  HotKey varchar(255) COLLATE pg_catalog.default,
-  ParentName varchar(255) COLLATE pg_catalog.default NOT NULL,
-  IsLeaf int2 NOT NULL,
-  IsAutoExpand int2 NOT NULL,
-  IconName varchar(255) COLLATE pg_catalog.default,
-  Status int4 NOT NULL,
-  BizCode varchar(255) COLLATE pg_catalog.default,
-  CustomCode text COLLATE pg_catalog.default,
-  CreateTime timestamp(6) NOT NULL,
-  CreateId int4 NOT NULL,
-  SortNo int4 NOT NULL,
-  ParentId varchar(50) COLLATE pg_catalog.default,
-  TypeName varchar(20) COLLATE pg_catalog.default,
-  TypeId varchar(50) COLLATE pg_catalog.default,
-  ChairmanId varchar(50) COLLATE pg_catalog.default
+                            Id varchar(50) COLLATE pg_catalog.default NOT NULL,
+                            CascadeId varchar(255) COLLATE pg_catalog.default NOT NULL,
+                            Name varchar(255) COLLATE pg_catalog.default NOT NULL,
+                            HotKey varchar(255) COLLATE pg_catalog.default,
+                            ParentName varchar(255) COLLATE pg_catalog.default NOT NULL,
+                            IsLeaf int2 NOT NULL,
+                            IsAutoExpand int2 NOT NULL,
+                            IconName varchar(255) COLLATE pg_catalog.default,
+                            Status int4 NOT NULL,
+                            BizCode varchar(255) COLLATE pg_catalog.default,
+                            CustomCode text COLLATE pg_catalog.default,
+                            CreateTime timestamp(6) NOT NULL,
+                            CreateId int4 NOT NULL,
+                            SortNo int4 NOT NULL,
+                            ParentId varchar(50) COLLATE pg_catalog.default,
+                            TypeName varchar(20) COLLATE pg_catalog.default,
+                            TypeId varchar(50) COLLATE pg_catalog.default,
+                            ChairmanId varchar(50) COLLATE pg_catalog.default
 )
 ;
 COMMENT ON COLUMN public.Org.Id IS '流水号';
@@ -1084,16 +1084,16 @@ INSERT INTO public.Org VALUES ('eed8756d-587b-46de-96c7-0a400e3d80fa', '.0.6.', 
 -- ----------------------------
 DROP TABLE IF EXISTS public.Relevance;
 CREATE TABLE public.Relevance (
-  Id varchar(50) COLLATE pg_catalog.default NOT NULL,
-  Description varchar(100) COLLATE pg_catalog.default,
-  Key varchar(100) COLLATE pg_catalog.default NOT NULL,
-  Status int4 NOT NULL,
-  OperateTime timestamp(6) NOT NULL,
-  OperatorId varchar(50) COLLATE pg_catalog.default,
-  FirstId varchar(50) COLLATE pg_catalog.default NOT NULL,
-  SecondId varchar(50) COLLATE pg_catalog.default NOT NULL,
-  ThirdId varchar(50) COLLATE pg_catalog.default,
-  ExtendInfo varchar(100) COLLATE pg_catalog.default
+                                  Id varchar(50) COLLATE pg_catalog.default NOT NULL,
+                                  Description varchar(100) COLLATE pg_catalog.default,
+                                  Key varchar(100) COLLATE pg_catalog.default NOT NULL,
+                                  Status int4 NOT NULL,
+                                  OperateTime timestamp(6) NOT NULL,
+                                  OperatorId varchar(50) COLLATE pg_catalog.default,
+                                  FirstId varchar(50) COLLATE pg_catalog.default NOT NULL,
+                                  SecondId varchar(50) COLLATE pg_catalog.default NOT NULL,
+                                  ThirdId varchar(50) COLLATE pg_catalog.default,
+                                  ExtendInfo varchar(100) COLLATE pg_catalog.default
 )
 ;
 COMMENT ON COLUMN public.Relevance.Id IS '流水号';
@@ -1439,24 +1439,24 @@ INSERT INTO public.Relevance VALUES ('fef68b50-ef7f-45a4-8f0e-38e8d8ecaaea', '',
 -- ----------------------------
 DROP TABLE IF EXISTS public.SysResource;
 CREATE TABLE public.SysResource (
-  Id varchar(50) COLLATE pg_catalog.default NOT NULL,
-  CascadeId varchar(255) COLLATE pg_catalog.default NOT NULL,
-  Name varchar(255) COLLATE pg_catalog.default NOT NULL,
-  SortNo int4 NOT NULL,
-  Description varchar(500) COLLATE pg_catalog.default NOT NULL,
-  ParentName varchar(50) COLLATE pg_catalog.default,
-  ParentId varchar(50) COLLATE pg_catalog.default,
-  AppId varchar(50) COLLATE pg_catalog.default,
-  AppName varchar(50) COLLATE pg_catalog.default,
-  TypeName varchar(20) COLLATE pg_catalog.default,
-  TypeId varchar(50) COLLATE pg_catalog.default,
-  Disable int2 NOT NULL,
-  CreateTime timestamp(6) NOT NULL,
-  CreateUserId varchar(50) COLLATE pg_catalog.default NOT NULL,
-  CreateUserName varchar(200) COLLATE pg_catalog.default NOT NULL,
-  UpdateTime timestamp(6),
-  UpdateUserId varchar(50) COLLATE pg_catalog.default,
-  UpdateUserName varchar(200) COLLATE pg_catalog.default
+                                    Id varchar(50) COLLATE pg_catalog.default NOT NULL,
+                                    CascadeId varchar(255) COLLATE pg_catalog.default NOT NULL,
+                                    Name varchar(255) COLLATE pg_catalog.default NOT NULL,
+                                    SortNo int4 NOT NULL,
+                                    Description varchar(500) COLLATE pg_catalog.default NOT NULL,
+                                    ParentName varchar(50) COLLATE pg_catalog.default,
+                                    ParentId varchar(50) COLLATE pg_catalog.default,
+                                    AppId varchar(50) COLLATE pg_catalog.default,
+                                    AppName varchar(50) COLLATE pg_catalog.default,
+                                    TypeName varchar(20) COLLATE pg_catalog.default,
+                                    TypeId varchar(50) COLLATE pg_catalog.default,
+                                    Disable int2 NOT NULL,
+                                    CreateTime timestamp(6) NOT NULL,
+                                    CreateUserId varchar(50) COLLATE pg_catalog.default NOT NULL,
+                                    CreateUserName varchar(200) COLLATE pg_catalog.default NOT NULL,
+                                    UpdateTime timestamp(6),
+                                    UpdateUserId varchar(50) COLLATE pg_catalog.default,
+                                    UpdateUserName varchar(200) COLLATE pg_catalog.default
 )
 ;
 COMMENT ON COLUMN public.SysResource.Id IS '资源标识';
@@ -1495,13 +1495,13 @@ INSERT INTO public.SysResource VALUES ('XXX_VIEW_USER', '.0.5.', '查看用户',
 -- ----------------------------
 DROP TABLE IF EXISTS public.Role;
 CREATE TABLE public.Role (
-  Id varchar(50) COLLATE pg_catalog.default NOT NULL,
-  Name varchar(255) COLLATE pg_catalog.default NOT NULL,
-  Status int4 NOT NULL,
-  CreateTime timestamp(6) NOT NULL,
-  CreateId varchar(50) COLLATE pg_catalog.default,
-  TypeName varchar(20) COLLATE pg_catalog.default,
-  TypeId varchar(50) COLLATE pg_catalog.default
+                             Id varchar(50) COLLATE pg_catalog.default NOT NULL,
+                             Name varchar(255) COLLATE pg_catalog.default NOT NULL,
+                             Status int4 NOT NULL,
+                             CreateTime timestamp(6) NOT NULL,
+                             CreateId varchar(50) COLLATE pg_catalog.default,
+                             TypeName varchar(20) COLLATE pg_catalog.default,
+                             TypeId varchar(50) COLLATE pg_catalog.default
 )
 ;
 COMMENT ON COLUMN public.Role.Id IS 'Id';
@@ -1526,15 +1526,15 @@ INSERT INTO public.Role VALUES ('d27ae3cf-135f-4d57-93a6-2120ddf98650', '测试�
 -- ----------------------------
 DROP TABLE IF EXISTS public.Stock;
 CREATE TABLE public.Stock (
-  Id varchar(50) COLLATE pg_catalog.default NOT NULL,
-  Name text COLLATE pg_catalog.default NOT NULL,
-  ProdCnt int4 NOT NULL,
-  Price pg_catalog.numeric NOT NULL,
-  Status int4 NOT NULL,
-  Viewable varchar(50) COLLATE pg_catalog.default NOT NULL,
-  CreateUser varchar(50) COLLATE pg_catalog.default NOT NULL,
-  Time timestamp(6) NOT NULL,
-  OrgId varchar(50) COLLATE pg_catalog.default
+                              Id varchar(50) COLLATE pg_catalog.default NOT NULL,
+                              Name text COLLATE pg_catalog.default NOT NULL,
+                              ProdCnt int4 NOT NULL,
+                              Price "pg_catalog"."numeric" NOT NULL,
+                              Status int4 NOT NULL,
+                              Viewable varchar(50) COLLATE pg_catalog.default NOT NULL,
+                              CreateUser varchar(50) COLLATE pg_catalog.default NOT NULL,
+                              Time timestamp(6) NOT NULL,
+                              OrgId varchar(50) COLLATE pg_catalog.default
 )
 ;
 COMMENT ON COLUMN public.Stock.Id IS '数据ID';
@@ -1557,17 +1557,17 @@ COMMENT ON TABLE public.Stock IS '出入库信息表';
 -- ----------------------------
 DROP TABLE IF EXISTS public.SysLog;
 CREATE TABLE public.SysLog (
-  Id varchar(50) COLLATE pg_catalog.default NOT NULL,
-  Content varchar(1000) COLLATE pg_catalog.default,
-  TypeName varchar(20) COLLATE pg_catalog.default,
-  TypeId varchar(50) COLLATE pg_catalog.default,
-  Href varchar(200) COLLATE pg_catalog.default,
-  CreateTime timestamp(6) NOT NULL,
-  CreateId varchar(50) COLLATE pg_catalog.default NOT NULL,
-  CreateName varchar(200) COLLATE pg_catalog.default,
-  Ip varchar(20) COLLATE pg_catalog.default,
-  Result int4 NOT NULL,
-  Application varchar(50) COLLATE pg_catalog.default
+                               Id varchar(50) COLLATE pg_catalog.default NOT NULL,
+                               Content varchar(1000) COLLATE pg_catalog.default,
+                               TypeName varchar(20) COLLATE pg_catalog.default,
+                               TypeId varchar(50) COLLATE pg_catalog.default,
+                               Href varchar(200) COLLATE pg_catalog.default,
+                               CreateTime timestamp(6) NOT NULL,
+                               CreateId varchar(50) COLLATE pg_catalog.default NOT NULL,
+                               CreateName varchar(200) COLLATE pg_catalog.default,
+                               Ip varchar(20) COLLATE pg_catalog.default,
+                               Result int4 NOT NULL,
+                               Application varchar(50) COLLATE pg_catalog.default
 )
 ;
 COMMENT ON COLUMN public.SysLog.Content IS '日志内容';
@@ -1591,20 +1591,20 @@ COMMENT ON TABLE public.SysLog IS '系统日志';
 -- ----------------------------
 DROP TABLE IF EXISTS public.SysMessage;
 CREATE TABLE public.SysMessage (
-  Id varchar(50) COLLATE pg_catalog.default NOT NULL,
-  TypeName varchar(20) COLLATE pg_catalog.default,
-  TypeId varchar(50) COLLATE pg_catalog.default,
-  FromId varchar(50) COLLATE pg_catalog.default,
-  ToId varchar(50) COLLATE pg_catalog.default NOT NULL,
-  FromName varchar(50) COLLATE pg_catalog.default,
-  ToName varchar(50) COLLATE pg_catalog.default,
-  FromStatus int4 NOT NULL,
-  ToStatus int4 NOT NULL,
-  Href varchar(200) COLLATE pg_catalog.default,
-  Title varchar(200) COLLATE pg_catalog.default,
-  Content varchar(1000) COLLATE pg_catalog.default,
-  CreateTime timestamp(6) NOT NULL,
-  CreateId varchar(50) COLLATE pg_catalog.default
+                                   Id varchar(50) COLLATE pg_catalog.default NOT NULL,
+                                   TypeName varchar(20) COLLATE pg_catalog.default,
+                                   TypeId varchar(50) COLLATE pg_catalog.default,
+                                   FromId varchar(50) COLLATE pg_catalog.default,
+                                   ToId varchar(50) COLLATE pg_catalog.default NOT NULL,
+                                   FromName varchar(50) COLLATE pg_catalog.default,
+                                   ToName varchar(50) COLLATE pg_catalog.default,
+                                   FromStatus int4 NOT NULL,
+                                   ToStatus int4 NOT NULL,
+                                   Href varchar(200) COLLATE pg_catalog.default,
+                                   Title varchar(200) COLLATE pg_catalog.default,
+                                   Content varchar(1000) COLLATE pg_catalog.default,
+                                   CreateTime timestamp(6) NOT NULL,
+                                   CreateId varchar(50) COLLATE pg_catalog.default
 )
 ;
 COMMENT ON COLUMN public.SysMessage.FromStatus IS '-1:已删除；0:默认';
@@ -1621,16 +1621,16 @@ COMMENT ON TABLE public.SysMessage IS '系统消息表';
 -- ----------------------------
 DROP TABLE IF EXISTS public.SysPrinterPlan;
 CREATE TABLE public.SysPrinterPlan (
-  Id varchar(50) COLLATE pg_catalog.default NOT NULL,
-  Name varchar(255) COLLATE pg_catalog.default NOT NULL,
-  SourceSql text COLLATE pg_catalog.default,
-  ColumnView varchar(255) COLLATE pg_catalog.default,
-  GroupBy varchar(255) COLLATE pg_catalog.default,
-  PlanContent text COLLATE pg_catalog.default,
-  Disable int2 NOT NULL,
-  CreateTime date NOT NULL,
-  CreateUser varchar(50) COLLATE pg_catalog.default,
-  InParamColumn varchar(255) COLLATE pg_catalog.default
+                                       Id varchar(50) COLLATE pg_catalog.default NOT NULL,
+                                       Name varchar(255) COLLATE pg_catalog.default NOT NULL,
+                                       SourceSql text COLLATE pg_catalog.default,
+                                       ColumnView varchar(255) COLLATE pg_catalog.default,
+                                       GroupBy varchar(255) COLLATE pg_catalog.default,
+                                       PlanContent text COLLATE pg_catalog.default,
+                                       Disable int2 NOT NULL,
+                                       CreateTime date NOT NULL,
+                                       CreateUser varchar(50) COLLATE pg_catalog.default,
+                                       InParamColumn varchar(255) COLLATE pg_catalog.default
 )
 ;
 COMMENT ON COLUMN public.SysPrinterPlan.Id IS '方案ID';
@@ -1654,22 +1654,22 @@ COMMENT ON TABLE public.SysPrinterPlan IS '打印方案模板';
 -- ----------------------------
 DROP TABLE IF EXISTS public.UploadFile;
 CREATE TABLE public.UploadFile (
-  Id varchar(50) COLLATE pg_catalog.default NOT NULL,
-  FileName varchar(200) COLLATE pg_catalog.default NOT NULL,
-  FilePath text COLLATE pg_catalog.default NOT NULL,
-  Description varchar(200) COLLATE pg_catalog.default,
-  FileType varchar(20) COLLATE pg_catalog.default,
-  FileSize int4,
-  Extension varchar(20) COLLATE pg_catalog.default,
-  Enable int2 NOT NULL,
-  SortCode int4 NOT NULL,
-  DeleteMark int2 NOT NULL,
-  CreateUserId char(36) COLLATE pg_catalog.default,
-  CreateUserName varchar(50) COLLATE pg_catalog.default,
-  CreateTime timestamp(6) NOT NULL,
-  Thumbnail text COLLATE pg_catalog.default,
-  BelongApp varchar(200) COLLATE pg_catalog.default,
-  BelongAppId varchar(50) COLLATE pg_catalog.default
+                                   Id varchar(50) COLLATE pg_catalog.default NOT NULL,
+                                   FileName varchar(200) COLLATE pg_catalog.default NOT NULL,
+                                   FilePath text COLLATE pg_catalog.default NOT NULL,
+                                   Description varchar(200) COLLATE pg_catalog.default,
+                                   FileType varchar(20) COLLATE pg_catalog.default,
+                                   FileSize int4,
+                                   Extension varchar(20) COLLATE pg_catalog.default,
+                                   Enable int2 NOT NULL,
+                                   SortCode int4 NOT NULL,
+                                   DeleteMark int2 NOT NULL,
+                                   CreateUserId char(36) COLLATE pg_catalog.default,
+                                   CreateUserName varchar(50) COLLATE pg_catalog.default,
+                                   CreateTime timestamp(6) NOT NULL,
+                                   Thumbnail text COLLATE pg_catalog.default,
+                                   BelongApp varchar(200) COLLATE pg_catalog.default,
+                                   BelongAppId varchar(50) COLLATE pg_catalog.default
 )
 ;
 COMMENT ON COLUMN public.UploadFile.Id IS 'Id';
@@ -1699,18 +1699,18 @@ COMMENT ON TABLE public.UploadFile IS '文件';
 -- ----------------------------
 DROP TABLE IF EXISTS public.SysUser;
 CREATE TABLE public.SysUser (
-  Id varchar(50) COLLATE pg_catalog.default NOT NULL,
-  Account varchar(255) COLLATE pg_catalog.default NOT NULL,
-  Password varchar(255) COLLATE pg_catalog.default NOT NULL,
-  Name varchar(255) COLLATE pg_catalog.default NOT NULL,
-  Sex int4 NOT NULL,
-  Status int4 NOT NULL,
-  BizCode varchar(255) COLLATE pg_catalog.default,
-  CreateTime timestamp(6) NOT NULL,
-  CreateId varchar(50) COLLATE pg_catalog.default,
-  TypeName varchar(20) COLLATE pg_catalog.default,
-  TypeId varchar(50) COLLATE pg_catalog.default,
-  ParentId varchar(50) COLLATE pg_catalog.default
+                                Id varchar(50) COLLATE pg_catalog.default NOT NULL,
+                                Account varchar(255) COLLATE pg_catalog.default NOT NULL,
+                                Password varchar(255) COLLATE pg_catalog.default NOT NULL,
+                                Name varchar(255) COLLATE pg_catalog.default NOT NULL,
+                                Sex int4 NOT NULL,
+                                Status int4 NOT NULL,
+                                BizCode varchar(255) COLLATE pg_catalog.default,
+                                CreateTime timestamp(6) NOT NULL,
+                                CreateId varchar(50) COLLATE pg_catalog.default,
+                                TypeName varchar(20) COLLATE pg_catalog.default,
+                                TypeId varchar(50) COLLATE pg_catalog.default,
+                                ParentId varchar(50) COLLATE pg_catalog.default
 )
 ;
 COMMENT ON COLUMN public.SysUser.Id IS '流水号';
@@ -1744,30 +1744,30 @@ INSERT INTO public.SysUser VALUES ('de8be521-f1ec-4483-b124-0be342890507', 'test
 -- ----------------------------
 DROP TABLE IF EXISTS public.WmsInboundOrderDtbl;
 CREATE TABLE public.WmsInboundOrderDtbl (
-  Id varchar(50) COLLATE pg_catalog.default NOT NULL,
-  OrderId varchar(50) COLLATE pg_catalog.default NOT NULL,
-  Price pg_catalog.numeric,
-  PriceNoTax pg_catalog.numeric,
-  InStockStatus int2,
-  AsnStatus int4,
-  GoodsId varchar(50) COLLATE pg_catalog.default,
-  GoodsBatch varchar(50) COLLATE pg_catalog.default,
-  QualityFlg varchar(50) COLLATE pg_catalog.default,
-  OrderNum pg_catalog.numeric,
-  InNum pg_catalog.numeric,
-  LeaveNum pg_catalog.numeric,
-  HoldNum pg_catalog.numeric,
-  ProdDate varchar(30) COLLATE pg_catalog.default,
-  ExpireDate varchar(30) COLLATE pg_catalog.default,
-  TaxRate pg_catalog.numeric,
-  OwnerId varchar(32) COLLATE pg_catalog.default,
-  Remark varchar(128) COLLATE pg_catalog.default,
-  CreateTime timestamp(6),
-  CreateUserId varchar(50) COLLATE pg_catalog.default,
-  CreateUserName varchar(200) COLLATE pg_catalog.default,
-  UpdateTime timestamp(6),
-  UpdateUserId varchar(50) COLLATE pg_catalog.default,
-  UpdateUserName varchar(200) COLLATE pg_catalog.default
+                                            Id varchar(50) COLLATE pg_catalog.default NOT NULL,
+                                            OrderId varchar(50) COLLATE pg_catalog.default NOT NULL,
+                                            Price "pg_catalog"."numeric",
+                                            PriceNoTax "pg_catalog"."numeric",
+                                            InStockStatus int2,
+                                            AsnStatus int4,
+                                            GoodsId varchar(50) COLLATE pg_catalog.default,
+                                            GoodsBatch varchar(50) COLLATE pg_catalog.default,
+                                            QualityFlg varchar(50) COLLATE pg_catalog.default,
+                                            OrderNum "pg_catalog"."numeric",
+                                            InNum "pg_catalog"."numeric",
+                                            LeaveNum "pg_catalog"."numeric",
+                                            HoldNum "pg_catalog"."numeric",
+                                            ProdDate varchar(30) COLLATE pg_catalog.default,
+                                            ExpireDate varchar(30) COLLATE pg_catalog.default,
+                                            TaxRate "pg_catalog"."numeric",
+                                            OwnerId varchar(32) COLLATE pg_catalog.default,
+                                            Remark varchar(128) COLLATE pg_catalog.default,
+                                            CreateTime timestamp(6),
+                                            CreateUserId varchar(50) COLLATE pg_catalog.default,
+                                            CreateUserName varchar(200) COLLATE pg_catalog.default,
+                                            UpdateTime timestamp(6),
+                                            UpdateUserId varchar(50) COLLATE pg_catalog.default,
+                                            UpdateUserName varchar(200) COLLATE pg_catalog.default
 )
 ;
 COMMENT ON COLUMN public.WmsInboundOrderDtbl.Id IS '入库通知单明细号';
@@ -1818,30 +1818,30 @@ INSERT INTO public.WmsInboundOrderDtbl VALUES ('fcf051d3-5c00-4617-895f-e45891d9
 -- ----------------------------
 DROP TABLE IF EXISTS public.WmsInboundOrderTbl;
 CREATE TABLE public.WmsInboundOrderTbl (
-  Id varchar(50) COLLATE pg_catalog.default NOT NULL,
-  ExternalNo varchar(50) COLLATE pg_catalog.default,
-  ExternalType varchar(50) COLLATE pg_catalog.default,
-  Status int4 NOT NULL,
-  OrderType varchar(50) COLLATE pg_catalog.default NOT NULL,
-  GoodsType varchar(50) COLLATE pg_catalog.default,
-  PurchaseNo varchar(30) COLLATE pg_catalog.default,
-  StockId varchar(12) COLLATE pg_catalog.default,
-  OwnerId varchar(50) COLLATE pg_catalog.default,
-  ShipperId varchar(50) COLLATE pg_catalog.default,
-  SupplierId varchar(50) COLLATE pg_catalog.default,
-  ScheduledInboundTime timestamp(6),
-  Remark varchar(256) COLLATE pg_catalog.default,
-  Enable int2 NOT NULL,
-  TransferType varchar(50) COLLATE pg_catalog.default,
-  InBondedArea int2 NOT NULL,
-  ReturnBoxNum pg_catalog.numeric NOT NULL,
-  CreateTime timestamp(6) NOT NULL,
-  CreateUserId varchar(50) COLLATE pg_catalog.default NOT NULL,
-  CreateUserName varchar(200) COLLATE pg_catalog.default NOT NULL,
-  UpdateTime timestamp(6),
-  UpdateUserId varchar(50) COLLATE pg_catalog.default,
-  UpdateUserName varchar(200) COLLATE pg_catalog.default,
-  OrgId varchar(50) COLLATE pg_catalog.default
+                                           Id varchar(50) COLLATE pg_catalog.default NOT NULL,
+                                           ExternalNo varchar(50) COLLATE pg_catalog.default,
+                                           ExternalType varchar(50) COLLATE pg_catalog.default,
+                                           Status int4 NOT NULL,
+                                           OrderType varchar(50) COLLATE pg_catalog.default NOT NULL,
+                                           GoodsType varchar(50) COLLATE pg_catalog.default,
+                                           PurchaseNo varchar(30) COLLATE pg_catalog.default,
+                                           StockId varchar(12) COLLATE pg_catalog.default,
+                                           OwnerId varchar(50) COLLATE pg_catalog.default,
+                                           ShipperId varchar(50) COLLATE pg_catalog.default,
+                                           SupplierId varchar(50) COLLATE pg_catalog.default,
+                                           ScheduledInboundTime timestamp(6),
+                                           Remark varchar(256) COLLATE pg_catalog.default,
+                                           Enable int2 NOT NULL,
+                                           TransferType varchar(50) COLLATE pg_catalog.default,
+                                           InBondedArea int2 NOT NULL,
+                                           ReturnBoxNum "pg_catalog"."numeric" NOT NULL,
+                                           CreateTime timestamp(6) NOT NULL,
+                                           CreateUserId varchar(50) COLLATE pg_catalog.default NOT NULL,
+                                           CreateUserName varchar(200) COLLATE pg_catalog.default NOT NULL,
+                                           UpdateTime timestamp(6),
+                                           UpdateUserId varchar(50) COLLATE pg_catalog.default,
+                                           UpdateUserName varchar(200) COLLATE pg_catalog.default,
+                                           OrgId varchar(50) COLLATE pg_catalog.default
 )
 ;
 COMMENT ON COLUMN public.WmsInboundOrderTbl.Id IS '入库通知单号';
@@ -1886,134 +1886,134 @@ INSERT INTO public.WmsInboundOrderTbl VALUES ('TEST_002', 'TEST_002', '', 0, 'SY
 -- ----------------------------
 -- Primary Key structure for table Application
 -- ----------------------------
-ALTER TABLE public.Application ADD CONSTRAINT application_pkey PRIMARY KEY (Id);
+ALTER TABLE public.Application ADD CONSTRAINT "application_pkey" PRIMARY KEY (Id);
 
 -- ----------------------------
 -- Primary Key structure for table BuilderTable
 -- ----------------------------
-ALTER TABLE public.BuilderTable ADD CONSTRAINT buildertable_pkey PRIMARY KEY (Id);
+ALTER TABLE public.BuilderTable ADD CONSTRAINT "buildertable_pkey" PRIMARY KEY (Id);
 
 -- ----------------------------
 -- Primary Key structure for table BuilderTableColumn
 -- ----------------------------
-ALTER TABLE public.BuilderTableColumn ADD CONSTRAINT buildertablecolumn_pkey PRIMARY KEY (Id);
+ALTER TABLE public.BuilderTableColumn ADD CONSTRAINT "buildertablecolumn_pkey" PRIMARY KEY (Id);
 
 -- ----------------------------
 -- Primary Key structure for table Category
 -- ----------------------------
-ALTER TABLE public.Category ADD CONSTRAINT category_pkey PRIMARY KEY (Id);
+ALTER TABLE public.Category ADD CONSTRAINT "category_pkey" PRIMARY KEY (Id);
 
 -- ----------------------------
 -- Primary Key structure for table CategoryType
 -- ----------------------------
-ALTER TABLE public.CategoryType ADD CONSTRAINT categorytype_pkey PRIMARY KEY (Id);
+ALTER TABLE public.CategoryType ADD CONSTRAINT "categorytype_pkey" PRIMARY KEY (Id);
 
 -- ----------------------------
 -- Primary Key structure for table DataPrivilegeRule
 -- ----------------------------
-ALTER TABLE public.DataPrivilegeRule ADD CONSTRAINT dataprivilegerule_pkey PRIMARY KEY (Id);
+ALTER TABLE public.DataPrivilegeRule ADD CONSTRAINT "dataprivilegerule_pkey" PRIMARY KEY (Id);
 
 -- ----------------------------
 -- Primary Key structure for table FlowInstance
 -- ----------------------------
-ALTER TABLE public.FlowInstance ADD CONSTRAINT flowinstance_pkey PRIMARY KEY (Id);
+ALTER TABLE public.FlowInstance ADD CONSTRAINT "flowinstance_pkey" PRIMARY KEY (Id);
 
 -- ----------------------------
 -- Primary Key structure for table FlowInstanceOperationHistory
 -- ----------------------------
-ALTER TABLE public.FlowInstanceOperationHistory ADD CONSTRAINT flowinstanceoperationhistory_pkey PRIMARY KEY (Id);
+ALTER TABLE public.FlowInstanceOperationHistory ADD CONSTRAINT "flowinstanceoperationhistory_pkey" PRIMARY KEY (Id);
 
 -- ----------------------------
 -- Primary Key structure for table FlowInstanceTransitionHistory
 -- ----------------------------
-ALTER TABLE public.FlowInstanceTransitionHistory ADD CONSTRAINT flowinstancetransitionhistory_pkey PRIMARY KEY (Id);
+ALTER TABLE public.FlowInstanceTransitionHistory ADD CONSTRAINT "flowinstancetransitionhistory_pkey" PRIMARY KEY (Id);
 
 -- ----------------------------
 -- Primary Key structure for table FlowScheme
 -- ----------------------------
-ALTER TABLE public.FlowScheme ADD CONSTRAINT flowscheme_pkey PRIMARY KEY (Id);
+ALTER TABLE public.FlowScheme ADD CONSTRAINT "flowscheme_pkey" PRIMARY KEY (Id);
 
 -- ----------------------------
 -- Primary Key structure for table Form
 -- ----------------------------
-ALTER TABLE public.Form ADD CONSTRAINT form_pkey PRIMARY KEY (Id);
+ALTER TABLE public.Form ADD CONSTRAINT "form_pkey" PRIMARY KEY (Id);
 
 -- ----------------------------
 -- Primary Key structure for table FrmLeaveReq
 -- ----------------------------
-ALTER TABLE public.FrmLeaveReq ADD CONSTRAINT frmleavereq_pkey PRIMARY KEY (Id);
+ALTER TABLE public.FrmLeaveReq ADD CONSTRAINT "frmleavereq_pkey" PRIMARY KEY (Id);
 
 -- ----------------------------
 -- Primary Key structure for table Module
 -- ----------------------------
-ALTER TABLE public.Module ADD CONSTRAINT module_pkey PRIMARY KEY (Id);
+ALTER TABLE public.Module ADD CONSTRAINT "module_pkey" PRIMARY KEY (Id);
 
 -- ----------------------------
 -- Primary Key structure for table ModuleElement
 -- ----------------------------
-ALTER TABLE public.ModuleElement ADD CONSTRAINT moduleelement_pkey PRIMARY KEY (Id);
+ALTER TABLE public.ModuleElement ADD CONSTRAINT "moduleelement_pkey" PRIMARY KEY (Id);
 
 -- ----------------------------
 -- Primary Key structure for table OpenJob
 -- ----------------------------
-ALTER TABLE public.OpenJob ADD CONSTRAINT openjob_pkey PRIMARY KEY (Id);
+ALTER TABLE public.OpenJob ADD CONSTRAINT "openjob_pkey" PRIMARY KEY (Id);
 
 -- ----------------------------
 -- Primary Key structure for table Org
 -- ----------------------------
-ALTER TABLE public.Org ADD CONSTRAINT org_pkey PRIMARY KEY (Id);
+ALTER TABLE public.Org ADD CONSTRAINT "org_pkey" PRIMARY KEY (Id);
 
 -- ----------------------------
 -- Primary Key structure for table Relevance
 -- ----------------------------
-ALTER TABLE public.Relevance ADD CONSTRAINT relevance_pkey PRIMARY KEY (Id);
+ALTER TABLE public.Relevance ADD CONSTRAINT "relevance_pkey" PRIMARY KEY (Id);
 
 -- ----------------------------
 -- Primary Key structure for table Resource
 -- ----------------------------
-ALTER TABLE public.SysResource ADD CONSTRAINT resource_pkey PRIMARY KEY (Id);
+ALTER TABLE public.SysResource ADD CONSTRAINT "resource_pkey" PRIMARY KEY (Id);
 
 -- ----------------------------
 -- Primary Key structure for table Role
 -- ----------------------------
-ALTER TABLE public.Role ADD CONSTRAINT role_pkey PRIMARY KEY (Id);
+ALTER TABLE public.Role ADD CONSTRAINT "role_pkey" PRIMARY KEY (Id);
 
 -- ----------------------------
 -- Primary Key structure for table Stock
 -- ----------------------------
-ALTER TABLE public.Stock ADD CONSTRAINT stock_pkey PRIMARY KEY (Id);
+ALTER TABLE public.Stock ADD CONSTRAINT "stock_pkey" PRIMARY KEY (Id);
 
 -- ----------------------------
 -- Primary Key structure for table SysLog
 -- ----------------------------
-ALTER TABLE public.SysLog ADD CONSTRAINT syslog_pkey PRIMARY KEY (Id);
+ALTER TABLE public.SysLog ADD CONSTRAINT "syslog_pkey" PRIMARY KEY (Id);
 
 -- ----------------------------
 -- Primary Key structure for table SysMessage
 -- ----------------------------
-ALTER TABLE public.SysMessage ADD CONSTRAINT sysmessage_pkey PRIMARY KEY (Id);
+ALTER TABLE public.SysMessage ADD CONSTRAINT "sysmessage_pkey" PRIMARY KEY (Id);
 
 -- ----------------------------
 -- Primary Key structure for table SysPrinterPlan
 -- ----------------------------
-ALTER TABLE public.SysPrinterPlan ADD CONSTRAINT sysprinterplan_pkey PRIMARY KEY (Id);
+ALTER TABLE public.SysPrinterPlan ADD CONSTRAINT "sysprinterplan_pkey" PRIMARY KEY (Id);
 
 -- ----------------------------
 -- Primary Key structure for table UploadFile
 -- ----------------------------
-ALTER TABLE public.UploadFile ADD CONSTRAINT uploadfile_pkey PRIMARY KEY (Id);
+ALTER TABLE public.UploadFile ADD CONSTRAINT "uploadfile_pkey" PRIMARY KEY (Id);
 
 -- ----------------------------
 -- Primary Key structure for table User
 -- ----------------------------
-ALTER TABLE public.SysUser ADD CONSTRAINT user_pkey PRIMARY KEY (Id);
+ALTER TABLE public.SysUser ADD CONSTRAINT "user_pkey" PRIMARY KEY (Id);
 
 -- ----------------------------
 -- Primary Key structure for table WmsInboundOrderDtbl
 -- ----------------------------
-ALTER TABLE public.WmsInboundOrderDtbl ADD CONSTRAINT wmsinboundorderdtbl_pkey PRIMARY KEY (Id, OrderId);
+ALTER TABLE public.WmsInboundOrderDtbl ADD CONSTRAINT "wmsinboundorderdtbl_pkey" PRIMARY KEY (Id, OrderId);
 
 -- ----------------------------
 -- Primary Key structure for table WmsInboundOrderTbl
 -- ----------------------------
-ALTER TABLE public.WmsInboundOrderTbl ADD CONSTRAINT wmsinboundordertbl_pkey PRIMARY KEY (Id);
+ALTER TABLE public.WmsInboundOrderTbl ADD CONSTRAINT "wmsinboundordertbl_pkey" PRIMARY KEY (Id);
