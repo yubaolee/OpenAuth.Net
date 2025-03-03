@@ -1,16 +1,15 @@
 ﻿@section header
 {
-    <link rel="stylesheet" href="/css/treetable.css"/>
-    <link rel="stylesheet" href="/js/dtree/dtree.css"/>
-    <link rel="stylesheet" href="/js/dtree/font/dtreefont.css"/>
+    <link rel="stylesheet" href="/css/treetable.css" />
+    <link rel="stylesheet" href="/js/dtree/dtree.css" />
+    <link rel="stylesheet" href="/js/dtree/font/dtreefont.css" />
 }
 
 <blockquote class="layui-elem-quote news_search toolList" id="menus">
 </blockquote>
 
-<table id="mainList"
-       lay-data="{height: 'full-80',cellMinWidth:80, page:true, id:'mainList'}"
-       lay-filter="list" lay-size="sm">
+<table id="mainList" lay-data="{height: 'full-80',cellMinWidth:80, page:true, id:'mainList'}" lay-filter="list"
+    lay-size="sm">
 </table>
 
 <script type="text/html" id="barList">
@@ -22,27 +21,33 @@
 <!--用户添加/编辑窗口-->
 <div id="divEdit" style="display: none">
     <form class="layui-form layui-form-pane" action="" id="formEdit" lay-filter="formEdit">
+        <input type="hidden" name="Id" />
 
         <div class="layui-form-item">
             <label class="layui-form-label">类型标识</label>
             <div class="layui-input-block">
-                <input type="text" name="Id"
-                       placeholder="请输入类型标识" autocomplete="off" class="layui-input">
+                <input type="text" name="DtCode" placeholder="请输入类型标识" autocomplete="off" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">名称</label>
             <div class="layui-input-block">
-                <input type="text" name="Name" required lay-verify="required"
-                       placeholder="请输入名称" autocomplete="off" class="layui-input">
+                <input type="text" name="Name" required lay-verify="required" placeholder="请输入名称" autocomplete="off"
+                    class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">值</label>
+            <div class="layui-input-block">
+                <input type="text" name="DtValue" placeholder="请输入值" autocomplete="off" class="layui-input">
             </div>
         </div>
 
         <div class="layui-form-item">
             <label class="layui-form-label">类型分类</label>
             <div class="layui-input-block">
-                <input id="TypeName" name="TypeName" required lay-verify="required" class="layui-input"/>
-                <input id="TypeId" name="TypeId" required lay-verify="required" type="hidden"/>
+                <input id="TypeName" name="TypeName" required lay-verify="required" class="layui-input" />
+                <input id="TypeId" name="TypeId" required lay-verify="required" type="hidden" />
 
             </div>
         </div>
@@ -50,8 +55,7 @@
         <div class="layui-form-item">
             <label class="layui-form-label">描述</label>
             <div class="layui-input-block">
-                <input type="text" name="Description"
-                       placeholder="请输入描述" autocomplete="off" class="layui-input">
+                <input type="text" name="Description" placeholder="请输入描述" autocomplete="off" class="layui-input">
             </div>
         </div>
 
