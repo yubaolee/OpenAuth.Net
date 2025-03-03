@@ -60,14 +60,14 @@ namespace OpenAuth.App
             return result;
         }
 
-        public void Add(AddOrUpdateCategoryReq req)
+        public async Task Add(AddOrUpdateCategoryReq req)
         {
             var obj = req.MapTo<Category>();
             obj.CreateTime = DateTime.Now;
             var user = _auth.GetCurrentUser().User;
             obj.CreateUserId = user.Id;
             obj.CreateUserName = user.Name;
-            Repository.Add(obj);
+            await Repository.AddAsync(obj);
         }
         
         public void Update(AddOrUpdateCategoryReq obj)

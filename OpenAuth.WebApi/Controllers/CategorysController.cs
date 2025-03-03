@@ -18,7 +18,7 @@ namespace OpenAuth.WebApi.Controllers
     public class CategorysController : ControllerBase
     {
         private readonly CategoryApp _app;
-        
+
         /// <summary>
         /// 获取分类详情
         /// </summary>
@@ -45,14 +45,13 @@ namespace OpenAuth.WebApi.Controllers
         /// 添加分类
         /// </summary>
         /// <returns></returns>
-       [HttpPost]
-        public Response Add([FromBody] AddOrUpdateCategoryReq obj)
+        [HttpPost]
+        public async Task<Response> Add([FromBody] AddOrUpdateCategoryReq obj)
         {
             var result = new Response();
             try
             {
-                _app.Add(obj);
-
+                await _app.Add(obj);
             }
             catch (Exception ex)
             {
@@ -67,7 +66,7 @@ namespace OpenAuth.WebApi.Controllers
         /// 修改分类（字典）
         /// </summary>
         /// <returns></returns>
-       [HttpPost]
+        [HttpPost]
         public Response Update([FromBody] AddOrUpdateCategoryReq obj)
         {
             var result = new Response();
@@ -89,7 +88,7 @@ namespace OpenAuth.WebApi.Controllers
         /// 加载列表
         /// </summary>
         [HttpGet]
-        public async Task<TableData> Load([FromQuery]QueryCategoryListReq request)
+        public async Task<TableData> Load([FromQuery] QueryCategoryListReq request)
         {
             return await _app.Load(request);
         }
@@ -97,8 +96,8 @@ namespace OpenAuth.WebApi.Controllers
         /// <summary>
         /// 批量删除
         /// </summary>
-       [HttpPost]
-        public Response Delete([FromBody]string[] ids)
+        [HttpPost]
+        public Response Delete([FromBody] string[] ids)
         {
             var result = new Response();
             try
@@ -115,7 +114,7 @@ namespace OpenAuth.WebApi.Controllers
             return result;
         }
 
-        public CategorysController(CategoryApp app) 
+        public CategorysController(CategoryApp app)
         {
             _app = app;
         }

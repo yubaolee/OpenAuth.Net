@@ -27,14 +27,14 @@ namespace OpenAuth.Mvc.Controllers
             return View();
         }
 
-        public async Task<string> All([FromQuery]QueryCategoryListReq request)
+        public async Task<string> All([FromQuery] QueryCategoryListReq request)
         {
             TableData data = new TableData();
             data = await _app.Load(request);
             return JsonHelper.Instance.Serialize(data);
         }
 
-       [HttpPost]
+        [HttpPost]
         public string Delete(string[] ids)
         {
             Response resp = new Response();
@@ -50,13 +50,13 @@ namespace OpenAuth.Mvc.Controllers
             return JsonHelper.Instance.Serialize(resp);
         }
 
-       [HttpPost]
-        public string Add(AddOrUpdateCategoryReq obj)
+        [HttpPost]
+        public async Task<string> Add(AddOrUpdateCategoryReq obj)
         {
             Response resp = new Response();
             try
             {
-                _app.Add(obj);
+                await _app.Add(obj);
             }
             catch (Exception e)
             {
@@ -66,7 +66,7 @@ namespace OpenAuth.Mvc.Controllers
             return JsonHelper.Instance.Serialize(resp);
         }
 
-       [HttpPost]
+        [HttpPost]
         public string Update(AddOrUpdateCategoryReq obj)
         {
             Response resp = new Response();
@@ -99,7 +99,7 @@ namespace OpenAuth.Mvc.Controllers
                 resp.Message = e.Message;
             }
             return JsonHelper.Instance.Serialize(resp);
-            
+
         }
 
     }
