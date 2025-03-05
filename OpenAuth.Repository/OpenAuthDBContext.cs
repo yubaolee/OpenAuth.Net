@@ -102,7 +102,7 @@ namespace OpenAuth.Repository
                             property.ClrType == typeof(DateTime))
                         {
                             property.SetValueConverter(new ValueConverter<DateTime, DateTime>(
-                                v => v.ToUniversalTime(), v => DateTime.SpecifyKind(v, DateTimeKind.Utc)));
+                                v => v.ToLocalTime(), v => DateTime.SpecifyKind(v, DateTimeKind.Local)));
                         }
                     }
                 }
