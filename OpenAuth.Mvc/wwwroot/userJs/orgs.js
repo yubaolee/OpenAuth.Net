@@ -31,6 +31,7 @@
             } 
         });
     }
+    clickTableRow(table,'mainList', 'list');
     //左边树状机构列表
     var ztree = function () {
         var url = '/UserSession/GetOrgs';

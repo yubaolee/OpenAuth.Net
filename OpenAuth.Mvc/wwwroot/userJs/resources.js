@@ -20,7 +20,7 @@
 
     //加载表头
     $.getJSON('/Resources/Load',
-        {page: 1, limit: 1},
+        { page: 1, limit: 1 },
         function (data) {
             var columns = data.columnFields.filter(u => u.IsList === true).map(function (e) {
                 return {
@@ -60,6 +60,7 @@
             });
     };
     mainList();
+    clickTableRow(table,'mainList', 'list');
 
     //添加（编辑）对话框
     var editDlg = function () {
@@ -140,7 +141,7 @@
         }
 
         , search: function () {   //搜索
-            mainList({key: $('#key').val()});
+            mainList({ key: $('#key').val() });
         }
         , btnRefresh: function () {
             mainList();
