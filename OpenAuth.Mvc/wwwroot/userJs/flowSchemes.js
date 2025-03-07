@@ -109,6 +109,7 @@
         };
     }();
 
+    clickTableRow(table,'mainList', 'list');
     //监听表格内部按钮
     table.on('tool(list)', function (obj) {
         var data = obj.data;

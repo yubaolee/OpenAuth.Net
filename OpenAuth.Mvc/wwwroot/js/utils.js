@@ -1,7 +1,7 @@
 ﻿/*
  * @Author: yubaolee <yubaolee@163.com> | ahfu~ <954478625@qq.com>
  * @Date: 2024-11-29 22:16:54
- * @LastEditTime: 2025-03-06 23:29:51
+ * @LastEditTime: 2025-03-07 09:49:51
  * @Description: 
  * Copyright (c) 2025 by yubaolee | ahfu~ , All Rights Reserved.  
  */
@@ -61,7 +61,7 @@ layui.define("jquery", function (exports) {
     });
 
     // 修改laytable点击行选中checkbox
-    clickTableRow = function (table, id, filter) {
+    clickTableRow = function (table, id, filter, callback) {
         // 监听行单击事件
         table.on('row(' + filter + ')', function (obj) {
             // 先取消所有行的checkbox的选中状态
@@ -87,7 +87,9 @@ layui.define("jquery", function (exports) {
             // 设置当前行checkbox 选中
             obj.tr.find('input[type="checkbox"]').prop('checked', true);
             obj.data.LAY_CHECKED = true;
-
+            if (callback) {
+                callback(obj);
+            }
         });
     }
 

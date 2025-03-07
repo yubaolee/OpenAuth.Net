@@ -62,6 +62,9 @@ layui.config({
             }
         });
     }
+    clickTableRow(table,'mainList', 'list', function (obj) {
+        menuList({moduleId: obj.data.Id});
+    });
     //菜单列表
     var menucon = {};  //table的参数，如搜索key，点击tree的id
     var menuList = function (options) {
@@ -212,11 +215,6 @@ layui.config({
         };
     }();
 
-    clickTableRow(table,'mainList', 'list');
-    //监听行单击事件
-    table.on('row(list)', function (obj) {
-        menuList({moduleId: obj.data.Id});
-    });
 
     //监听页面主按钮操作
     var active = {
