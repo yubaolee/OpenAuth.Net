@@ -2,7 +2,7 @@
  * @Author: yubaolee <yubaolee@163.com> | ahfu~ <954478625@qq.com>
  * @Date: 2024-12-13 16:55:17
  * @Description: 工作流实例表操作
- * @LastEditTime: 2025-02-26 10:39:03
+ * @LastEditTime: 2025-03-08 13:59:47
  * Copyright (c) 2024 by yubaolee | ahfu~ , All Rights Reserved.
  */
 
@@ -333,6 +333,40 @@ namespace OpenAuth.App
         }
 
         /// <summary>
+        /// 撤销当前节点的审批
+        /// </summary>
+        public void UndoVerification(UndoVerificationReq request)
+        {
+            var flowInstance = Get(request.FlowInstanceId);
+            var user = _auth.GetCurrentUser().User;
+            
+            // 获取运行实例
+            var wfruntime = new FlowRuntime(flowInstance);
+
+            SugarClient.Ado.BeginTran();
+            try
+            {
+                wfruntime.UndoVerification();
+
+                // 更新流程实例状态
+                flowInstance.IsFinish = FlowInstanceStatus.Running;
+                flowInstance.SchemeContent = JsonHelper.Instance.Serialize(wfruntime.ToSchemeObj());
+                
+                SugarClient.Updateable(flowInstance).ExecuteCommand();
+
+                // 记录撤销操作
+                // wfruntime.SaveOperationHis($"【撤销审批】{user.Name}撤销了对【{wfruntime.currentNode.name}】的审批。备注：{request.Description}");
+
+                SugarClient.Ado.CommitTran();
+            }
+            catch (Exception ex)
+            {
+                SugarClient.Ado.RollbackTran();
+                throw new Exception("撤销审批失败:" + ex.Message);
+            }
+        }
+
+        /// <summary>
         /// 会签
         /// </summary>
         private void CounterSign(FlowRuntime wfruntime, Tag tag, FlowInstance flowInstance)
@@ -590,7 +624,16 @@ namespace OpenAuth.App
                 resp.NextNodeDesignateType = runtime.nextNode.setInfo.NodeDesignate;
                 resp.CanWriteFormItemIds = runtime.currentNode.setInfo.CanWriteFormItemIds;
             }
-
+            
+            var user = _auth.GetCurrentUser();
+            var query = SugarClient.Queryable<FlowInstanceOperationHistory>()
+                .OrderByDescending(u => u.CreateDate)
+                .First(u => u.InstanceId == id); 
+            if (query != null)
+            {
+                //最后一个审批人是当前用户，可以撤销
+                resp.CanUndoVerify = query.CreateUserId == user.User.Id;
+            }
             return resp;
         }
 

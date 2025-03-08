@@ -4,7 +4,7 @@
 
 #### IsFinish：流程的当前状态
 
-- -1 草稿/召回：流程发起人主动撤销流程；【新增】
+- -1 草稿/召回：流程发起人主动召回流程；
 
 - 0 正在运行；
 
@@ -14,6 +14,8 @@
 
 - 4 驳回：流程结束，可能发起的流程内容有问题，要求被驳回重新提交；
 
+
+#### ActivityId: 当前活动节点，即待审批的节点
 
 #### ActivityType：当前节点的类型
 
@@ -121,3 +123,11 @@
 - 3：开始节点,即type为：‘start’；
 
 - 4：流程运行结束，即type为’end’；
+
+与流程实例密切相关的还有两个表：流程实例的操作记录FlowInstanceOperationHistory及流转记录FlowInstanceTransitionHistory。它们有不同的作用：
+
+### 操作记录FlowInstanceOperationHistory
+该表记录了流程实例的所有操作记录，包括流程的创建、撤回、驳回、同意、不同意等操作。
+
+### 流转记录FlowInstanceTransitionHistory
+记录某个流程实例所有已审批的从一个活动节点到下一个活动节点的操作人、操作时间。

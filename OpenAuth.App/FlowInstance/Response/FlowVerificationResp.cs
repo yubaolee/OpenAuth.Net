@@ -37,5 +37,17 @@ namespace OpenAuth.App.Response
         /// 当前节点的可写表单Id
         /// </summary>
         public string[] CanWriteFormItemIds { get; set; }
+        
+        /// <summary>
+        /// 是否可以撤销审核
+        ///<param>流程最后一个已审批节点的审批人是当前登录人</param>
+        /// </summary>
+        public bool CanUndoVerify { get; set; }
+
+        /// <summary>
+        /// 是否可以审核
+        ///<param>待审批的节点需要当前登录人审批</param>
+        /// </summary>
+        public bool CanVerify{ get; set; }
     }
 }

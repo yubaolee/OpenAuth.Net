@@ -538,6 +538,57 @@ namespace OpenAuth.App.Flow
             }
         }
 
+        /// <summary>
+        /// 撤销当前节点的审批
+        /// </summary>
+        public void UndoVerification()
+        {
+             // 已结束的流程不能撤销
+            if (flowInstance.IsFinish == FlowInstanceStatus.Finished 
+                || flowInstance.IsFinish == FlowInstanceStatus.Rejected)
+            {
+                throw new Exception("流程已结束，不能撤销");
+            }
+
+            if(Nodes[previousId].type == FlowNode.START)
+            {
+                throw new Exception("没有任何审批，不能撤销!你可以删除或召回这个流程");
+            }
+
+            // 恢复到上一个节点
+            currentNodeId = flowInstance.PreviousId;
+            flowInstance.ActivityId = currentNodeId;
+            flowInstance.ActivityType = GetNodeType(currentNodeId);
+            flowInstance.ActivityName = Nodes[currentNodeId].name;
+            //向前查找ActivityId的前一个结点，即连线指向ActivityId的节点
+            flowInstance.PreviousId = GetPreNode().id;
+            flowInstance.MakerList = GetNodeMarkers(Nodes[currentNodeId]);
+            
+            // 清除当前节点的审批状态
+            currentNode.setInfo.Taged = null;
+            currentNode.setInfo.UserId = "";
+            currentNode.setInfo.UserName = "";
+            currentNode.setInfo.Description = "";
+            currentNode.setInfo.TagedTime = "";
+
+            //删除当前节点的扭转记录
+            var user = AutofacContainerModule.GetService<IAuth>().GetCurrentUser().User;
+            var SugarClient = AutofacContainerModule.GetService<ISqlSugarClient>();
+            SugarClient.Deleteable<FlowInstanceTransitionHistory>().Where(u => u.InstanceId == flowInstanceId && u.CreateUserId == user.Id && u.FromNodeId == currentNodeId).ExecuteCommand();
+
+            //删除当前节点的审批记录(只删除最新的一条)
+            var latestRecord = SugarClient.Queryable<FlowInstanceOperationHistory>()
+                .Where(u => u.InstanceId == flowInstanceId && u.CreateUserId == user.Id)
+                .OrderByDescending(u => u.CreateDate)
+                .First();
+            if (latestRecord != null)
+            {
+                SugarClient.Deleteable<FlowInstanceOperationHistory>()
+                    .Where(u => u.Id == latestRecord.Id)
+                    .ExecuteCommand();
+            }
+        }
+
         #endregion 共有方法
 
         #region 获取节点审批人

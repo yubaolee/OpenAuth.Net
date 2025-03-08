@@ -168,6 +168,27 @@ namespace OpenAuth.WebApi.Controllers
         }
 
         /// <summary>
+        /// 撤销最后一个节点审批
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public Response UndoVerification([FromBody] UndoVerificationReq request)
+        {
+            var result = new Response();
+            try
+            {
+                _app.UndoVerification(request);
+            }
+            catch (Exception ex)
+            {
+                result.Code = 500;
+                result.Message = ex.InnerException?.Message ?? ex.Message;
+            }
+
+            return result;
+        }
+
+        /// <summary>
         /// 加载列表
         /// </summary>
         [HttpGet]
@@ -193,6 +214,9 @@ namespace OpenAuth.WebApi.Controllers
 
             return result;
         }
+
+
+
 
         public FlowInstancesController(FlowInstanceApp app) 
         {
