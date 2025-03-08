@@ -634,6 +634,22 @@ namespace OpenAuth.App
                 //最后一个审批人是当前用户，可以撤销
                 resp.CanUndoVerify = query.CreateUserId == user.User.Id;
             }
+            
+            var approvers = _flowApproverApp.GetApproverIds(new QueryApproverReq
+            {
+                FlowInstanceId = id,
+                ActivityId = flowinstance.ActivityId
+            });
+
+            if (flowinstance.MakerList != "1" && !flowinstance.MakerList.Contains(user.User.Id) &&
+                !approvers.Contains(user.User.Id))
+            {
+                resp.CanVerify = false;
+            }
+            else
+            {
+                resp.CanVerify = true; //当前登录用户可以审批当前流程
+            }
             return resp;
         }
 
