@@ -82,8 +82,8 @@ namespace OpenAuth.App
                 TypeId = obj.TypeId,
                 UpdateTime = DateTime.Now,
                 UpdateUserId = user.Id,
-                UpdateUserName = user.Name
-               //todo:要修改的字段赋值
+                UpdateUserName = user.Name,
+                SortNo = obj.SortNo
             });
 
         }
