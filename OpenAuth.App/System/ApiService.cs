@@ -4,22 +4,16 @@ using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
-using Infrastructure;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.OpenApi.Readers;
 
-[ApiController]
-[Route("api/[controller]")]
-[ApiExplorerSettings(GroupName = "系统管理_System")]
-public class SystemController : ControllerBase
+public class ApiService
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IConfiguration _configuration;
 
-    public SystemController(IHttpClientFactory httpClientFactory
-    , IConfiguration configuration)
+    public ApiService(IHttpClientFactory httpClientFactory, IConfiguration configuration)
     {
         _httpClientFactory = httpClientFactory;
         _configuration = configuration;
@@ -27,58 +21,43 @@ public class SystemController : ControllerBase
 
     /// <summary>
     /// 获取所有API接口信息
+    /// <para>这个方法单元测试必须启动WebApi站点</para>
     /// </summary>
-    /// <returns></returns>
-    [HttpGet]
-    [AllowAnonymous]
-    public async Task<Response<List<SwaggerEndpointInfo>>> Get()
+    public async Task<List<SwaggerEndpointInfo>> GetSwaggerEndpoints()
     {
-        var result = new Response<List<SwaggerEndpointInfo>>();
-        try
-        {
-            var apis = await GetSwaggerEndpoints();
 
-            result.Result = apis;
-        }
-        catch (Exception ex)
-        {
-            result.Code = 500;
-            result.Message = ex.InnerException?.Message ?? ex.Message;
-        }
-
-        return result;
-    }
-
-    /// <summary>
-    /// 获取所有API接口信息
-    /// </summary>
-    private async Task<List<SwaggerEndpointInfo>> GetSwaggerEndpoints()
-    {
         var reader = new OpenApiStringReader();
         var client = _httpClientFactory.CreateClient();
 
         var baseUrl = _configuration["AppSetting:HttpHost"]?.Replace("*", "localhost");
+
         var apis = new List<SwaggerEndpointInfo>();
-        foreach (var controller in GetControllers())
+        var controllers = GetControllers();
+
+        foreach (var controller in controllers)
         {
             var groupname = GetSwaggerGroupName(controller);
-
             var swaggerJsonUrl = $"{baseUrl}/swagger/{groupname}/swagger.json";
-            var response = await client.GetAsync(swaggerJsonUrl);
-            var content = await response.Content.ReadAsStringAsync();
+
+            var response = await client.GetAsync(swaggerJsonUrl).ConfigureAwait(false);
+
+            var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             var document = reader.Read(content, out var diagnostic);
             //获取所有api
-            apis.AddRange(document.Paths
+            var controllerApis = document.Paths
                 .SelectMany(path => path.Value.Operations
                     .Select(op => new SwaggerEndpointInfo(
                         path.Key,
                         op.Key.ToString(),
                         op.Value.Summary,
                         op.Value.Description,
-                        op.Value.Tags.FirstOrDefault()?.Name))));
+                        op.Value.Tags.FirstOrDefault()?.Name)));
+
+            apis.AddRange(controllerApis);
         }
 
         return apis;
+
     }
 
     /// <summary>
@@ -101,18 +80,20 @@ public class SystemController : ControllerBase
     /// </summary>
     private List<Type> GetControllers()
     {
-        Assembly asm = Assembly.GetExecutingAssembly();
+        var webApiAssembly = AppDomain.CurrentDomain.GetAssemblies()
+            .FirstOrDefault(a => a.GetName().Name.Contains("OpenAuth.WebApi"));
 
-        var controlleractionlist = asm.GetTypes()
-            .Where(type => typeof(ControllerBase).IsAssignableFrom(type))
-            .OrderBy(x => x.Name).ToList();
+        var controlleractionlist = webApiAssembly.GetTypes()
+            .Where(type => typeof(Microsoft.AspNetCore.Mvc.ControllerBase).IsAssignableFrom(type))
+            .ToList();
+
         return controlleractionlist;
     }
-
-    public record SwaggerEndpointInfo(
-    string Path,
-    string HttpMethod,
-    string Summary,
-    string Description,
-    string Tag);
 }
+
+public record SwaggerEndpointInfo(
+   string Path,
+   string HttpMethod,
+   string Summary,
+   string Description,
+   string Tag);

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,7 +22,7 @@ namespace OpenAuth.WebApi.Controllers
     {
         private readonly ResourceApp _app;
 
-        public ResourcesController(IAuth authUtil, ResourceApp app) 
+        public ResourcesController(ResourceApp app) 
         {
             _app = app;
         }
@@ -30,6 +30,28 @@ namespace OpenAuth.WebApi.Controllers
         public async Task<TableData> Load([FromQuery]QueryResourcesReq request)
         {
             return await _app.Load(request);
+        }
+
+        /// <summary>
+        /// 同步站点API到资源列表
+        /// <para>读取站点API信息，如果资源列表中不存在，则添加</para>
+        /// </summary>
+        [HttpPost]
+        public async Task<Response> Sync()
+        {
+            var result = new Response();
+            try
+            {
+                await _app.Sync();
+                return result;
+            }
+            catch (Exception ex)
+            {
+                result.Code = 500;
+                result.Message = ex.InnerException?.Message ?? ex.Message;
+            }
+
+            return result;
         }
 
        [HttpPost]

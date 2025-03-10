@@ -17,6 +17,16 @@ namespace OpenAuth.App
     public class ResourceApp:SqlSugarBaseApp<SysResource>
     {
         private RevelanceManagerApp _revelanceApp;
+        private ApiService _apiService;
+
+        private IAuth _auth;
+
+        public ResourceApp(ISqlSugarClient client, IAuth auth, RevelanceManagerApp revelanceApp, ApiService apiService) : base(client, auth)
+        {
+            _revelanceApp = revelanceApp;
+            _apiService = apiService;
+            _auth = auth;
+        }
 
         public void Add(AddOrUpdateResReq resource)
         {
@@ -95,9 +105,38 @@ namespace OpenAuth.App
             return result;
         }
 
-        public ResourceApp(ISqlSugarClient client, IAuth auth, RevelanceManagerApp revelanceApp) : base(client, auth)
+        /// <summary>
+        /// 同步站点API到资源列表
+        /// <para>读取站点API信息，如果资源列表中不存在，则添加</para>
+        /// </summary>
+        public async Task Sync()
         {
-            _revelanceApp = revelanceApp;
+            var apis = await _apiService.GetSwaggerEndpoints();
+            var user = _auth.GetCurrentUser().User;
+            foreach (var api in apis)
+            {
+                //检查资源是否存在
+                var resource = Repository.GetFirst(u => u.Name == api.Path && u.TypeId == Define.API);
+                if (resource != null)
+                {
+                    continue;
+                }
+
+                resource = new SysResource
+                {
+                    Name = api.Path,
+                    Disable = true,
+                    SortNo = 0,
+                    TypeId = Define.API,
+                    TypeName = "API接口",
+                    Description = api.Summary??"",
+                    CreateTime = DateTime.Now,
+                    CreateUserId = user.Id,
+                    CreateUserName = user.Name
+                };
+                CaculateCascade(resource);
+                Repository.Insert(resource);
+            }
         }
         
     }

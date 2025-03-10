@@ -37,6 +37,8 @@
         //流程实例知会用户
         public const string INSTANCE_NOTICE_USER = "INSTANCE_NOTICE_USER"; 
         //流程实例知会角色
-        public const string INSTANCE_NOTICE_ROLE = "INSTANCE_NOTICE_ROLE"; 
+        public const string INSTANCE_NOTICE_ROLE = "INSTANCE_NOTICE_ROLE";
+
+        public const string API = "API_RESOURCE";
     }
 }
