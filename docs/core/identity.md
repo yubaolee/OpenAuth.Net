@@ -38,6 +38,25 @@ OpenAuth.Net支持两种登录认证方式：自定义token认证和基于Identi
 
 当启用了Identity时，客户端调用API需要先通过OpenAuth.IdentityServer服务器的OAuth验证，才能调用接口。OpenAuth.Net调用API的客户端有两种：
 
+#### OpenAuth.Pro vue3
+
+在使用企业版vue界面访问OpenAuth.WebApi时，已经在文件`.env.dev`中配置好相关选项，可以直接使用，无需其他处理。
+
+```python
+VITE_OIDC_AUTHORITY = http://localhost:12796 #Identity服务器地址
+VITE_OIDC_CLIENTID = OpenAuth.Pro #客户端名称
+VITE_OIDC_REDIRECTURI = http://localhost:1803 #登录回调
+VITE_OIDC_RESPONSETYPE = code #认证方式
+VITE_OIDC_SCOPE = openid profile openauthapi #认证范围
+VITE_OIDC_AUTOMATICSILENTRENEW = true #自动续期
+
+```
+如果服务端启用了Identity认证，则打开登录界面如下：
+![2025-03-10-14-46-47](http://img.openauth.net.cn/2025-03-10-14-46-47.png)
+
+这时点击登录超链接，操作同OpenAuth.Mvc一样。
+
+
 #### SwaggerUI
 
 当我们启动了OpenAuth.WebApi，在浏览器打开[http://localhost:52789/swagger/index.html](http://localhost:52789/swagger/index.html)时，其实是Swagger框架给我们生成的一个调动客户端，对于启用了Identity的服务，Swagger会有一个Authorise的操作按钮：
@@ -54,21 +73,6 @@ OpenAuth.Net支持两种登录认证方式：自定义token认证和基于Identi
 
 ![20220119180608](http://img.openauth.net.cn/20220119180608.png)
 
-#### OpenAuth.Pro
 
-在使用企业版vue界面访问OpenAuth.WebApi时，已经在文件`.env.dev`中配置好相关选项，可以直接使用，无需其他处理。
-
-```python
-
-VUE_APP_OIDC_AUTHORITY = http://localhost:12796   #Identity服务器地址
-VUE_APP_OIDC_CLIENTID = OpenAuth.Pro   #客户端名称
-VUE_APP_OIDC_REDIRECTURI = http://localhost:1803/#/oidc-callback  #登录回调
-VUE_APP_OIDC_POSTLOGOUTREDIRECTURI = http://localhost:1803 #退出登录回调
-VUE_APP_OIDC_RESPONSETYPE = code  #认证方式
-VUE_APP_OIDC_SCOPE = openid profile openauthapi  #认证范围
-VUE_APP_OIDC_AUTOMATICSILENTRENEW = true
-VUE_APP_OIDC_SILENTREDIRECTURI = http://localhost:1803/silent-renew-oidc.html
-
-```
 
 
