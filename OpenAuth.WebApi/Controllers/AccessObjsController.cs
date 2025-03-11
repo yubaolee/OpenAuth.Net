@@ -133,6 +133,26 @@ namespace OpenAuth.WebApi.Controllers
 
             return result;
         }
+
+         /// <summary>
+        /// 角色分配资源，整体提交，会覆盖之前的配置
+        /// </summary>
+        [HttpPost]
+        public Response AssignRoleResources([FromBody] AssignRoleResources request)
+        {
+            var result = new Response();
+            try
+            {
+                _app.AssignRoleResources(request);
+            }
+            catch (Exception ex)
+            {
+                result.Code = 500;
+                result.Message = ex.InnerException?.Message ?? ex.Message;
+            }
+
+            return result;
+        }
         
         /// <summary>
         /// 部门分配用户，整体提交，会覆盖之前的配置

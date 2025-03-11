@@ -21,7 +21,7 @@ namespace OpenAuth.App
         private RevelanceManagerApp _revelanceApp;
         private ApiService _apiService;
 
-        private IAuth _auth;
+        private readonly IAuth _auth;
 
         public ResourceApp(ISqlSugarClient client, IAuth auth, RevelanceManagerApp revelanceApp, ApiService apiService) : base(client, auth)
         {
@@ -155,7 +155,40 @@ namespace OpenAuth.App
                 Repository.Insert(resource);
             }
         }
-        
+
+        /// <summary>
+        /// 判断当前登录用户是否拥有访问该API的权限
+        /// <para>如果角色没有做任何分配，则默认拥有权限。这个可以根据实际需要修改。</para>
+        /// </summary>
+        /// <param name="apiPath">API路径</param>
+        /// <returns>true:拥有权限,false:没有权限</returns>
+        public bool CanAccess(string apiPath)
+        {
+            var loginContext = _auth.GetCurrentUser();
+            if (loginContext == null)
+            {
+                throw new CommonException("登录已过期", Define.INVALID_TOKEN);
+            }
+
+            //如果当前登录用户是管理员，则拥有所有权限
+            if(loginContext.User.Account == Define.SYSTEM_USERNAME){
+                return true;
+            }
+
+            var elementIds = _revelanceApp.Get(Define.ROLERESOURCE, true, loginContext.Roles.Select(u => u.Id).ToArray());
+            //如果角色没有做任何分配，则默认拥有权限。这个可以根据实际需要修改。
+            if(elementIds.Count == 0)
+            {
+                return true;
+            }
+            //如果分配了资源，则判断是否拥有权限
+            var resource = Repository.GetFirst(u => u.Name.Contains(apiPath) && u.TypeId == Define.API && elementIds.Contains(u.Id));
+            if(resource == null)
+            {
+                return false;
+            }
+            return true;
+        }
     }
 
     /// <summary>

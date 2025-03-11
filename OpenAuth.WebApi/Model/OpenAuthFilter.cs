@@ -14,10 +14,13 @@ namespace OpenAuth.WebApi.Model
         private readonly IAuth _authUtil;
         private readonly SysLogApp _logApp;
 
-        public OpenAuthFilter(IAuth authUtil, SysLogApp logApp)
+        private readonly ResourceApp _resourceApp;
+
+        public OpenAuthFilter(IAuth authUtil, SysLogApp logApp, ResourceApp resourceApp)
         {
             _authUtil = authUtil;
             _logApp = logApp;
+            _resourceApp = resourceApp;
         }
 
         public void OnActionExecuting(ActionExecutingContext context)
@@ -28,9 +31,9 @@ namespace OpenAuth.WebApi.Model
             var Controllername = description.ControllerName.ToLower();
             var Actionname = description.ActionName.ToLower();
 
-            //匿名标识
-            var authorize = description.MethodInfo.GetCustomAttribute(typeof(AllowAnonymousAttribute));
-            if (authorize != null)
+            //匿名访问的不需要验证
+            var allowAnonymous = description.MethodInfo.GetCustomAttribute(typeof(AllowAnonymousAttribute));
+            if (allowAnonymous != null)
             {
                 return;
             }
@@ -41,14 +44,29 @@ namespace OpenAuth.WebApi.Model
                 context.Result = new JsonResult(new Response
                 {
                     Code = 401,
-                    Message = "认证失败，请提供认证信息"
+                    Message = "登录已过期，请重新登录"
                 });
                 return;
             }
+
+            var apiPath = $"{Controllername}/{Actionname}";
+            //判断登录角色是否拥有访问该URL的权限
+            var resource = _resourceApp.CanAccess(apiPath);
+            if(!resource)
+            {
+                context.Result = new JsonResult(new Response
+                {
+                    Code = 500,
+                    Message = $"当前用户没有访问{apiPath}的权限,请在【角色管理】中分配资源"
+                });
+                return;
+            }
+
+
             _logApp.Add(new SysLog
             {
                 Content = $"用户访问",
-                Href = $"{Controllername}/{Actionname}",
+                Href = apiPath,
                 CreateName = _authUtil.GetUserName(),
                 CreateId = _authUtil.GetCurrentUser().User.Id,
                 TypeName = "访问日志"

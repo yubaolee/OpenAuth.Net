@@ -234,5 +234,28 @@ namespace OpenAuth.App
                 UnitWork.Save();
             });
         }
+
+        /// <summary>
+        /// 为角色分配资源，需要统一提交，会删除以前该角色的所有资源
+        /// </summary>
+        /// <param name="request"></param>
+        public void AssignRoleResources(AssignRoleResources request)
+        {
+            UnitWork.ExecuteWithTransaction(() =>
+            {
+                //删除以前的所有资源
+                UnitWork.Delete<Relevance>(u => u.FirstId == request.RoleId && u.Key == Define.ROLERESOURCE);
+                //批量分配角色资源
+                UnitWork.BatchAdd((from firstId in request.ResourceIds
+                    select new Relevance
+                    {
+                        Key = Define.ROLERESOURCE,
+                        FirstId = request.RoleId,
+                        SecondId = firstId,
+                        OperateTime = DateTime.Now
+                    }).ToArray());
+                UnitWork.Save();
+            });
+        }
     }
 }
