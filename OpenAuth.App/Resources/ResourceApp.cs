@@ -140,7 +140,7 @@ namespace OpenAuth.App
                 {
                     Id = api.Path,
                     Name = api.Path,
-                    Disable = true,
+                    Disable = false,
                     SortNo = 0,
                     AppId = $"{Define.API}_{api.Tag}",
                     AppName = $"API接口-{api.Tag}",
