@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Threading.Tasks;
 using Infrastructure;
+using NUnit.Framework;
 using OpenAuth.App.Interface;
 using OpenAuth.App.Request;
 using OpenAuth.App.Response;
@@ -106,6 +108,18 @@ namespace OpenAuth.App
         }
 
         /// <summary>
+        /// 获取资源类型
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<SysResourceApp>> GetResourceApps()
+        {
+            var types = await SugarClient.Queryable<SysResource>()
+                .Distinct()
+                .Select(u => new {u.AppId,u.AppName})
+                .ToListAsync();
+            return types.Select(u => new SysResourceApp(u.AppId, u.AppName)).ToList();
+        }
+        /// <summary>
         /// 同步站点API到资源列表
         /// <para>读取站点API信息，如果资源列表中不存在，则添加</para>
         /// </summary>
@@ -124,9 +138,12 @@ namespace OpenAuth.App
 
                 resource = new SysResource
                 {
+                    Id = api.Path,
                     Name = api.Path,
                     Disable = true,
                     SortNo = 0,
+                    AppId = $"{Define.API}_{api.Tag}",
+                    AppName = $"API接口-{api.Tag}",
                     TypeId = Define.API,
                     TypeName = "API接口",
                     Description = api.Summary??"",
@@ -140,4 +157,9 @@ namespace OpenAuth.App
         }
         
     }
+
+    /// <summary>
+    /// 资源类型
+    /// </summary>
+    public record SysResourceApp(string Id, string Name);
 }

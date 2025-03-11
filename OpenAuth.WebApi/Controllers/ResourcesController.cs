@@ -126,5 +126,23 @@ namespace OpenAuth.WebApi.Controllers
             return result;
         }
 
+        /// <summary>
+        /// 获取资源所属应用
+        /// </summary>
+        [HttpGet]
+        public async Task<Response<List<SysResourceApp>>> GetResourceApps()
+        {
+            var result = new Response<List<SysResourceApp>>();
+            try
+            {
+                result.Result = await _app.GetResourceApps();
+            }
+            catch (Exception e)
+            {
+                result.Code = 500;
+                result.Message = e.InnerException?.Message ?? e.Message;
+            }
+            return result;
+        }
     }
 }

@@ -1,23 +1,17 @@
-# 开发规范
+# 后端开发规范
 
-## 新增数据库名称规范
+## 数据库表及字段命名
 
-子系统名称+业务名称+表尾，其中表尾名称规则如下：
+SqlServer采用PascalCase命名，Oracle采用全大写命名，其他数据库采用camelCase命名。
 
+::: tip 提示
+
+开源版代码生成时，通过表结尾Dtbl来判断是否是生成明细表代码。因此建议数据库表命名时按：子系统名称+业务名称+表尾，其中表尾名称规则：
 - 基础主数据以Mst结尾；
-
 - 普通业务表以Tbl结尾；
-
 - 业务明细表以Dtbl结尾；
-
-比如：
-
-- WMS系统客户主数据表：WmsCustomerMst
-
-- WMS系统入库订单头表：WmsInboundOrderTbl
-
-- WMS系统入库订单明细表：WmsInboundOrderDtbl
-
+如：WMS系统入库订单明细表：WmsInboundOrderDtbl
+:::
 
 
 ## 数据库字段类型

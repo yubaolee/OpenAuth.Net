@@ -1,3 +1,10 @@
+<!--
+ * @Author: yubaolee <yubaolee@163.com> | ahfu~ <954478625@qq.com>
+ * @Date: 2023-12-25 14:43:53
+ * @Description: 
+ * @LastEditTime: 2025-03-11 11:19:25
+ * Copyright (c) 2025 by yubaolee | ahfu~ , All Rights Reserved.  
+-->
 # API权限控制
 
 在使用OpenAuth.WebApi过程中，系统会对所有的Api进行权限控制。如果没有登录就访问Api接口，会提示下面信息：
@@ -30,6 +37,15 @@ Host: localhost:52789
 X-Token: e4a5aa00
 
 ```
+## 按角色授权API资源
+
+目前主流的接口平台都提供按角色（或账号）授权访问API的功能，OpenAuth.Net也不例外。在OpenAuth.Net中，接口API被当作资源处理。如图：
+
+![2025-03-11-11-18-31](http://img.openauth.net.cn/2025-03-11-11-18-31.png)
+
+如果后端新增或删除API，点击【同步系统API资源】按钮，即可同步到资源列表中。在角色管理功能中，可以对登录的角色进行API资源授权。
+
+![](http://img.openauth.net.cn/2025-03-11-11-13-54.png)
 
 ## 不登录直接访问
 
