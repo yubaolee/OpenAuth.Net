@@ -101,7 +101,7 @@
   
 * 全网最好用的打印解决方案。详情:[智能打印](http://doc.openauth.net.cn/pro/printerplan.html)
 
-* 基于Quartz.Net的定时任务控制,可随时启/停，可视化配置Cron表达式功能
+* 基于Quartz.Net的定时任务控制,可随时启/停，可视化配置Cron表达式功能，请参考：[定时任务](http://doc.openauth.net.cn/core/job.html)
 
 * 基于CodeSmith的代码生成功能，可快速生成带有头/明细结构的页面
 
@@ -111,7 +111,7 @@
 
 * 支持多租户
 
-* 集成IdentityServer4，实现基于OAuth2的登录体系
+* 支持搭建自己的IdentityServer服务器，实现基于OAuth2的登录体系，请参考：[登录认证及OAuth集成](http://doc.openauth.net.cn/core/identity.html)
 
 * 建立三方对接规范，已有系统可以无缝对接流程引擎
 
