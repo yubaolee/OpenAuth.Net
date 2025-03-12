@@ -1,7 +1,7 @@
 
 ![LOGO](/logocore.png "1.png")
 
-OpenAuth.Net是基于最新版.Net的开源权限工作流快速开发框架。源于Martin Fowler企业级应用开发思想及最新技术组合（SqlSugar、EF、Quartz、AutoFac、WebAPI、Swagger、Mock、NUnit、Vue2/3、Element-ui/plus、IdentityServer等）。核心模块包括：组织机构、角色用户、权限授权、表单设计、工作流等。
+OpenAuth.Net是基于最新版.Net的开源权限工作流快速开发框架。源于Martin Fowler企业级应用开发思想及最新技术组合（SqlSugar、EF、Quartz、AutoFac、WebAPI、Swagger、Mock、NUnit、Vue2/3、Element-ui/plus、IdentityServer等）。核心模块包括：角色授权、代码生成、API鉴权、智能打印、表单设计、工作流、定时任务等。
 
 开源版本演示：[http://demo.openauth.net.cn:1802/](http://demo.openauth.net.cn:1802/)
 
@@ -33,7 +33,7 @@ gitee上面两个版本。其中：
 
 * 超强的自定义权限控制功能，请参考：[通用权限设计与实现](https://www.cnblogs.com/yubaolee/p/DataPrivilege.html)
 
-* 完整的字段权限控制，可以控制字段可见及API是否返回字段值
+* 完整API鉴权，可以控制角色可访问的API资源，及模块功能字段可见及是否返回，请参考：[按角色授权API资源](http://doc.openauth.net.cn/core/apiauth.html#%E6%8C%89%E8%A7%92%E8%89%B2%E6%8E%88%E6%9D%83api%E8%B5%84%E6%BA%90) 及 [字段权限](http://doc.openauth.net.cn/core/datapropertyrule.html)
 
 * 可拖拽的表单设计。详情：[可拖拽表单](http://doc.openauth.net.cn/pro/dragform.html)
 
@@ -41,7 +41,7 @@ gitee上面两个版本。其中：
   
 * 全网最好用的打印解决方案。详情:[智能打印](http://doc.openauth.net.cn/pro/printerplan.html)
 
-* 基于Quartz.Net的定时任务控制,可随时启/停，可视化配置Cron表达式功能
+* 基于Quartz.Net的定时任务控制,可随时启/停，可视化配置Cron表达式功能，请参考：[定时任务](http://doc.openauth.net.cn/core/job.html)
 
 * 基于CodeSmith的代码生成功能，可快速生成带有头/明细结构的页面
 
@@ -51,7 +51,7 @@ gitee上面两个版本。其中：
 
 * 支持多租户
 
-* 集成IdentityServer4，实现基于OAuth2的登录体系
+* 支持搭建自己的IdentityServer服务器，实现基于OAuth2的登录体系，请参考：[登录认证及OAuth集成](http://doc.openauth.net.cn/core/identity.html)
 
 * 建立三方对接规范，已有系统可以无缝对接流程引擎
 
