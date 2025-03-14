@@ -25,10 +25,10 @@ namespace OpenAuth.Repository.Domain
             this.Description = "";
             this.Password = "";
             this.Username = "";
-            this.Port = 0;
+            this.Port = null;
             this.Server = "";
             this.Databasename = "";
-            this.Dbtype = "";
+            this.Dbtype = 0;
             this.Name = "";
 
         }
@@ -126,7 +126,7 @@ namespace OpenAuth.Repository.Domain
         ///数据库类型
         /// </summary>
         [Description("数据库类型")]
-        public string Dbtype { get; set; }
+        public int Dbtype { get; set; }
 
         /// <summary>
         ///数据源名称

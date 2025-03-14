@@ -85,6 +85,17 @@ namespace OpenAuth.WebApi.Controllers
         }
 
         /// <summary>
+        /// 获取数据库类型
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public TableData GetDbTypes()
+        {
+            
+            return _app.GetDbTypes();
+        }
+
+        /// <summary>
         /// 批量删除
         /// </summary>
        [HttpPost]

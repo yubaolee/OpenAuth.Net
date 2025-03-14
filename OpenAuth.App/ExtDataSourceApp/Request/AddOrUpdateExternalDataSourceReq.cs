@@ -101,7 +101,7 @@ namespace OpenAuth.App.Request
        /// <summary>
        ///数据库类型
        /// </summary>
-       public string Dbtype { get; set; }
+       public int Dbtype { get; set; }
 
        /// <summary>
        ///数据源名称

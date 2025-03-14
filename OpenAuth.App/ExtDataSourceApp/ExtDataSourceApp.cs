@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Infrastructure;
 using OpenAuth.App.Interface;
@@ -39,6 +41,22 @@ namespace OpenAuth.App
         }
 
         /// <summary>
+        /// 获取数据库类型
+        /// </summary>
+        /// <returns></returns>
+        public TableData GetDbTypes()
+        {
+            var result = new TableData();
+            // 创建包含键值对的列表
+            var dbTypeList = Enum.GetValues(typeof(DbType))
+                .Cast<DbType>()
+                .Select(item => new { label = item.ToString(), value = (int)item })
+                .ToList();
+            result.data = dbTypeList;
+            return result;
+        }
+
+        /// <summary>
         /// 测试数据源连接
         /// </summary>
         /// <param name="id">数据源ID</param>
@@ -53,7 +71,7 @@ namespace OpenAuth.App
             var conn = new SqlSugarClient(new ConnectionConfig()
             {
                 ConnectionString = obj.Connectionstring,
-                DbType = (DbType)Enum.Parse(typeof(DbType), obj.Dbtype),
+                DbType = (DbType)Enum.Parse(typeof(DbType), obj.Dbtype.ToString()),
                 IsAutoCloseConnection = true,
             });
             conn.Open();
@@ -62,6 +80,7 @@ namespace OpenAuth.App
         public void Add(AddOrUpdateExternalDataSourceReq req)
         {
             var obj = req.MapTo<ExternalDataSource>();
+            obj.Id = Guid.NewGuid().ToString();
             obj.Createtime = DateTime.Now;
             var user = _auth.GetCurrentUser().User;
             obj.Createuserid = user.Id;
