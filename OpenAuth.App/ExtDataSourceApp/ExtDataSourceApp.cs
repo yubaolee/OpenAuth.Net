@@ -38,6 +38,27 @@ namespace OpenAuth.App
             return result;
         }
 
+        /// <summary>
+        /// 测试数据源连接
+        /// </summary>
+        /// <param name="id">数据源ID</param>
+        /// <returns>是否连接成功</returns>
+        public bool TestConnection(string id)
+        {
+            var obj = Repository.GetById(id);
+            if (obj == null)
+            {
+                throw new Exception("数据源不存在");
+            }
+            var conn = new SqlSugarClient(new ConnectionConfig()
+            {
+                ConnectionString = obj.Connectionstring,
+                DbType = (DbType)Enum.Parse(typeof(DbType), obj.Dbtype),
+                IsAutoCloseConnection = true,
+            });
+            conn.Open();
+            return true;
+        }
         public void Add(AddOrUpdateExternalDataSourceReq req)
         {
             var obj = req.MapTo<ExternalDataSource>();
