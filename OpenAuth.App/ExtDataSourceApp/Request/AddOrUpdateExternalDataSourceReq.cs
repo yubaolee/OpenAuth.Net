@@ -18,40 +18,10 @@ namespace OpenAuth.App.Request
 
     public class AddOrUpdateExternalDataSourceReq
     {
-        /// <summary>
-       ///创建时间
-       /// </summary>
-       public DateTime Createtime { get; set; }
-
-       /// <summary>
-       ///创建用户名
-       /// </summary>
-       public string Createusername { get; set; }
-
-       /// <summary>
-       ///创建用户ID
-       /// </summary>
-       public string Createuserid { get; set; }
-
-       /// <summary>
-       ///更新用户ID
-       /// </summary>
-       public string Updateuserid { get; set; }
-
-       /// <summary>
-       ///更新用户名
-       /// </summary>
-       public string Updateusername { get; set; }
-
        /// <summary>
        ///是否测试成功
        /// </summary>
        public bool? Testsuccess { get; set; }
-
-       /// <summary>
-       ///最后测试时间
-       /// </summary>
-       public DateTime? Updatetime { get; set; }
 
        /// <summary>
        ///主键

@@ -93,6 +93,7 @@ namespace OpenAuth.App
             var user = _auth.GetCurrentUser().User;
             Repository.Update(u => new ExternalDataSource
             {
+                Name = obj.Name,
                 Dbtype = obj.Dbtype,
                 Databasename = obj.Databasename,
                 Server = obj.Server,
