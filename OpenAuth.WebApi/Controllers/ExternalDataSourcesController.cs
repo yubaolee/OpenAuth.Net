@@ -56,6 +56,25 @@ namespace OpenAuth.WebApi.Controllers
             return result;
         }
 
+        //测试连接
+       [HttpPost]
+        public Response TestConnection([FromBody]TestConnectionReq obj)
+        {
+            var result = new Response();
+            try
+            {
+                _app.TestConnection(obj);
+
+            }
+            catch (Exception ex)
+            {
+                result.Code = 500;
+                result.Message = ex.InnerException?.Message ?? ex.Message;
+            }
+
+            return result;
+        }
+
         //修改
        [HttpPost]
         public Response Update([FromBody]AddOrUpdateExternalDataSourceReq obj)

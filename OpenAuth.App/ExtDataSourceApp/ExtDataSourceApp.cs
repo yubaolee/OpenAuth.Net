@@ -61,17 +61,12 @@ namespace OpenAuth.App
         /// </summary>
         /// <param name="id">数据源ID</param>
         /// <returns>是否连接成功</returns>
-        public bool TestConnection(string id)
+        public bool TestConnection(TestConnectionReq req)
         {
-            var obj = Repository.GetById(id);
-            if (obj == null)
-            {
-                throw new Exception("数据源不存在");
-            }
             var conn = new SqlSugarClient(new ConnectionConfig()
             {
-                ConnectionString = obj.Connectionstring,
-                DbType = (DbType)Enum.Parse(typeof(DbType), obj.Dbtype.ToString()),
+                ConnectionString = req.Connectionstring,
+                DbType = (DbType)Enum.Parse(typeof(DbType), req.Dbtype.ToString()),
                 IsAutoCloseConnection = true,
             });
             conn.Open();
@@ -115,4 +110,6 @@ namespace OpenAuth.App
         {
         }
     }
+
+    public record TestConnectionReq(string Connectionstring, int Dbtype);
 }
