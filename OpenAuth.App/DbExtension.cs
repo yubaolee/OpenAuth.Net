@@ -3,35 +3,31 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Linq;
-using Autofac.Extensions.DependencyInjection;
 using Humanizer;
 using Infrastructure;
 using Infrastructure.Utilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Internal;
-using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
-using OpenAuth.Repository;
+using OpenAuth.Repository.Core;
 using OpenAuth.Repository.Domain;
 using OpenAuth.Repository.QueryObj;
+using SqlSugar;
 
 namespace OpenAuth.App
 {
     public class DbExtension
     {
-        private List<DbContext> _contexts = new List<DbContext>();
+        protected ISqlSugarClient SugarClient;
 
         private IOptions<AppSetting> _appConfiguration;
         private IHttpContextAccessor _httpContextAccessor;
 
-        public DbExtension(IOptions<AppSetting> appConfiguration, OpenAuthDBContext openAuthDbContext, IHttpContextAccessor httpContextAccessor)
+        public DbExtension(IOptions<AppSetting> appConfiguration, ISqlSugarClient sugarClient, IHttpContextAccessor httpContextAccessor)
         {
             _appConfiguration = appConfiguration;
             _httpContextAccessor = httpContextAccessor;
-            _contexts.Add(openAuthDbContext);  //如果有多个DBContext，可以按OpenAuthDBContext同样的方式添加到_contexts中
+            SugarClient = sugarClient;
         }
 
         /// <summary>
@@ -43,19 +39,18 @@ namespace OpenAuth.App
         public List<BuilderTableColumn> GetTableColumnsFromDb(string moduleName)
         {
             var result = new List<BuilderTableColumn>();
-            const string domain = "openauth.repository.domain.";
-            IEntityType entity = null;
-            _contexts.ForEach(u =>
-            {
-                entity = u.Model.GetEntityTypes()
-                    .FirstOrDefault(u => u.Name.ToLower() == domain + moduleName.ToLower());
-            });
-            if (entity == null)
+            
+            //获取所有继承了StringEntity的类型
+            //单元测试时，这个一直报错？？？？奇怪
+            var entiTypes = typeof(StringEntity).Assembly.GetTypes().Where(u => typeof(StringEntity).IsAssignableFrom(u) && !u.IsAbstract).ToList();
+
+            var entityType = entiTypes.FirstOrDefault(u => u.Name.ToLower() == moduleName.ToLower());
+            if (entityType == null)
             {
                 throw new Exception($"未能找到{moduleName}对应的实体类");
             }
 
-            foreach (var property in entity.ClrType.GetProperties())
+            foreach (var property in entityType.GetProperties())
             {
                 object[] objs = property.GetCustomAttributes(typeof(DescriptionAttribute), true);
                 object[] browsableObjs = property.GetCustomAttributes(typeof(BrowsableAttribute), true);
@@ -80,29 +75,6 @@ namespace OpenAuth.App
             }
 
             return result;
-        }
-
-        /// <summary>
-        /// 获取数据库DbContext中所有的实体名称。
-        /// <para>注意！并不能获取数据库中的所有表</para>
-        /// </summary>
-        public List<string> GetDbEntityNames()
-        {
-            var names = new List<string>();
-            var models = _contexts.Select(u => u.Model);
-
-            foreach (var model in models)
-            {
-                // Get all the entity types information contained in the DbContext class, ...
-                var entityTypes = model.GetEntityTypes();
-                foreach (var entityType in entityTypes)
-                {
-                    var tableNameAnnotation = entityType.GetAnnotation("Relational:TableName");
-                    names.Add(tableNameAnnotation.Value.ToString());
-                }
-            }
-
-            return names;
         }
 
         /// <summary>
@@ -184,15 +156,12 @@ namespace OpenAuth.App
             and utc.table_name = '{tableName}'
             order by column_id;  ";
 
-            foreach (var context in _contexts)
+            var columns = SugarClient.SqlQueryable<SysTableColumn>(sql);
+            var columnList = columns?.ToList();
+            if (columnList != null && columnList.Any())
             {
-                var columns = context.Set<SysTableColumn>().FromSqlRaw(sql);
-                var columnList = columns?.ToList();
-                if (columnList != null && columnList.Any())
-                {
-                    columnList.ForEach(u => u.ColumnName = u.ColumnName.Transform(To.LowerCase, To.TitleCase));
-                    return columnList;
-                }
+                columnList.ForEach(u => u.ColumnName = u.ColumnName.Transform(To.LowerCase, To.TitleCase));
+                return columnList;
             }
 
             return new List<SysTableColumn>();
@@ -250,16 +219,15 @@ namespace OpenAuth.App
                 WHERE
                     table_name = '{tableName}'";
 
-            foreach (var context in _contexts)
-            {
-                var columns = context.Set<SysTableColumn>().FromSqlRaw(sql);
+          
+                var columns = SugarClient.SqlQueryable<SysTableColumn>(sql);
                 var columnList = columns?.ToList();
                 if (columnList != null && columnList.Any())
                 {
                     columnList.ForEach(u => u.ColumnName = u.ColumnName.Transform(To.LowerCase, To.TitleCase));
                     return columnList;
                 }
-            }
+  
 
             return new List<SysTableColumn>();
 
@@ -327,15 +295,12 @@ namespace OpenAuth.App
             and schema.nspname = 'public' -- replace 'your_schema' with your schema name
             and class.relname = '{tableName}'";
 
-            foreach (var context in _contexts)
+            var columns = SugarClient.SqlQueryable<SysTableColumn>(sql);
+            var columnList = columns?.ToList();
+            if (columnList != null && columnList.Any())
             {
-                var columns = context.Set<SysTableColumn>().FromSqlRaw(sql);
-                var columnList = columns?.ToList();
-                if (columnList != null && columnList.Any())
-                {
-                    columnList.ForEach(u => u.ColumnName = u.ColumnName.Transform(To.LowerCase, To.TitleCase));
-                    return columnList;
-                }
+                columnList.ForEach(u => u.ColumnName = u.ColumnName.Transform(To.LowerCase, To.TitleCase));
+                return columnList;
             }
 
             return new List<SysTableColumn>();
@@ -435,14 +400,11 @@ namespace OpenAuth.App
                   WHERE obj.name =  '{tableName}') AS t
             ORDER BY t.colorder";
 
-            foreach (var context in _contexts)
+            var columns = SugarClient.SqlQueryable<SysTableColumn>(sql);
+            var columnList = columns?.ToList();
+            if (columnList != null && columnList.Any())
             {
-                var columns = context.Set<SysTableColumn>().FromSqlRaw(sql);
-                var columnList = columns?.ToList();
-                if (columnList != null && columnList.Any())
-                {
-                    return columnList;
-                }
+                return columnList;
             }
             return new List<SysTableColumn>();
         }
