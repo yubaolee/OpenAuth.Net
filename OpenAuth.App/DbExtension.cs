@@ -408,5 +408,23 @@ namespace OpenAuth.App
             }
             return new List<SysTableColumn>();
         }
+
+        /// <summary>
+        /// 设置数据库连接
+        /// </summary>
+        /// <param name="connectionString">数据库连接字符串</param>
+        /// <param name="dbType">数据库类型</param>
+        public void SetConnection(string connectionString, int? dbType)
+        {
+            var config = new ConnectionConfig
+            {
+                ConnectionString = connectionString,
+                IsAutoCloseConnection = true,
+                DbType = (SqlSugar.DbType)dbType
+            };
+            // 创建新的SqlSugarClient实例
+            SugarClient = new SqlSugarClient(config);
+            
+        }
     }
 }

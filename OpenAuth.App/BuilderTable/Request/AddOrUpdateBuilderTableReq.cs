@@ -83,5 +83,10 @@ namespace OpenAuth.App.Request
         /// 子表外键
         /// </summary>
         public string ForeignKey { get; set; }
+
+        /// <summary>
+        /// 外部数据源ID
+        /// </summary>
+        public string ExternalDataSourceId { get; set; }
     }
 }

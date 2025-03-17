@@ -157,5 +157,11 @@ namespace OpenAuth.Repository.Domain
         /// </summary>
         [Description("主表ID，如果为空表示为主表")]
         public string ParentTableId { get; set; }
+
+         /// <summary>
+        /// 外部数据源ID
+        /// </summary>
+        [Description("外部数据源ID")]
+        public string ExternalDataSourceId { get; set; }
     }
 }

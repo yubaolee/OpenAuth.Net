@@ -25,7 +25,7 @@ using OpenAuth.Repository.Interface;
 
 namespace OpenAuth.App
 {
-    public class BuilderTableApp : BaseStringApp<BuilderTable,OpenAuthDBContext>
+    public class BuilderTableApp : BaseStringApp<BuilderTable, OpenAuthDBContext>
     {
         private BuilderTableColumnApp _builderTableColumnApp;
         private CategoryApp _categoryApp;
@@ -34,7 +34,7 @@ namespace OpenAuth.App
         private string _startName = "";
         private IOptions<AppSetting> _appConfiguration;
 
-        public BuilderTableApp(IUnitWork<OpenAuthDBContext> unitWork, IRepository<BuilderTable,OpenAuthDBContext> repository,
+        public BuilderTableApp(IUnitWork<OpenAuthDBContext> unitWork, IRepository<BuilderTable, OpenAuthDBContext> repository,
             RevelanceManagerApp app, IAuth auth, DbExtension dbExtension, BuilderTableColumnApp builderTableColumnApp,
             IOptions<AppSetting> appConfiguration, CategoryApp categoryApp) : base(unitWork, repository, auth)
         {
@@ -93,10 +93,10 @@ namespace OpenAuth.App
                 objs = objs.Where(u => u.Id.Contains(request.key));
             }
 
-            result.data =await objs.OrderBy(u => u.Id)
+            result.data = await objs.OrderBy(u => u.Id)
                 .Skip((request.page - 1) * request.limit)
                 .Take(request.limit).ToListAsync();
-            result.count =await objs.CountAsync();
+            result.count = await objs.CountAsync();
             return result;
         }
 
@@ -111,14 +111,14 @@ namespace OpenAuth.App
             {
                 throw new Exception("模块名称不能为空");
             }
-            
+
             if (string.IsNullOrEmpty(req.Namespace))
             {
                 throw new Exception("命名空间不能为空");
             }
-            
+
             var obj = AddTableAndColumns(req.MapTo<BuilderTable>());
-            
+
             UnitWork.Save();
             return obj.Id;
         }
@@ -192,7 +192,8 @@ namespace OpenAuth.App
                 ParentTableId = obj.ParentTableId,
                 UpdateTime = DateTime.Now,
                 UpdateUserId = user.Id,
-                UpdateUserName = user.Name
+                UpdateUserName = user.Name,
+                ExternalDataSourceId = obj.ExternalDataSourceId  //外部数据源ID
             });
         }
 
@@ -228,8 +229,8 @@ namespace OpenAuth.App
 
             CreateEntityModel(tableColumns, sysTableInfo);
         }
-        
-        
+
+
         /// <summary>
         /// 创建业务逻辑层
         /// </summary>
@@ -243,12 +244,12 @@ namespace OpenAuth.App
                 || mainColumns.Count == 0)
                 throw new Exception("未能找到正确的模版信息");
 
-                //生成应用层
+            //生成应用层
             GenerateApp(sysTableInfo, mainColumns);
 
             //生成应用层的请求参数
             GenerateAppReq(sysTableInfo, mainColumns);
-            
+
             //生成WebApI接口
             GenerateWebApi(sysTableInfo, mainColumns);
         }
@@ -278,48 +279,48 @@ namespace OpenAuth.App
             {
                 domainContent = FileHelper.ReadFile(@"Template\\SingleTable\\BuildApp.html");
             }
-                domainContent = domainContent
-                .Replace("{TableName}", sysTableInfo.TableName)
-                .Replace("{ModuleCode}", sysTableInfo.ModuleCode)
-                .Replace("{ModuleName}", sysTableInfo.ModuleName)
-                .Replace("{ClassName}", sysTableInfo.ClassName)
-                .Replace("{StartName}", StratName);
+            domainContent = domainContent
+            .Replace("{TableName}", sysTableInfo.TableName)
+            .Replace("{ModuleCode}", sysTableInfo.ModuleCode)
+            .Replace("{ModuleName}", sysTableInfo.ModuleName)
+            .Replace("{ClassName}", sysTableInfo.ClassName)
+            .Replace("{StartName}", StratName);
 
-                if (!string.IsNullOrEmpty(sysTableInfo.ForeignKey))
-                {   //替换外键模版
-                    var foreignTemplate = $"objs = objs.Where(u => u.{sysTableInfo.ForeignKey} == request.{sysTableInfo.ForeignKey});";
-                    domainContent = domainContent
-                        .Replace("{ForeignKeyTemplate}", foreignTemplate);
-                }
-                else
+            if (!string.IsNullOrEmpty(sysTableInfo.ForeignKey))
+            {   //替换外键模版
+                var foreignTemplate = $"objs = objs.Where(u => u.{sysTableInfo.ForeignKey} == request.{sysTableInfo.ForeignKey});";
+                domainContent = domainContent
+                    .Replace("{ForeignKeyTemplate}", foreignTemplate);
+            }
+            else
+            {
+                domainContent = domainContent
+                    .Replace("{ForeignKeyTemplate}", "");
+            }
+
+            var primarykey = sysColumns.FirstOrDefault(u => u.IsKey);
+            if (primarykey == null)
+            {
+                throw new Exception($"未能找到表{sysTableInfo.TableName}的主键字段");
+            }
+            if (primarykey.ColumnType == "decimal" || primarykey.ColumnType == "numeric") //是否为数字
+            {
+                if (primarykey.IsIncrement) //是否自增
                 {
-                    domainContent = domainContent
-                        .Replace("{ForeignKeyTemplate}", "");
+                    domainContent = domainContent.Replace("{BaseAppName}", "BaseIntAutoGenApp");
                 }
-                
-                var primarykey = sysColumns.FirstOrDefault(u => u.IsKey);
-                if (primarykey == null)
+                else //普通的雪花算法生成id
                 {
-                    throw new Exception($"未能找到表{sysTableInfo.TableName}的主键字段");
+                    domainContent = domainContent.Replace("{BaseAppName}", "BaseLongApp");
                 }
-                if (primarykey.ColumnType == "decimal" || primarykey.ColumnType == "numeric") //是否为数字
-                {
-                    if(primarykey.IsIncrement) //是否自增
-                    {
-                        domainContent = domainContent.Replace("{BaseAppName}", "BaseIntAutoGenApp");
-                    }
-                    else //普通的雪花算法生成id
-                    {
-                        domainContent = domainContent.Replace("{BaseAppName}", "BaseLongApp");
-                    }
-                }
-                else 
-                {
-                    domainContent = domainContent.Replace("{BaseAppName}", "BaseStringApp");
-                }
+            }
+            else
+            {
+                domainContent = domainContent.Replace("{BaseAppName}", "BaseStringApp");
+            }
             FileHelper.WriteFile($"{appRootPath}\\{sysTableInfo.ModuleCode}", $"{sysTableInfo.ModuleCode}.cs", domainContent);
         }
-        
+
         /// <summary>
         /// 生成APP层的请求参数
         /// </summary>
@@ -420,30 +421,30 @@ namespace OpenAuth.App
                 .Replace("{ModuleName}", sysTableInfo.ModuleName)
                 .Replace("{ClassName}", sysTableInfo.ClassName)
                 .Replace("{StartName}", StratName);
-                
-                var primarykey = sysColumns.FirstOrDefault(u => u.IsKey);
-                if (primarykey == null)
+
+            var primarykey = sysColumns.FirstOrDefault(u => u.IsKey);
+            if (primarykey == null)
+            {
+                throw new Exception($"未能找到表{sysTableInfo.TableName}的主键字段");
+            }
+            if (primarykey.ColumnType == "decimal" || primarykey.ColumnType == "numeric") //是否为数字
+            {
+                if (primarykey.IsIncrement) //是否自增
                 {
-                    throw new Exception($"未能找到表{sysTableInfo.TableName}的主键字段");
+                    domainContent = domainContent.Replace("{KeyTypeName}", "int");
                 }
-                if (primarykey.ColumnType == "decimal" || primarykey.ColumnType == "numeric") //是否为数字
+                else //普通的雪花算法生成id
                 {
-                    if(primarykey.IsIncrement) //是否自增
-                    {
-                        domainContent = domainContent.Replace("{KeyTypeName}", "int");
-                    }
-                    else //普通的雪花算法生成id
-                    {
-                        domainContent = domainContent.Replace("{KeyTypeName}", "decimal");
-                    }
+                    domainContent = domainContent.Replace("{KeyTypeName}", "decimal");
                 }
-                else 
-                {
-                    domainContent = domainContent.Replace("{KeyTypeName}", "string");
-                }
+            }
+            else
+            {
+                domainContent = domainContent.Replace("{KeyTypeName}", "string");
+            }
             FileHelper.WriteFile(controllerPath, controllerName + ".cs", domainContent);
         }
-        
+
         /// <summary>
         /// 创建实体
         /// </summary>
@@ -467,8 +468,8 @@ namespace OpenAuth.App
                 attributeBuilder.Append("\r\n");
                 attributeBuilder.Append("       /// </summary>");
                 attributeBuilder.Append("\r\n");
-                
-                attributeBuilder.Append("       [Description(\""+ column.Remark +"\")]");
+
+                attributeBuilder.Append("       [Description(\"" + column.Remark + "\")]");
                 attributeBuilder.Append("\r\n");
 
                 string entityType = column.EntityType;
@@ -481,7 +482,7 @@ namespace OpenAuth.App
                 attributeBuilder.Append("\r\n\r\n       ");
 
                 constructionBuilder.Append("       this." + column.EntityName
-                                                   + "=" + (GetDefault(column.EntityType)??"\"\"")
+                                                   + "=" + (GetDefault(column.EntityType) ?? "\"\"")
                                                    + ";\r\n");
             }
 
@@ -500,7 +501,7 @@ namespace OpenAuth.App
             }
             if (primarykey.ColumnType == "decimal" || primarykey.ColumnType == "numeric") //是否为数字
             {
-                if(primarykey.IsIncrement) //是否自增
+                if (primarykey.IsIncrement) //是否自增
                 {
                     domainContent = domainContent.Replace("{BaseEntityName}", "IntAutoGenEntity");
                 }
@@ -509,7 +510,7 @@ namespace OpenAuth.App
                     domainContent = domainContent.Replace("{BaseEntityName}", "LongEntity");
                 }
             }
-            else 
+            else
             {
                 domainContent = domainContent.Replace("{BaseEntityName}", "StringEntity");
             }
@@ -571,7 +572,7 @@ namespace OpenAuth.App
 
             return null;
         }
-        
+
 
         /// <summary>
         /// 校验模块是否已经存在
@@ -594,7 +595,7 @@ namespace OpenAuth.App
                                            && x.BaseType == typeof(StringEntity));
                 foreach (var entity in types)
                 {
-                    if (entity.Name == moduleCode )
+                    if (entity.Name == moduleCode)
                         throw new Exception($"实际表名【{moduleCode}】已创建实体，不能创建实体");
 
                     if (entity.Name != moduleCode)
@@ -626,7 +627,7 @@ namespace OpenAuth.App
             if (!string.IsNullOrEmpty(sysTableInfo.ParentTableId))
             {
                 return;
-               // throw new Exception("子表不能直接生成vue，请使用该表对应的父表生成vue或删除该表的父表");
+                // throw new Exception("子表不能直接生成vue，请使用该表对应的父表生成vue或删除该表的父表");
             }
 
             var tableColumns = _builderTableColumnApp.Find(req.Id);
@@ -639,12 +640,12 @@ namespace OpenAuth.App
 
             //查找是否存在子表额情况
             var subTable = Repository.FirstOrDefault(u => u.ParentTableId == req.Id);
-            
+
             if (subTable == null)  //如果子表不存在，则用单模版生成
             {
                 if (req.Version == "vue3")
                 {
-                    if (sysTableInfo.IsDynamicHeader) 
+                    if (sysTableInfo.IsDynamicHeader)
                     {
                         domainContent = FileHelper.ReadFile(@"Template\\SingleTable\\BuildVue3WithDynamicHeader.html");
                     }
@@ -655,7 +656,7 @@ namespace OpenAuth.App
                 }
                 else
                 {
-                    if (sysTableInfo.IsDynamicHeader) 
+                    if (sysTableInfo.IsDynamicHeader)
                     {
                         domainContent = FileHelper.ReadFile(@"Template\\SingleTable\\BuildVueWithDynamicHeader.html");
                     }
@@ -664,18 +665,18 @@ namespace OpenAuth.App
                         domainContent = FileHelper.ReadFile(@"Template\\SingleTable\\BuildVue.html");
                     }
                 }
-                
 
-               domainContent = domainContent.Replace("{ClassName}", sysTableInfo.ClassName)
-                    .Replace("{TableName}", sysTableInfo.ClassName.ToCamelCase())
-                    .Replace("{HeaderList}", BuilderHeader(tableColumns).ToString());
+
+                domainContent = domainContent.Replace("{ClassName}", sysTableInfo.ClassName)
+                     .Replace("{TableName}", sysTableInfo.ClassName.ToCamelCase())
+                     .Replace("{HeaderList}", BuilderHeader(tableColumns).ToString());
             }
             else //如果存在子表，则使用主从表生成
             {
                 var subTableColumns = _builderTableColumnApp.Find(subTable.Id);
                 if (subTableColumns.Count == 0)
                     throw new Exception($"未找到子表{subTable.ClassName}的字段定义");
-                
+
                 if (req.Version == "vue3")
                 {
                     if (sysTableInfo.IsDynamicHeader)
@@ -699,7 +700,7 @@ namespace OpenAuth.App
                     }
                 }
 
-                
+
 
                 domainContent = domainContent.Replace("{ParentTableId}", subTable.ForeignKey.ToCamelCase())
                     .Replace("{FirstTableName}", sysTableInfo.ClassName.ToCamelCase())
@@ -711,8 +712,8 @@ namespace OpenAuth.App
 
 
 
-            
-            FileHelper.WriteFile(Path.Combine(req.VueProjRootPath, $"src/views/{sysTableInfo.ClassName.ToLower()}s/"), 
+
+            FileHelper.WriteFile(Path.Combine(req.VueProjRootPath, $"src/views/{sysTableInfo.ClassName.ToLower()}s/"),
                 $"index.vue",
                 domainContent);
         }
@@ -759,15 +760,15 @@ namespace OpenAuth.App
                 || tableColumns == null
                 || tableColumns.Count == 0)
                 throw new Exception("未能找到正确的模版信息");
-            
+
             var domainContent = FileHelper.ReadFile(@"Template\\BuildVueApi.html");
 
             domainContent = domainContent.Replace("{TableName}", sysTableInfo.ClassName.ToCamelCase());
-            
-            FileHelper.WriteFile(Path.Combine(req.VueProjRootPath, $"src/api/"),$"{sysTableInfo.ClassName.ToCamelCase()}s.js", 
+
+            FileHelper.WriteFile(Path.Combine(req.VueProjRootPath, $"src/api/"), $"{sysTableInfo.ClassName.ToCamelCase()}s.js",
                 domainContent);
         }
-        
+
         /// <summary>
         /// 加载所有的主表（parentId为空的）
         /// </summary>
@@ -775,14 +776,14 @@ namespace OpenAuth.App
         public async Task<TableData> AllMain()
         {
             var result = new TableData();
-            var objs = UnitWork.Find<BuilderTable>(u =>string.IsNullOrEmpty(u.ParentTableId)).Select(u=>new
+            var objs = UnitWork.Find<BuilderTable>(u => string.IsNullOrEmpty(u.ParentTableId)).Select(u => new
             {
-                Id= u.Id,
+                Id = u.Id,
                 Name = u.TableName
             });
 
-            result.data =await objs.OrderBy(u => u.Id).ToListAsync();
-            result.count =await objs.CountAsync();
+            result.data = await objs.OrderBy(u => u.Id).ToListAsync();
+            result.count = await objs.CountAsync();
             return result;
         }
     }
