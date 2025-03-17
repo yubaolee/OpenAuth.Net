@@ -16,16 +16,9 @@ namespace OpenAuth.App.Request
     public class SyncStructureReq 
     {
         /// <summary>
-        /// 列ID
-        /// <para>Id为空则为添加</para>
-        /// </summary>
-        public string Id { get; set; }
-
-
-        /// <summary>
         /// 代码生成器主表ID
         /// </summary>
-        public string BuilderTableId { get; set; }
+        public string Id { get; set; }
         
         /// <summary>
         /// 表英文全称

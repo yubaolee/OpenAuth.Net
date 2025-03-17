@@ -82,17 +82,7 @@ namespace OpenAuth.App
         /// </summary>
         public void Sync(SyncStructureReq req)
         {
-            var builderTable = SugarClient.Queryable<BuilderTable>().First(u => u.Id == req.BuilderTableId);
-            if (builderTable != null)
-            {
-                //如果代码生成器配置了外部数据库连接，则使用外部数据库连接
-                var connection = SugarClient.Queryable<ExternalDataSource>().First(u => u.Id == builderTable.ExternalDataSourceId);
-                if (connection != null)
-                {
-                    var dbType = connection.Dbtype;
-                    _dbExtension.SetConnection(connection.Connectionstring, dbType);
-                }
-            }
+            _dbExtension.ProcessExternalDb(req.Id);  //先处理外部数据库连接
             var columns = _dbExtension.GetDbTableStructure(req.TableName);
             if (!columns.Any())
             {

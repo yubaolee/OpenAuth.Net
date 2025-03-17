@@ -19,6 +19,7 @@ namespace OpenAuth.App
     public class DbExtension
     {
         protected ISqlSugarClient SugarClient;
+        private string _dbTypeStr;
 
         private IOptions<AppSetting> _appConfiguration;
         private IHttpContextAccessor _httpContextAccessor;
@@ -84,16 +85,20 @@ namespace OpenAuth.App
         /// <returns></returns>
         public IList<SysTableColumn> GetDbTableStructure(string tableName)
         {
-            var dbtype = _appConfiguration.Value.DbTypes[_httpContextAccessor.GetTenantId()];
-            if (dbtype == Define.DBTYPE_MYSQL)
+            //如果是空,说明没有通过ProcessExternalDb设置过，直接从本地读取
+            if(string.IsNullOrEmpty(_dbTypeStr)){
+                _dbTypeStr = _appConfiguration.Value.DbTypes[_httpContextAccessor.GetTenantId()];
+            }
+
+            if (_dbTypeStr == Define.DBTYPE_MYSQL)
             {
                 return GetMySqlStructure(tableName);
             }
-            else if (dbtype == Define.DBTYPE_SQLSERVER)
+            else if (_dbTypeStr == Define.DBTYPE_SQLSERVER)
             {
                 return GetSqlServerStructure(tableName);
             }
-            else if (dbtype == Define.DBTYPE_PostgreSQL)
+            else if (_dbTypeStr == Define.DBTYPE_PostgreSQL)
             {
                 return GetPostgreStructure(tableName);
             }
@@ -410,12 +415,48 @@ namespace OpenAuth.App
         }
 
         /// <summary>
+        /// 处理外部数据库
+        /// </summary>
+        /// <param name="buildertableId">代码生成器表ID</param>
+        public void ProcessExternalDb(string buildertableId){
+            var builderTable = SugarClient.Queryable<BuilderTable>().First(u => u.Id == buildertableId);
+            if (builderTable != null)
+            {
+                //如果代码生成器配置了外部数据库连接，则使用外部数据库连接
+                var connection = SugarClient.Queryable<ExternalDataSource>().First(u => u.Id == builderTable.ExternalDataSourceId);
+                if (connection != null)
+                {
+                    var dbType = connection.Dbtype;
+                    SetConnection(connection.Connectionstring, dbType);
+                }
+            }
+        }
+
+        /// <summary>
         /// 设置数据库连接
         /// </summary>
         /// <param name="connectionString">数据库连接字符串</param>
         /// <param name="dbType">数据库类型</param>
-        public void SetConnection(string connectionString, int? dbType)
+        private void SetConnection(string connectionString, int? dbType)
         {
+            switch ((SqlSugar.DbType)dbType)
+            {
+                case SqlSugar.DbType.MySql:
+                    _dbTypeStr = Define.DBTYPE_MYSQL;
+                    break;
+                case SqlSugar.DbType.SqlServer:
+                    _dbTypeStr = Define.DBTYPE_SQLSERVER;
+                    break;
+                case SqlSugar.DbType.Oracle:
+                    _dbTypeStr = Define.DBTYPE_ORACLE;
+                    break;
+                case SqlSugar.DbType.PostgreSQL:
+                    _dbTypeStr = Define.DBTYPE_PostgreSQL;
+                    break;
+                default:
+                    _dbTypeStr = Define.DBTYPE_MYSQL;
+                    break;
+            }
             var config = new ConnectionConfig
             {
                 ConnectionString = connectionString,

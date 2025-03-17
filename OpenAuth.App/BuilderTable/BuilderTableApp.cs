@@ -137,7 +137,9 @@ namespace OpenAuth.App
             obj.CreateUserId = user.Id;
             obj.CreateUserName = user.Name;
             UnitWork.Add(obj);
+            UnitWork.Save();  //需要先保存表结构，后面才能正常判定
 
+            _dbExtension.ProcessExternalDb(obj.Id);  //先处理外部数据库连接
             var columns = _dbExtension.GetDbTableStructure(obj.TableName);
             if (!columns.Any())
             {
