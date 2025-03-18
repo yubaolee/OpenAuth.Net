@@ -1,7 +1,6 @@
+# 登录认证
 
-# 登录认证及OAuth集成
-
-OpenAuth.Net支持两种登录认证方式：自定义token认证和基于IdentityServer的OAuth认证。
+OpenAuth.Net支持两种登录认证方式：token认证和自己搭建的OpenAuth.IdentityServer认证。
 
 这两种方式通过配置webapi或mvc的appsettings.json可以自由切换:
 
@@ -9,10 +8,19 @@ OpenAuth.Net支持两种登录认证方式：自定义token认证和基于Identi
 "IdentityServerUrl": "http://localhost:12796", //IdentityServer服务器地址。如果为空，则不启用OAuth认证
 ```
 
-1. 当IdentityServerUrl为空时，采用普通的token认证，这时不需要OpenAuth.Identity启动支持。
+1. 当IdentityServerUrl为空时，采用普通的token认证，这时不需要OpenAuth.Identity启动支持。无论是OpenAuth.Mvc还是OpenAuth.WebApi，都会在请求头中添加X-Token字段，携带token值。以OpenAuth.WebApi为例，客户端在访问的接口时，先调用登录接口,得到授权token：
 
-2. 当IdentityServerUrl配置了地址时，则采用Identity认证方式。
+![20220119182845](http://img.openauth.net.cn/20220119182845.png)
 
+然后把获取到的token值添加到http header的X-Token中,即可调用对应的API接口。
+
+![20220119182853](http://img.openauth.net.cn/20220119182853.png)
+
+2. 当IdentityServerUrl配置了地址时，则采用自己搭建的OpenAuth.IdentityServer认证方式。
+
+不同于其他项目的统一登录（如微信登录、支付宝登录等）,OpenAuth.Net的统一登录指的是自己搭建一套OAuth登录服务，提供给其他项目使用。即OpenAuth.IdentityServer。这种模式下，无论是OpenAuth.Mvc还是OpenAuth.WebApi，都只是它的客户端。
+
+![2025-03-18-23-12-18](http://img.openauth.net.cn/2025-03-18-23-12-18.png)
 
 ## OpenAuth.Mvc OAuth认证
 
@@ -24,15 +32,6 @@ OpenAuth.Net支持两种登录认证方式：自定义token认证和基于Identi
 
 ![](/identity.png)
 
-## OpenAuth.WebApi普通token认证
-
-当IdentityServerUrl配置为空时，采用普通的token认证，客户端在访问的接口时，先调用登录接口,得到授权token：
-
-![20220119182845](http://img.openauth.net.cn/20220119182845.png)
-
-然后把获取到的token值添加到http header的X-Token中,即可调用对应的API接口。
-
-![20220119182853](http://img.openauth.net.cn/20220119182853.png)
 
 ## OpenAuth.WebApi OAuth
 
