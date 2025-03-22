@@ -55,7 +55,7 @@
 
 **另外** 企业版包含一套基于有赞Vant+Vue3的移动端界面，[请使用浏览器移动模式查看效果](http://demo.openauth.net.cn:1804)
 
-企业版/高级版附赠VIP服务，提供VIP专属QQ群，企业报销凭据、专属内部文档、技术咨询服务等。[如何获取请查看这里](http://openauth.net.cn/question/detail.html?id=a2be2d61-7fcb-4df8-8be2-9f296c22a89c)，快加入VIP大家庭 **与有理想的.NET开发者一起成长**
+企业版/高级版附赠VIP服务，提供VIP专属QQ群，企业报销凭据、专属内部文档、技术咨询服务等。[如何获取请查看这里](http://old.openauth.net.cn/question/detail.html?id=a2be2d61-7fcb-4df8-8be2-9f296c22a89c)，快加入VIP大家庭 **与有理想的.NET开发者一起成长**
 
 效果如下：
 ![API启动效果图](https://images.gitee.com/uploads/images/2021/0422/012037_ec51b7e6_362401.png "api启动.png")
@@ -66,7 +66,7 @@
 
 ## 官方QQ交流群  
 
-1. ***618473076*** **社区VIP专属QQ群，第一时间提供开发进度、使用手册、技术咨询服务等，[如何加入VIP请移步这里](http://openauth.net.cn/question/detail.html?id=a2be2d61-7fcb-4df8-8be2-9f296c22a89c)**
+1. ***618473076*** **社区VIP专属QQ群，第一时间提供开发进度、使用手册、技术咨询服务等，[如何加入VIP请移步这里](http://old.openauth.net.cn/question/detail.html?id=a2be2d61-7fcb-4df8-8be2-9f296c22a89c)**
 
 1. 484498493【已满】
 

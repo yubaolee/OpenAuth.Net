@@ -2,7 +2,7 @@ OpenAuth.Pro是一套全新的前端界面，基于vue2 + element-ui /vue3 + ele
 
 ![系统架构](http://img.openauth.net.cn/系统架构.png)
 
-企业版代码获取方式：[http://www.openauth.net.cn/question/detail.html?id=a2be2d61-7fcb-4df8-8be2-9f296c22a89c](http://www.openauth.net.cn/question/detail.html?id=a2be2d61-7fcb-4df8-8be2-9f296c22a89c)
+企业版代码获取方式：[http://old.openauth.net.cn/question/detail.html?id=a2be2d61-7fcb-4df8-8be2-9f296c22a89c](http://old.openauth.net.cn/question/detail.html?id=a2be2d61-7fcb-4df8-8be2-9f296c22a89c)
 
 Vue2演示地址： [http://demo.openauth.net.cn:1803/](http://demo.openauth.net.cn:1803/)
 
