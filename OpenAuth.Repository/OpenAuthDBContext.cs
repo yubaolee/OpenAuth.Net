@@ -92,7 +92,7 @@ namespace OpenAuth.Repository
                 {
                     foreach (var property in entityType.GetProperties())
                     {
-                        if (property.ClrType == typeof(bool))
+                        if (property.ClrType == typeof(bool) || property.ClrType == typeof(bool?))
                         {
                             property.SetValueConverter(boolToSmallIntConverter);
                         }
