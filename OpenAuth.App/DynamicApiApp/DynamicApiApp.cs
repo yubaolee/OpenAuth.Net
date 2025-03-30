@@ -151,7 +151,7 @@ namespace OpenAuth.App
                 }
 
                 // 将对象转换为字典
-                var dict = req.Obj.ToDictionary();
+                var dict = JsonHelper.Instance.Deserialize<Dictionary<string, string>>(req.Obj);
 
                 // 设置ID
                 if (!dict.ContainsKey("Id"))
@@ -180,7 +180,7 @@ namespace OpenAuth.App
                 //如果有CreateTime字段，自动设置
                 if (dict.ContainsKey("CreateTime"))
                 {
-                    dict["CreateTime"] = DateTime.Now;
+                    dict["CreateTime"] = DateTime.Now.ToString();
                 }
 
                 // 添加数据
@@ -219,7 +219,7 @@ namespace OpenAuth.App
                 }
 
                 // 将对象转换为字典
-                var dict = req.Obj.ToDictionary();
+                var dict =  JsonHelper.Instance.Deserialize<Dictionary<string, string>>(req.Obj);
 
                 // 检查ID是否存在
                 if (!dict.ContainsKey("Id"))
@@ -232,7 +232,7 @@ namespace OpenAuth.App
                 // 如果有UpdateTime字段，自动设置
                 if (dict.ContainsKey("UpdateTime"))
                 {
-                    dict["UpdateTime"] = DateTime.Now;
+                    dict["UpdateTime"] = DateTime.Now.ToString();
                 }
 
                 // 如果有用户信息，设置更新用户
@@ -372,7 +372,7 @@ namespace OpenAuth.App
 
             // 调用方法
             // 将对象转换为字典
-            var dict = req.Parameters.ToDictionary();
+            var dict = JsonHelper.Instance.Deserialize<Dictionary<string, string>>(req.Parameters);
             
             // 获取方法参数信息
             var parameters = method.GetParameters();
@@ -401,40 +401,5 @@ namespace OpenAuth.App
         }
 
     }
-
-    /// <summary>
-    /// 对象扩展方法
-    /// </summary>
-    public static class ObjectExtensions
-    {
-        /// <summary>
-        /// 将对象转换为字典
-        /// </summary>
-        /// <param name="obj">对象</param>
-        /// <returns></returns>
-        public static Dictionary<string, object> ToDictionary(this object obj)
-        {
-            var dict = new Dictionary<string, object>();
-
-            if (obj == null) return dict;
-
-            // 如果已经是字典类型，直接返回
-            if (obj is Dictionary<string, object> dictionary)
-            {
-                return dictionary;
-            }
-
-            // 获取所有属性
-            foreach (var prop in obj.GetType().GetProperties())
-            {
-                var value = prop.GetValue(obj);
-                if (value != null)
-                {
-                    dict[prop.Name] = value;
-                }
-            }
-
-            return dict;
-        }
-    }
+   
 }

@@ -4,6 +4,6 @@ namespace OpenAuth.App.Request
     {
         public string TableName { get; set; }
 
-        public object Obj { get; set; }
+        public string Obj { get; set; }
     }
 }

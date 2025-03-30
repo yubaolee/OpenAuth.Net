@@ -16,6 +16,6 @@ namespace OpenAuth.App.Request
         /// <summary>
         /// 参数,如：{ "Id": 1, "Name": "test" }
         /// </summary>
-        public object Parameters { get; set; }
+        public string Parameters { get; set; }
     }
 }

@@ -48,50 +48,42 @@ namespace OpenAuth.App.Test
         }
 
         [Test]
-        public async Task TestAdd()
-        {
-            var app = _autofacServiceProvider.GetService<DynamicApiApp>();
-
-            var obj = await app.Add(new AddOrUpdateDynamicEntityReq { TableName = "noentity", Obj = new { Id = "10", P1 = DateTime.Now.ToString() } });
-            Console.WriteLine(JsonHelper.Instance.Serialize(obj));
-        }
-
-        [Test]
-        public async Task TestUpdate()
-        {
-            var app = _autofacServiceProvider.GetService<DynamicApiApp>();
-
-            var obj = await app.Update(new AddOrUpdateDynamicEntityReq { TableName = "noentity", Obj = new { Id = "1", P1 = DateTime.Now.ToString() } });
-            Console.WriteLine(JsonHelper.Instance.Serialize(obj));
-        }
-
-        [Test]
-        public async Task TestDelete()
-        {
-            var app = _autofacServiceProvider.GetService<DynamicApiApp>();
-
-            var obj = await app.Delete(new DelDynamicReq() { TableName = "noentity", Ids = new string[] { "10" } });
-            Console.WriteLine(JsonHelper.Instance.Serialize(obj));
-        }
-
-        [Test]
-        public void TestInvoke()
+        public void TestInvoke()    
         {
             var app = _autofacServiceProvider.GetService<DynamicApiApp>();
 
             var  obj = app.Invoke(new InvokeDynamicReq { ServiceName = "UserManagerApp", MethodName = "GetParent", 
-            Parameters = new { userid = "0ceff0f8-f848-440c-bc26-d8605ac858cd" } });
+            Parameters = "{\"userid\":\"0ceff0f8-f848-440c-bc26-d8605ac858cd\"}" });
             Console.WriteLine(JsonHelper.Instance.Serialize(obj));
         }
 
         [Test]
-        public void TestInvoke2()
+        public async Task TestInvoke2()
         {
             var app = _autofacServiceProvider.GetService<DynamicApiApp>();
-
-            var  obj = app.Invoke(new InvokeDynamicReq { ServiceName = "UserManagerApp", MethodName = "Load", 
-            Parameters = new { page = 1, limit = 10, key = "" } });
-            Console.WriteLine(JsonHelper.Instance.Serialize(obj));
-        }
+       
+            var obj = app.Invoke(new InvokeDynamicReq { 
+               ServiceName = "UserManagerApp", 
+               MethodName = "Load", 
+               Parameters = "{\"request\":{\"page\":1,\"limit\":10,\"key\":\"\"}}" 
+           });
+           
+           // 如果返回的是Task，需要等待它完成并获取结果
+           if (obj is Task task)
+           {
+               await task;
+               // 使用反射获取Task的Result属性
+               var resultProperty = task.GetType().GetProperty("Result");
+               if (resultProperty != null)
+               {
+                   var result = resultProperty.GetValue(task);
+                   Console.WriteLine(JsonHelper.Instance.Serialize(result));
+               }
+           }
+           else
+           {
+               Console.WriteLine(JsonHelper.Instance.Serialize(obj));
+           }
+       }
     }
 }
