@@ -227,8 +227,8 @@ namespace OpenAuth.App
                     return result;
                 }
                 
-                // 设置更新时间
-                if (!dict.ContainsKey("UpdateTime"))
+                // 如果有UpdateTime字段，自动设置
+                if (dict.ContainsKey("UpdateTime"))
                 {
                     dict["UpdateTime"] = DateTime.Now;
                 }
@@ -245,7 +245,7 @@ namespace OpenAuth.App
                 // 更新数据
                 await _client.Updateable(dict)
                     .AS(req.TableName)
-                    .Where("Id = @id", new { id = dict["Id"] })
+                    .WhereColumns("Id")  // 使用Id作为更新条件
                     .ExecuteCommandAsync();
                 
                 result.Message = "更新成功";
