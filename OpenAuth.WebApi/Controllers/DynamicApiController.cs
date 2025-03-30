@@ -4,16 +4,18 @@ using Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using OpenAuth.App;
 using OpenAuth.App.Response;
+using OpenAuth.App.Request;
+using Microsoft.AspNetCore.Authorization;
 
 namespace OpenAuth.WebApi.Controllers
 {
     /// <summary>
-    /// 动态实体API控制器
-    /// 用于处理任意实体的CRUD操作
+    /// 动态API控制器
+    /// 用于处理任意表的CRUD操作
     /// </summary>
     [Route("api/dynamic/[action]")]
     [ApiController]
-    [ApiExplorerSettings(GroupName = "动态API_DynamicEntity")]
+    [ApiExplorerSettings(GroupName = "动态API_DynamicApi")]
     public class DynamicApiController : ControllerBase
     {
         private readonly DynamicApiApp _app;
@@ -24,21 +26,19 @@ namespace OpenAuth.WebApi.Controllers
         }
 
         /// <summary>
-        /// 获取实体列表
+        /// 获取表数据列表
         /// </summary>
-        /// <param name="entityName">实体名称，例如：ExternalDataSource</param>
-        /// <param name="page">页码</param>
-        /// <param name="limit">每页记录数</param>
-        /// <param name="key">搜索关键字</param>
+        /// <param name="req">查询参数</param>
         /// <returns></returns>
-        [HttpGet]
-        public async Task<TableData> GetList(string entityName, int page = 1, int limit = 10, string key = "")
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<TableData> GetList([FromBody] QueryDynamicListReq req)
         {
             TableData result = new TableData();
             try
             {
                 // 获取实体类型
-                result = await _app.GetList(entityName, page, limit, key);
+                result = await _app.GetList(req);
             }
             catch (Exception ex)
             {
@@ -50,19 +50,19 @@ namespace OpenAuth.WebApi.Controllers
         }
 
         /// <summary>
-        /// 获取实体详情
+        /// 获取表数据详情
         /// </summary>
-        /// <param name="entityName">实体名称，例如：ExternalDataSource</param>
-        /// <param name="id">实体ID</param>
+        /// <param name="req">查询参数</param>
         /// <returns></returns>
-        [HttpGet]
-        public Response<object> Get(string entityName, string id)
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<Response<object>> Get([FromBody] QueryDynamicEntityReq req)
         {
             var result = new Response<object>();
             try
             {
                 // 获取实体类型
-                result = _app.Get(entityName, id);
+                result = await _app.Get(req);
             }
             catch (Exception ex)
             {
@@ -74,19 +74,19 @@ namespace OpenAuth.WebApi.Controllers
         }
 
         /// <summary>
-        /// 添加实体
+        /// 添加表数据
         /// </summary>
-        /// <param name="entityName">实体名称，例如：ExternalDataSource</param>
-        /// <param name="obj">实体对象</param>
+        /// <param name="req">添加参数</param>
         /// <returns></returns>
         [HttpPost]
-        public Response Add(string entityName, [FromBody] object obj)
+        [AllowAnonymous]
+        public async Task<Response> Add([FromBody] AddOrUpdateDynamicEntityReq req)
         {
             var result = new Response();
             try
             {
                 // 获取实体类型
-                result = _app.Add(entityName, obj);
+                result = await _app.Add(req);
             }
             catch (Exception ex)
             {
@@ -104,37 +104,14 @@ namespace OpenAuth.WebApi.Controllers
         /// <param name="obj">实体对象</param>
         /// <returns></returns>
         [HttpPost]
-        public Response Update(string entityName, [FromBody] object obj)
+        [AllowAnonymous]
+        public async Task<Response> Update([FromBody] AddOrUpdateDynamicEntityReq req)
         {
             var result = new Response();
             try
             {
                 // 获取实体类型
-                result = _app.Update(entityName, obj);
-            }
-            catch (Exception ex)
-            {
-                result.Code = 500;
-                result.Message = ex.InnerException?.Message ?? ex.Message;
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// 删除实体
-        /// </summary>
-        /// <param name="entityName">实体名称，例如：ExternalDataSource</param>
-        /// <param name="id">实体ID</param>
-        /// <returns></returns>
-        [HttpPost]
-        public Response Delete(string entityName, string id)
-        {
-            var result = new Response();
-            try
-            {
-                // 获取实体类型
-                result = _app.Delete(entityName, id);
+                result = await _app.Update(req);
             }
             catch (Exception ex)
             {
@@ -152,13 +129,13 @@ namespace OpenAuth.WebApi.Controllers
         /// <param name="ids">实体ID数组</param>
         /// <returns></returns>
         [HttpPost]
-        public Response BatchDelete(string entityName, [FromBody] string[] ids)
+        [AllowAnonymous]
+        public async Task<Response> Delete([FromBody] DelDynamicReq req)
         {
             var result = new Response();
             try
             {
-                // 获取实体类型
-                result = _app.BatchDelete(entityName, ids);
+                result = await _app.Delete(req);
             }
             catch (Exception ex)
             {
