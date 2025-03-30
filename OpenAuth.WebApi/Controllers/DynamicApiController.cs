@@ -160,7 +160,7 @@ namespace OpenAuth.WebApi.Controllers
             var result = new Response<object>();
             try
             {
-                result.Data = _app.Invoke(req);
+                result.Result = _app.Invoke(req);
             }
             catch (Exception ex)
             {
