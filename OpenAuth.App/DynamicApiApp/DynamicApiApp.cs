@@ -151,7 +151,7 @@ namespace OpenAuth.App
                 }
 
                 // 将对象转换为字典
-                var dict = JsonHelper.Instance.Deserialize<Dictionary<string, string>>(req.Obj);
+                var dict = JsonHelper.Instance.Deserialize<Dictionary<string, Object>>(req.Obj);
 
                 // 设置ID
                 if (!dict.ContainsKey("Id"))
@@ -219,7 +219,7 @@ namespace OpenAuth.App
                 }
 
                 // 将对象转换为字典
-                var dict =  JsonHelper.Instance.Deserialize<Dictionary<string, string>>(req.Obj);
+                var dict =  JsonHelper.Instance.Deserialize<Dictionary<string, Object>>(req.Obj);
 
                 // 检查ID是否存在
                 if (!dict.ContainsKey("Id"))
@@ -370,10 +370,6 @@ namespace OpenAuth.App
                 throw new Exception($"未找到方法：{req.MethodName}");
             }
 
-            // 调用方法
-            // 将对象转换为字典
-            var dict = JsonHelper.Instance.Deserialize<Dictionary<string, string>>(req.Parameters);
-            
             // 获取方法参数信息
             var parameters = method.GetParameters();
             var paramValues = new object[parameters.Length];
@@ -382,14 +378,44 @@ namespace OpenAuth.App
             for (int i = 0; i < parameters.Length; i++)
             {
                 var param = parameters[i];
-                if (dict.ContainsKey(param.Name))
+                
+                // 尝试从JSON中获取参数值
+                try
                 {
-                    // 将字典中的值转换为参数类型
-                    paramValues[i] = Convert.ChangeType(dict[param.Name], param.ParameterType);
+                    var json = req.Parameters;
+                    // 检查参数名是否存在于JSON中
+                    if (json.Contains($"\"{param.Name}\""))
+                    {
+                        // 解析完整的JSON对象
+                        var jsonObj = JsonHelper.Instance.Deserialize<Dictionary<string, object>>(json);
+                        
+                        // 从JSON对象中获取参数值
+                        if (jsonObj.ContainsKey(param.Name))
+                        {
+                            // 获取参数对应的JSON值并序列化为字符串
+                            var paramValue = JsonHelper.Instance.Serialize(jsonObj[param.Name]);
+                            
+                            // 将JSON字符串反序列化为目标类型
+                            var deserializeMethod = typeof(JsonHelper).GetMethod("Deserialize").MakeGenericMethod(param.ParameterType);
+                            paramValues[i] = deserializeMethod.Invoke(JsonHelper.Instance, new object[] { paramValue });
+                        }
+                        else
+                        {
+                            // 参数名存在但获取不到，使用默认值
+                            paramValues[i] = param.HasDefaultValue ? param.DefaultValue : null;
+                        }
+                    }
+                    else
+                    {
+                        // 如果JSON中没有对应的属性，使用默认值
+                        paramValues[i] = param.HasDefaultValue ? param.DefaultValue : null;
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    // 如果字典中没有对应的参数，使用默认值
+                    // 记录错误日志
+                    Console.WriteLine($"反序列化参数 {param.Name} 失败: {ex.Message}");
+                    // 反序列化失败，使用默认值
                     paramValues[i] = param.HasDefaultValue ? param.DefaultValue : null;
                 }
             }

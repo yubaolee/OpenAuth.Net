@@ -28,6 +28,14 @@ namespace OpenAuth.App.Test
 
             return services;
         }
+        
+        [Test]
+        public async Task TestAdd()
+        {
+            var app = _autofacServiceProvider.GetService<DynamicApiApp>();
+            var obj = await app.Add(new AddOrUpdateDynamicEntityReq { TableName = "noentity", Obj = "{\"P1\":\"测试\",\"Id\":\"12\"}" });
+            Console.WriteLine(JsonHelper.Instance.Serialize(obj));
+        }
 
         [Test]
         public async Task TestGet()
@@ -65,25 +73,10 @@ namespace OpenAuth.App.Test
             var obj = app.Invoke(new InvokeDynamicReq { 
                ServiceName = "UserManagerApp", 
                MethodName = "Load", 
-               Parameters = "{\"request\":{\"page\":1,\"limit\":10,\"key\":\"\"}}" 
+               Parameters = "{\"request\":{\"page\":1,\"limit\":10,\"key\":\"dddd\"}}" 
            });
-           
-           // 如果返回的是Task，需要等待它完成并获取结果
-           if (obj is Task task)
-           {
-               await task;
-               // 使用反射获取Task的Result属性
-               var resultProperty = task.GetType().GetProperty("Result");
-               if (resultProperty != null)
-               {
-                   var result = resultProperty.GetValue(task);
-                   Console.WriteLine(JsonHelper.Instance.Serialize(result));
-               }
-           }
-           else
-           {
-               Console.WriteLine(JsonHelper.Instance.Serialize(obj));
-           }
+            Console.WriteLine(obj.ToString());
+            
        }
     }
 }
