@@ -83,5 +83,15 @@ namespace OpenAuth.App.Test
             Parameters = new { userid = "0ceff0f8-f848-440c-bc26-d8605ac858cd" } });
             Console.WriteLine(JsonHelper.Instance.Serialize(obj));
         }
+
+        [Test]
+        public void TestInvoke2()
+        {
+            var app = _autofacServiceProvider.GetService<DynamicApiApp>();
+
+            var  obj = app.Invoke(new InvokeDynamicReq { ServiceName = "UserManagerApp", MethodName = "Load", 
+            Parameters = new { page = 1, limit = 10, key = "" } });
+            Console.WriteLine(JsonHelper.Instance.Serialize(obj));
+        }
     }
 }

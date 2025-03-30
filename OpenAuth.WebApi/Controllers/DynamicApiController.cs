@@ -155,17 +155,17 @@ namespace OpenAuth.WebApi.Controllers
         /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
-        public TableData Invoke([FromBody] InvokeDynamicReq req)
+        public Response<object> Invoke([FromBody] InvokeDynamicReq req)
         {
-            var result = new TableData();
+            var result = new Response<object>();
             try
             {
-                result = _app.Invoke(req);
+                result.Data = _app.Invoke(req);
             }
             catch (Exception ex)
             {
-                result.code = 500;
-                result.msg = ex.InnerException?.Message ?? ex.Message;
+                result.Code = 500;
+                result.Message = ex.InnerException?.Message ?? ex.Message;
             }
 
             return result;

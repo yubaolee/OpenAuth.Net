@@ -345,19 +345,59 @@ namespace OpenAuth.App
         /// </summary>
         /// <param name="req">调用参数</param>
         /// <returns></returns>
-        public TableData Invoke(InvokeDynamicReq req)
+        public object Invoke(InvokeDynamicReq req)
         {
-            // 获取服务实例
-            var serviceType = Type.GetType($"OpenAuth.App.{req.ServiceName}");
-            var service = _serviceProvider.GetService(serviceType);
+            var result = new object();
 
-            // 获取并调用方法
-            var method = serviceType.GetMethod(req.MethodName);
-            var result = method.Invoke(service, new[] { req.Parameters });
-            return new TableData
+            // 获取服务类型
+            var serviceType = Type.GetType($"OpenAuth.App.{req.ServiceName}, OpenAuth.App");
+            if (serviceType == null)
             {
-                data = result,
-            };
+                throw new Exception($"未找到服务类型：{req.ServiceName}");
+            }
+
+            // 获取服务实例
+            var service = _serviceProvider.GetService(serviceType);
+            if (service == null)
+            {
+                throw new Exception($"无法获取服务实例：{req.ServiceName}");
+            }
+
+            // 获取方法信息
+            var method = serviceType.GetMethod(req.MethodName);
+            if (method == null)
+            {
+                throw new Exception($"未找到方法：{req.MethodName}");
+            }
+
+            // 调用方法
+            // 将对象转换为字典
+            var dict = req.Parameters.ToDictionary();
+            
+            // 获取方法参数信息
+            var parameters = method.GetParameters();
+            var paramValues = new object[parameters.Length];
+            
+            // 构建参数数组
+            for (int i = 0; i < parameters.Length; i++)
+            {
+                var param = parameters[i];
+                if (dict.ContainsKey(param.Name))
+                {
+                    // 将字典中的值转换为参数类型
+                    paramValues[i] = Convert.ChangeType(dict[param.Name], param.ParameterType);
+                }
+                else
+                {
+                    // 如果字典中没有对应的参数，使用默认值
+                    paramValues[i] = param.HasDefaultValue ? param.DefaultValue : null;
+                }
+            }
+            
+            // 使用参数数组调用方法
+            result = method.Invoke(service, paramValues);
+
+            return result;
         }
 
     }
