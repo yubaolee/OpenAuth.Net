@@ -11,7 +11,7 @@ namespace OpenAuth.WebApi.Controllers
 {
     /// <summary>
     /// 动态API控制器
-    /// 用于处理任意表的CRUD操作
+    /// 用于处理任意表的CRUD操作及直接调用OpenAuth.App的各种应用
     /// </summary>
     [Route("api/dynamic/[action]")]
     [ApiController]
@@ -24,6 +24,8 @@ namespace OpenAuth.WebApi.Controllers
         {
             _app = app;
         }
+
+
 
         /// <summary>
         /// 获取表数据列表
@@ -145,5 +147,30 @@ namespace OpenAuth.WebApi.Controllers
 
             return result;
         }
+
+        /// <summary>
+        /// 直接调用OpenAuth.App的各种应用
+        /// </summary>
+        /// <param name="req">调用参数</param>
+        /// <returns></returns>
+        [HttpPost]
+        [AllowAnonymous]
+        public TableData Invoke([FromBody] InvokeDynamicReq req)
+        {
+            var result = new TableData();
+            try
+            {
+                result = _app.Invoke(req);
+            }
+            catch (Exception ex)
+            {
+                result.code = 500;
+                result.msg = ex.InnerException?.Message ?? ex.Message;
+            }
+
+            return result;
+        }
     }
+
+
 }
