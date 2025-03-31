@@ -1,7 +1,7 @@
 /*
  * @Author: yubaolee <yubaolee@163.com> | ahfu~ <954478625@qq.com>
  * @Date: 2023-08-12 10:48:24
- * @LastEditTime: 2024-11-29 09:36:05
+ * @LastEditTime: 2025-03-31 10:24:25
  * @Description: 
  * @
  * @Copyright (c) 2023 by yubaolee | ahfu~ , All Rights Reserved. 
@@ -91,7 +91,7 @@ module.exports = {
           path: 'start', // 可选的, 标题的跳转链接，应为绝对路径且必须存在
           sidebarDepth: 1, // 可选的, 默认值是 1
           collapsable: false,
-          children: ['start', 'specialist', 'deploy', 'deployapi', 'devnew', 'multidbs', 'multitenant', 'unitwork','sqlsugar', 'entity', 'datavalidation', 'log', 'identity', 'job', 'cache', 'unittest','changesdk'],
+          children: ['start', 'specialist', 'deploy', 'deployapi', 'devnew', 'multidbs', 'multitenant', 'unitwork','sqlsugar', 'entity','dynamicapi', 'datavalidation', 'log', 'identity', 'job', 'cache', 'unittest','changesdk'],
         },
         {
           title: '权限控制', // 必要的
