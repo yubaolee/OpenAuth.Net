@@ -56,11 +56,11 @@ namespace OpenAuth.App.Test
         }
 
         [Test]
-        public void TestInvoke()    
+        public async Task TestInvoke()    
         {
             var app = _autofacServiceProvider.GetService<DynamicApiApp>();
 
-            var  obj = app.Invoke(new InvokeDynamicReq { ServiceName = "UserManagerApp", MethodName = "GetParent", 
+            var  obj = await app.Invoke(new InvokeDynamicReq { ServiceName = "UserManagerApp", MethodName = "GetParent", 
             Parameters = "{\"userid\":\"0ceff0f8-f848-440c-bc26-d8605ac858cd\"}" });
             Console.WriteLine(JsonHelper.Instance.Serialize(obj));
         }
@@ -70,12 +70,12 @@ namespace OpenAuth.App.Test
         {
             var app = _autofacServiceProvider.GetService<DynamicApiApp>();
        
-            var obj = app.Invoke(new InvokeDynamicReq { 
+            var obj = await app.Invoke(new InvokeDynamicReq { 
                ServiceName = "UserManagerApp", 
                MethodName = "Load", 
                Parameters = "{\"request\":{\"page\":1,\"limit\":10,\"key\":\"dddd\"}}" 
            });
-            Console.WriteLine(obj.ToString());
+            Console.WriteLine(JsonHelper.Instance.Serialize(obj));
             
        }
     }

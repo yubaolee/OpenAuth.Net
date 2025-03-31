@@ -7,6 +7,7 @@ using OpenAuth.App.Interface;
 using OpenAuth.App.Response;
 using SqlSugar;
 using OpenAuth.App.Request;
+using Microsoft.Extensions.Logging;
 
 namespace OpenAuth.App
 {
@@ -20,11 +21,14 @@ namespace OpenAuth.App
         private readonly IAuth _auth;
         private readonly IServiceProvider _serviceProvider;
 
-        public DynamicApiApp(ISqlSugarClient client, IAuth auth, IServiceProvider serviceProvider)
+        private readonly ILogger<DynamicApiApp> logger;
+
+        public DynamicApiApp(ISqlSugarClient client, IAuth auth, IServiceProvider serviceProvider, ILogger<DynamicApiApp> logger)
         {
             _client = client;
             _auth = auth;
             _serviceProvider = serviceProvider;
+            this.logger = logger;
         }
 
         /// <summary>
@@ -345,29 +349,29 @@ namespace OpenAuth.App
         /// </summary>
         /// <param name="req">调用参数</param>
         /// <returns></returns>
-        public object Invoke(InvokeDynamicReq req)
+        public async Task<object> Invoke(InvokeDynamicReq request)
         {
             var result = new object();
 
             // 获取服务类型
-            var serviceType = Type.GetType($"OpenAuth.App.{req.ServiceName}, OpenAuth.App");
+            var serviceType = Type.GetType($"OpenAuth.App.{request.ServiceName}, OpenAuth.App");
             if (serviceType == null)
             {
-                throw new Exception($"未找到服务类型：{req.ServiceName}");
+                throw new Exception($"未找到服务类型：{request.ServiceName}");
             }
 
             // 获取服务实例
             var service = _serviceProvider.GetService(serviceType);
             if (service == null)
             {
-                throw new Exception($"无法获取服务实例：{req.ServiceName}");
+                throw new Exception($"无法获取服务实例：{request.ServiceName}");
             }
 
             // 获取方法信息
-            var method = serviceType.GetMethod(req.MethodName);
+            var method = serviceType.GetMethod(request.MethodName);
             if (method == null)
             {
-                throw new Exception($"未找到方法：{req.MethodName}");
+                throw new Exception($"未找到方法：{request.MethodName}");
             }
 
             // 获取方法参数信息
@@ -382,7 +386,7 @@ namespace OpenAuth.App
                 // 尝试从JSON中获取参数值
                 try
                 {
-                    var json = req.Parameters;
+                    var json = request.Parameters;
                     // 检查参数名是否存在于JSON中
                     if (json.Contains($"\"{param.Name}\""))
                     {
@@ -414,18 +418,30 @@ namespace OpenAuth.App
                 catch (Exception ex)
                 {
                     // 记录错误日志
-                    Console.WriteLine($"反序列化参数 {param.Name} 失败: {ex.Message}");
+                    logger.LogError($"反序列化参数 {param.Name} 失败: {ex.Message}");
                     // 反序列化失败，使用默认值
                     paramValues[i] = param.HasDefaultValue ? param.DefaultValue : null;
                 }
             }
             
-            // 使用参数数组调用方法
+            // 调用方法并处理返回值
             result = method.Invoke(service, paramValues);
+            
+            // 如果返回值是Task
+            if (result is Task task)
+            {
+                await task; // 异步等待任务完成
+                
+                // 获取Task的实际结果
+                var resultProperty = task.GetType().GetProperty("Result");
+                if (resultProperty != null)
+                {
+                    return resultProperty.GetValue(task);
+                }
+            }
 
             return result;
         }
 
     }
-   
 }

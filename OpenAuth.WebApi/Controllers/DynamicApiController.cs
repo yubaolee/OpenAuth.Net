@@ -155,12 +155,12 @@ namespace OpenAuth.WebApi.Controllers
         /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
-        public Response<object> Invoke([FromBody] InvokeDynamicReq req)
+        public async Task<Response<object>> Invoke([FromBody] InvokeDynamicReq req)
         {
             var result = new Response<object>();
             try
             {
-                result.Result = _app.Invoke(req);
+                result.Result = await  _app.Invoke(req);
             }
             catch (Exception ex)
             {
