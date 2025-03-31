@@ -22,7 +22,7 @@ CREATE TABLE `noentity` (
 ```
 无需在后端添加任何代码，只需前端按规范调用即可。
 
-## 新增记录
+#### 新增记录
 
 前端请求方式为`POST`，请求地址为`/api/dynamicapi/add`，请求参数为：
 
@@ -33,7 +33,7 @@ CREATE TABLE `noentity` (
 }
 ```
 
-## 修改记录
+#### 修改记录
 
 前端请求方式为`POST`，请求地址为`/api/dynamicapi/update`，请求参数为：
 
@@ -45,7 +45,7 @@ CREATE TABLE `noentity` (
 ```
 注意修改的时候，必须包含主键Id字段。
 
-## 删除记录
+#### 删除记录
 
 前端请求方式为`POST`，请求地址为`/api/dynamicapi/delete`，请求参数为：
 
@@ -56,7 +56,7 @@ CREATE TABLE `noentity` (
 }
 ```
 
-## 查询单条记录
+#### 查询单条记录
 
 前端请求方式为`POST`，请求地址为`/api/dynamicapi/get`，请求参数为：
 
@@ -67,7 +67,7 @@ CREATE TABLE `noentity` (
 }
 ``` 
 
-## 查询列表
+#### 查询列表
 
 前端请求方式为`POST`，请求地址为`/api/dynamicapi/getlist`，请求参数为：
 
@@ -80,8 +80,16 @@ CREATE TABLE `noentity` (
 ```
 
 
+## 调用已有模块
 
-
+除了数据库操作，系统内置一个接口`/api/dynamic/Invoke`，前端可以直接通过这个接口，调用OpenAuth.App层的方法。
+```json
+{
+  "serviceName": "UserManagerApp",
+  "methodName": "Load",
+  "parameters": "{\"request\":{\"page\":1,\"limit\":10,\"key\":\"\"}}"
+}
+```
 
 
 
