@@ -39,6 +39,12 @@
         //流程实例知会角色
         public const string INSTANCE_NOTICE_ROLE = "INSTANCE_NOTICE_ROLE";
 
+        //表单类型
+        public const int FORM_TYPE_DYNAMIC = 0;  //动态表单
+        public const int FORM_TYPE_DEVELOP = 1;  //自定义表单
+        public const int FORM_TYPE_DRAG = 2;  //vForm拖拽表单
+        public const int FORM_TYPE_URL = 3;  //URL表单
+
         public const string API = "API_RESOURCE";
     }
 }

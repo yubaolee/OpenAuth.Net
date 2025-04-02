@@ -2,6 +2,7 @@
 using OpenAuth.Repository;
 using OpenAuth.Repository.Domain;
 using OpenAuth.Repository.Interface;
+using Infrastructure;
 
 namespace OpenAuth.App
 {
@@ -9,14 +10,14 @@ namespace OpenAuth.App
     {
         public static IForm CreateForm(Form form, IUnitWork<OpenAuthDBContext> unitWork)
         {
-            if (form.FrmType == 0)
+            if (form.FrmType == Define.FORM_TYPE_DYNAMIC)
             {
                 return new LeipiForm(unitWork);
-            }else if (form.FrmType == 1)
+            }else if (form.FrmType == Define.FORM_TYPE_DEVELOP)
             {
                 throw new Exception("自定义表单不需要创建数据库表");
             }
-            else
+            else 
             {
                 return new DragForm(unitWork);
             }
