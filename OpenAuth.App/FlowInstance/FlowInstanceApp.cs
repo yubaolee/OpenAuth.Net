@@ -2,7 +2,7 @@
  * @Author: yubaolee <yubaolee@163.com> | ahfu~ <954478625@qq.com>
  * @Date: 2024-12-13 16:55:17
  * @Description: 工作流实例表操作
- * @LastEditTime: 2025-03-08 13:59:47
+ * @LastEditTime: 2025-04-04 23:30:39
  * Copyright (c) 2024 by yubaolee | ahfu~ , All Rights Reserved.
  */
 
@@ -70,16 +70,19 @@ namespace OpenAuth.App
 
             addFlowInstanceReq.SchemeContent = scheme.SchemeContent;
 
-            var form = _formApp.FindSingle(scheme.FrmId);
-            if (form == null)
+            FormResp form = null;
+            if (scheme.FrmType != Define.FORM_TYPE_URL)
             {
-                throw new Exception("该流程模板对应的表单已不存在，请重新设计流程");
+                form = _formApp.FindSingle(scheme.FrmId);
+                if (form == null)
+                {
+                    throw new Exception("该流程模板对应的表单已不存在，请重新设计流程");
+                }
+                addFlowInstanceReq.FrmContentData = form.ContentData;
+                addFlowInstanceReq.FrmContentParse = form.ContentParse;
+                addFlowInstanceReq.FrmType = form.FrmType;
+                addFlowInstanceReq.FrmId = form.Id;
             }
-
-            addFlowInstanceReq.FrmContentData = form.ContentData;
-            addFlowInstanceReq.FrmContentParse = form.ContentParse;
-            addFlowInstanceReq.FrmType = form.FrmType;
-            addFlowInstanceReq.FrmId = form.Id;
 
             var flowInstance = addFlowInstanceReq.MapTo<FlowInstance>();
 
@@ -119,7 +122,7 @@ namespace OpenAuth.App
                 });
             }
 
-            if (flowInstance.FrmType == 1) //如果是开发者自定义的表单
+            if (flowInstance.FrmType == Define.FORM_TYPE_DEVELOP) //如果是开发者自定义的表单
             {
                 var t = Type.GetType("OpenAuth.App." + flowInstance.DbName + "App");
                 ICustomerForm icf = (ICustomerForm)_serviceProvider.GetService(t);
@@ -134,7 +137,7 @@ namespace OpenAuth.App
             }
 
             //如果工作流配置的表单配置有对应的数据库
-            if (!string.IsNullOrEmpty(form.DbName))
+            if (form != null && !string.IsNullOrEmpty(form.DbName))
             {
                 var dbcolumns = _dbExtension.GetDbTableStructure(form.DbName);
                 var json = JsonHelper.Instance.Deserialize<JObject>(addFlowInstanceReq.FrmData);
@@ -339,7 +342,7 @@ namespace OpenAuth.App
         {
             var flowInstance = Get(request.FlowInstanceId);
             var user = _auth.GetCurrentUser().User;
-            
+
             // 获取运行实例
             var wfruntime = new FlowRuntime(flowInstance);
 
@@ -351,7 +354,7 @@ namespace OpenAuth.App
                 // 更新流程实例状态
                 flowInstance.IsFinish = FlowInstanceStatus.Running;
                 flowInstance.SchemeContent = JsonHelper.Instance.Serialize(wfruntime.ToSchemeObj());
-                
+
                 SugarClient.Updateable(flowInstance).ExecuteCommand();
 
                 // 记录撤销操作
@@ -624,17 +627,17 @@ namespace OpenAuth.App
                 resp.NextNodeDesignateType = runtime.nextNode.setInfo.NodeDesignate;
                 resp.CanWriteFormItemIds = runtime.currentNode.setInfo.CanWriteFormItemIds;
             }
-            
+
             var user = _auth.GetCurrentUser();
             var query = SugarClient.Queryable<FlowInstanceOperationHistory>()
                 .OrderByDescending(u => u.CreateDate)
-                .First(u => u.InstanceId == id); 
+                .First(u => u.InstanceId == id);
             if (query != null)
             {
                 //最后一个审批人是当前用户，可以撤销
                 resp.CanUndoVerify = query.CreateUserId == user.User.Id;
             }
-            
+
             var approvers = _flowApproverApp.GetApproverIds(new QueryApproverReq
             {
                 FlowInstanceId = id,
@@ -662,7 +665,7 @@ namespace OpenAuth.App
                         FROM `SysUser`
                         WHERE fi.MakerList like concat('%', Id, '%') ) ";
             //sqlserver的行转列需要特殊处理
-            if(SugarClient.CurrentConnectionConfig.DbType == DbType.SqlServer)
+            if (SugarClient.CurrentConnectionConfig.DbType == DbType.SqlServer)
             {
                 groupConcatSql = $@" STUFF((
                     SELECT ',' + Account
