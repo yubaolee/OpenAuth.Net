@@ -1,7 +1,7 @@
 /*
  * @Author: yubaolee <yubaolee@163.com> | ahfu~ <954478625@qq.com>
  * @Date: 2023-08-12 10:48:24
- * @LastEditTime: 2025-03-31 10:24:25
+ * @LastEditTime: 2025-04-06 00:45:14
  * @Description: 
  * @
  * @Copyright (c) 2023 by yubaolee | ahfu~ , All Rights Reserved. 
@@ -104,7 +104,7 @@ module.exports = {
           title: '工作流', // 必要的
           sidebarDepth: 1, // 可选的, 默认值是 1
           collapsable: false,
-          children: ['flowinstance', 'flowinstancestatus', 'thirdparty'],
+          children: ['flowinstance','flowinstanceconcept',  'flowinstancestatus', 'thirdparty'],
         },
         {
           title: '前端开发', // 必要的

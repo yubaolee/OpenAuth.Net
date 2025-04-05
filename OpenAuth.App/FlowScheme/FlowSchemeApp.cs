@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using OpenAuth.App.Interface;
 using OpenAuth.App.Request;
@@ -40,6 +42,7 @@ namespace OpenAuth.App
             
             UnitWork.Update<FlowScheme>(u => u.Id == flowScheme.Id, u => new FlowScheme
             {
+                FrmUrlTemplate = flowScheme.FrmUrlTemplate,
                 SchemeContent = flowScheme.SchemeContent,
                 SchemeName = flowScheme.SchemeName,
                 ModifyDate = DateTime.Now,
@@ -50,6 +53,19 @@ namespace OpenAuth.App
                 OrgId = flowScheme.OrgId
             });
         }
+
+        /// <summary>
+        /// 加载所有流程表单为URL表单的流程模板
+        /// <para>
+        /// 目前业务系统只挂载URL表单，后期优化挂载其他表单类型
+        /// </para>
+        /// </summary>
+        /// <returns></returns>
+        public List<FlowScheme> LoadUrlFormFlowScheme()
+        {
+            return Repository.Find(u => u.FrmType == Define.FORM_TYPE_URL).ToList();
+        }
+
 
         public async Task<TableData> Load(QueryFlowSchemeListReq request)
         {

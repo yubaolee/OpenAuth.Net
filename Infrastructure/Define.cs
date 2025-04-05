@@ -12,6 +12,7 @@
         public const string ROLEMODULE = "RoleModule"; //角色模块关联KEY
         public const string ROLEDATAPROPERTY = "RoleDataProperty"; //角色数据字段权限
         public const string MODULEPRINTERPLAN = "ModulePrinterPlan"; //模块配置打印方案
+        public const string MODULE_FLOWSCHEME = "ModuleFlowScheme"; //模块挂载流程模板
 
         public const string DBTYPE_SQLSERVER = "SqlServer"; //sql server
         public const string DBTYPE_MYSQL = "MySql"; //mysql

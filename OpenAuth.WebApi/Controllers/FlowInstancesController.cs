@@ -68,12 +68,12 @@ namespace OpenAuth.WebApi.Controllers
         /// <summary>创建一个新的流程实例</summary>
         /// <remarks> www.cnblogs.com/yubaolee, 2019-03-06. </remarks>
         [HttpPost]
-        public Response Add([FromBody]AddFlowInstanceReq obj)
+        public Response<string> Add([FromBody]AddFlowInstanceReq obj)
         {
-            var result = new Response();
+            var result = new Response<string>();
             try
             {
-                _app.CreateInstance(obj);
+                result.Result = _app.CreateInstance(obj);
             }
             catch (Exception ex)
             {
@@ -196,6 +196,7 @@ namespace OpenAuth.WebApi.Controllers
         {
             return await _app.Load(request);
         }
+
 
        [HttpPost]
         public Response Delete([FromBody]string[] ids)

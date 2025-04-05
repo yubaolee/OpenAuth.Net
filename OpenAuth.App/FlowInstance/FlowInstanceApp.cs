@@ -2,7 +2,7 @@
  * @Author: yubaolee <yubaolee@163.com> | ahfu~ <954478625@qq.com>
  * @Date: 2024-12-13 16:55:17
  * @Description: 工作流实例表操作
- * @LastEditTime: 2025-04-04 23:30:39
+ * @LastEditTime: 2025-04-05 15:22:30
  * Copyright (c) 2024 by yubaolee | ahfu~ , All Rights Reserved.
  */
 
@@ -49,7 +49,7 @@ namespace OpenAuth.App
         /// 创建一个实例
         /// </summary>
         /// <returns></returns>
-        public bool CreateInstance(AddFlowInstanceReq addFlowInstanceReq)
+        public string CreateInstance(AddFlowInstanceReq addFlowInstanceReq)
         {
             CheckNodeDesignate(addFlowInstanceReq);
             FlowScheme scheme = null;
@@ -91,7 +91,6 @@ namespace OpenAuth.App
             var user = _auth.GetCurrentUser();
 
             #region 根据运行实例改变当前节点状态
-
             flowInstance.ActivityId = wfruntime.nextNodeId;
             flowInstance.ActivityType = wfruntime.GetNextNodeType();
             flowInstance.ActivityName = wfruntime.nextNode.name;
@@ -203,7 +202,7 @@ namespace OpenAuth.App
 
             wfruntime.SaveTransitionHis();
             SugarClient.Ado.CommitTran();
-            return true;
+            return flowInstance.Id;
         }
 
         /// <summary>

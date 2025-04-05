@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Infrastructure;
 using Microsoft.AspNetCore.Mvc;
@@ -81,6 +82,17 @@ namespace OpenAuth.WebApi.Controllers
         public async Task<TableData> Load([FromQuery]QueryFlowSchemeListReq request)
         {
             return await _app.Load(request);
+        }
+
+        /// <summary>
+        /// 加载URL表单的流程模板
+        /// </summary>
+        [HttpGet]
+        public Response<List<FlowScheme>> LoadUrlFormFlowScheme()
+        {
+            var result = new Response<List<FlowScheme>>();
+            result.Result = _app.LoadUrlFormFlowScheme();
+            return result;
         }
 
        [HttpPost]

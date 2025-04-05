@@ -269,5 +269,25 @@ namespace OpenAuth.WebApi.Controllers
 
             return result;
         }
+
+        /// <summary>
+        /// 获取模块的流程模板列表
+        /// </summary>
+        [HttpGet]
+        public Response<List<FlowScheme>> LoadFlowSchemes(string moduleId)
+        {
+            var result = new Response<List<FlowScheme>>();
+            try
+            {
+                result.Result = _app.LoadFlowSchemes(moduleId).ToList();
+            }
+            catch (Exception ex)
+            {
+                result.Code = 500;
+                result.Message = ex.InnerException?.Message ?? ex.Message;
+            }
+
+            return result;
+        }
     }
 }

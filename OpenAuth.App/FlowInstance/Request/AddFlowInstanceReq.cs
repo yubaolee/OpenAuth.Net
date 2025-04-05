@@ -119,5 +119,12 @@ namespace OpenAuth.App.Request
         /// </summary>
         [Description("知会的用户或角色ID列表")]
         public List<string> NoticeIds { get; set; }
+
+        /// <summary>
+        /// 业务ID
+        /// 当流程实例与业务单据关联时，记录关联的业务ID
+        /// </summary>
+        [Description("业务ID")]
+        public string BusinessId { get; set; }
     }
 }

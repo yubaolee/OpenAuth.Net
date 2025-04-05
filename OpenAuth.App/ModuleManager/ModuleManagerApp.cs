@@ -92,6 +92,18 @@ namespace OpenAuth.App
             return query;
         }
 
+        /// <summary>
+        /// 获取模块的流程模板列表
+        /// </summary>
+        /// <param name="moduleId">模块id</param>
+        /// <returns></returns>
+        public IEnumerable<FlowScheme> LoadFlowSchemes(string moduleId)
+        {
+            var planids = _revelanceApp.Get(Define.MODULE_FLOWSCHEME, true, moduleId);
+            var query = UnitWork.Find<FlowScheme>(u => planids.Contains(u.Id));
+            return query;
+        }
+
 
         #region 菜单操作
 

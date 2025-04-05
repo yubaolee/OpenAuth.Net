@@ -84,6 +84,12 @@ namespace OpenAuth.Repository.Domain
 	    /// </summary>
          [Description("表单类型")]
         public int FrmType { get; set; }
+
+        /// <summary>
+        /// URL表单模板
+        /// </summary>
+        [Description("URL表单模板")]
+        public string FrmUrlTemplate { get; set; }
         /// <summary>
 	    /// 模板权限类型：0完全公开,1指定部门/人员
 	    /// </summary>
@@ -104,6 +110,7 @@ namespace OpenAuth.Repository.Domain
 	    /// </summary>
          [Description("有效")]
         public int Disabled { get; set; }
+
         /// <summary>
 	    /// 备注
 	    /// </summary>
