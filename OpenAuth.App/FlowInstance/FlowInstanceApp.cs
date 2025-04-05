@@ -2,7 +2,7 @@
  * @Author: yubaolee <yubaolee@163.com> | ahfu~ <954478625@qq.com>
  * @Date: 2024-12-13 16:55:17
  * @Description: 工作流实例表操作
- * @LastEditTime: 2025-04-05 15:22:30
+ * @LastEditTime: 2025-04-06 02:25:02
  * Copyright (c) 2024 by yubaolee | ahfu~ , All Rights Reserved.
  */
 
@@ -51,6 +51,14 @@ namespace OpenAuth.App
         /// <returns></returns>
         public string CreateInstance(AddFlowInstanceReq addFlowInstanceReq)
         {
+            //如果业务ID不为空，则需要检查该业务ID对应的审批是否存在
+            if(!string.IsNullOrEmpty(addFlowInstanceReq.BusinessId)){
+                //如果业务ID不为空，则需要检查业务ID是否存在
+                var business = Repository.GetFirst(u => u.BusinessId == addFlowInstanceReq.BusinessId && u.SchemeId == addFlowInstanceReq.SchemeId);
+                if(business != null){
+                    throw new Exception("该业务ID已经送审过该类型的流程，请不要重复送审");
+                }
+            }
             CheckNodeDesignate(addFlowInstanceReq);
             FlowScheme scheme = null;
             if (!string.IsNullOrEmpty(addFlowInstanceReq.SchemeId))
@@ -69,6 +77,7 @@ namespace OpenAuth.App
             }
 
             addFlowInstanceReq.SchemeContent = scheme.SchemeContent;
+            addFlowInstanceReq.FrmType = scheme.FrmType;
 
             FormResp form = null;
             if (scheme.FrmType != Define.FORM_TYPE_URL)
@@ -82,6 +91,17 @@ namespace OpenAuth.App
                 addFlowInstanceReq.FrmContentParse = form.ContentParse;
                 addFlowInstanceReq.FrmType = form.FrmType;
                 addFlowInstanceReq.FrmId = form.Id;
+            }
+            else{
+                if(string.IsNullOrEmpty(scheme.FrmUrlTemplate)){ //流程设计的时候没有URL表单模板
+                    if(addFlowInstanceReq.FrmData.IsNullOrEmpty()){
+                        throw new Exception("该流程使用的是URL表单，但流程设计时没有指定URL表单模板，需要修改流程模板或前端调用时直接传业务详情的URL地址");
+                    }
+                }
+                else{
+                    //流程设计的时候有URL表单模板，则使用URL表单模板,并替换模板中的{id}为业务详情的ID
+                    addFlowInstanceReq.FrmData = scheme.FrmUrlTemplate.Replace("{id}", addFlowInstanceReq.BusinessId);
+                }
             }
 
             var flowInstance = addFlowInstanceReq.MapTo<FlowInstance>();

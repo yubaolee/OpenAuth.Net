@@ -119,6 +119,9 @@ namespace OpenAuth.App.Flow
             {
                 throw new Exception("无法寻找到下一个节点");
             }
+            
+            //URL表单暂时不支持URL表单
+            if(flowInstance.FrmType == Define.FORM_TYPE_URL) return lines[0].to;
 
             if (FrmData == "" || FrmData == "{}") return lines[0].to;
 
