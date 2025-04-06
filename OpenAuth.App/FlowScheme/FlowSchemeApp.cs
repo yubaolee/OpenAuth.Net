@@ -1,23 +1,20 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Infrastructure;
-using Microsoft.EntityFrameworkCore;
 using OpenAuth.App.Interface;
 using OpenAuth.App.Request;
 using OpenAuth.App.Response;
-using OpenAuth.Repository;
 using OpenAuth.Repository.Domain;
-using OpenAuth.Repository.Interface;
+using SqlSugar;
 
 namespace OpenAuth.App
 {
-    public class FlowSchemeApp :BaseStringApp<FlowScheme,OpenAuthDBContext>
+    public class FlowSchemeApp :SqlSugarBaseApp<FlowScheme>
     {
         public void Add(FlowScheme flowScheme)
         {
-            if (Repository.Any(u => u.SchemeName == flowScheme.SchemeName))
+            if (Repository.IsAny(u => u.SchemeName == flowScheme.SchemeName))
             {
                 throw new Exception("流程名称已经存在");
             }
@@ -25,33 +22,32 @@ namespace OpenAuth.App
             var user = _auth.GetCurrentUser().User;
             flowScheme.CreateUserId = user.Id;
             flowScheme.CreateUserName = user.Name;
-            Repository.Add(flowScheme);
+            Repository.Insert(flowScheme);
         }
 
         public FlowScheme FindByCode(string code)
         {
-            return Repository.FirstOrDefault(u => u.SchemeCode == code);
+            return Repository.GetFirst(u => u.SchemeCode == code);
         }
 
         public void Update(FlowScheme flowScheme)
         {
-            if (Repository.Any(u => u.SchemeName == flowScheme.SchemeName && u.Id != flowScheme.Id))
+            if (Repository.IsAny(u => u.SchemeName == flowScheme.SchemeName && u.Id != flowScheme.Id))
             {
                 throw new Exception("流程名称已经存在");
             }
-            
-            UnitWork.Update<FlowScheme>(u => u.Id == flowScheme.Id, u => new FlowScheme
+
+            Repository.Update(u => new FlowScheme
             {
-                FrmUrlTemplate = flowScheme.FrmUrlTemplate,
-                SchemeContent = flowScheme.SchemeContent,
                 SchemeName = flowScheme.SchemeName,
                 ModifyDate = DateTime.Now,
                 FrmId = flowScheme.FrmId,
                 FrmType = flowScheme.FrmType,
+                FrmUrlTemplate = flowScheme.FrmUrlTemplate,
                 Disabled = flowScheme.Disabled,
                 Description = flowScheme.Description,
                 OrgId = flowScheme.OrgId
-            });
+            },u => u.Id == flowScheme.Id);
         }
 
         /// <summary>
@@ -63,7 +59,7 @@ namespace OpenAuth.App
         /// <returns></returns>
         public List<FlowScheme> LoadUrlFormFlowScheme()
         {
-            return Repository.Find(u => u.FrmType == Define.FORM_TYPE_URL).ToList();
+            return Repository.GetList(u => u.FrmType == Define.FORM_TYPE_URL);
         }
 
 
@@ -83,7 +79,7 @@ namespace OpenAuth.App
             return result;
         }
 
-        public FlowSchemeApp(IUnitWork<OpenAuthDBContext> unitWork, IRepository<FlowScheme,OpenAuthDBContext> repository,IAuth auth) : base(unitWork, repository, auth)
+        public FlowSchemeApp(ISqlSugarClient client, IAuth auth) : base(client, auth)
         {
         }
     }
