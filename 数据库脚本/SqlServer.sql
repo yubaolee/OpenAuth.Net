@@ -98,52 +98,6 @@ GO
 INSERT INTO [dbo].[Application] ([Id], [Name], [AppSecret], [Description], [Icon], [Disable], [CreateTime], [CreateUser]) VALUES (N'119', N'XXX管理平台', N'manageryubaolee', N'这是一个第三的平台', NULL, N'0', N'2018-04-14', NULL)
 GO
 
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[FlowApprover]') AND type in (N'U')) DROP TABLE [dbo].[FlowApprover];
-CREATE TABLE [dbo].[FlowApprover](
-    Id VARCHAR(50) NOT NULL,
-    InstanceId VARCHAR(50) NOT NULL,
-    ActivityId VARCHAR(50) NOT NULL,
-    Reason VARCHAR(200),
-    CreateDate DATETIME,
-    CreateUserId VARCHAR(50),
-    CreateUserName VARCHAR(50),
-    Status INT NOT NULL,
-    ApproveType INT NOT NULL,
-    ApproverId VARCHAR(50) NOT NULL,
-    ApproverName VARCHAR(50),
-    OrderNo INT,
-    VerifyDate DATETIME,
-    VerifyComment VARCHAR(200),
-    CascadeId VARCHAR(100) NOT NULL,
-    ParentId VARCHAR(50),
-    ParentName VARCHAR(100),
-    ReturnToSignNode bit DEFAULT 1 NOT NULL,
-    Name VARCHAR(100),
-    PRIMARY KEY (Id)
-);
-
-EXEC sp_addextendedproperty 'MS_Description', '工作流加签', 'SCHEMA', dbo, 'table', FlowApprover, null, null;
-EXEC sp_addextendedproperty 'MS_Description', 'Id', 'SCHEMA', dbo, 'table', FlowApprover, 'column', Id;
-EXEC sp_addextendedproperty 'MS_Description', '工作流实例Id', 'SCHEMA', dbo, 'table', FlowApprover, 'column', InstanceId;
-EXEC sp_addextendedproperty 'MS_Description', '当前节点ID', 'SCHEMA', dbo, 'table', FlowApprover, 'column', ActivityId;
-EXEC sp_addextendedproperty 'MS_Description', '加签原因', 'SCHEMA', dbo, 'table', FlowApprover, 'column', Reason;
-EXEC sp_addextendedproperty 'MS_Description', '加签时间', 'SCHEMA', dbo, 'table', FlowApprover, 'column', CreateDate;
-EXEC sp_addextendedproperty 'MS_Description', '加签人Id', 'SCHEMA', dbo, 'table', FlowApprover, 'column', CreateUserId;
-EXEC sp_addextendedproperty 'MS_Description', '加签人', 'SCHEMA', dbo, 'table', FlowApprover, 'column', CreateUserName;
-EXEC sp_addextendedproperty 'MS_Description', '状态（0未处理，1通过，2未通过，3驳回）', 'SCHEMA', dbo, 'table', FlowApprover, 'column', Status;
-EXEC sp_addextendedproperty 'MS_Description', '类型（0顺序，1并行且，2并行或）', 'SCHEMA', dbo, 'table', FlowApprover, 'column', ApproveType;
-EXEC sp_addextendedproperty 'MS_Description', '审批人ID', 'SCHEMA', dbo, 'table', FlowApprover, 'column', ApproverId;
-EXEC sp_addextendedproperty 'MS_Description', '审批人', 'SCHEMA', dbo, 'table', FlowApprover, 'column', ApproverName;
-EXEC sp_addextendedproperty 'MS_Description', '顺序号（当类型为0时）', 'SCHEMA', dbo, 'table', FlowApprover, 'column', OrderNo;
-EXEC sp_addextendedproperty 'MS_Description', '审批日期', 'SCHEMA', dbo, 'table', FlowApprover, 'column', VerifyDate;
-EXEC sp_addextendedproperty 'MS_Description', '审批意见', 'SCHEMA', dbo, 'table', FlowApprover, 'column', VerifyComment;
-EXEC sp_addextendedproperty 'MS_Description', '层级ID，应对多次加签', 'SCHEMA', dbo, 'table', FlowApprover, 'column', CascadeId;
-EXEC sp_addextendedproperty 'MS_Description', '父节点ID，应对多次加签', 'SCHEMA', dbo, 'table', FlowApprover, 'column', ParentId;
-EXEC sp_addextendedproperty 'MS_Description', '父节点名称，应对多次加签结构', 'SCHEMA', dbo, 'table', FlowApprover, 'column', ParentName;
-EXEC sp_addextendedproperty 'MS_Description', '加签节点名称，应对多次加签结构', 'SCHEMA', dbo, 'table', FlowApprover, 'column', Name;
-EXEC sp_addextendedproperty 'MS_Description', '是否回到加签节点', 'SCHEMA', dbo, 'table', FlowApprover, 'column', ReturnToSignNode;
-
-
 
 -- ----------------------------
 -- Table structure for BuilderTable
@@ -174,7 +128,8 @@ CREATE TABLE [dbo].[BuilderTable] (
   [CreateUserName] varchar(50) COLLATE Chinese_PRC_CI_AS  NULL,
   [ForeignKey] varchar(50) COLLATE Chinese_PRC_CI_AS  NULL,
   [IsDynamicHeader] bit DEFAULT 0 NULL,
-  [ParentTableId] varchar(50) COLLATE Chinese_PRC_CI_AS  NULL
+  [ParentTableId] varchar(50) COLLATE Chinese_PRC_CI_AS  NULL,
+  [ExternalDatasourceId] varchar(50) COLLATE Chinese_PRC_CI_AS  NULL
 )
 GO
 
@@ -329,6 +284,13 @@ EXEC sp_addextendedproperty
 GO
 
 EXEC sp_addextendedproperty
+'MS_Description', N'外部数据源ID',
+'SCHEMA', N'dbo',
+'TABLE', N'BuilderTable',
+'COLUMN', N'ExternalDatasourceId'
+GO
+
+EXEC sp_addextendedproperty
 'MS_Description', N'代码生成器的表信息',
 'SCHEMA', N'dbo',
 'TABLE', N'BuilderTable'
@@ -338,22 +300,22 @@ GO
 -- ----------------------------
 -- Records of BuilderTable
 -- ----------------------------
-INSERT INTO [dbo].[BuilderTable] ([Id], [TableName], [Remark], [DetailTableName], [DetailComment], [ClassName], [Namespace], [ModuleCode], [ModuleName], [Folder], [Options], [TypeId], [TypeName], [CreateTime], [CreateUserId], [UpdateTime], [UpdateUserId], [UpdateUserName], [CreateUserName], [ForeignKey], [IsDynamicHeader], [ParentTableId]) VALUES (N'03761b53-e229-4e0e-b7b1-2831bdc84384', N'Stock', N'请在自己的电脑测试，服务器是看不出效果的', N'', N'', N'Stock', N'OpenAuth.Repository.Domain', N'StockApp', N'仓储', N'D:/OpenAuth.Pro/Client', N'', N'', N'', N'2020-09-29 00:52:58', N'00000000-0000-0000-0000-000000000000', N'2021-08-30 00:32:09', N'00000000-0000-0000-0000-000000000000', N'超级管理员', N'超级管理员', N'', N'1', NULL)
+INSERT INTO [dbo].[BuilderTable] ([Id], [TableName], [Remark], [DetailTableName], [DetailComment], [ClassName], [Namespace], [ModuleCode], [ModuleName], [Folder], [Options], [TypeId], [TypeName], [CreateTime], [CreateUserId], [UpdateTime], [UpdateUserId], [UpdateUserName], [CreateUserName], [ForeignKey], [IsDynamicHeader], [ParentTableId], [ExternalDatasourceId]) VALUES (N'03761b53-e229-4e0e-b7b1-2831bdc84384', N'Stock', N'请在自己的电脑测试，服务器是看不出效果的', N'', N'', N'Stock', N'OpenAuth.Repository.Domain', N'StockApp', N'仓储', N'D:/OpenAuth.Pro/Client', N'', N'', N'', N'2020-09-29 00:52:58', N'00000000-0000-0000-0000-000000000000', N'2021-08-30 00:32:09', N'00000000-0000-0000-0000-000000000000', N'超级管理员', N'超级管理员', N'', N'1', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[BuilderTable] ([Id], [TableName], [Remark], [DetailTableName], [DetailComment], [ClassName], [Namespace], [ModuleCode], [ModuleName], [Folder], [Options], [TypeId], [TypeName], [CreateTime], [CreateUserId], [UpdateTime], [UpdateUserId], [UpdateUserName], [CreateUserName], [ForeignKey], [IsDynamicHeader], [ParentTableId]) VALUES (N'1751d517-6d2b-4638-8f5c-aa6355bccb0e', N'Category', N'', N'', N'', N'Category', N'OpenAuth.Repository.Domain', N'CategoryApp', N'分类管理', N'D:/OpenAuth.Pro/Client', N'', N'', N'', N'2021-09-27 00:26:54', N'00000000-0000-0000-0000-000000000000', N'2021-09-27 00:45:56', N'00000000-0000-0000-0000-000000000000', N'超级管理员', N'超级管理员', N'', N'1', NULL)
+INSERT INTO [dbo].[BuilderTable] ([Id], [TableName], [Remark], [DetailTableName], [DetailComment], [ClassName], [Namespace], [ModuleCode], [ModuleName], [Folder], [Options], [TypeId], [TypeName], [CreateTime], [CreateUserId], [UpdateTime], [UpdateUserId], [UpdateUserName], [CreateUserName], [ForeignKey], [IsDynamicHeader], [ParentTableId], [ExternalDatasourceId]) VALUES (N'1751d517-6d2b-4638-8f5c-aa6355bccb0e', N'Category', N'', N'', N'', N'Category', N'OpenAuth.Repository.Domain', N'CategoryApp', N'分类管理', N'D:/OpenAuth.Pro/Client', N'', N'', N'', N'2021-09-27 00:26:54', N'00000000-0000-0000-0000-000000000000', N'2021-09-27 00:45:56', N'00000000-0000-0000-0000-000000000000', N'超级管理员', N'超级管理员', N'', N'1', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[BuilderTable] ([Id], [TableName], [Remark], [DetailTableName], [DetailComment], [ClassName], [Namespace], [ModuleCode], [ModuleName], [Folder], [Options], [TypeId], [TypeName], [CreateTime], [CreateUserId], [UpdateTime], [UpdateUserId], [UpdateUserName], [CreateUserName], [ForeignKey], [IsDynamicHeader], [ParentTableId]) VALUES (N'7f0ca2fd-7fa0-4316-a466-22733d466dd2', N'wmsinboundordertbl', N'入库订单头表', N'', N'', N'wmsinboundordertbl', N'OpenAuth.Repository.Domain', N'WmsInApp', N'入库模块', N'D:/OpenAuth.Pro/Client', N'', N'', N'', N'2021-08-11 22:54:21', N'00000000-0000-0000-0000-000000000000', N'2021-09-27 00:48:54', N'00000000-0000-0000-0000-000000000000', N'超级管理员', N'超级管理员', N'', N'1', NULL)
+INSERT INTO [dbo].[BuilderTable] ([Id], [TableName], [Remark], [DetailTableName], [DetailComment], [ClassName], [Namespace], [ModuleCode], [ModuleName], [Folder], [Options], [TypeId], [TypeName], [CreateTime], [CreateUserId], [UpdateTime], [UpdateUserId], [UpdateUserName], [CreateUserName], [ForeignKey], [IsDynamicHeader], [ParentTableId], [ExternalDatasourceId]) VALUES (N'7f0ca2fd-7fa0-4316-a466-22733d466dd2', N'wmsinboundordertbl', N'入库订单头表', N'', N'', N'wmsinboundordertbl', N'OpenAuth.Repository.Domain', N'WmsInApp', N'入库模块', N'D:/OpenAuth.Pro/Client', N'', N'', N'', N'2021-08-11 22:54:21', N'00000000-0000-0000-0000-000000000000', N'2021-09-27 00:48:54', N'00000000-0000-0000-0000-000000000000', N'超级管理员', N'超级管理员', N'', N'1', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[BuilderTable] ([Id], [TableName], [Remark], [DetailTableName], [DetailComment], [ClassName], [Namespace], [ModuleCode], [ModuleName], [Folder], [Options], [TypeId], [TypeName], [CreateTime], [CreateUserId], [UpdateTime], [UpdateUserId], [UpdateUserName], [CreateUserName], [ForeignKey], [IsDynamicHeader], [ParentTableId]) VALUES (N'de4a5527-0d8c-4493-b668-39fc9c555df1', N'Resource', N'', N'', N'', N'Resource', N'OpenAuth.Repository.Domain', N'ResourceApp', N'资源管理', N'D:/OpenAuth.Pro/Client', N'', N'', N'', N'2021-08-29 00:27:29', N'00000000-0000-0000-0000-000000000000', N'2021-08-30 00:50:17', N'00000000-0000-0000-0000-000000000000', N'超级管理员', N'超级管理员', N'', N'1', NULL)
+INSERT INTO [dbo].[BuilderTable] ([Id], [TableName], [Remark], [DetailTableName], [DetailComment], [ClassName], [Namespace], [ModuleCode], [ModuleName], [Folder], [Options], [TypeId], [TypeName], [CreateTime], [CreateUserId], [UpdateTime], [UpdateUserId], [UpdateUserName], [CreateUserName], [ForeignKey], [IsDynamicHeader], [ParentTableId], [ExternalDatasourceId]) VALUES (N'de4a5527-0d8c-4493-b668-39fc9c555df1', N'Resource', N'', N'', N'', N'Resource', N'OpenAuth.Repository.Domain', N'ResourceApp', N'资源管理', N'D:/OpenAuth.Pro/Client', N'', N'', N'', N'2021-08-29 00:27:29', N'00000000-0000-0000-0000-000000000000', N'2021-08-30 00:50:17', N'00000000-0000-0000-0000-000000000000', N'超级管理员', N'超级管理员', N'', N'1', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[BuilderTable] ([Id], [TableName], [Remark], [DetailTableName], [DetailComment], [ClassName], [Namespace], [ModuleCode], [ModuleName], [Folder], [Options], [TypeId], [TypeName], [CreateTime], [CreateUserId], [UpdateTime], [UpdateUserId], [UpdateUserName], [CreateUserName], [ForeignKey], [IsDynamicHeader], [ParentTableId]) VALUES (N'f07df6d0-eb47-4f00-9167-79d88bcace36', N'wmsinboundorderdtbl', N'', N'', N'', N'wmsinboundorderdtbl', N'OpenAuth.Repository.Domain', N'wmsinboundorderdtbl', N'入库订单模块子表', N'D:/OpenAuth.Pro/Client', N'', N'', N'', N'2021-08-11 22:54:21', N'00000000-0000-0000-0000-000000000000', N'2021-08-23 01:09:27', N'00000000-0000-0000-0000-000000000000', N'超级管理员', N'超级管理员', N'OrderId', N'1', N'7f0ca2fd-7fa0-4316-a466-22733d466dd2')
+INSERT INTO [dbo].[BuilderTable] ([Id], [TableName], [Remark], [DetailTableName], [DetailComment], [ClassName], [Namespace], [ModuleCode], [ModuleName], [Folder], [Options], [TypeId], [TypeName], [CreateTime], [CreateUserId], [UpdateTime], [UpdateUserId], [UpdateUserName], [CreateUserName], [ForeignKey], [IsDynamicHeader], [ParentTableId], [ExternalDatasourceId]) VALUES (N'f07df6d0-eb47-4f00-9167-79d88bcace36', N'wmsinboundorderdtbl', N'', N'', N'', N'wmsinboundorderdtbl', N'OpenAuth.Repository.Domain', N'wmsinboundorderdtbl', N'入库订单模块子表', N'D:/OpenAuth.Pro/Client', N'', N'', N'', N'2021-08-11 22:54:21', N'00000000-0000-0000-0000-000000000000', N'2021-08-23 01:09:27', N'00000000-0000-0000-0000-000000000000', N'超级管理员', N'超级管理员', N'OrderId', N'1', N'7f0ca2fd-7fa0-4316-a466-22733d466dd2', NULL)
 GO
 
-INSERT INTO [dbo].[BuilderTable] ([Id], [TableName], [Remark], [DetailTableName], [DetailComment], [ClassName], [Namespace], [ModuleCode], [ModuleName], [Folder], [Options], [TypeId], [TypeName], [CreateTime], [CreateUserId], [UpdateTime], [UpdateUserId], [UpdateUserName], [CreateUserName], [ForeignKey], [IsDynamicHeader], [ParentTableId]) VALUES (N'fc52b31a-fc29-42b6-b53c-99463644fff2', N'dataprivilegerule', N'', N'', N'', N'DataPrivilegeRule', N'OpenAuth.Repository.Domain', N'DataPrivilegeRuleApp', N'数据权限', N'D:/OpenAuth.Pro/Client', N'', N'', N'', N'2021-09-23 22:35:02', N'00000000-0000-0000-0000-000000000000', N'2021-09-26 00:28:20', N'00000000-0000-0000-0000-000000000000', N'超级管理员', N'超级管理员', N'', N'1', NULL)
+INSERT INTO [dbo].[BuilderTable] ([Id], [TableName], [Remark], [DetailTableName], [DetailComment], [ClassName], [Namespace], [ModuleCode], [ModuleName], [Folder], [Options], [TypeId], [TypeName], [CreateTime], [CreateUserId], [UpdateTime], [UpdateUserId], [UpdateUserName], [CreateUserName], [ForeignKey], [IsDynamicHeader], [ParentTableId], [ExternalDatasourceId]) VALUES (N'fc52b31a-fc29-42b6-b53c-99463644fff2', N'dataprivilegerule', N'', N'', N'', N'DataPrivilegeRule', N'OpenAuth.Repository.Domain', N'DataPrivilegeRuleApp', N'数据权限', N'D:/OpenAuth.Pro/Client', N'', N'', N'', N'2021-09-23 22:35:02', N'00000000-0000-0000-0000-000000000000', N'2021-09-26 00:28:20', N'00000000-0000-0000-0000-000000000000', N'超级管理员', N'超级管理员', N'', N'1', NULL, NULL)
 GO
 
 
@@ -1317,18 +1279,336 @@ GO
 -- ----------------------------
 -- Records of DataPrivilegeRule
 -- ----------------------------
-INSERT INTO [dbo].[DataPrivilegeRule] ([Id], [SourceCode], [SubSourceCode], [Description], [SortNo], [PrivilegeRules], [Enable], [CreateTime], [CreateUserId], [CreateUserName], [UpdateTime], [UpdateUserId], [UpdateUserName]) VALUES (N'5098523e-f038-4bc8-850f-9629cac3e4f6', N'Form', N'', N'只能看到用户自己对应部门的表单,System可以看到所有', N'0', N'{"Operation":"or","Filters":[{"Key":"OrgId","Value":"{loginOrg}","Contrast":"in","names":"","Text":""}]}', N'1', N'2020-03-18 23:36:04.5174848', N'00000000-0000-0000-0000-000000000000', N'', N'2020-03-19 21:14:34.2847499', N'00000000-0000-0000-0000-000000000000', N'')
+INSERT INTO [dbo].[DataPrivilegeRule] ([Id], [SourceCode], [SubSourceCode], [Description], [SortNo], [PrivilegeRules], [Enable], [CreateTime], [CreateUserId], [CreateUserName], [UpdateTime], [UpdateUserId], [UpdateUserName]) VALUES (N'5098523e-f038-4bc8-850f-9629cac3e4f6', N'Form', N'', N'只能看到用户自己对应部门的表单,System可以看到所有', N'0', N'{"Operation":"or","Filters":[{"Key":"OrgId","Value":"{loginOrg}","Contrast":"in","names":"","Text":""}]}', N'1', N'2020-03-18 23:36:05.0000000', N'00000000-0000-0000-0000-000000000000', N'', N'2020-03-19 21:14:34.0000000', N'00000000-0000-0000-0000-000000000000', N'')
 GO
 
 INSERT INTO [dbo].[DataPrivilegeRule] ([Id], [SourceCode], [SubSourceCode], [Description], [SortNo], [PrivilegeRules], [Enable], [CreateTime], [CreateUserId], [CreateUserName], [UpdateTime], [UpdateUserId], [UpdateUserName]) VALUES (N'6a96c5d9-a226-459d-a4e1-aefcbefc6915', N'WmsInboundOrderTbl', N'', N'【管理员】角色可以看所有人的订单，【测试】只能看自己创建的订单', N'0', N'{"Operation":"or","Filters":[{"Key":"{loginRole}","Value":"09ee2ffa-7463-4938-ae0b-1cb4e80c7c13,77e6d0c3-f9e1-4933-92c3-c1c6eef75593","Contrast":"contains","names":"","Text":"管理员,神"}],"Children":[{"Operation":"and","Filters":[{"Key":"{loginRole}","Value":"0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d","Contrast":"contains","Text":"测试"},{"Key":"CreateUserId","Value":"{loginUser}","Contrast":"==","Text":""}]}]}', N'1', N'2019-11-23 01:02:32.0000000', N'00000000-0000-0000-0000-000000000000', N'', N'2019-11-23 01:02:32.0000000', N'', N'')
 GO
 
-INSERT INTO [dbo].[DataPrivilegeRule] ([Id], [SourceCode], [SubSourceCode], [Description], [SortNo], [PrivilegeRules], [Enable], [CreateTime], [CreateUserId], [CreateUserName], [UpdateTime], [UpdateUserId], [UpdateUserName]) VALUES (N'ab177ea0-89f3-429e-8f0f-7a00819d8ef3', N'FlowScheme', N'', N'System可以看到所有流程设计，【管理员】可以看到部门的，其他人只能看到自己的', N'0', N'{"Operation":"or","Filters":[{"Key":"CreateUserId","Value":"{loginUser}","Contrast":"==","Text":""}],"Children":[{"Operation":"and","Filters":[{"Key":"OrgId","Value":"{loginOrg}","Contrast":"in","Text":""},{"Key":"{loginRole}","Value":"09ee2ffa-7463-4938-ae0b-1cb4e80c7c13","Contrast":"contains","Text":"管理员"}]}]}', N'1', N'2020-03-19 21:17:30.4542319', N'00000000-0000-0000-0000-000000000000', N'', N'2020-03-19 21:57:46.7338764', N'00000000-0000-0000-0000-000000000000', N'')
+INSERT INTO [dbo].[DataPrivilegeRule] ([Id], [SourceCode], [SubSourceCode], [Description], [SortNo], [PrivilegeRules], [Enable], [CreateTime], [CreateUserId], [CreateUserName], [UpdateTime], [UpdateUserId], [UpdateUserName]) VALUES (N'ab177ea0-89f3-429e-8f0f-7a00819d8ef3', N'FlowScheme', N'', N'System可以看到所有流程设计，【管理员】可以看到部门的，其他人只能看到自己的', N'0', N'{"Operation":"or","Filters":[{"Key":"CreateUserId","Value":"{loginUser}","Contrast":"==","Text":""}],"Children":[{"Operation":"and","Filters":[{"Key":"OrgId","Value":"{loginOrg}","Contrast":"in","Text":""},{"Key":"{loginRole}","Value":"09ee2ffa-7463-4938-ae0b-1cb4e80c7c13","Contrast":"contains","Text":"管理员"}]}]}', N'1', N'2020-03-19 21:17:30.0000000', N'00000000-0000-0000-0000-000000000000', N'', N'2020-03-19 21:57:47.0000000', N'00000000-0000-0000-0000-000000000000', N'')
 GO
 
 INSERT INTO [dbo].[DataPrivilegeRule] ([Id], [SourceCode], [SubSourceCode], [Description], [SortNo], [PrivilegeRules], [Enable], [CreateTime], [CreateUserId], [CreateUserName], [UpdateTime], [UpdateUserId], [UpdateUserName]) VALUES (N'e7c95fb1-91f7-422e-a11a-73cea0c404b9', N'Resource', NULL, N'【管理员】角色可以看所有人的资源，【测试】只能看自己创建的资源，账号test3/test4只能看属于（XXX管理平台）的资源', N'0', N'{"Operation":"or","Filters":[{"Key":"{loginRole}","Value":"09ee2ffa-7463-4938-ae0b-1cb4e80c7c13","Contrast":"contains","Text":"管理员"}],"Children":[{"Operation":"and","Filters":[{"Key":"{loginRole}","Value":"0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d","Contrast":"contains","Text":"测试"},{"Key":"CreateUserId","Value":"{loginUser}","Contrast":"==","Text":""}]},{"Operation":"and","Filters":[{"Key":"AppName","Value":"XXX管理平台","Contrast":"==","Text":""},{"Key":"{loginUser}","Value":"229f3a49-ab27-49ce-b383-9f10ca23a9d5,1df68dfd-3b6d-4491-872f-00a0fc6c5a64","Contrast":"in","Text":"test3,test4"}]}]}', N'1', N'2019-10-29 11:05:02.0000000', N'00000000-0000-0000-0000-000000000000', N'', N'2019-11-23 01:00:19.0000000', N'00000000-0000-0000-0000-000000000000', N'')
 GO
 
+
+-- ----------------------------
+-- Table structure for ExternalDataSource
+-- ----------------------------
+IF EXISTS (SELECT * FROM sys.all_objects WHERE object_id = OBJECT_ID(N'[dbo].[ExternalDataSource]') AND type IN ('U'))
+	DROP TABLE [dbo].[ExternalDataSource]
+GO
+
+CREATE TABLE [dbo].[ExternalDataSource] (
+  [Id] varchar(50) COLLATE Chinese_PRC_CI_AS  NOT NULL,
+  [Name] varchar(255) COLLATE Chinese_PRC_CI_AS  NULL,
+  [DbType] int  NOT NULL,
+  [ConnectionString] varchar(500) COLLATE Chinese_PRC_CI_AS  NULL,
+  [Server] varchar(100) COLLATE Chinese_PRC_CI_AS  NULL,
+  [Port] int  NULL,
+  [DatabaseName] varchar(100) COLLATE Chinese_PRC_CI_AS  NULL,
+  [UserName] varchar(50) COLLATE Chinese_PRC_CI_AS  NULL,
+  [Password] varchar(100) COLLATE Chinese_PRC_CI_AS  NULL,
+  [Enabled] bit DEFAULT 1 NOT NULL,
+  [CreateTime] date DEFAULT getdate() NOT NULL,
+  [UpdateTime] date  NULL,
+  [TestSuccess] bit  NULL,
+  [Description] varchar(200) COLLATE Chinese_PRC_CI_AS  NULL,
+  [CreateUserId] varchar(50) COLLATE Chinese_PRC_CI_AS  NULL,
+  [CreateUserName] varchar(50) COLLATE Chinese_PRC_CI_AS  NULL,
+  [UpdateUserId] varchar(50) COLLATE Chinese_PRC_CI_AS  NULL,
+  [UpdateUserName] varchar(50) COLLATE Chinese_PRC_CI_AS  NULL
+)
+GO
+
+ALTER TABLE [dbo].[ExternalDataSource] SET (LOCK_ESCALATION = TABLE)
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'主键',
+'SCHEMA', N'dbo',
+'TABLE', N'ExternalDataSource',
+'COLUMN', N'Id'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'数据源名称',
+'SCHEMA', N'dbo',
+'TABLE', N'ExternalDataSource',
+'COLUMN', N'Name'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'数据库类型',
+'SCHEMA', N'dbo',
+'TABLE', N'ExternalDataSource',
+'COLUMN', N'DbType'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'连接字符串',
+'SCHEMA', N'dbo',
+'TABLE', N'ExternalDataSource',
+'COLUMN', N'ConnectionString'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'服务器地址',
+'SCHEMA', N'dbo',
+'TABLE', N'ExternalDataSource',
+'COLUMN', N'Server'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'端口号',
+'SCHEMA', N'dbo',
+'TABLE', N'ExternalDataSource',
+'COLUMN', N'Port'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'数据库名称',
+'SCHEMA', N'dbo',
+'TABLE', N'ExternalDataSource',
+'COLUMN', N'DatabaseName'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'用户名',
+'SCHEMA', N'dbo',
+'TABLE', N'ExternalDataSource',
+'COLUMN', N'UserName'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'密码',
+'SCHEMA', N'dbo',
+'TABLE', N'ExternalDataSource',
+'COLUMN', N'Password'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'是否启用',
+'SCHEMA', N'dbo',
+'TABLE', N'ExternalDataSource',
+'COLUMN', N'Enabled'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'创建时间',
+'SCHEMA', N'dbo',
+'TABLE', N'ExternalDataSource',
+'COLUMN', N'CreateTime'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'最后测试时间',
+'SCHEMA', N'dbo',
+'TABLE', N'ExternalDataSource',
+'COLUMN', N'UpdateTime'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'是否测试成功',
+'SCHEMA', N'dbo',
+'TABLE', N'ExternalDataSource',
+'COLUMN', N'TestSuccess'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'描述信息',
+'SCHEMA', N'dbo',
+'TABLE', N'ExternalDataSource',
+'COLUMN', N'Description'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'外部数据源管理表',
+'SCHEMA', N'dbo',
+'TABLE', N'ExternalDataSource'
+GO
+
+
+-- ----------------------------
+-- Records of ExternalDataSource
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for FlowApprover
+-- ----------------------------
+IF EXISTS (SELECT * FROM sys.all_objects WHERE object_id = OBJECT_ID(N'[dbo].[FlowApprover]') AND type IN ('U'))
+	DROP TABLE [dbo].[FlowApprover]
+GO
+
+CREATE TABLE [dbo].[FlowApprover] (
+  [Id] [dbo].[PrimaryKey]  NOT NULL,
+  [InstanceId] varchar(50) COLLATE Chinese_PRC_CI_AS  NOT NULL,
+  [ActivityId] varchar(50) COLLATE Chinese_PRC_CI_AS  NOT NULL,
+  [Reason] varchar(200) COLLATE Chinese_PRC_CI_AS  NULL,
+  [CreateDate] datetime  NULL,
+  [CreateUserId] varchar(50) COLLATE Chinese_PRC_CI_AS  NULL,
+  [CreateUserName] varchar(50) COLLATE Chinese_PRC_CI_AS  NULL,
+  [Status] int  NOT NULL,
+  [ApproveType] int  NOT NULL,
+  [ApproverId] varchar(50) COLLATE Chinese_PRC_CI_AS  NOT NULL,
+  [ApproverName] varchar(50) COLLATE Chinese_PRC_CI_AS  NULL,
+  [OrderNo] int  NULL,
+  [VerifyDate] datetime  NULL,
+  [VerifyComment] varchar(200) COLLATE Chinese_PRC_CI_AS  NULL,
+  [CascadeId] varchar(100) COLLATE Chinese_PRC_CI_AS  NOT NULL,
+  [ParentId] varchar(50) COLLATE Chinese_PRC_CI_AS  NULL,
+  [ParentName] varchar(100) COLLATE Chinese_PRC_CI_AS  NULL,
+  [ReturnToSignNode] bit DEFAULT 1 NOT NULL,
+  [Name] varchar(100) COLLATE Chinese_PRC_CI_AS  NULL
+)
+GO
+
+ALTER TABLE [dbo].[FlowApprover] SET (LOCK_ESCALATION = TABLE)
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'Id',
+'SCHEMA', N'dbo',
+'TABLE', N'FlowApprover',
+'COLUMN', N'Id'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'工作流实例Id',
+'SCHEMA', N'dbo',
+'TABLE', N'FlowApprover',
+'COLUMN', N'InstanceId'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'当前节点ID',
+'SCHEMA', N'dbo',
+'TABLE', N'FlowApprover',
+'COLUMN', N'ActivityId'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'加签原因',
+'SCHEMA', N'dbo',
+'TABLE', N'FlowApprover',
+'COLUMN', N'Reason'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'加签时间',
+'SCHEMA', N'dbo',
+'TABLE', N'FlowApprover',
+'COLUMN', N'CreateDate'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'加签人Id',
+'SCHEMA', N'dbo',
+'TABLE', N'FlowApprover',
+'COLUMN', N'CreateUserId'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'加签人',
+'SCHEMA', N'dbo',
+'TABLE', N'FlowApprover',
+'COLUMN', N'CreateUserName'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'状态（0未处理，1通过，2未通过，3驳回）',
+'SCHEMA', N'dbo',
+'TABLE', N'FlowApprover',
+'COLUMN', N'Status'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'类型（0顺序，1并行且，2并行或）',
+'SCHEMA', N'dbo',
+'TABLE', N'FlowApprover',
+'COLUMN', N'ApproveType'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'审批人ID',
+'SCHEMA', N'dbo',
+'TABLE', N'FlowApprover',
+'COLUMN', N'ApproverId'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'审批人',
+'SCHEMA', N'dbo',
+'TABLE', N'FlowApprover',
+'COLUMN', N'ApproverName'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'顺序号（当类型为0时）',
+'SCHEMA', N'dbo',
+'TABLE', N'FlowApprover',
+'COLUMN', N'OrderNo'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'审批日期',
+'SCHEMA', N'dbo',
+'TABLE', N'FlowApprover',
+'COLUMN', N'VerifyDate'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'审批意见',
+'SCHEMA', N'dbo',
+'TABLE', N'FlowApprover',
+'COLUMN', N'VerifyComment'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'层级ID，应对多次加签',
+'SCHEMA', N'dbo',
+'TABLE', N'FlowApprover',
+'COLUMN', N'CascadeId'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'父节点ID，应对多次加签',
+'SCHEMA', N'dbo',
+'TABLE', N'FlowApprover',
+'COLUMN', N'ParentId'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'父节点名称，应对多次加签结构',
+'SCHEMA', N'dbo',
+'TABLE', N'FlowApprover',
+'COLUMN', N'ParentName'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'是否回到加签节点',
+'SCHEMA', N'dbo',
+'TABLE', N'FlowApprover',
+'COLUMN', N'ReturnToSignNode'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'加签节点名称，应对多次加签结构',
+'SCHEMA', N'dbo',
+'TABLE', N'FlowApprover',
+'COLUMN', N'Name'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'工作流加签',
+'SCHEMA', N'dbo',
+'TABLE', N'FlowApprover'
+GO
+
+
+-- ----------------------------
+-- Records of FlowApprover
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for FlowInstance
@@ -1363,7 +1643,8 @@ CREATE TABLE [dbo].[FlowInstance] (
   [Description] varchar(200) COLLATE Chinese_PRC_CI_AS  NULL,
   [IsFinish] int DEFAULT 0 NOT NULL,
   [MakerList] varchar(1000) COLLATE Chinese_PRC_CI_AS  NULL,
-  [OrgId] varchar(50) COLLATE Chinese_PRC_CI_AS  NULL
+  [OrgId] varchar(50) COLLATE Chinese_PRC_CI_AS  NULL,
+  [BusinessId] varchar(50) COLLATE Chinese_PRC_CI_AS  NULL
 )
 GO
 
@@ -1553,6 +1834,13 @@ EXEC sp_addextendedproperty
 GO
 
 EXEC sp_addextendedproperty
+'MS_Description', N'业务单据ID',
+'SCHEMA', N'dbo',
+'TABLE', N'FlowInstance',
+'COLUMN', N'BusinessId'
+GO
+
+EXEC sp_addextendedproperty
 'MS_Description', N'工作流流程实例表',
 'SCHEMA', N'dbo',
 'TABLE', N'FlowInstance'
@@ -1562,43 +1850,43 @@ GO
 -- ----------------------------
 -- Records of FlowInstance
 -- ----------------------------
-INSERT INTO [dbo].[FlowInstance] ([Id], [InstanceSchemeId], [Code], [CustomName], [ActivityId], [ActivityType], [ActivityName], [PreviousId], [SchemeContent], [SchemeId], [DbName], [FrmData], [FrmType], [FrmContentData], [FrmContentParse], [FrmId], [SchemeType], [Disabled], [CreateDate], [CreateUserId], [CreateUserName], [FlowLevel], [Description], [IsFinish], [MakerList], [OrgId]) VALUES (N'034ad4f0-95e6-40bf-b3c5-38bd60b542d9', N'', N'1564334796391', N'会签2019-07-29 01:26:40', N'1564334444885', N'4', N'node_7', N'1564334437844', N'{"title":"newFlow_1","initNum":16,"lines":[{"id":"1564334446774","type":"sl","from":"1564334430924","to":"1564334435460","name":"","dash":false,"Compares":null},{"id":"1564334447796","type":"sl","from":"1564334435460","to":"1564334437844","name":"","dash":false,"Compares":null},{"id":"1564334448572","type":"sl","from":"1564334437844","to":"1564334439828","name":"","dash":false,"Compares":null},{"id":"1564334449628","type":"sl","from":"1564334437844","to":"1564334440404","name":"","dash":false,"Compares":null},{"id":"1564334450572","type":"sl","from":"1564334439828","to":"1564334441965","name":"","dash":false,"Compares":null},{"id":"1564334451684","type":"sl","from":"1564334440404","to":"1564334441965","name":"","dash":false,"Compares":null},{"id":"1564334453900","type":"sl","from":"1564334441965","to":"1564334444885","name":"","dash":false,"Compares":null}],"nodes":[{"id":"1564334430924","name":"node_1","type":"start round mix","left":17,"top":12,"width":26,"height":26,"alt":true,"setInfo":null},{"id":"1564334435460","name":"node_2","type":"node","left":141,"top":49,"width":104,"height":26,"alt":true,"setInfo":{"NodeDesignate":null,"NodeDesignateData":null,"NodeCode":null,"NodeName":null,"ThirdPartyUrl":null,"NodeRejectType":null,"Taged":1,"UserName":"test","UserId":"6ba79766-faa0-4259-8139-a4a6d35784e0","Description":"","TagedTime":"2019-07-29 01:28","NodeConfluenceType":null,"ConfluenceOk":null,"ConfluenceNo":null}},{"id":"1564334437844","name":"会签入口，设置会签类型","type":"fork","left":141,"top":138,"width":104,"height":76,"alt":true,"setInfo":{"NodeDesignate":"ALL_USER","NodeDesignateData":{"users":[],"roles":[],"orgs":null},"NodeCode":null,"NodeName":null,"ThirdPartyUrl":"","NodeRejectType":null,"Taged":1,"UserName":"admin","UserId":"49df1602-f5f3-4d52-afb7-3802da619558","Description":"","TagedTime":"2019-07-29 01:30","NodeConfluenceType":"all","ConfluenceOk":1,"ConfluenceNo":null}},{"id":"1564334439828","name":"admin","type":"node","left":23,"top":272,"width":104,"height":36,"alt":true,"setInfo":{"NodeDesignate":"SPECIAL_USER","NodeDesignateData":{"users":["49df1602-f5f3-4d52-afb7-3802da619558"],"roles":[],"orgs":null},"NodeCode":null,"NodeName":null,"ThirdPartyUrl":"","NodeRejectType":null,"Taged":1,"UserName":"admin","UserId":"49df1602-f5f3-4d52-afb7-3802da619558","Description":"","TagedTime":"2019-07-29 01:30","NodeConfluenceType":"all","ConfluenceOk":null,"ConfluenceNo":null}},{"id":"1564334440404","name":"test","type":"node","left":234,"top":265,"width":104,"height":36,"alt":true,"setInfo":{"NodeDesignate":"SPECIAL_USER","NodeDesignateData":{"users":["6ba79766-faa0-4259-8139-a4a6d35784e0"],"roles":[],"orgs":null},"NodeCode":null,"NodeName":null,"ThirdPartyUrl":"","NodeRejectType":null,"Taged":null,"UserName":null,"UserId":null,"Description":null,"TagedTime":null,"NodeConfluenceType":"all","ConfluenceOk":null,"ConfluenceNo":null}},{"id":"1564334441965","name":"默认所有人","type":"join","left":140,"top":406,"width":104,"height":56,"alt":true,"setInfo":{"NodeDesignate":"ALL_USER","NodeDesignateData":{"users":[],"roles":[],"orgs":null},"NodeCode":null,"NodeName":null,"ThirdPartyUrl":"","NodeRejectType":null,"Taged":1,"UserName":"admin","UserId":"49df1602-f5f3-4d52-afb7-3802da619558","Description":"","TagedTime":"2019-07-29 01:30","NodeConfluenceType":"all","ConfluenceOk":null,"ConfluenceNo":null}},{"id":"1564334444885","name":"node_7","type":"end round","left":351,"top":420,"width":26,"height":26,"alt":true,"setInfo":null}],"areas":[]}', N'73819920-f085-4003-8874-4361b6461c92', N'', N'{"REASON":"身体原因","DAYS":"1","CUSTOME_NAME":"玉宝"}', N'0', N'[{"type":"text","name":"REASON","title":"REASON","value":"身体原因","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"REASON\" value=\"身体原因\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"},{"leipiplugins":"select","name":"DAYS","title":"DAYS","size":"1","orgwidth":"150","style":"width: 150px;","value":"1,3,5,10","selected":"selected","content":"<span leipiplugins=\"select\"><select name=\"leipiNewField\" title=\"DAYS\" leipiplugins=\"select\" size=\"1\" orgwidth=\"150\" style=\"width: 150px;\"><option value=\"1\" selected=\"selected\">1</option><option value=\"3\">3</option><option value=\"5\">5</option><option value=\"10\">10</option></select>&nbsp;&nbsp;</span>"},{"type":"text","name":"CUSTOME_NAME","title":"CUSTOME_NAME","value":"玉宝","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"CUSTOME_NAME\" value=\"玉宝\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', N'<p style="text-align: center;"><span style="font-size: 36px;">请假条</span></p><p><span style="font-size: 36px;"><br/></span></p><p style="text-align: center;">因{REASON}，本人想请假{DAYS}天，望领导批准！</p><p><br/></p><p style="text-align: center;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;谢谢！</p><p><br/></p><p style="text-align: right;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 申请人：{CUSTOME_NAME}</p>', N'ef89f96a-af33-407c-b02e-897faf46ecf0', N'', N'0', N'2019-07-29 01:26:45.000', N'00000000-0000-0000-0000-000000000000', N'System', N'0', N'', N'1', N'', NULL)
+INSERT INTO [dbo].[FlowInstance] ([Id], [InstanceSchemeId], [Code], [CustomName], [ActivityId], [ActivityType], [ActivityName], [PreviousId], [SchemeContent], [SchemeId], [DbName], [FrmData], [FrmType], [FrmContentData], [FrmContentParse], [FrmId], [SchemeType], [Disabled], [CreateDate], [CreateUserId], [CreateUserName], [FlowLevel], [Description], [IsFinish], [MakerList], [OrgId], [BusinessId]) VALUES (N'034ad4f0-95e6-40bf-b3c5-38bd60b542d9', N'', N'1564334796391', N'会签2019-07-29 01:26:40', N'1564334444885', N'4', N'node_7', N'1564334437844', N'{"title":"newFlow_1","initNum":16,"lines":[{"id":"1564334446774","type":"sl","from":"1564334430924","to":"1564334435460","name":"","dash":false,"Compares":null},{"id":"1564334447796","type":"sl","from":"1564334435460","to":"1564334437844","name":"","dash":false,"Compares":null},{"id":"1564334448572","type":"sl","from":"1564334437844","to":"1564334439828","name":"","dash":false,"Compares":null},{"id":"1564334449628","type":"sl","from":"1564334437844","to":"1564334440404","name":"","dash":false,"Compares":null},{"id":"1564334450572","type":"sl","from":"1564334439828","to":"1564334441965","name":"","dash":false,"Compares":null},{"id":"1564334451684","type":"sl","from":"1564334440404","to":"1564334441965","name":"","dash":false,"Compares":null},{"id":"1564334453900","type":"sl","from":"1564334441965","to":"1564334444885","name":"","dash":false,"Compares":null}],"nodes":[{"id":"1564334430924","name":"node_1","type":"start round mix","left":17,"top":12,"width":26,"height":26,"alt":true,"setInfo":null},{"id":"1564334435460","name":"node_2","type":"node","left":141,"top":49,"width":104,"height":26,"alt":true,"setInfo":{"NodeDesignate":null,"NodeDesignateData":null,"NodeCode":null,"NodeName":null,"ThirdPartyUrl":null,"NodeRejectType":null,"Taged":1,"UserName":"test","UserId":"6ba79766-faa0-4259-8139-a4a6d35784e0","Description":"","TagedTime":"2019-07-29 01:28","NodeConfluenceType":null,"ConfluenceOk":null,"ConfluenceNo":null}},{"id":"1564334437844","name":"会签入口，设置会签类型","type":"fork","left":141,"top":138,"width":104,"height":76,"alt":true,"setInfo":{"NodeDesignate":"ALL_USER","NodeDesignateData":{"users":[],"roles":[],"orgs":null},"NodeCode":null,"NodeName":null,"ThirdPartyUrl":"","NodeRejectType":null,"Taged":1,"UserName":"admin","UserId":"49df1602-f5f3-4d52-afb7-3802da619558","Description":"","TagedTime":"2019-07-29 01:30","NodeConfluenceType":"all","ConfluenceOk":1,"ConfluenceNo":null}},{"id":"1564334439828","name":"admin","type":"node","left":23,"top":272,"width":104,"height":36,"alt":true,"setInfo":{"NodeDesignate":"SPECIAL_USER","NodeDesignateData":{"users":["49df1602-f5f3-4d52-afb7-3802da619558"],"roles":[],"orgs":null},"NodeCode":null,"NodeName":null,"ThirdPartyUrl":"","NodeRejectType":null,"Taged":1,"UserName":"admin","UserId":"49df1602-f5f3-4d52-afb7-3802da619558","Description":"","TagedTime":"2019-07-29 01:30","NodeConfluenceType":"all","ConfluenceOk":null,"ConfluenceNo":null}},{"id":"1564334440404","name":"test","type":"node","left":234,"top":265,"width":104,"height":36,"alt":true,"setInfo":{"NodeDesignate":"SPECIAL_USER","NodeDesignateData":{"users":["6ba79766-faa0-4259-8139-a4a6d35784e0"],"roles":[],"orgs":null},"NodeCode":null,"NodeName":null,"ThirdPartyUrl":"","NodeRejectType":null,"Taged":null,"UserName":null,"UserId":null,"Description":null,"TagedTime":null,"NodeConfluenceType":"all","ConfluenceOk":null,"ConfluenceNo":null}},{"id":"1564334441965","name":"默认所有人","type":"join","left":140,"top":406,"width":104,"height":56,"alt":true,"setInfo":{"NodeDesignate":"ALL_USER","NodeDesignateData":{"users":[],"roles":[],"orgs":null},"NodeCode":null,"NodeName":null,"ThirdPartyUrl":"","NodeRejectType":null,"Taged":1,"UserName":"admin","UserId":"49df1602-f5f3-4d52-afb7-3802da619558","Description":"","TagedTime":"2019-07-29 01:30","NodeConfluenceType":"all","ConfluenceOk":null,"ConfluenceNo":null}},{"id":"1564334444885","name":"node_7","type":"end round","left":351,"top":420,"width":26,"height":26,"alt":true,"setInfo":null}],"areas":[]}', N'73819920-f085-4003-8874-4361b6461c92', N'', N'{"REASON":"身体原因","DAYS":"1","CUSTOME_NAME":"玉宝"}', N'0', N'[{"type":"text","name":"REASON","title":"REASON","value":"身体原因","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"REASON\" value=\"身体原因\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"},{"leipiplugins":"select","name":"DAYS","title":"DAYS","size":"1","orgwidth":"150","style":"width: 150px;","value":"1,3,5,10","selected":"selected","content":"<span leipiplugins=\"select\"><select name=\"leipiNewField\" title=\"DAYS\" leipiplugins=\"select\" size=\"1\" orgwidth=\"150\" style=\"width: 150px;\"><option value=\"1\" selected=\"selected\">1</option><option value=\"3\">3</option><option value=\"5\">5</option><option value=\"10\">10</option></select>&nbsp;&nbsp;</span>"},{"type":"text","name":"CUSTOME_NAME","title":"CUSTOME_NAME","value":"玉宝","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"CUSTOME_NAME\" value=\"玉宝\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', N'<p style="text-align: center;"><span style="font-size: 36px;">请假条</span></p><p><span style="font-size: 36px;"><br/></span></p><p style="text-align: center;">因{REASON}，本人想请假{DAYS}天，望领导批准！</p><p><br/></p><p style="text-align: center;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;谢谢！</p><p><br/></p><p style="text-align: right;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 申请人：{CUSTOME_NAME}</p>', N'ef89f96a-af33-407c-b02e-897faf46ecf0', N'', N'0', N'2019-07-29 01:26:45.000', N'00000000-0000-0000-0000-000000000000', N'System', N'0', N'', N'1', N'', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[FlowInstance] ([Id], [InstanceSchemeId], [Code], [CustomName], [ActivityId], [ActivityType], [ActivityName], [PreviousId], [SchemeContent], [SchemeId], [DbName], [FrmData], [FrmType], [FrmContentData], [FrmContentParse], [FrmId], [SchemeType], [Disabled], [CreateDate], [CreateUserId], [CreateUserName], [FlowLevel], [Description], [IsFinish], [MakerList], [OrgId]) VALUES (N'0ae5abe6-f571-4e08-b264-667dc27c5025', N'', N'1564334583446', N'带复杂表单的2019-07-29 01:23:03', N'1564334557205', N'2', N'node_2', N'1564334555981', N'{"title":"newFlow_1","nodes":[{"name":"node_1","left":66,"top":46,"type":"start round mix","id":"1564334555981","width":26,"height":26,"alt":true},{"name":"node_2","left":50,"top":145,"type":"node","id":"1564334557205","width":104,"height":26,"alt":true},{"name":"node_3","left":56,"top":206,"type":"node","id":"1564334557764","width":104,"height":26,"alt":true},{"name":"node_4","left":66,"top":294,"type":"end round","id":"1564334559716","width":26,"height":26,"alt":true}],"lines":[{"type":"sl","from":"1564334555981","to":"1564334557205","id":"1564334561500","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334557205","to":"1564334557764","id":"1564334562229","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334557764","to":"1564334559716","id":"1564334563268","name":"","dash":false,"alt":true}],"areas":[],"initNum":8}', N'989bd1f3-29f0-43cd-ad01-b55654907dbb', N'FrmLeaveReq', N'{"id":"","userName":"李玉宝","requestType":"事假","startDate":"2019-07-08T16:00:00.000Z","startTime":"2019-07-28T17:23:14.000Z","endDate":"2019-07-24T16:00:00.000Z","endTime":"2019-07-28T17:23:18.000Z","requestComment":"太累了，就是想休息一下","attachment":"","files":[],"extendInfo":""}', N'1', N'', N'', N'8faff4e5-b729-44d2-ac26-e899a228f63d', N'', N'0', N'2019-07-29 01:23:57.000', N'00000000-0000-0000-0000-000000000000', N'System', N'0', N'这种结构只能企业版使用', N'0', N'1', NULL)
+INSERT INTO [dbo].[FlowInstance] ([Id], [InstanceSchemeId], [Code], [CustomName], [ActivityId], [ActivityType], [ActivityName], [PreviousId], [SchemeContent], [SchemeId], [DbName], [FrmData], [FrmType], [FrmContentData], [FrmContentParse], [FrmId], [SchemeType], [Disabled], [CreateDate], [CreateUserId], [CreateUserName], [FlowLevel], [Description], [IsFinish], [MakerList], [OrgId], [BusinessId]) VALUES (N'0ae5abe6-f571-4e08-b264-667dc27c5025', N'', N'1564334583446', N'带复杂表单的2019-07-29 01:23:03', N'1564334557205', N'2', N'node_2', N'1564334555981', N'{"title":"newFlow_1","nodes":[{"name":"node_1","left":66,"top":46,"type":"start round mix","id":"1564334555981","width":26,"height":26,"alt":true},{"name":"node_2","left":50,"top":145,"type":"node","id":"1564334557205","width":104,"height":26,"alt":true},{"name":"node_3","left":56,"top":206,"type":"node","id":"1564334557764","width":104,"height":26,"alt":true},{"name":"node_4","left":66,"top":294,"type":"end round","id":"1564334559716","width":26,"height":26,"alt":true}],"lines":[{"type":"sl","from":"1564334555981","to":"1564334557205","id":"1564334561500","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334557205","to":"1564334557764","id":"1564334562229","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334557764","to":"1564334559716","id":"1564334563268","name":"","dash":false,"alt":true}],"areas":[],"initNum":8}', N'989bd1f3-29f0-43cd-ad01-b55654907dbb', N'FrmLeaveReq', N'{"id":"","userName":"李玉宝","requestType":"事假","startDate":"2019-07-08T16:00:00.000Z","startTime":"2019-07-28T17:23:14.000Z","endDate":"2019-07-24T16:00:00.000Z","endTime":"2019-07-28T17:23:18.000Z","requestComment":"太累了，就是想休息一下","attachment":"","files":[],"extendInfo":""}', N'1', N'', N'', N'8faff4e5-b729-44d2-ac26-e899a228f63d', N'', N'0', N'2019-07-29 01:23:57.000', N'00000000-0000-0000-0000-000000000000', N'System', N'0', N'这种结构只能企业版使用', N'0', N'1', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[FlowInstance] ([Id], [InstanceSchemeId], [Code], [CustomName], [ActivityId], [ActivityType], [ActivityName], [PreviousId], [SchemeContent], [SchemeId], [DbName], [FrmData], [FrmType], [FrmContentData], [FrmContentParse], [FrmId], [SchemeType], [Disabled], [CreateDate], [CreateUserId], [CreateUserName], [FlowLevel], [Description], [IsFinish], [MakerList], [OrgId]) VALUES (N'88156170-41a6-45d1-99dc-40dc37a82bc9', N'', N'1573007376219', N'按角色执行2019-11-06 10:31:28', N'1564334332325', N'2', N'管理员', N'1564334327861', N'{"title":"newFlow_1","nodes":[{"name":"node_1","left":99,"top":32,"type":"start round mix","id":"1564334327861","width":26,"height":26,"alt":true},{"name":"node_2","left":70,"top":295,"type":"end round","id":"1564334330157","width":26,"height":26,"alt":true},{"name":"管理员","left":43,"top":131,"type":"node","id":"1564334332325","width":104,"height":36,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_ROLE","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":["09ee2ffa-7463-4938-ae0b-1cb4e80c7c13"]}}},{"name":"测试人员","left":185,"top":226,"type":"node","id":"1564334333133","width":104,"height":36,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_ROLE","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":["0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d"]}}}],"lines":[{"type":"sl","from":"1564334327861","to":"1564334332325","id":"1564334335789","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334332325","to":"1564334333133","id":"1564334336629","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334333133","to":"1564334330157","id":"1564334337805","name":"","dash":false,"alt":true}],"areas":[],"initNum":9}', N'0b21f59c-7809-4275-acb4-8e8c08e0167e', N'', N'{"REASON":"身体原因","DAYS":"1","CUSTOME_NAME":"玉宝"}', N'0', N'[{"type":"text","name":"REASON","title":"REASON","value":"身体原因","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"REASON\" value=\"身体原因\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"},{"leipiplugins":"select","name":"DAYS","title":"DAYS","size":"1","orgwidth":"150","style":"width: 150px;","value":"1,3,5,10","selected":"selected","content":"<span leipiplugins=\"select\"><select name=\"leipiNewField\" title=\"DAYS\" leipiplugins=\"select\" size=\"1\" orgwidth=\"150\" style=\"width: 150px;\"><option value=\"1\" selected=\"selected\">1</option><option value=\"3\">3</option><option value=\"5\">5</option><option value=\"10\">10</option></select>&nbsp;&nbsp;</span>"},{"type":"text","name":"CUSTOME_NAME","title":"CUSTOME_NAME","value":"玉宝","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"CUSTOME_NAME\" value=\"玉宝\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', N'<p style="text-align: center;"><span style="font-size: 36px;">请假条</span></p><p><span style="font-size: 36px;"><br/></span></p><p style="text-align: center;">因{REASON}，本人想请假{DAYS}天，望领导批准！</p><p><br/></p><p style="text-align: center;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;谢谢！</p><p><br/></p><p style="text-align: right;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 申请人：{CUSTOME_NAME}</p>', N'ef89f96a-af33-407c-b02e-897faf46ecf0', N'', N'0', N'2019-11-06 10:31:35.000', N'00000000-0000-0000-0000-000000000000', N'System', N'0', N'', N'0', N'1df68dfd-3b6d-4491-872f-00a0fc6c5a64,49df1602-f5f3-4d52-afb7-3802da619558', NULL)
+INSERT INTO [dbo].[FlowInstance] ([Id], [InstanceSchemeId], [Code], [CustomName], [ActivityId], [ActivityType], [ActivityName], [PreviousId], [SchemeContent], [SchemeId], [DbName], [FrmData], [FrmType], [FrmContentData], [FrmContentParse], [FrmId], [SchemeType], [Disabled], [CreateDate], [CreateUserId], [CreateUserName], [FlowLevel], [Description], [IsFinish], [MakerList], [OrgId], [BusinessId]) VALUES (N'88156170-41a6-45d1-99dc-40dc37a82bc9', N'', N'1573007376219', N'按角色执行2019-11-06 10:31:28', N'1564334332325', N'2', N'管理员', N'1564334327861', N'{"title":"newFlow_1","nodes":[{"name":"node_1","left":99,"top":32,"type":"start round mix","id":"1564334327861","width":26,"height":26,"alt":true},{"name":"node_2","left":70,"top":295,"type":"end round","id":"1564334330157","width":26,"height":26,"alt":true},{"name":"管理员","left":43,"top":131,"type":"node","id":"1564334332325","width":104,"height":36,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_ROLE","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":["09ee2ffa-7463-4938-ae0b-1cb4e80c7c13"]}}},{"name":"测试人员","left":185,"top":226,"type":"node","id":"1564334333133","width":104,"height":36,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_ROLE","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":["0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d"]}}}],"lines":[{"type":"sl","from":"1564334327861","to":"1564334332325","id":"1564334335789","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334332325","to":"1564334333133","id":"1564334336629","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334333133","to":"1564334330157","id":"1564334337805","name":"","dash":false,"alt":true}],"areas":[],"initNum":9}', N'0b21f59c-7809-4275-acb4-8e8c08e0167e', N'', N'{"REASON":"身体原因","DAYS":"1","CUSTOME_NAME":"玉宝"}', N'0', N'[{"type":"text","name":"REASON","title":"REASON","value":"身体原因","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"REASON\" value=\"身体原因\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"},{"leipiplugins":"select","name":"DAYS","title":"DAYS","size":"1","orgwidth":"150","style":"width: 150px;","value":"1,3,5,10","selected":"selected","content":"<span leipiplugins=\"select\"><select name=\"leipiNewField\" title=\"DAYS\" leipiplugins=\"select\" size=\"1\" orgwidth=\"150\" style=\"width: 150px;\"><option value=\"1\" selected=\"selected\">1</option><option value=\"3\">3</option><option value=\"5\">5</option><option value=\"10\">10</option></select>&nbsp;&nbsp;</span>"},{"type":"text","name":"CUSTOME_NAME","title":"CUSTOME_NAME","value":"玉宝","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"CUSTOME_NAME\" value=\"玉宝\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', N'<p style="text-align: center;"><span style="font-size: 36px;">请假条</span></p><p><span style="font-size: 36px;"><br/></span></p><p style="text-align: center;">因{REASON}，本人想请假{DAYS}天，望领导批准！</p><p><br/></p><p style="text-align: center;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;谢谢！</p><p><br/></p><p style="text-align: right;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 申请人：{CUSTOME_NAME}</p>', N'ef89f96a-af33-407c-b02e-897faf46ecf0', N'', N'0', N'2019-11-06 10:31:35.000', N'00000000-0000-0000-0000-000000000000', N'System', N'0', N'', N'0', N'1df68dfd-3b6d-4491-872f-00a0fc6c5a64,49df1602-f5f3-4d52-afb7-3802da619558', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[FlowInstance] ([Id], [InstanceSchemeId], [Code], [CustomName], [ActivityId], [ActivityType], [ActivityName], [PreviousId], [SchemeContent], [SchemeId], [DbName], [FrmData], [FrmType], [FrmContentData], [FrmContentParse], [FrmId], [SchemeType], [Disabled], [CreateDate], [CreateUserId], [CreateUserName], [FlowLevel], [Description], [IsFinish], [MakerList], [OrgId]) VALUES (N'0ee22872-f120-4c5a-84ec-7f4e36bd0141', N'', N'1564334742060', N'带分支条件的请假2019-07-29 01:25:44', N'1564334139783', N'4', N'node_2', N'1564334156607', N'{"title":"newFlow_1","initNum":16,"lines":[{"id":"1564334158551","type":"sl","from":"1564334138399","to":"1564334153687","name":"","dash":false,"Compares":null},{"id":"1564334159304","type":"sl","from":"1564334153687","to":"1564334154471","name":"","dash":false,"Compares":[{"Operation":"<","FieldName":"DAYS","FieldType":null,"Value":"3"}]},{"id":"1564334160383","type":"sl","from":"1564334153687","to":"1564334155295","name":"","dash":false,"Compares":[{"Operation":">=","FieldName":"DAYS","FieldType":null,"Value":"3"}]},{"id":"1564334161911","type":"sl","from":"1564334154471","to":"1564334156607","name":"","dash":false,"Compares":null},{"id":"1564334163959","type":"sl","from":"1564334155295","to":"1564334156607","name":"","dash":false,"Compares":null},{"id":"1564334165255","type":"sl","from":"1564334156607","to":"1564334139783","name":"","dash":false,"Compares":null}],"nodes":[{"id":"1564334138399","name":"node_1","type":"start round mix","left":44,"top":27,"width":26,"height":26,"alt":true,"setInfo":null},{"id":"1564334139783","name":"node_2","type":"end round","left":50,"top":295,"width":26,"height":26,"alt":true,"setInfo":null},{"id":"1564334153687","name":"所有人可以审批","type":"node","left":163,"top":43,"width":104,"height":56,"alt":true,"setInfo":{"NodeDesignate":"ALL_USER","NodeDesignateData":{"users":[],"roles":[],"orgs":null},"NodeCode":null,"NodeName":null,"ThirdPartyUrl":"","NodeRejectType":null,"Taged":1,"UserName":"超级管理员","UserId":"00000000-0000-0000-0000-000000000000","Description":"","TagedTime":"2019-07-29 01:26","NodeConfluenceType":"all","ConfluenceOk":null,"ConfluenceNo":null}},{"id":"1564334154471","name":"小于3的test可以审批","type":"node","left":23,"top":141,"width":167,"height":76,"alt":true,"setInfo":{"NodeDesignate":"SPECIAL_USER","NodeDesignateData":{"users":["6ba79766-faa0-4259-8139-a4a6d35784e0"],"roles":[],"orgs":null},"NodeCode":null,"NodeName":null,"ThirdPartyUrl":"","NodeRejectType":null,"Taged":1,"UserName":"test","UserId":"6ba79766-faa0-4259-8139-a4a6d35784e0","Description":"","TagedTime":"2019-07-29 01:28","NodeConfluenceType":"all","ConfluenceOk":null,"ConfluenceNo":null}},{"id":"1564334155295","name":"大于3的admin可以审批","type":"node","left":288,"top":146,"width":143,"height":56,"alt":true,"setInfo":{"NodeDesignate":"SPECIAL_USER","NodeDesignateData":{"users":["49df1602-f5f3-4d52-afb7-3802da619558"],"roles":[],"orgs":null},"NodeCode":null,"NodeName":null,"ThirdPartyUrl":"","NodeRejectType":null,"Taged":null,"UserName":null,"UserId":null,"Description":null,"TagedTime":null,"NodeConfluenceType":"all","ConfluenceOk":null,"ConfluenceNo":null}},{"id":"1564334156607","name":"默认","type":"node","left":171,"top":291,"width":104,"height":36,"alt":true,"setInfo":{"NodeDesignate":"ALL_USER","NodeDesignateData":{"users":[],"roles":[],"orgs":null},"NodeCode":null,"NodeName":null,"ThirdPartyUrl":"","NodeRejectType":null,"Taged":1,"UserName":"admin","UserId":"49df1602-f5f3-4d52-afb7-3802da619558","Description":"","TagedTime":"2019-07-29 01:30","NodeConfluenceType":"all","ConfluenceOk":null,"ConfluenceNo":null}}],"areas":[]}', N'bfd4f0f9-6f61-4af9-977e-cbcf7c30dd35', N'', N'{"REASON":"身体原因","DAYS":"1","CUSTOME_NAME":"玉宝"}', N'0', N'[{"type":"text","name":"REASON","title":"REASON","value":"身体原因","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"REASON\" value=\"身体原因\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"},{"leipiplugins":"select","name":"DAYS","title":"DAYS","size":"1","orgwidth":"150","style":"width: 150px;","value":"1,3,5,10","selected":"selected","content":"<span leipiplugins=\"select\"><select name=\"leipiNewField\" title=\"DAYS\" leipiplugins=\"select\" size=\"1\" orgwidth=\"150\" style=\"width: 150px;\"><option value=\"1\" selected=\"selected\">1</option><option value=\"3\">3</option><option value=\"5\">5</option><option value=\"10\">10</option></select>&nbsp;&nbsp;</span>"},{"type":"text","name":"CUSTOME_NAME","title":"CUSTOME_NAME","value":"玉宝","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"CUSTOME_NAME\" value=\"玉宝\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', N'<p style="text-align: center;"><span style="font-size: 36px;">请假条</span></p><p><span style="font-size: 36px;"><br/></span></p><p style="text-align: center;">因{REASON}，本人想请假{DAYS}天，望领导批准！</p><p><br/></p><p style="text-align: center;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;谢谢！</p><p><br/></p><p style="text-align: right;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 申请人：{CUSTOME_NAME}</p>', N'ef89f96a-af33-407c-b02e-897faf46ecf0', N'', N'0', N'2019-07-29 01:25:56.000', N'00000000-0000-0000-0000-000000000000', N'System', N'0', N'这个时执行完成的', N'1', N'', NULL)
+INSERT INTO [dbo].[FlowInstance] ([Id], [InstanceSchemeId], [Code], [CustomName], [ActivityId], [ActivityType], [ActivityName], [PreviousId], [SchemeContent], [SchemeId], [DbName], [FrmData], [FrmType], [FrmContentData], [FrmContentParse], [FrmId], [SchemeType], [Disabled], [CreateDate], [CreateUserId], [CreateUserName], [FlowLevel], [Description], [IsFinish], [MakerList], [OrgId], [BusinessId]) VALUES (N'0ee22872-f120-4c5a-84ec-7f4e36bd0141', N'', N'1564334742060', N'带分支条件的请假2019-07-29 01:25:44', N'1564334139783', N'4', N'node_2', N'1564334156607', N'{"title":"newFlow_1","initNum":16,"lines":[{"id":"1564334158551","type":"sl","from":"1564334138399","to":"1564334153687","name":"","dash":false,"Compares":null},{"id":"1564334159304","type":"sl","from":"1564334153687","to":"1564334154471","name":"","dash":false,"Compares":[{"Operation":"<","FieldName":"DAYS","FieldType":null,"Value":"3"}]},{"id":"1564334160383","type":"sl","from":"1564334153687","to":"1564334155295","name":"","dash":false,"Compares":[{"Operation":">=","FieldName":"DAYS","FieldType":null,"Value":"3"}]},{"id":"1564334161911","type":"sl","from":"1564334154471","to":"1564334156607","name":"","dash":false,"Compares":null},{"id":"1564334163959","type":"sl","from":"1564334155295","to":"1564334156607","name":"","dash":false,"Compares":null},{"id":"1564334165255","type":"sl","from":"1564334156607","to":"1564334139783","name":"","dash":false,"Compares":null}],"nodes":[{"id":"1564334138399","name":"node_1","type":"start round mix","left":44,"top":27,"width":26,"height":26,"alt":true,"setInfo":null},{"id":"1564334139783","name":"node_2","type":"end round","left":50,"top":295,"width":26,"height":26,"alt":true,"setInfo":null},{"id":"1564334153687","name":"所有人可以审批","type":"node","left":163,"top":43,"width":104,"height":56,"alt":true,"setInfo":{"NodeDesignate":"ALL_USER","NodeDesignateData":{"users":[],"roles":[],"orgs":null},"NodeCode":null,"NodeName":null,"ThirdPartyUrl":"","NodeRejectType":null,"Taged":1,"UserName":"超级管理员","UserId":"00000000-0000-0000-0000-000000000000","Description":"","TagedTime":"2019-07-29 01:26","NodeConfluenceType":"all","ConfluenceOk":null,"ConfluenceNo":null}},{"id":"1564334154471","name":"小于3的test可以审批","type":"node","left":23,"top":141,"width":167,"height":76,"alt":true,"setInfo":{"NodeDesignate":"SPECIAL_USER","NodeDesignateData":{"users":["6ba79766-faa0-4259-8139-a4a6d35784e0"],"roles":[],"orgs":null},"NodeCode":null,"NodeName":null,"ThirdPartyUrl":"","NodeRejectType":null,"Taged":1,"UserName":"test","UserId":"6ba79766-faa0-4259-8139-a4a6d35784e0","Description":"","TagedTime":"2019-07-29 01:28","NodeConfluenceType":"all","ConfluenceOk":null,"ConfluenceNo":null}},{"id":"1564334155295","name":"大于3的admin可以审批","type":"node","left":288,"top":146,"width":143,"height":56,"alt":true,"setInfo":{"NodeDesignate":"SPECIAL_USER","NodeDesignateData":{"users":["49df1602-f5f3-4d52-afb7-3802da619558"],"roles":[],"orgs":null},"NodeCode":null,"NodeName":null,"ThirdPartyUrl":"","NodeRejectType":null,"Taged":null,"UserName":null,"UserId":null,"Description":null,"TagedTime":null,"NodeConfluenceType":"all","ConfluenceOk":null,"ConfluenceNo":null}},{"id":"1564334156607","name":"默认","type":"node","left":171,"top":291,"width":104,"height":36,"alt":true,"setInfo":{"NodeDesignate":"ALL_USER","NodeDesignateData":{"users":[],"roles":[],"orgs":null},"NodeCode":null,"NodeName":null,"ThirdPartyUrl":"","NodeRejectType":null,"Taged":1,"UserName":"admin","UserId":"49df1602-f5f3-4d52-afb7-3802da619558","Description":"","TagedTime":"2019-07-29 01:30","NodeConfluenceType":"all","ConfluenceOk":null,"ConfluenceNo":null}}],"areas":[]}', N'bfd4f0f9-6f61-4af9-977e-cbcf7c30dd35', N'', N'{"REASON":"身体原因","DAYS":"1","CUSTOME_NAME":"玉宝"}', N'0', N'[{"type":"text","name":"REASON","title":"REASON","value":"身体原因","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"REASON\" value=\"身体原因\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"},{"leipiplugins":"select","name":"DAYS","title":"DAYS","size":"1","orgwidth":"150","style":"width: 150px;","value":"1,3,5,10","selected":"selected","content":"<span leipiplugins=\"select\"><select name=\"leipiNewField\" title=\"DAYS\" leipiplugins=\"select\" size=\"1\" orgwidth=\"150\" style=\"width: 150px;\"><option value=\"1\" selected=\"selected\">1</option><option value=\"3\">3</option><option value=\"5\">5</option><option value=\"10\">10</option></select>&nbsp;&nbsp;</span>"},{"type":"text","name":"CUSTOME_NAME","title":"CUSTOME_NAME","value":"玉宝","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"CUSTOME_NAME\" value=\"玉宝\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', N'<p style="text-align: center;"><span style="font-size: 36px;">请假条</span></p><p><span style="font-size: 36px;"><br/></span></p><p style="text-align: center;">因{REASON}，本人想请假{DAYS}天，望领导批准！</p><p><br/></p><p style="text-align: center;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;谢谢！</p><p><br/></p><p style="text-align: right;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 申请人：{CUSTOME_NAME}</p>', N'ef89f96a-af33-407c-b02e-897faf46ecf0', N'', N'0', N'2019-07-29 01:25:56.000', N'00000000-0000-0000-0000-000000000000', N'System', N'0', N'这个时执行完成的', N'1', N'', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[FlowInstance] ([Id], [InstanceSchemeId], [Code], [CustomName], [ActivityId], [ActivityType], [ActivityName], [PreviousId], [SchemeContent], [SchemeId], [DbName], [FrmData], [FrmType], [FrmContentData], [FrmContentParse], [FrmId], [SchemeType], [Disabled], [CreateDate], [CreateUserId], [CreateUserName], [FlowLevel], [Description], [IsFinish], [MakerList], [OrgId]) VALUES (N'20be4e87-0e9e-467c-9011-3c6ccd650931', N'', N'1564334643592', N'会签2019-07-29 01:24:05', N'1564334435460', N'2', N'node_2', N'1564334430924', N'{"title":"newFlow_1","nodes":[{"name":"node_1","left":17,"top":12,"type":"start round mix","id":"1564334430924","width":26,"height":26,"alt":true},{"name":"node_2","left":141,"top":49,"type":"node","id":"1564334435460","width":104,"height":26,"alt":true},{"name":"会签入口，设置会签类型","left":141,"top":138,"type":"fork","id":"1564334437844","width":104,"height":76,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"ALL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":[]}}},{"name":"admin","left":23,"top":272,"type":"node","id":"1564334439828","width":104,"height":36,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":["49df1602-f5f3-4d52-afb7-3802da619558"],"roles":[]}}},{"name":"test","left":234,"top":265,"type":"node","id":"1564334440404","width":104,"height":36,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":["6ba79766-faa0-4259-8139-a4a6d35784e0"],"roles":[]}}},{"name":"默认所有人","left":140,"top":406,"type":"join","id":"1564334441965","width":104,"height":56,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"ALL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":[]}}},{"name":"node_7","left":351,"top":420,"type":"end round","id":"1564334444885","width":26,"height":26,"alt":true}],"lines":[{"type":"sl","from":"1564334430924","to":"1564334435460","id":"1564334446774","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334435460","to":"1564334437844","id":"1564334447796","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334437844","to":"1564334439828","id":"1564334448572","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334437844","to":"1564334440404","id":"1564334449628","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334439828","to":"1564334441965","id":"1564334450572","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334440404","to":"1564334441965","id":"1564334451684","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334441965","to":"1564334444885","id":"1564334453900","name":"","dash":false,"alt":true}],"areas":[],"initNum":16}', N'73819920-f085-4003-8874-4361b6461c92', N'', N'{"REASON":"身体原因","DAYS":"3","CUSTOME_NAME":"玉宝"}', N'0', N'[{"type":"text","name":"REASON","title":"REASON","value":"身体原因","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"REASON\" value=\"身体原因\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"},{"leipiplugins":"select","name":"DAYS","title":"DAYS","size":"1","orgwidth":"150","style":"width: 150px;","value":"1,3,5,10","selected":"selected","content":"<span leipiplugins=\"select\"><select name=\"leipiNewField\" title=\"DAYS\" leipiplugins=\"select\" size=\"1\" orgwidth=\"150\" style=\"width: 150px;\"><option value=\"1\" selected=\"selected\">1</option><option value=\"3\">3</option><option value=\"5\">5</option><option value=\"10\">10</option></select>&nbsp;&nbsp;</span>"},{"type":"text","name":"CUSTOME_NAME","title":"CUSTOME_NAME","value":"玉宝","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"CUSTOME_NAME\" value=\"玉宝\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', N'<p style="text-align: center;"><span style="font-size: 36px;">请假条</span></p><p><span style="font-size: 36px;"><br/></span></p><p style="text-align: center;">因{REASON}，本人想请假{DAYS}天，望领导批准！</p><p><br/></p><p style="text-align: center;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;谢谢！</p><p><br/></p><p style="text-align: right;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 申请人：{CUSTOME_NAME}</p>', N'ef89f96a-af33-407c-b02e-897faf46ecf0', N'', N'0', N'2019-07-29 01:24:14.000', N'00000000-0000-0000-0000-000000000000', N'System', N'0', N'', N'0', N'1', NULL)
+INSERT INTO [dbo].[FlowInstance] ([Id], [InstanceSchemeId], [Code], [CustomName], [ActivityId], [ActivityType], [ActivityName], [PreviousId], [SchemeContent], [SchemeId], [DbName], [FrmData], [FrmType], [FrmContentData], [FrmContentParse], [FrmId], [SchemeType], [Disabled], [CreateDate], [CreateUserId], [CreateUserName], [FlowLevel], [Description], [IsFinish], [MakerList], [OrgId], [BusinessId]) VALUES (N'20be4e87-0e9e-467c-9011-3c6ccd650931', N'', N'1564334643592', N'会签2019-07-29 01:24:05', N'1564334435460', N'2', N'node_2', N'1564334430924', N'{"title":"newFlow_1","nodes":[{"name":"node_1","left":17,"top":12,"type":"start round mix","id":"1564334430924","width":26,"height":26,"alt":true},{"name":"node_2","left":141,"top":49,"type":"node","id":"1564334435460","width":104,"height":26,"alt":true},{"name":"会签入口，设置会签类型","left":141,"top":138,"type":"fork","id":"1564334437844","width":104,"height":76,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"ALL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":[]}}},{"name":"admin","left":23,"top":272,"type":"node","id":"1564334439828","width":104,"height":36,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":["49df1602-f5f3-4d52-afb7-3802da619558"],"roles":[]}}},{"name":"test","left":234,"top":265,"type":"node","id":"1564334440404","width":104,"height":36,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":["6ba79766-faa0-4259-8139-a4a6d35784e0"],"roles":[]}}},{"name":"默认所有人","left":140,"top":406,"type":"join","id":"1564334441965","width":104,"height":56,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"ALL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":[]}}},{"name":"node_7","left":351,"top":420,"type":"end round","id":"1564334444885","width":26,"height":26,"alt":true}],"lines":[{"type":"sl","from":"1564334430924","to":"1564334435460","id":"1564334446774","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334435460","to":"1564334437844","id":"1564334447796","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334437844","to":"1564334439828","id":"1564334448572","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334437844","to":"1564334440404","id":"1564334449628","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334439828","to":"1564334441965","id":"1564334450572","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334440404","to":"1564334441965","id":"1564334451684","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334441965","to":"1564334444885","id":"1564334453900","name":"","dash":false,"alt":true}],"areas":[],"initNum":16}', N'73819920-f085-4003-8874-4361b6461c92', N'', N'{"REASON":"身体原因","DAYS":"3","CUSTOME_NAME":"玉宝"}', N'0', N'[{"type":"text","name":"REASON","title":"REASON","value":"身体原因","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"REASON\" value=\"身体原因\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"},{"leipiplugins":"select","name":"DAYS","title":"DAYS","size":"1","orgwidth":"150","style":"width: 150px;","value":"1,3,5,10","selected":"selected","content":"<span leipiplugins=\"select\"><select name=\"leipiNewField\" title=\"DAYS\" leipiplugins=\"select\" size=\"1\" orgwidth=\"150\" style=\"width: 150px;\"><option value=\"1\" selected=\"selected\">1</option><option value=\"3\">3</option><option value=\"5\">5</option><option value=\"10\">10</option></select>&nbsp;&nbsp;</span>"},{"type":"text","name":"CUSTOME_NAME","title":"CUSTOME_NAME","value":"玉宝","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"CUSTOME_NAME\" value=\"玉宝\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', N'<p style="text-align: center;"><span style="font-size: 36px;">请假条</span></p><p><span style="font-size: 36px;"><br/></span></p><p style="text-align: center;">因{REASON}，本人想请假{DAYS}天，望领导批准！</p><p><br/></p><p style="text-align: center;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;谢谢！</p><p><br/></p><p style="text-align: right;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 申请人：{CUSTOME_NAME}</p>', N'ef89f96a-af33-407c-b02e-897faf46ecf0', N'', N'0', N'2019-07-29 01:24:14.000', N'00000000-0000-0000-0000-000000000000', N'System', N'0', N'', N'0', N'1', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[FlowInstance] ([Id], [InstanceSchemeId], [Code], [CustomName], [ActivityId], [ActivityType], [ActivityName], [PreviousId], [SchemeContent], [SchemeId], [DbName], [FrmData], [FrmType], [FrmContentData], [FrmContentParse], [FrmId], [SchemeType], [Disabled], [CreateDate], [CreateUserId], [CreateUserName], [FlowLevel], [Description], [IsFinish], [MakerList], [OrgId]) VALUES (N'd4f8d2b9-6374-4c10-8d3c-1ca540bc309b', N'', N'1572341191142', N'带复杂表单的2019-10-29 17:26:42', N'1564334557205', N'2', N'node_2', N'1564334555981', N'{"title":"newFlow_1","nodes":[{"name":"node_1","left":66,"top":46,"type":"start round mix","id":"1564334555981","width":26,"height":26,"alt":true},{"name":"node_2","left":50,"top":145,"type":"node","id":"1564334557205","width":104,"height":26,"alt":true},{"name":"node_3","left":56,"top":206,"type":"node","id":"1564334557764","width":104,"height":26,"alt":true},{"name":"node_4","left":66,"top":294,"type":"end round","id":"1564334559716","width":26,"height":26,"alt":true}],"lines":[{"type":"sl","from":"1564334555981","to":"1564334557205","id":"1564334561500","name":"","dash":false},{"type":"sl","from":"1564334557205","to":"1564334557764","id":"1564334562229","name":"","dash":false},{"type":"sl","from":"1564334557764","to":"1564334559716","id":"1564334563268","name":"","dash":false}],"areas":[],"initNum":8}', N'989bd1f3-29f0-43cd-ad01-b55654907dbb', N'FrmLeaveReq', N'{"id":"","userName":"1","requestType":"病假","startDate":"2019-10-07T16:00:00.000Z","startTime":"2019-10-29T09:26:52.000Z","endDate":"2019-10-27T16:00:00.000Z","endTime":"2019-10-29T09:26:54.000Z","requestComment":"111","attachment":"","files":[],"extendInfo":""}', N'1', N'', N'', N'8faff4e5-b729-44d2-ac26-e899a228f63d', N'', N'0', N'2019-10-29 17:27:06.000', N'00000000-0000-0000-0000-000000000000', N'System', N'0', N'11', N'0', N'1', NULL)
+INSERT INTO [dbo].[FlowInstance] ([Id], [InstanceSchemeId], [Code], [CustomName], [ActivityId], [ActivityType], [ActivityName], [PreviousId], [SchemeContent], [SchemeId], [DbName], [FrmData], [FrmType], [FrmContentData], [FrmContentParse], [FrmId], [SchemeType], [Disabled], [CreateDate], [CreateUserId], [CreateUserName], [FlowLevel], [Description], [IsFinish], [MakerList], [OrgId], [BusinessId]) VALUES (N'61959fe9-377a-4e6c-9f5d-6b7018a80bca', N'', N'1564334700493', N'带分支条件的请假2019-07-29 01:25:02', N'1564334154471', N'2', N'小于3的test可以审批', N'1564334153687', N'{"title":"newFlow_1","initNum":16,"lines":[{"id":"1564334158551","type":"sl","from":"1564334138399","to":"1564334153687","name":"","dash":false,"Compares":null},{"id":"1564334159304","type":"sl","from":"1564334153687","to":"1564334154471","name":"","dash":false,"Compares":[{"Operation":"<","FieldName":"DAYS","FieldType":null,"Value":"3"}]},{"id":"1564334160383","type":"sl","from":"1564334153687","to":"1564334155295","name":"","dash":false,"Compares":[{"Operation":">=","FieldName":"DAYS","FieldType":null,"Value":"3"}]},{"id":"1564334161911","type":"sl","from":"1564334154471","to":"1564334156607","name":"","dash":false,"Compares":null},{"id":"1564334163959","type":"sl","from":"1564334155295","to":"1564334156607","name":"","dash":false,"Compares":null},{"id":"1564334165255","type":"sl","from":"1564334156607","to":"1564334139783","name":"","dash":false,"Compares":null}],"nodes":[{"id":"1564334138399","name":"node_1","type":"start round mix","left":44,"top":27,"width":26,"height":26,"alt":true,"setInfo":null},{"id":"1564334139783","name":"node_2","type":"end round","left":50,"top":295,"width":26,"height":26,"alt":true,"setInfo":null},{"id":"1564334153687","name":"所有人可以审批","type":"node","left":163,"top":43,"width":104,"height":56,"alt":true,"setInfo":{"NodeDesignate":"ALL_USER","NodeDesignateData":{"users":[],"roles":[],"orgs":null},"NodeCode":null,"NodeName":null,"ThirdPartyUrl":"","NodeRejectType":null,"Taged":1,"UserName":"test","UserId":"6ba79766-faa0-4259-8139-a4a6d35784e0","Description":"","TagedTime":"2019-07-29 01:29","NodeConfluenceType":"all","ConfluenceOk":null,"ConfluenceNo":null}},{"id":"1564334154471","name":"小于3的test可以审批","type":"node","left":23,"top":141,"width":167,"height":76,"alt":true,"setInfo":{"NodeDesignate":"SPECIAL_USER","NodeDesignateData":{"users":["6ba79766-faa0-4259-8139-a4a6d35784e0"],"roles":[],"orgs":null},"NodeCode":null,"NodeName":null,"ThirdPartyUrl":"","NodeRejectType":null,"Taged":null,"UserName":null,"UserId":null,"Description":null,"TagedTime":null,"NodeConfluenceType":"all","ConfluenceOk":null,"ConfluenceNo":null}},{"id":"1564334155295","name":"大于3的admin可以审批","type":"node","left":288,"top":146,"width":143,"height":56,"alt":true,"setInfo":{"NodeDesignate":"SPECIAL_USER","NodeDesignateData":{"users":["49df1602-f5f3-4d52-afb7-3802da619558"],"roles":[],"orgs":null},"NodeCode":null,"NodeName":null,"ThirdPartyUrl":"","NodeRejectType":null,"Taged":null,"UserName":null,"UserId":null,"Description":null,"TagedTime":null,"NodeConfluenceType":"all","ConfluenceOk":null,"ConfluenceNo":null}},{"id":"1564334156607","name":"默认","type":"node","left":171,"top":291,"width":104,"height":36,"alt":true,"setInfo":{"NodeDesignate":"ALL_USER","NodeDesignateData":{"users":[],"roles":[],"orgs":null},"NodeCode":null,"NodeName":null,"ThirdPartyUrl":"","NodeRejectType":null,"Taged":null,"UserName":null,"UserId":null,"Description":null,"TagedTime":null,"NodeConfluenceType":"all","ConfluenceOk":null,"ConfluenceNo":null}}],"areas":[]}', N'bfd4f0f9-6f61-4af9-977e-cbcf7c30dd35', N'', N'{"REASON":"身体原因","DAYS":"1","CUSTOME_NAME":"玉宝"}', N'0', N'[{"type":"text","name":"REASON","title":"REASON","value":"身体原因","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"REASON\" value=\"身体原因\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"},{"leipiplugins":"select","name":"DAYS","title":"DAYS","size":"1","orgwidth":"150","style":"width: 150px;","value":"1,3,5,10","selected":"selected","content":"<span leipiplugins=\"select\"><select name=\"leipiNewField\" title=\"DAYS\" leipiplugins=\"select\" size=\"1\" orgwidth=\"150\" style=\"width: 150px;\"><option value=\"1\" selected=\"selected\">1</option><option value=\"3\">3</option><option value=\"5\">5</option><option value=\"10\">10</option></select>&nbsp;&nbsp;</span>"},{"type":"text","name":"CUSTOME_NAME","title":"CUSTOME_NAME","value":"玉宝","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"CUSTOME_NAME\" value=\"玉宝\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', N'<p style="text-align: center;"><span style="font-size: 36px;">请假条</span></p><p><span style="font-size: 36px;"><br/></span></p><p style="text-align: center;">因{REASON}，本人想请假{DAYS}天，望领导批准！</p><p><br/></p><p style="text-align: center;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;谢谢！</p><p><br/></p><p style="text-align: right;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 申请人：{CUSTOME_NAME}</p>', N'ef89f96a-af33-407c-b02e-897faf46ecf0', N'', N'0', N'2019-07-29 01:25:16.000', N'00000000-0000-0000-0000-000000000000', N'System', N'0', N'这是个天数比较少的分支', N'0', N'6ba79766-faa0-4259-8139-a4a6d35784e0', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[FlowInstance] ([Id], [InstanceSchemeId], [Code], [CustomName], [ActivityId], [ActivityType], [ActivityName], [PreviousId], [SchemeContent], [SchemeId], [DbName], [FrmData], [FrmType], [FrmContentData], [FrmContentParse], [FrmId], [SchemeType], [Disabled], [CreateDate], [CreateUserId], [CreateUserName], [FlowLevel], [Description], [IsFinish], [MakerList], [OrgId]) VALUES (N'61959fe9-377a-4e6c-9f5d-6b7018a80bca', N'', N'1564334700493', N'带分支条件的请假2019-07-29 01:25:02', N'1564334154471', N'2', N'小于3的test可以审批', N'1564334153687', N'{"title":"newFlow_1","initNum":16,"lines":[{"id":"1564334158551","type":"sl","from":"1564334138399","to":"1564334153687","name":"","dash":false,"Compares":null},{"id":"1564334159304","type":"sl","from":"1564334153687","to":"1564334154471","name":"","dash":false,"Compares":[{"Operation":"<","FieldName":"DAYS","FieldType":null,"Value":"3"}]},{"id":"1564334160383","type":"sl","from":"1564334153687","to":"1564334155295","name":"","dash":false,"Compares":[{"Operation":">=","FieldName":"DAYS","FieldType":null,"Value":"3"}]},{"id":"1564334161911","type":"sl","from":"1564334154471","to":"1564334156607","name":"","dash":false,"Compares":null},{"id":"1564334163959","type":"sl","from":"1564334155295","to":"1564334156607","name":"","dash":false,"Compares":null},{"id":"1564334165255","type":"sl","from":"1564334156607","to":"1564334139783","name":"","dash":false,"Compares":null}],"nodes":[{"id":"1564334138399","name":"node_1","type":"start round mix","left":44,"top":27,"width":26,"height":26,"alt":true,"setInfo":null},{"id":"1564334139783","name":"node_2","type":"end round","left":50,"top":295,"width":26,"height":26,"alt":true,"setInfo":null},{"id":"1564334153687","name":"所有人可以审批","type":"node","left":163,"top":43,"width":104,"height":56,"alt":true,"setInfo":{"NodeDesignate":"ALL_USER","NodeDesignateData":{"users":[],"roles":[],"orgs":null},"NodeCode":null,"NodeName":null,"ThirdPartyUrl":"","NodeRejectType":null,"Taged":1,"UserName":"test","UserId":"6ba79766-faa0-4259-8139-a4a6d35784e0","Description":"","TagedTime":"2019-07-29 01:29","NodeConfluenceType":"all","ConfluenceOk":null,"ConfluenceNo":null}},{"id":"1564334154471","name":"小于3的test可以审批","type":"node","left":23,"top":141,"width":167,"height":76,"alt":true,"setInfo":{"NodeDesignate":"SPECIAL_USER","NodeDesignateData":{"users":["6ba79766-faa0-4259-8139-a4a6d35784e0"],"roles":[],"orgs":null},"NodeCode":null,"NodeName":null,"ThirdPartyUrl":"","NodeRejectType":null,"Taged":null,"UserName":null,"UserId":null,"Description":null,"TagedTime":null,"NodeConfluenceType":"all","ConfluenceOk":null,"ConfluenceNo":null}},{"id":"1564334155295","name":"大于3的admin可以审批","type":"node","left":288,"top":146,"width":143,"height":56,"alt":true,"setInfo":{"NodeDesignate":"SPECIAL_USER","NodeDesignateData":{"users":["49df1602-f5f3-4d52-afb7-3802da619558"],"roles":[],"orgs":null},"NodeCode":null,"NodeName":null,"ThirdPartyUrl":"","NodeRejectType":null,"Taged":null,"UserName":null,"UserId":null,"Description":null,"TagedTime":null,"NodeConfluenceType":"all","ConfluenceOk":null,"ConfluenceNo":null}},{"id":"1564334156607","name":"默认","type":"node","left":171,"top":291,"width":104,"height":36,"alt":true,"setInfo":{"NodeDesignate":"ALL_USER","NodeDesignateData":{"users":[],"roles":[],"orgs":null},"NodeCode":null,"NodeName":null,"ThirdPartyUrl":"","NodeRejectType":null,"Taged":null,"UserName":null,"UserId":null,"Description":null,"TagedTime":null,"NodeConfluenceType":"all","ConfluenceOk":null,"ConfluenceNo":null}}],"areas":[]}', N'bfd4f0f9-6f61-4af9-977e-cbcf7c30dd35', N'', N'{"REASON":"身体原因","DAYS":"1","CUSTOME_NAME":"玉宝"}', N'0', N'[{"type":"text","name":"REASON","title":"REASON","value":"身体原因","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"REASON\" value=\"身体原因\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"},{"leipiplugins":"select","name":"DAYS","title":"DAYS","size":"1","orgwidth":"150","style":"width: 150px;","value":"1,3,5,10","selected":"selected","content":"<span leipiplugins=\"select\"><select name=\"leipiNewField\" title=\"DAYS\" leipiplugins=\"select\" size=\"1\" orgwidth=\"150\" style=\"width: 150px;\"><option value=\"1\" selected=\"selected\">1</option><option value=\"3\">3</option><option value=\"5\">5</option><option value=\"10\">10</option></select>&nbsp;&nbsp;</span>"},{"type":"text","name":"CUSTOME_NAME","title":"CUSTOME_NAME","value":"玉宝","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"CUSTOME_NAME\" value=\"玉宝\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', N'<p style="text-align: center;"><span style="font-size: 36px;">请假条</span></p><p><span style="font-size: 36px;"><br/></span></p><p style="text-align: center;">因{REASON}，本人想请假{DAYS}天，望领导批准！</p><p><br/></p><p style="text-align: center;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;谢谢！</p><p><br/></p><p style="text-align: right;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 申请人：{CUSTOME_NAME}</p>', N'ef89f96a-af33-407c-b02e-897faf46ecf0', N'', N'0', N'2019-07-29 01:25:16.000', N'00000000-0000-0000-0000-000000000000', N'System', N'0', N'这是个天数比较少的分支', N'0', N'6ba79766-faa0-4259-8139-a4a6d35784e0', NULL)
+INSERT INTO [dbo].[FlowInstance] ([Id], [InstanceSchemeId], [Code], [CustomName], [ActivityId], [ActivityType], [ActivityName], [PreviousId], [SchemeContent], [SchemeId], [DbName], [FrmData], [FrmType], [FrmContentData], [FrmContentParse], [FrmId], [SchemeType], [Disabled], [CreateDate], [CreateUserId], [CreateUserName], [FlowLevel], [Description], [IsFinish], [MakerList], [OrgId], [BusinessId]) VALUES (N'7a1fb1a4-06a6-49d5-a311-b988aed776e1', N'', N'1564334976909', N'admin的会签2019-07-29 01:29:39', N'1564334435460', N'2', N'node_2', N'1564334430924', N'{"title":"newFlow_1","nodes":[{"name":"node_1","left":17,"top":12,"type":"start round mix","id":"1564334430924","width":26,"height":26,"alt":true},{"name":"node_2","left":141,"top":49,"type":"node","id":"1564334435460","width":104,"height":26,"alt":true},{"name":"会签入口，设置会签类型","left":141,"top":138,"type":"fork","id":"1564334437844","width":104,"height":76,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"ALL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":[]}}},{"name":"admin","left":23,"top":272,"type":"node","id":"1564334439828","width":104,"height":36,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":["49df1602-f5f3-4d52-afb7-3802da619558"],"roles":[]}}},{"name":"test","left":234,"top":265,"type":"node","id":"1564334440404","width":104,"height":36,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":["6ba79766-faa0-4259-8139-a4a6d35784e0"],"roles":[]}}},{"name":"默认所有人","left":140,"top":406,"type":"join","id":"1564334441965","width":104,"height":56,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"ALL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":[]}}},{"name":"node_7","left":351,"top":420,"type":"end round","id":"1564334444885","width":26,"height":26,"alt":true}],"lines":[{"type":"sl","from":"1564334430924","to":"1564334435460","id":"1564334446774","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334435460","to":"1564334437844","id":"1564334447796","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334437844","to":"1564334439828","id":"1564334448572","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334437844","to":"1564334440404","id":"1564334449628","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334439828","to":"1564334441965","id":"1564334450572","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334440404","to":"1564334441965","id":"1564334451684","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334441965","to":"1564334444885","id":"1564334453900","name":"","dash":false,"alt":true}],"areas":[],"initNum":16}', N'73819920-f085-4003-8874-4361b6461c92', N'', N'{"REASON":"身体原因","DAYS":"1","CUSTOME_NAME":"玉宝"}', N'0', N'[{"type":"text","name":"REASON","title":"REASON","value":"身体原因","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"REASON\" value=\"身体原因\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"},{"leipiplugins":"select","name":"DAYS","title":"DAYS","size":"1","orgwidth":"150","style":"width: 150px;","value":"1,3,5,10","selected":"selected","content":"<span leipiplugins=\"select\"><select name=\"leipiNewField\" title=\"DAYS\" leipiplugins=\"select\" size=\"1\" orgwidth=\"150\" style=\"width: 150px;\"><option value=\"1\" selected=\"selected\">1</option><option value=\"3\">3</option><option value=\"5\">5</option><option value=\"10\">10</option></select>&nbsp;&nbsp;</span>"},{"type":"text","name":"CUSTOME_NAME","title":"CUSTOME_NAME","value":"玉宝","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"CUSTOME_NAME\" value=\"玉宝\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', N'<p style="text-align: center;"><span style="font-size: 36px;">请假条</span></p><p><span style="font-size: 36px;"><br/></span></p><p style="text-align: center;">因{REASON}，本人想请假{DAYS}天，望领导批准！</p><p><br/></p><p style="text-align: center;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;谢谢！</p><p><br/></p><p style="text-align: right;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 申请人：{CUSTOME_NAME}</p>', N'ef89f96a-af33-407c-b02e-897faf46ecf0', N'', N'0', N'2019-07-29 01:29:47.000', N'49df1602-f5f3-4d52-afb7-3802da619558', N'admin', N'0', N'', N'0', N'1', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[FlowInstance] ([Id], [InstanceSchemeId], [Code], [CustomName], [ActivityId], [ActivityType], [ActivityName], [PreviousId], [SchemeContent], [SchemeId], [DbName], [FrmData], [FrmType], [FrmContentData], [FrmContentParse], [FrmId], [SchemeType], [Disabled], [CreateDate], [CreateUserId], [CreateUserName], [FlowLevel], [Description], [IsFinish], [MakerList], [OrgId]) VALUES (N'7a1fb1a4-06a6-49d5-a311-b988aed776e1', N'', N'1564334976909', N'admin的会签2019-07-29 01:29:39', N'1564334435460', N'2', N'node_2', N'1564334430924', N'{"title":"newFlow_1","nodes":[{"name":"node_1","left":17,"top":12,"type":"start round mix","id":"1564334430924","width":26,"height":26,"alt":true},{"name":"node_2","left":141,"top":49,"type":"node","id":"1564334435460","width":104,"height":26,"alt":true},{"name":"会签入口，设置会签类型","left":141,"top":138,"type":"fork","id":"1564334437844","width":104,"height":76,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"ALL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":[]}}},{"name":"admin","left":23,"top":272,"type":"node","id":"1564334439828","width":104,"height":36,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":["49df1602-f5f3-4d52-afb7-3802da619558"],"roles":[]}}},{"name":"test","left":234,"top":265,"type":"node","id":"1564334440404","width":104,"height":36,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":["6ba79766-faa0-4259-8139-a4a6d35784e0"],"roles":[]}}},{"name":"默认所有人","left":140,"top":406,"type":"join","id":"1564334441965","width":104,"height":56,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"ALL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":[]}}},{"name":"node_7","left":351,"top":420,"type":"end round","id":"1564334444885","width":26,"height":26,"alt":true}],"lines":[{"type":"sl","from":"1564334430924","to":"1564334435460","id":"1564334446774","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334435460","to":"1564334437844","id":"1564334447796","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334437844","to":"1564334439828","id":"1564334448572","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334437844","to":"1564334440404","id":"1564334449628","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334439828","to":"1564334441965","id":"1564334450572","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334440404","to":"1564334441965","id":"1564334451684","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334441965","to":"1564334444885","id":"1564334453900","name":"","dash":false,"alt":true}],"areas":[],"initNum":16}', N'73819920-f085-4003-8874-4361b6461c92', N'', N'{"REASON":"身体原因","DAYS":"1","CUSTOME_NAME":"玉宝"}', N'0', N'[{"type":"text","name":"REASON","title":"REASON","value":"身体原因","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"REASON\" value=\"身体原因\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"},{"leipiplugins":"select","name":"DAYS","title":"DAYS","size":"1","orgwidth":"150","style":"width: 150px;","value":"1,3,5,10","selected":"selected","content":"<span leipiplugins=\"select\"><select name=\"leipiNewField\" title=\"DAYS\" leipiplugins=\"select\" size=\"1\" orgwidth=\"150\" style=\"width: 150px;\"><option value=\"1\" selected=\"selected\">1</option><option value=\"3\">3</option><option value=\"5\">5</option><option value=\"10\">10</option></select>&nbsp;&nbsp;</span>"},{"type":"text","name":"CUSTOME_NAME","title":"CUSTOME_NAME","value":"玉宝","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"CUSTOME_NAME\" value=\"玉宝\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', N'<p style="text-align: center;"><span style="font-size: 36px;">请假条</span></p><p><span style="font-size: 36px;"><br/></span></p><p style="text-align: center;">因{REASON}，本人想请假{DAYS}天，望领导批准！</p><p><br/></p><p style="text-align: center;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;谢谢！</p><p><br/></p><p style="text-align: right;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 申请人：{CUSTOME_NAME}</p>', N'ef89f96a-af33-407c-b02e-897faf46ecf0', N'', N'0', N'2019-07-29 01:29:47.000', N'49df1602-f5f3-4d52-afb7-3802da619558', N'admin', N'0', N'', N'0', N'1', NULL)
+INSERT INTO [dbo].[FlowInstance] ([Id], [InstanceSchemeId], [Code], [CustomName], [ActivityId], [ActivityType], [ActivityName], [PreviousId], [SchemeContent], [SchemeId], [DbName], [FrmData], [FrmType], [FrmContentData], [FrmContentParse], [FrmId], [SchemeType], [Disabled], [CreateDate], [CreateUserId], [CreateUserName], [FlowLevel], [Description], [IsFinish], [MakerList], [OrgId], [BusinessId]) VALUES (N'7c8ffe55-13fd-4236-9816-63eb7e22aa68', N'', N'1572350961242', N'按角色执行2019-10-29 20:09:25', N'1564334332325', N'2', N'管理员', N'1564334327861', N'{"title":"newFlow_1","nodes":[{"name":"node_1","left":99,"top":32,"type":"start round mix","id":"1564334327861","width":26,"height":26,"alt":true},{"name":"node_2","left":70,"top":295,"type":"end round","id":"1564334330157","width":26,"height":26,"alt":true},{"name":"管理员","left":43,"top":131,"type":"node","id":"1564334332325","width":104,"height":36,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_ROLE","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":["09ee2ffa-7463-4938-ae0b-1cb4e80c7c13"]}}},{"name":"测试人员","left":185,"top":226,"type":"node","id":"1564334333133","width":104,"height":36,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_ROLE","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":["0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d"]}}}],"lines":[{"type":"sl","from":"1564334327861","to":"1564334332325","id":"1564334335789","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334332325","to":"1564334333133","id":"1564334336629","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334333133","to":"1564334330157","id":"1564334337805","name":"","dash":false,"alt":true}],"areas":[],"initNum":9}', N'0b21f59c-7809-4275-acb4-8e8c08e0167e', N'', N'{"REASON":"身体原因","DAYS":"5","CUSTOME_NAME":"玉宝"}', N'0', N'[{"type":"text","name":"REASON","title":"REASON","value":"身体原因","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"REASON\" value=\"身体原因\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"},{"leipiplugins":"select","name":"DAYS","title":"DAYS","size":"1","orgwidth":"150","style":"width: 150px;","value":"1,3,5,10","selected":"selected","content":"<span leipiplugins=\"select\"><select name=\"leipiNewField\" title=\"DAYS\" leipiplugins=\"select\" size=\"1\" orgwidth=\"150\" style=\"width: 150px;\"><option value=\"1\" selected=\"selected\">1</option><option value=\"3\">3</option><option value=\"5\">5</option><option value=\"10\">10</option></select>&nbsp;&nbsp;</span>"},{"type":"text","name":"CUSTOME_NAME","title":"CUSTOME_NAME","value":"玉宝","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"CUSTOME_NAME\" value=\"玉宝\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', N'<p style="text-align: center;"><span style="font-size: 36px;">请假条</span></p><p><span style="font-size: 36px;"><br/></span></p><p style="text-align: center;">因{REASON}，本人想请假{DAYS}天，望领导批准！</p><p><br/></p><p style="text-align: center;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;谢谢！</p><p><br/></p><p style="text-align: right;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 申请人：{CUSTOME_NAME}</p>', N'ef89f96a-af33-407c-b02e-897faf46ecf0', N'', N'0', N'2019-10-29 20:10:45.000', N'00000000-0000-0000-0000-000000000000', N'System', N'0', N'预约好突然', N'0', N'49df1602-f5f3-4d52-afb7-3802da619558,1df68dfd-3b6d-4491-872f-00a0fc6c5a64', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[FlowInstance] ([Id], [InstanceSchemeId], [Code], [CustomName], [ActivityId], [ActivityType], [ActivityName], [PreviousId], [SchemeContent], [SchemeId], [DbName], [FrmData], [FrmType], [FrmContentData], [FrmContentParse], [FrmId], [SchemeType], [Disabled], [CreateDate], [CreateUserId], [CreateUserName], [FlowLevel], [Description], [IsFinish], [MakerList], [OrgId]) VALUES (N'df6df6b5-53f7-4db4-931b-12e3352ef413', N'', N'1564334658879', N'按角色执行2019-07-29 01:24:21', N'1564334332325', N'2', N'管理员', N'1564334327861', N'{"title":"newFlow_1","nodes":[{"name":"node_1","left":99,"top":32,"type":"start round mix","id":"1564334327861","width":26,"height":26,"alt":true},{"name":"node_2","left":70,"top":295,"type":"end round","id":"1564334330157","width":26,"height":26,"alt":true},{"name":"管理员","left":43,"top":131,"type":"node","id":"1564334332325","width":104,"height":36,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_ROLE","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":["09ee2ffa-7463-4938-ae0b-1cb4e80c7c13"]}}},{"name":"测试人员","left":185,"top":226,"type":"node","id":"1564334333133","width":104,"height":36,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_ROLE","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":["0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d"]}}}],"lines":[{"type":"sl","from":"1564334327861","to":"1564334332325","id":"1564334335789","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334332325","to":"1564334333133","id":"1564334336629","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334333133","to":"1564334330157","id":"1564334337805","name":"","dash":false,"alt":true}],"areas":[],"initNum":9}', N'0b21f59c-7809-4275-acb4-8e8c08e0167e', N'', N'{"REASON":"身体原因","DAYS":"1","CUSTOME_NAME":"玉宝"}', N'0', N'[{"type":"text","name":"REASON","title":"REASON","value":"身体原因","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"REASON\" value=\"身体原因\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"},{"leipiplugins":"select","name":"DAYS","title":"DAYS","size":"1","orgwidth":"150","style":"width: 150px;","value":"1,3,5,10","selected":"selected","content":"<span leipiplugins=\"select\"><select name=\"leipiNewField\" title=\"DAYS\" leipiplugins=\"select\" size=\"1\" orgwidth=\"150\" style=\"width: 150px;\"><option value=\"1\" selected=\"selected\">1</option><option value=\"3\">3</option><option value=\"5\">5</option><option value=\"10\">10</option></select>&nbsp;&nbsp;</span>"},{"type":"text","name":"CUSTOME_NAME","title":"CUSTOME_NAME","value":"玉宝","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"CUSTOME_NAME\" value=\"玉宝\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', N'<p style="text-align: center;"><span style="font-size: 36px;">请假条</span></p><p><span style="font-size: 36px;"><br/></span></p><p style="text-align: center;">因{REASON}，本人想请假{DAYS}天，望领导批准！</p><p><br/></p><p style="text-align: center;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;谢谢！</p><p><br/></p><p style="text-align: right;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 申请人：{CUSTOME_NAME}</p>', N'ef89f96a-af33-407c-b02e-897faf46ecf0', N'', N'0', N'2019-07-29 01:24:26.000', N'00000000-0000-0000-0000-000000000000', N'System', N'0', N'', N'0', N'49df1602-f5f3-4d52-afb7-3802da619558', NULL)
+INSERT INTO [dbo].[FlowInstance] ([Id], [InstanceSchemeId], [Code], [CustomName], [ActivityId], [ActivityType], [ActivityName], [PreviousId], [SchemeContent], [SchemeId], [DbName], [FrmData], [FrmType], [FrmContentData], [FrmContentParse], [FrmId], [SchemeType], [Disabled], [CreateDate], [CreateUserId], [CreateUserName], [FlowLevel], [Description], [IsFinish], [MakerList], [OrgId], [BusinessId]) VALUES (N'b918eb3a-0fd4-4df9-a3a3-0bbf2aa5746d', N'', N'1564334869743', N'test的普通请假2019-07-29 01:27:53', N'1564334038904', N'4', N'node_4', N'1564334036152', N'{"title":"newFlow_1","initNum":9,"lines":[{"id":"1564334041040","type":"sl","from":"1564334032785","to":"1564334035352","name":"","dash":false,"Compares":null},{"id":"1564334041720","type":"sl","from":"1564334035352","to":"1564334036152","name":"","dash":false,"Compares":null},{"id":"1564334042927","type":"sl","from":"1564334036152","to":"1564334038904","name":"","dash":false,"Compares":null}],"nodes":[{"id":"1564334032785","name":"node_1","type":"start round mix","left":19,"top":36,"width":26,"height":26,"alt":true,"setInfo":null},{"id":"1564334035352","name":"所有人可以审批","type":"node","left":133,"top":50,"width":104,"height":56,"alt":true,"setInfo":{"NodeDesignate":"ALL_USER","NodeDesignateData":{"users":[],"roles":[],"orgs":null},"NodeCode":null,"NodeName":null,"ThirdPartyUrl":"http://xxxx.com/api/workflow/callback","NodeRejectType":null,"Taged":1,"UserName":"超级管理员","UserId":"00000000-0000-0000-0000-000000000000","Description":"","TagedTime":"2019-10-29 14:44","NodeConfluenceType":"all","ConfluenceOk":null,"ConfluenceNo":null}},{"id":"1564334036152","name":"所有人可以审批","type":"node","left":139,"top":123,"width":104,"height":56,"alt":true,"setInfo":{"NodeDesignate":"ALL_USER","NodeDesignateData":{"users":[],"roles":[],"orgs":null},"NodeCode":null,"NodeName":null,"ThirdPartyUrl":"","NodeRejectType":null,"Taged":1,"UserName":"超级管理员","UserId":"00000000-0000-0000-0000-000000000000","Description":"","TagedTime":"2019-10-29 14:44","NodeConfluenceType":"all","ConfluenceOk":null,"ConfluenceNo":null}},{"id":"1564334038904","name":"node_4","type":"end round","left":47,"top":193,"width":26,"height":26,"alt":true,"setInfo":null}],"areas":[]}', N'61806396-9498-492b-bc22-9f9e95a389bc', N'', N'{"REASON":"身体原因","DAYS":"1","CUSTOME_NAME":"玉宝"}', N'0', N'[{"type":"text","name":"REASON","title":"REASON","value":"身体原因","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"REASON\" value=\"身体原因\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"},{"leipiplugins":"select","name":"DAYS","title":"DAYS","size":"1","orgwidth":"150","style":"width: 150px;","value":"1,3,5,10","selected":"selected","content":"<span leipiplugins=\"select\"><select name=\"leipiNewField\" title=\"DAYS\" leipiplugins=\"select\" size=\"1\" orgwidth=\"150\" style=\"width: 150px;\"><option value=\"1\" selected=\"selected\">1</option><option value=\"3\">3</option><option value=\"5\">5</option><option value=\"10\">10</option></select>&nbsp;&nbsp;</span>"},{"type":"text","name":"CUSTOME_NAME","title":"CUSTOME_NAME","value":"玉宝","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"CUSTOME_NAME\" value=\"玉宝\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', N'<p style="text-align: center;"><span style="font-size: 36px;">请假条</span></p><p><span style="font-size: 36px;"><br/></span></p><p style="text-align: center;">因{REASON}，本人想请假{DAYS}天，望领导批准！</p><p><br/></p><p style="text-align: center;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;谢谢！</p><p><br/></p><p style="text-align: right;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 申请人：{CUSTOME_NAME}</p>', N'ef89f96a-af33-407c-b02e-897faf46ecf0', N'', N'0', N'2019-07-29 01:28:05.000', N'6ba79766-faa0-4259-8139-a4a6d35784e0', N'test', N'0', N'', N'1', N'', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[FlowInstance] ([Id], [InstanceSchemeId], [Code], [CustomName], [ActivityId], [ActivityType], [ActivityName], [PreviousId], [SchemeContent], [SchemeId], [DbName], [FrmData], [FrmType], [FrmContentData], [FrmContentParse], [FrmId], [SchemeType], [Disabled], [CreateDate], [CreateUserId], [CreateUserName], [FlowLevel], [Description], [IsFinish], [MakerList], [OrgId]) VALUES (N'7c8ffe55-13fd-4236-9816-63eb7e22aa68', N'', N'1572350961242', N'按角色执行2019-10-29 20:09:25', N'1564334332325', N'2', N'管理员', N'1564334327861', N'{"title":"newFlow_1","nodes":[{"name":"node_1","left":99,"top":32,"type":"start round mix","id":"1564334327861","width":26,"height":26,"alt":true},{"name":"node_2","left":70,"top":295,"type":"end round","id":"1564334330157","width":26,"height":26,"alt":true},{"name":"管理员","left":43,"top":131,"type":"node","id":"1564334332325","width":104,"height":36,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_ROLE","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":["09ee2ffa-7463-4938-ae0b-1cb4e80c7c13"]}}},{"name":"测试人员","left":185,"top":226,"type":"node","id":"1564334333133","width":104,"height":36,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_ROLE","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":["0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d"]}}}],"lines":[{"type":"sl","from":"1564334327861","to":"1564334332325","id":"1564334335789","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334332325","to":"1564334333133","id":"1564334336629","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334333133","to":"1564334330157","id":"1564334337805","name":"","dash":false,"alt":true}],"areas":[],"initNum":9}', N'0b21f59c-7809-4275-acb4-8e8c08e0167e', N'', N'{"REASON":"身体原因","DAYS":"5","CUSTOME_NAME":"玉宝"}', N'0', N'[{"type":"text","name":"REASON","title":"REASON","value":"身体原因","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"REASON\" value=\"身体原因\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"},{"leipiplugins":"select","name":"DAYS","title":"DAYS","size":"1","orgwidth":"150","style":"width: 150px;","value":"1,3,5,10","selected":"selected","content":"<span leipiplugins=\"select\"><select name=\"leipiNewField\" title=\"DAYS\" leipiplugins=\"select\" size=\"1\" orgwidth=\"150\" style=\"width: 150px;\"><option value=\"1\" selected=\"selected\">1</option><option value=\"3\">3</option><option value=\"5\">5</option><option value=\"10\">10</option></select>&nbsp;&nbsp;</span>"},{"type":"text","name":"CUSTOME_NAME","title":"CUSTOME_NAME","value":"玉宝","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"CUSTOME_NAME\" value=\"玉宝\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', N'<p style="text-align: center;"><span style="font-size: 36px;">请假条</span></p><p><span style="font-size: 36px;"><br/></span></p><p style="text-align: center;">因{REASON}，本人想请假{DAYS}天，望领导批准！</p><p><br/></p><p style="text-align: center;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;谢谢！</p><p><br/></p><p style="text-align: right;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 申请人：{CUSTOME_NAME}</p>', N'ef89f96a-af33-407c-b02e-897faf46ecf0', N'', N'0', N'2019-10-29 20:10:45.000', N'00000000-0000-0000-0000-000000000000', N'System', N'0', N'预约好突然', N'0', N'49df1602-f5f3-4d52-afb7-3802da619558,1df68dfd-3b6d-4491-872f-00a0fc6c5a64', NULL)
+INSERT INTO [dbo].[FlowInstance] ([Id], [InstanceSchemeId], [Code], [CustomName], [ActivityId], [ActivityType], [ActivityName], [PreviousId], [SchemeContent], [SchemeId], [DbName], [FrmData], [FrmType], [FrmContentData], [FrmContentParse], [FrmId], [SchemeType], [Disabled], [CreateDate], [CreateUserId], [CreateUserName], [FlowLevel], [Description], [IsFinish], [MakerList], [OrgId], [BusinessId]) VALUES (N'be9b74cf-2e74-40f3-9ebf-3508f6e79bde', N'', N'1564334669608', N'带分支条件的请假（很多天数）', N'1564334153687', N'2', N'所有人可以审批', N'1564334138399', N'{"title":"newFlow_1","nodes":[{"name":"node_1","left":44,"top":27,"type":"start round mix","id":"1564334138399","width":26,"height":26,"alt":true},{"name":"node_2","left":50,"top":295,"type":"end round","id":"1564334139783","width":26,"height":26,"alt":true},{"name":"所有人可以审批","left":163,"top":43,"type":"node","id":"1564334153687","width":104,"height":56,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"ALL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":[]}}},{"name":"小于3的test可以审批","left":23,"top":141,"type":"node","id":"1564334154471","width":167,"height":76,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":["6ba79766-faa0-4259-8139-a4a6d35784e0"],"roles":[]}}},{"name":"大于3的admin可以审批","left":288,"top":146,"type":"node","id":"1564334155295","width":143,"height":56,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":["49df1602-f5f3-4d52-afb7-3802da619558"],"roles":[]}}},{"name":"默认","left":171,"top":291,"type":"node","id":"1564334156607","width":104,"height":36,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"ALL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":[]}}}],"lines":[{"type":"sl","from":"1564334138399","to":"1564334153687","id":"1564334158551","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334153687","to":"1564334154471","id":"1564334159304","name":"","dash":false,"alt":true,"Compares":[{"FieldName":"DAYS","Operation":"<","Value":"3"}]},{"type":"sl","from":"1564334153687","to":"1564334155295","id":"1564334160383","name":"","dash":false,"alt":true,"Compares":[{"FieldName":"DAYS","Operation":">=","Value":"3"}]},{"type":"sl","from":"1564334154471","to":"1564334156607","id":"1564334161911","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334155295","to":"1564334156607","id":"1564334163959","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334156607","to":"1564334139783","id":"1564334165255","name":"","dash":false,"alt":true}],"areas":[],"initNum":16}', N'bfd4f0f9-6f61-4af9-977e-cbcf7c30dd35', N'', N'{"REASON":"身体原因","DAYS":"5","CUSTOME_NAME":"玉宝"}', N'0', N'[{"type":"text","name":"REASON","title":"REASON","value":"身体原因","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"REASON\" value=\"身体原因\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"},{"leipiplugins":"select","name":"DAYS","title":"DAYS","size":"1","orgwidth":"150","style":"width: 150px;","value":"1,3,5,10","selected":"selected","content":"<span leipiplugins=\"select\"><select name=\"leipiNewField\" title=\"DAYS\" leipiplugins=\"select\" size=\"1\" orgwidth=\"150\" style=\"width: 150px;\"><option value=\"1\" selected=\"selected\">1</option><option value=\"3\">3</option><option value=\"5\">5</option><option value=\"10\">10</option></select>&nbsp;&nbsp;</span>"},{"type":"text","name":"CUSTOME_NAME","title":"CUSTOME_NAME","value":"玉宝","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"CUSTOME_NAME\" value=\"玉宝\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', N'<p style="text-align: center;"><span style="font-size: 36px;">请假条</span></p><p><span style="font-size: 36px;"><br/></span></p><p style="text-align: center;">因{REASON}，本人想请假{DAYS}天，望领导批准！</p><p><br/></p><p style="text-align: center;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;谢谢！</p><p><br/></p><p style="text-align: right;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 申请人：{CUSTOME_NAME}</p>', N'ef89f96a-af33-407c-b02e-897faf46ecf0', N'', N'0', N'2019-07-29 01:24:52.000', N'00000000-0000-0000-0000-000000000000', N'System', N'0', N'', N'0', N'1', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[FlowInstance] ([Id], [InstanceSchemeId], [Code], [CustomName], [ActivityId], [ActivityType], [ActivityName], [PreviousId], [SchemeContent], [SchemeId], [DbName], [FrmData], [FrmType], [FrmContentData], [FrmContentParse], [FrmId], [SchemeType], [Disabled], [CreateDate], [CreateUserId], [CreateUserName], [FlowLevel], [Description], [IsFinish], [MakerList], [OrgId]) VALUES (N'b918eb3a-0fd4-4df9-a3a3-0bbf2aa5746d', N'', N'1564334869743', N'test的普通请假2019-07-29 01:27:53', N'1564334038904', N'4', N'node_4', N'1564334036152', N'{"title":"newFlow_1","initNum":9,"lines":[{"id":"1564334041040","type":"sl","from":"1564334032785","to":"1564334035352","name":"","dash":false,"Compares":null},{"id":"1564334041720","type":"sl","from":"1564334035352","to":"1564334036152","name":"","dash":false,"Compares":null},{"id":"1564334042927","type":"sl","from":"1564334036152","to":"1564334038904","name":"","dash":false,"Compares":null}],"nodes":[{"id":"1564334032785","name":"node_1","type":"start round mix","left":19,"top":36,"width":26,"height":26,"alt":true,"setInfo":null},{"id":"1564334035352","name":"所有人可以审批","type":"node","left":133,"top":50,"width":104,"height":56,"alt":true,"setInfo":{"NodeDesignate":"ALL_USER","NodeDesignateData":{"users":[],"roles":[],"orgs":null},"NodeCode":null,"NodeName":null,"ThirdPartyUrl":"http://xxxx.com/api/workflow/callback","NodeRejectType":null,"Taged":1,"UserName":"超级管理员","UserId":"00000000-0000-0000-0000-000000000000","Description":"","TagedTime":"2019-10-29 14:44","NodeConfluenceType":"all","ConfluenceOk":null,"ConfluenceNo":null}},{"id":"1564334036152","name":"所有人可以审批","type":"node","left":139,"top":123,"width":104,"height":56,"alt":true,"setInfo":{"NodeDesignate":"ALL_USER","NodeDesignateData":{"users":[],"roles":[],"orgs":null},"NodeCode":null,"NodeName":null,"ThirdPartyUrl":"","NodeRejectType":null,"Taged":1,"UserName":"超级管理员","UserId":"00000000-0000-0000-0000-000000000000","Description":"","TagedTime":"2019-10-29 14:44","NodeConfluenceType":"all","ConfluenceOk":null,"ConfluenceNo":null}},{"id":"1564334038904","name":"node_4","type":"end round","left":47,"top":193,"width":26,"height":26,"alt":true,"setInfo":null}],"areas":[]}', N'61806396-9498-492b-bc22-9f9e95a389bc', N'', N'{"REASON":"身体原因","DAYS":"1","CUSTOME_NAME":"玉宝"}', N'0', N'[{"type":"text","name":"REASON","title":"REASON","value":"身体原因","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"REASON\" value=\"身体原因\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"},{"leipiplugins":"select","name":"DAYS","title":"DAYS","size":"1","orgwidth":"150","style":"width: 150px;","value":"1,3,5,10","selected":"selected","content":"<span leipiplugins=\"select\"><select name=\"leipiNewField\" title=\"DAYS\" leipiplugins=\"select\" size=\"1\" orgwidth=\"150\" style=\"width: 150px;\"><option value=\"1\" selected=\"selected\">1</option><option value=\"3\">3</option><option value=\"5\">5</option><option value=\"10\">10</option></select>&nbsp;&nbsp;</span>"},{"type":"text","name":"CUSTOME_NAME","title":"CUSTOME_NAME","value":"玉宝","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"CUSTOME_NAME\" value=\"玉宝\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', N'<p style="text-align: center;"><span style="font-size: 36px;">请假条</span></p><p><span style="font-size: 36px;"><br/></span></p><p style="text-align: center;">因{REASON}，本人想请假{DAYS}天，望领导批准！</p><p><br/></p><p style="text-align: center;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;谢谢！</p><p><br/></p><p style="text-align: right;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 申请人：{CUSTOME_NAME}</p>', N'ef89f96a-af33-407c-b02e-897faf46ecf0', N'', N'0', N'2019-07-29 01:28:05.000', N'6ba79766-faa0-4259-8139-a4a6d35784e0', N'test', N'0', N'', N'1', N'', NULL)
+INSERT INTO [dbo].[FlowInstance] ([Id], [InstanceSchemeId], [Code], [CustomName], [ActivityId], [ActivityType], [ActivityName], [PreviousId], [SchemeContent], [SchemeId], [DbName], [FrmData], [FrmType], [FrmContentData], [FrmContentParse], [FrmId], [SchemeType], [Disabled], [CreateDate], [CreateUserId], [CreateUserName], [FlowLevel], [Description], [IsFinish], [MakerList], [OrgId], [BusinessId]) VALUES (N'd4f8d2b9-6374-4c10-8d3c-1ca540bc309b', N'', N'1572341191142', N'带复杂表单的2019-10-29 17:26:42', N'1564334557205', N'2', N'node_2', N'1564334555981', N'{"title":"newFlow_1","nodes":[{"name":"node_1","left":66,"top":46,"type":"start round mix","id":"1564334555981","width":26,"height":26,"alt":true},{"name":"node_2","left":50,"top":145,"type":"node","id":"1564334557205","width":104,"height":26,"alt":true},{"name":"node_3","left":56,"top":206,"type":"node","id":"1564334557764","width":104,"height":26,"alt":true},{"name":"node_4","left":66,"top":294,"type":"end round","id":"1564334559716","width":26,"height":26,"alt":true}],"lines":[{"type":"sl","from":"1564334555981","to":"1564334557205","id":"1564334561500","name":"","dash":false},{"type":"sl","from":"1564334557205","to":"1564334557764","id":"1564334562229","name":"","dash":false},{"type":"sl","from":"1564334557764","to":"1564334559716","id":"1564334563268","name":"","dash":false}],"areas":[],"initNum":8}', N'989bd1f3-29f0-43cd-ad01-b55654907dbb', N'FrmLeaveReq', N'{"id":"","userName":"1","requestType":"病假","startDate":"2019-10-07T16:00:00.000Z","startTime":"2019-10-29T09:26:52.000Z","endDate":"2019-10-27T16:00:00.000Z","endTime":"2019-10-29T09:26:54.000Z","requestComment":"111","attachment":"","files":[],"extendInfo":""}', N'1', N'', N'', N'8faff4e5-b729-44d2-ac26-e899a228f63d', N'', N'0', N'2019-10-29 17:27:06.000', N'00000000-0000-0000-0000-000000000000', N'System', N'0', N'11', N'0', N'1', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[FlowInstance] ([Id], [InstanceSchemeId], [Code], [CustomName], [ActivityId], [ActivityType], [ActivityName], [PreviousId], [SchemeContent], [SchemeId], [DbName], [FrmData], [FrmType], [FrmContentData], [FrmContentParse], [FrmId], [SchemeType], [Disabled], [CreateDate], [CreateUserId], [CreateUserName], [FlowLevel], [Description], [IsFinish], [MakerList], [OrgId]) VALUES (N'be9b74cf-2e74-40f3-9ebf-3508f6e79bde', N'', N'1564334669608', N'带分支条件的请假（很多天数）', N'1564334153687', N'2', N'所有人可以审批', N'1564334138399', N'{"title":"newFlow_1","nodes":[{"name":"node_1","left":44,"top":27,"type":"start round mix","id":"1564334138399","width":26,"height":26,"alt":true},{"name":"node_2","left":50,"top":295,"type":"end round","id":"1564334139783","width":26,"height":26,"alt":true},{"name":"所有人可以审批","left":163,"top":43,"type":"node","id":"1564334153687","width":104,"height":56,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"ALL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":[]}}},{"name":"小于3的test可以审批","left":23,"top":141,"type":"node","id":"1564334154471","width":167,"height":76,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":["6ba79766-faa0-4259-8139-a4a6d35784e0"],"roles":[]}}},{"name":"大于3的admin可以审批","left":288,"top":146,"type":"node","id":"1564334155295","width":143,"height":56,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":["49df1602-f5f3-4d52-afb7-3802da619558"],"roles":[]}}},{"name":"默认","left":171,"top":291,"type":"node","id":"1564334156607","width":104,"height":36,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"ALL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":[]}}}],"lines":[{"type":"sl","from":"1564334138399","to":"1564334153687","id":"1564334158551","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334153687","to":"1564334154471","id":"1564334159304","name":"","dash":false,"alt":true,"Compares":[{"FieldName":"DAYS","Operation":"<","Value":"3"}]},{"type":"sl","from":"1564334153687","to":"1564334155295","id":"1564334160383","name":"","dash":false,"alt":true,"Compares":[{"FieldName":"DAYS","Operation":">=","Value":"3"}]},{"type":"sl","from":"1564334154471","to":"1564334156607","id":"1564334161911","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334155295","to":"1564334156607","id":"1564334163959","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334156607","to":"1564334139783","id":"1564334165255","name":"","dash":false,"alt":true}],"areas":[],"initNum":16}', N'bfd4f0f9-6f61-4af9-977e-cbcf7c30dd35', N'', N'{"REASON":"身体原因","DAYS":"5","CUSTOME_NAME":"玉宝"}', N'0', N'[{"type":"text","name":"REASON","title":"REASON","value":"身体原因","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"REASON\" value=\"身体原因\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"},{"leipiplugins":"select","name":"DAYS","title":"DAYS","size":"1","orgwidth":"150","style":"width: 150px;","value":"1,3,5,10","selected":"selected","content":"<span leipiplugins=\"select\"><select name=\"leipiNewField\" title=\"DAYS\" leipiplugins=\"select\" size=\"1\" orgwidth=\"150\" style=\"width: 150px;\"><option value=\"1\" selected=\"selected\">1</option><option value=\"3\">3</option><option value=\"5\">5</option><option value=\"10\">10</option></select>&nbsp;&nbsp;</span>"},{"type":"text","name":"CUSTOME_NAME","title":"CUSTOME_NAME","value":"玉宝","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"CUSTOME_NAME\" value=\"玉宝\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', N'<p style="text-align: center;"><span style="font-size: 36px;">请假条</span></p><p><span style="font-size: 36px;"><br/></span></p><p style="text-align: center;">因{REASON}，本人想请假{DAYS}天，望领导批准！</p><p><br/></p><p style="text-align: center;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;谢谢！</p><p><br/></p><p style="text-align: right;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 申请人：{CUSTOME_NAME}</p>', N'ef89f96a-af33-407c-b02e-897faf46ecf0', N'', N'0', N'2019-07-29 01:24:52.000', N'00000000-0000-0000-0000-000000000000', N'System', N'0', N'', N'0', N'1', NULL)
+INSERT INTO [dbo].[FlowInstance] ([Id], [InstanceSchemeId], [Code], [CustomName], [ActivityId], [ActivityType], [ActivityName], [PreviousId], [SchemeContent], [SchemeId], [DbName], [FrmData], [FrmType], [FrmContentData], [FrmContentParse], [FrmId], [SchemeType], [Disabled], [CreateDate], [CreateUserId], [CreateUserName], [FlowLevel], [Description], [IsFinish], [MakerList], [OrgId], [BusinessId]) VALUES (N'df6df6b5-53f7-4db4-931b-12e3352ef413', N'', N'1564334658879', N'按角色执行2019-07-29 01:24:21', N'1564334332325', N'2', N'管理员', N'1564334327861', N'{"title":"newFlow_1","nodes":[{"name":"node_1","left":99,"top":32,"type":"start round mix","id":"1564334327861","width":26,"height":26,"alt":true},{"name":"node_2","left":70,"top":295,"type":"end round","id":"1564334330157","width":26,"height":26,"alt":true},{"name":"管理员","left":43,"top":131,"type":"node","id":"1564334332325","width":104,"height":36,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_ROLE","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":["09ee2ffa-7463-4938-ae0b-1cb4e80c7c13"]}}},{"name":"测试人员","left":185,"top":226,"type":"node","id":"1564334333133","width":104,"height":36,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_ROLE","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":["0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d"]}}}],"lines":[{"type":"sl","from":"1564334327861","to":"1564334332325","id":"1564334335789","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334332325","to":"1564334333133","id":"1564334336629","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334333133","to":"1564334330157","id":"1564334337805","name":"","dash":false,"alt":true}],"areas":[],"initNum":9}', N'0b21f59c-7809-4275-acb4-8e8c08e0167e', N'', N'{"REASON":"身体原因","DAYS":"1","CUSTOME_NAME":"玉宝"}', N'0', N'[{"type":"text","name":"REASON","title":"REASON","value":"身体原因","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"REASON\" value=\"身体原因\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"},{"leipiplugins":"select","name":"DAYS","title":"DAYS","size":"1","orgwidth":"150","style":"width: 150px;","value":"1,3,5,10","selected":"selected","content":"<span leipiplugins=\"select\"><select name=\"leipiNewField\" title=\"DAYS\" leipiplugins=\"select\" size=\"1\" orgwidth=\"150\" style=\"width: 150px;\"><option value=\"1\" selected=\"selected\">1</option><option value=\"3\">3</option><option value=\"5\">5</option><option value=\"10\">10</option></select>&nbsp;&nbsp;</span>"},{"type":"text","name":"CUSTOME_NAME","title":"CUSTOME_NAME","value":"玉宝","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"CUSTOME_NAME\" value=\"玉宝\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', N'<p style="text-align: center;"><span style="font-size: 36px;">请假条</span></p><p><span style="font-size: 36px;"><br/></span></p><p style="text-align: center;">因{REASON}，本人想请假{DAYS}天，望领导批准！</p><p><br/></p><p style="text-align: center;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;谢谢！</p><p><br/></p><p style="text-align: right;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 申请人：{CUSTOME_NAME}</p>', N'ef89f96a-af33-407c-b02e-897faf46ecf0', N'', N'0', N'2019-07-29 01:24:26.000', N'00000000-0000-0000-0000-000000000000', N'System', N'0', N'', N'0', N'49df1602-f5f3-4d52-afb7-3802da619558', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[FlowInstance] ([Id], [InstanceSchemeId], [Code], [CustomName], [ActivityId], [ActivityType], [ActivityName], [PreviousId], [SchemeContent], [SchemeId], [DbName], [FrmData], [FrmType], [FrmContentData], [FrmContentParse], [FrmId], [SchemeType], [Disabled], [CreateDate], [CreateUserId], [CreateUserName], [FlowLevel], [Description], [IsFinish], [MakerList], [OrgId]) VALUES (N'ee589689-3ae0-4037-abec-ba70e566da16', N'', N'1564334720434', N'普通的请假2019-07-29 01:25:24', N'1564334035352', N'2', N'所有人可以审批', N'1564334032785', N'{"title":"newFlow_1","initNum":9,"lines":[{"id":"1564334041040","type":"sl","from":"1564334032785","to":"1564334035352","name":"","dash":false,"Compares":null},{"id":"1564334041720","type":"sl","from":"1564334035352","to":"1564334036152","name":"","dash":false,"Compares":null},{"id":"1564334042927","type":"sl","from":"1564334036152","to":"1564334038904","name":"","dash":false,"Compares":null}],"nodes":[{"id":"1564334032785","name":"node_1","type":"start round mix","left":19,"top":36,"width":26,"height":26,"alt":true,"setInfo":null},{"id":"1564334035352","name":"所有人可以审批","type":"node","left":133,"top":50,"width":104,"height":56,"alt":true,"setInfo":{"NodeDesignate":"ALL_USER","NodeDesignateData":{"users":[],"roles":[],"orgs":null},"NodeCode":null,"NodeName":null,"ThirdPartyUrl":"http://xxxx.com/api/workflow/callback","NodeRejectType":null,"Taged":2,"UserName":"test","UserId":"6ba79766-faa0-4259-8139-a4a6d35784e0","Description":"最近有很多事情要处理","TagedTime":"2019-07-29 01:28","NodeConfluenceType":"all","ConfluenceOk":null,"ConfluenceNo":null}},{"id":"1564334036152","name":"所有人可以审批","type":"node","left":139,"top":123,"width":104,"height":56,"alt":true,"setInfo":{"NodeDesignate":"ALL_USER","NodeDesignateData":{"users":[],"roles":[],"orgs":null},"NodeCode":null,"NodeName":null,"ThirdPartyUrl":"","NodeRejectType":null,"Taged":null,"UserName":null,"UserId":null,"Description":null,"TagedTime":null,"NodeConfluenceType":"all","ConfluenceOk":null,"ConfluenceNo":null}},{"id":"1564334038904","name":"node_4","type":"end round","left":47,"top":193,"width":26,"height":26,"alt":true,"setInfo":null}],"areas":[]}', N'61806396-9498-492b-bc22-9f9e95a389bc', N'', N'{"REASON":"身体原因","DAYS":"1","CUSTOME_NAME":"玉宝"}', N'0', N'[{"type":"text","name":"REASON","title":"REASON","value":"身体原因","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"REASON\" value=\"身体原因\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"},{"leipiplugins":"select","name":"DAYS","title":"DAYS","size":"1","orgwidth":"150","style":"width: 150px;","value":"1,3,5,10","selected":"selected","content":"<span leipiplugins=\"select\"><select name=\"leipiNewField\" title=\"DAYS\" leipiplugins=\"select\" size=\"1\" orgwidth=\"150\" style=\"width: 150px;\"><option value=\"1\" selected=\"selected\">1</option><option value=\"3\">3</option><option value=\"5\">5</option><option value=\"10\">10</option></select>&nbsp;&nbsp;</span>"},{"type":"text","name":"CUSTOME_NAME","title":"CUSTOME_NAME","value":"玉宝","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"CUSTOME_NAME\" value=\"玉宝\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', N'<p style="text-align: center;"><span style="font-size: 36px;">请假条</span></p><p><span style="font-size: 36px;"><br/></span></p><p style="text-align: center;">因{REASON}，本人想请假{DAYS}天，望领导批准！</p><p><br/></p><p style="text-align: center;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;谢谢！</p><p><br/></p><p style="text-align: right;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 申请人：{CUSTOME_NAME}</p>', N'ef89f96a-af33-407c-b02e-897faf46ecf0', N'', N'0', N'2019-07-29 01:25:30.000', N'00000000-0000-0000-0000-000000000000', N'System', N'0', N'', N'3', N'1', NULL)
+INSERT INTO [dbo].[FlowInstance] ([Id], [InstanceSchemeId], [Code], [CustomName], [ActivityId], [ActivityType], [ActivityName], [PreviousId], [SchemeContent], [SchemeId], [DbName], [FrmData], [FrmType], [FrmContentData], [FrmContentParse], [FrmId], [SchemeType], [Disabled], [CreateDate], [CreateUserId], [CreateUserName], [FlowLevel], [Description], [IsFinish], [MakerList], [OrgId], [BusinessId]) VALUES (N'ee589689-3ae0-4037-abec-ba70e566da16', N'', N'1564334720434', N'普通的请假2019-07-29 01:25:24', N'1564334035352', N'2', N'所有人可以审批', N'1564334032785', N'{"title":"newFlow_1","initNum":9,"lines":[{"id":"1564334041040","type":"sl","from":"1564334032785","to":"1564334035352","name":"","dash":false,"Compares":null},{"id":"1564334041720","type":"sl","from":"1564334035352","to":"1564334036152","name":"","dash":false,"Compares":null},{"id":"1564334042927","type":"sl","from":"1564334036152","to":"1564334038904","name":"","dash":false,"Compares":null}],"nodes":[{"id":"1564334032785","name":"node_1","type":"start round mix","left":19,"top":36,"width":26,"height":26,"alt":true,"setInfo":null},{"id":"1564334035352","name":"所有人可以审批","type":"node","left":133,"top":50,"width":104,"height":56,"alt":true,"setInfo":{"NodeDesignate":"ALL_USER","NodeDesignateData":{"users":[],"roles":[],"orgs":null},"NodeCode":null,"NodeName":null,"ThirdPartyUrl":"http://xxxx.com/api/workflow/callback","NodeRejectType":null,"Taged":2,"UserName":"test","UserId":"6ba79766-faa0-4259-8139-a4a6d35784e0","Description":"最近有很多事情要处理","TagedTime":"2019-07-29 01:28","NodeConfluenceType":"all","ConfluenceOk":null,"ConfluenceNo":null}},{"id":"1564334036152","name":"所有人可以审批","type":"node","left":139,"top":123,"width":104,"height":56,"alt":true,"setInfo":{"NodeDesignate":"ALL_USER","NodeDesignateData":{"users":[],"roles":[],"orgs":null},"NodeCode":null,"NodeName":null,"ThirdPartyUrl":"","NodeRejectType":null,"Taged":null,"UserName":null,"UserId":null,"Description":null,"TagedTime":null,"NodeConfluenceType":"all","ConfluenceOk":null,"ConfluenceNo":null}},{"id":"1564334038904","name":"node_4","type":"end round","left":47,"top":193,"width":26,"height":26,"alt":true,"setInfo":null}],"areas":[]}', N'61806396-9498-492b-bc22-9f9e95a389bc', N'', N'{"REASON":"身体原因","DAYS":"1","CUSTOME_NAME":"玉宝"}', N'0', N'[{"type":"text","name":"REASON","title":"REASON","value":"身体原因","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"REASON\" value=\"身体原因\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"},{"leipiplugins":"select","name":"DAYS","title":"DAYS","size":"1","orgwidth":"150","style":"width: 150px;","value":"1,3,5,10","selected":"selected","content":"<span leipiplugins=\"select\"><select name=\"leipiNewField\" title=\"DAYS\" leipiplugins=\"select\" size=\"1\" orgwidth=\"150\" style=\"width: 150px;\"><option value=\"1\" selected=\"selected\">1</option><option value=\"3\">3</option><option value=\"5\">5</option><option value=\"10\">10</option></select>&nbsp;&nbsp;</span>"},{"type":"text","name":"CUSTOME_NAME","title":"CUSTOME_NAME","value":"玉宝","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"CUSTOME_NAME\" value=\"玉宝\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', N'<p style="text-align: center;"><span style="font-size: 36px;">请假条</span></p><p><span style="font-size: 36px;"><br/></span></p><p style="text-align: center;">因{REASON}，本人想请假{DAYS}天，望领导批准！</p><p><br/></p><p style="text-align: center;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;谢谢！</p><p><br/></p><p style="text-align: right;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 申请人：{CUSTOME_NAME}</p>', N'ef89f96a-af33-407c-b02e-897faf46ecf0', N'', N'0', N'2019-07-29 01:25:30.000', N'00000000-0000-0000-0000-000000000000', N'System', N'0', N'', N'3', N'1', NULL, NULL)
 GO
 
 
@@ -1964,7 +2252,8 @@ CREATE TABLE [dbo].[FlowScheme] (
   [ModifyDate] datetime  NULL,
   [ModifyUserId] [dbo].[PrimaryKey]  NULL,
   [ModifyUserName] varchar(50) COLLATE Chinese_PRC_CI_AS  NULL,
-  [OrgId] varchar(50) COLLATE Chinese_PRC_CI_AS  NULL
+  [OrgId] varchar(50) COLLATE Chinese_PRC_CI_AS  NULL,
+  [FrmUrlTemplate] varchar(255) COLLATE Chinese_PRC_CI_AS  NULL
 )
 GO
 
@@ -2119,6 +2408,13 @@ EXEC sp_addextendedproperty
 GO
 
 EXEC sp_addextendedproperty
+'MS_Description', N'URL表单模板',
+'SCHEMA', N'dbo',
+'TABLE', N'FlowScheme',
+'COLUMN', N'FrmUrlTemplate'
+GO
+
+EXEC sp_addextendedproperty
 'MS_Description', N'工作流模板信息表',
 'SCHEMA', N'dbo',
 'TABLE', N'FlowScheme'
@@ -2128,31 +2424,31 @@ GO
 -- ----------------------------
 -- Records of FlowScheme
 -- ----------------------------
-INSERT INTO [dbo].[FlowScheme] ([Id], [SchemeCode], [SchemeName], [SchemeType], [SchemeVersion], [SchemeCanUser], [SchemeContent], [FrmId], [FrmType], [AuthorizeType], [SortCode], [DeleteMark], [Disabled], [Description], [CreateDate], [CreateUserId], [CreateUserName], [ModifyDate], [ModifyUserId], [ModifyUserName], [OrgId]) VALUES (N'0b21f59c-7809-4275-acb4-8e8c08e0167e', N'1564334009729', N'按角色执行', N'', N'', N'', N'{"title":"newFlow_1","nodes":[{"name":"node_1","left":99,"top":32,"type":"start round mix","id":"1564334327861","width":26,"height":26,"alt":true},{"name":"node_2","left":70,"top":295,"type":"end round","id":"1564334330157","width":26,"height":26,"alt":true},{"name":"管理员","left":43,"top":131,"type":"node","id":"1564334332325","width":104,"height":36,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_ROLE","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":["09ee2ffa-7463-4938-ae0b-1cb4e80c7c13"]}}},{"name":"测试人员","left":185,"top":226,"type":"node","id":"1564334333133","width":104,"height":36,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_ROLE","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":["0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d"]}}}],"lines":[{"type":"sl","from":"1564334327861","to":"1564334332325","id":"1564334335789","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334332325","to":"1564334333133","id":"1564334336629","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334333133","to":"1564334330157","id":"1564334337805","name":"","dash":false,"alt":true}],"areas":[],"initNum":9}', N'ef89f96a-af33-407c-b02e-897faf46ecf0', N'0', N'0', N'0', N'0', N'0', N'节点按指定的角色执行而不是指定的人', N'2019-07-29 01:19:25.000', N'', N'', N'2019-07-29 01:19:25.000', N'', N'', NULL)
+INSERT INTO [dbo].[FlowScheme] ([Id], [SchemeCode], [SchemeName], [SchemeType], [SchemeVersion], [SchemeCanUser], [SchemeContent], [FrmId], [FrmType], [AuthorizeType], [SortCode], [DeleteMark], [Disabled], [Description], [CreateDate], [CreateUserId], [CreateUserName], [ModifyDate], [ModifyUserId], [ModifyUserName], [OrgId], [FrmUrlTemplate]) VALUES (N'989bd1f3-29f0-43cd-ad01-b55654907dbb', N'1564334009729', N'带复杂表单的', N'', N'', N'', N'{"title":"newFlow_1","nodes":[{"name":"node_1","left":66,"top":46,"type":"start round mix","id":"1564334555981","width":26,"height":26,"alt":true},{"name":"node_2","left":50,"top":145,"type":"node","id":"1564334557205","width":104,"height":26,"alt":true},{"name":"node_3","left":56,"top":206,"type":"node","id":"1564334557764","width":104,"height":26,"alt":true},{"name":"node_4","left":66,"top":294,"type":"end round","id":"1564334559716","width":26,"height":26,"alt":true}],"lines":[{"type":"sl","from":"1564334555981","to":"1564334557205","id":"1564334561500","name":"","dash":false},{"type":"sl","from":"1564334557205","to":"1564334557764","id":"1564334562229","name":"","dash":false},{"type":"sl","from":"1564334557764","to":"1564334559716","id":"1564334563268","name":"","dash":false}],"areas":[],"initNum":8}', N'8faff4e5-b729-44d2-ac26-e899a228f63d', N'1', N'0', N'0', N'0', N'0', N'这是一个带有复杂表单的流程，比如需要上传文件', N'2019-07-29 01:22:45.000', N'', N'', N'2019-10-29 17:25:20.000', N'', N'', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[FlowScheme] ([Id], [SchemeCode], [SchemeName], [SchemeType], [SchemeVersion], [SchemeCanUser], [SchemeContent], [FrmId], [FrmType], [AuthorizeType], [SortCode], [DeleteMark], [Disabled], [Description], [CreateDate], [CreateUserId], [CreateUserName], [ModifyDate], [ModifyUserId], [ModifyUserName], [OrgId]) VALUES (N'61806396-9498-492b-bc22-9f9e95a389bc', N'1564334009729', N'普通的请假', N'', N'', N'', N'{"title":"newFlow_1","nodes":[{"name":"node_1","left":19,"top":36,"type":"start round mix","id":"1564334032785","width":26,"height":26,"alt":true},{"name":"所有人可以审批","left":133,"top":50,"type":"node","id":"1564334035352","width":104,"height":56,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"ALL_USER","ThirdPartyUrl":"http://xxxx.com/api/workflow/callback","NodeDesignateData":{"users":[],"roles":[]}}},{"name":"所有人可以审批","left":139,"top":123,"type":"node","id":"1564334036152","width":104,"height":56,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"ALL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":[]}}},{"name":"node_4","left":47,"top":193,"type":"end round","id":"1564334038904","width":26,"height":26,"alt":true}],"lines":[{"type":"sl","from":"1564334032785","to":"1564334035352","id":"1564334041040","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334035352","to":"1564334036152","id":"1564334041720","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334036152","to":"1564334038904","id":"1564334042927","name":"","dash":false,"alt":true}],"areas":[],"initNum":9}', N'ef89f96a-af33-407c-b02e-897faf46ecf0', N'0', N'0', N'0', N'0', N'0', N'非常简单的请假流程', N'2019-07-29 01:14:48.000', N'', N'', N'2019-07-29 01:14:48.000', N'', N'', NULL)
+INSERT INTO [dbo].[FlowScheme] ([Id], [SchemeCode], [SchemeName], [SchemeType], [SchemeVersion], [SchemeCanUser], [SchemeContent], [FrmId], [FrmType], [AuthorizeType], [SortCode], [DeleteMark], [Disabled], [Description], [CreateDate], [CreateUserId], [CreateUserName], [ModifyDate], [ModifyUserId], [ModifyUserName], [OrgId], [FrmUrlTemplate]) VALUES (N'bfd4f0f9-6f61-4af9-977e-cbcf7c30dd35', N'1564334009729', N'带分支条件的请假', N'', N'', N'', N'{"title":"newFlow_1","nodes":[{"name":"node_1","left":44,"top":27,"type":"start round mix","id":"1564334138399","width":26,"height":26,"alt":true},{"name":"node_2","left":50,"top":295,"type":"end round","id":"1564334139783","width":26,"height":26,"alt":true},{"name":"所有人可以审批","left":163,"top":43,"type":"node","id":"1564334153687","width":104,"height":56,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"ALL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":[]}}},{"name":"小于3的test可以审批","left":23,"top":141,"type":"node","id":"1564334154471","width":167,"height":76,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":["6ba79766-faa0-4259-8139-a4a6d35784e0"],"roles":[]}}},{"name":"大于3的admin可以审批","left":288,"top":146,"type":"node","id":"1564334155295","width":143,"height":56,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":["49df1602-f5f3-4d52-afb7-3802da619558"],"roles":[]}}},{"name":"默认","left":171,"top":291,"type":"node","id":"1564334156607","width":104,"height":36,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"ALL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":[]}}}],"lines":[{"type":"sl","from":"1564334138399","to":"1564334153687","id":"1564334158551","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334153687","to":"1564334154471","id":"1564334159304","name":"","dash":false,"alt":true,"Compares":[{"FieldName":"DAYS","Operation":"<","Value":"3"}]},{"type":"sl","from":"1564334153687","to":"1564334155295","id":"1564334160383","name":"","dash":false,"alt":true,"Compares":[{"FieldName":"DAYS","Operation":">=","Value":"3"}]},{"type":"sl","from":"1564334154471","to":"1564334156607","id":"1564334161911","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334155295","to":"1564334156607","id":"1564334163959","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334156607","to":"1564334139783","id":"1564334165255","name":"","dash":false,"alt":true}],"areas":[],"initNum":16}', N'ef89f96a-af33-407c-b02e-897faf46ecf0', N'0', N'0', N'0', N'0', N'0', N'在连接线上可以设置分支条件', N'2019-07-29 01:17:46.000', N'', N'', N'2019-07-29 01:17:46.000', N'', N'', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[FlowScheme] ([Id], [SchemeCode], [SchemeName], [SchemeType], [SchemeVersion], [SchemeCanUser], [SchemeContent], [FrmId], [FrmType], [AuthorizeType], [SortCode], [DeleteMark], [Disabled], [Description], [CreateDate], [CreateUserId], [CreateUserName], [ModifyDate], [ModifyUserId], [ModifyUserName], [OrgId]) VALUES (N'73819920-f085-4003-8874-4361b6461c92', N'1564334009729', N'会签', N'', N'', N'', N'{"title":"newFlow_1","nodes":[{"name":"node_1","left":17,"top":12,"type":"start round mix","id":"1564334430924","width":26,"height":26,"alt":true},{"name":"node_2","left":141,"top":49,"type":"node","id":"1564334435460","width":104,"height":26,"alt":true},{"name":"会签入口，设置会签类型","left":141,"top":138,"type":"fork","id":"1564334437844","width":104,"height":76,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"ALL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":[]}}},{"name":"admin","left":23,"top":272,"type":"node","id":"1564334439828","width":104,"height":36,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":["49df1602-f5f3-4d52-afb7-3802da619558"],"roles":[]}}},{"name":"test","left":234,"top":265,"type":"node","id":"1564334440404","width":104,"height":36,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":["6ba79766-faa0-4259-8139-a4a6d35784e0"],"roles":[]}}},{"name":"默认所有人","left":140,"top":406,"type":"join","id":"1564334441965","width":104,"height":56,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"ALL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":[]}}},{"name":"node_7","left":351,"top":420,"type":"end round","id":"1564334444885","width":26,"height":26,"alt":true}],"lines":[{"type":"sl","from":"1564334430924","to":"1564334435460","id":"1564334446774","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334435460","to":"1564334437844","id":"1564334447796","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334437844","to":"1564334439828","id":"1564334448572","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334437844","to":"1564334440404","id":"1564334449628","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334439828","to":"1564334441965","id":"1564334450572","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334440404","to":"1564334441965","id":"1564334451684","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334441965","to":"1564334444885","id":"1564334453900","name":"","dash":false,"alt":true}],"areas":[],"initNum":16}', N'ef89f96a-af33-407c-b02e-897faf46ecf0', N'0', N'0', N'0', N'0', N'0', N'需要多人审批的流程，比如需要多人全部批准该步骤才能通过，或至少有一个通过', N'2019-07-29 01:22:03.000', N'', N'', N'2019-07-29 01:22:03.000', N'', N'', NULL)
+INSERT INTO [dbo].[FlowScheme] ([Id], [SchemeCode], [SchemeName], [SchemeType], [SchemeVersion], [SchemeCanUser], [SchemeContent], [FrmId], [FrmType], [AuthorizeType], [SortCode], [DeleteMark], [Disabled], [Description], [CreateDate], [CreateUserId], [CreateUserName], [ModifyDate], [ModifyUserId], [ModifyUserName], [OrgId], [FrmUrlTemplate]) VALUES (N'f11b7ef6-6da4-4cef-9e71-5e4e1454f30a', N'1584630699021', N'【研发小组】考核表', N'', N'', N'', N'{"title":"newFlow_1","nodes":[{"name":"node_1","left":116,"top":70,"type":"start round mix","id":"1584630766237","width":26,"height":26,"alt":true},{"name":"node_2","left":118,"top":148,"type":"node","id":"1584630767445","width":104,"height":26,"alt":true,"setInfo":{"NodeName":"node_2","NodeCode":"node_2","NodeRejectType":"0","NodeDesignate":"ALL_USER","NodeConfluenceType":"all","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":[],"orgs":[]}}},{"name":"node_3","left":69,"top":223,"type":"end round","id":"1584630769587","width":26,"height":26,"alt":true}],"lines":[{"type":"sl","from":"1584630766237","to":"1584630767445","id":"1584630772227","name":"","dash":false,"alt":true},{"type":"sl","from":"1584630767445","to":"1584630769587","id":"1584630773305","name":"","dash":false,"alt":true}],"areas":[],"initNum":7}', N'0411376a-18fd-4f52-bffb-22ae0d3fa21d', N'0', N'0', N'1', N'0', N'0', N'只有可以看到【研发小组】的【管理员】才能看到', N'2020-03-19 23:13:03.000', N'49df1602-f5f3-4d52-afb7-3802da619558', N'admin', N'2020-03-19 23:13:03.000', N'', N'', N'08f41bf6-4388-4b1e-bd3e-2ff538b44b1b', NULL)
 GO
 
-INSERT INTO [dbo].[FlowScheme] ([Id], [SchemeCode], [SchemeName], [SchemeType], [SchemeVersion], [SchemeCanUser], [SchemeContent], [FrmId], [FrmType], [AuthorizeType], [SortCode], [DeleteMark], [Disabled], [Description], [CreateDate], [CreateUserId], [CreateUserName], [ModifyDate], [ModifyUserId], [ModifyUserName], [OrgId]) VALUES (N'989bd1f3-29f0-43cd-ad01-b55654907dbb', N'1564334009729', N'带复杂表单的', N'', N'', N'', N'{"title":"newFlow_1","nodes":[{"name":"node_1","left":66,"top":46,"type":"start round mix","id":"1564334555981","width":26,"height":26,"alt":true},{"name":"node_2","left":50,"top":145,"type":"node","id":"1564334557205","width":104,"height":26,"alt":true},{"name":"node_3","left":56,"top":206,"type":"node","id":"1564334557764","width":104,"height":26,"alt":true},{"name":"node_4","left":66,"top":294,"type":"end round","id":"1564334559716","width":26,"height":26,"alt":true}],"lines":[{"type":"sl","from":"1564334555981","to":"1564334557205","id":"1564334561500","name":"","dash":false},{"type":"sl","from":"1564334557205","to":"1564334557764","id":"1564334562229","name":"","dash":false},{"type":"sl","from":"1564334557764","to":"1564334559716","id":"1564334563268","name":"","dash":false}],"areas":[],"initNum":8}', N'8faff4e5-b729-44d2-ac26-e899a228f63d', N'1', N'0', N'0', N'0', N'0', N'这是一个带有复杂表单的流程，比如需要上传文件', N'2019-07-29 01:22:45.000', N'', N'', N'2019-10-29 17:25:20.000', N'', N'', NULL)
+INSERT INTO [dbo].[FlowScheme] ([Id], [SchemeCode], [SchemeName], [SchemeType], [SchemeVersion], [SchemeCanUser], [SchemeContent], [FrmId], [FrmType], [AuthorizeType], [SortCode], [DeleteMark], [Disabled], [Description], [CreateDate], [CreateUserId], [CreateUserName], [ModifyDate], [ModifyUserId], [ModifyUserName], [OrgId], [FrmUrlTemplate]) VALUES (N'fb1f3cac-a259-4969-9171-addbe22ab102', N'1584631233711', N'【研发小组】高层汇报', N'', N'', N'', N'{"title":"newFlow_1","nodes":[{"name":"node_1","left":52,"top":43,"type":"start round mix","id":"1584631275414","width":26,"height":26,"alt":true},{"name":"node_2","left":57,"top":113,"type":"node","id":"1584631276803","width":104,"height":26,"alt":true,"setInfo":{"NodeName":"node_2","NodeCode":"node_2","NodeRejectType":"0","NodeDesignate":"ALL_USER","NodeConfluenceType":"all","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":[],"orgs":[]}}},{"name":"node_3","left":60,"top":192,"type":"end round","id":"1584631278737","width":26,"height":26,"alt":true}],"lines":[{"type":"sl","from":"1584631275414","to":"1584631276803","id":"1584631280569","name":"","dash":false,"alt":true},{"type":"sl","from":"1584631276803","to":"1584631278737","id":"1584631281701","name":"","dash":false,"alt":true}],"areas":[],"initNum":7}', N'0411376a-18fd-4f52-bffb-22ae0d3fa21d', N'0', N'0', N'1', N'0', N'0', N'只有可以看到【研发小组】的【管理员】才能看到', N'2020-03-19 23:21:43.000', N'49df1602-f5f3-4d52-afb7-3802da619558', N'admin', N'2020-03-19 23:21:43.000', N'', N'', N'08f41bf6-4388-4b1e-bd3e-2ff538b44b1b', NULL)
 GO
 
-INSERT INTO [dbo].[FlowScheme] ([Id], [SchemeCode], [SchemeName], [SchemeType], [SchemeVersion], [SchemeCanUser], [SchemeContent], [FrmId], [FrmType], [AuthorizeType], [SortCode], [DeleteMark], [Disabled], [Description], [CreateDate], [CreateUserId], [CreateUserName], [ModifyDate], [ModifyUserId], [ModifyUserName], [OrgId]) VALUES (N'f11b7ef6-6da4-4cef-9e71-5e4e1454f30a', N'1584630699021', N'【研发小组】考核表', N'', N'', N'', N'{"title":"newFlow_1","nodes":[{"name":"node_1","left":116,"top":70,"type":"start round mix","id":"1584630766237","width":26,"height":26,"alt":true},{"name":"node_2","left":118,"top":148,"type":"node","id":"1584630767445","width":104,"height":26,"alt":true,"setInfo":{"NodeName":"node_2","NodeCode":"node_2","NodeRejectType":"0","NodeDesignate":"ALL_USER","NodeConfluenceType":"all","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":[],"orgs":[]}}},{"name":"node_3","left":69,"top":223,"type":"end round","id":"1584630769587","width":26,"height":26,"alt":true}],"lines":[{"type":"sl","from":"1584630766237","to":"1584630767445","id":"1584630772227","name":"","dash":false,"alt":true},{"type":"sl","from":"1584630767445","to":"1584630769587","id":"1584630773305","name":"","dash":false,"alt":true}],"areas":[],"initNum":7}', N'0411376a-18fd-4f52-bffb-22ae0d3fa21d', N'0', N'0', N'1', N'0', N'0', N'只有可以看到【研发小组】的【管理员】才能看到', N'2020-03-19 23:13:03.027', N'49df1602-f5f3-4d52-afb7-3802da619558', N'admin', N'2020-03-19 23:13:03.027', N'', N'', N'08f41bf6-4388-4b1e-bd3e-2ff538b44b1b')
+INSERT INTO [dbo].[FlowScheme] ([Id], [SchemeCode], [SchemeName], [SchemeType], [SchemeVersion], [SchemeCanUser], [SchemeContent], [FrmId], [FrmType], [AuthorizeType], [SortCode], [DeleteMark], [Disabled], [Description], [CreateDate], [CreateUserId], [CreateUserName], [ModifyDate], [ModifyUserId], [ModifyUserName], [OrgId], [FrmUrlTemplate]) VALUES (N'0b21f59c-7809-4275-acb4-8e8c08e0167e', N'1564334009729', N'按角色执行', N'', N'', N'', N'{"title":"newFlow_1","nodes":[{"name":"node_1","left":99,"top":32,"type":"start round mix","id":"1564334327861","width":26,"height":26,"alt":true},{"name":"node_2","left":70,"top":295,"type":"end round","id":"1564334330157","width":26,"height":26,"alt":true},{"name":"管理员","left":43,"top":131,"type":"node","id":"1564334332325","width":104,"height":36,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_ROLE","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":["09ee2ffa-7463-4938-ae0b-1cb4e80c7c13"]}}},{"name":"测试人员","left":185,"top":226,"type":"node","id":"1564334333133","width":104,"height":36,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_ROLE","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":["0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d"]}}}],"lines":[{"type":"sl","from":"1564334327861","to":"1564334332325","id":"1564334335789","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334332325","to":"1564334333133","id":"1564334336629","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334333133","to":"1564334330157","id":"1564334337805","name":"","dash":false,"alt":true}],"areas":[],"initNum":9}', N'ef89f96a-af33-407c-b02e-897faf46ecf0', N'0', N'0', N'0', N'0', N'0', N'节点按指定的角色执行而不是指定的人', N'2019-07-29 01:19:25.000', N'', N'', N'2019-07-29 01:19:25.000', N'', N'', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[FlowScheme] ([Id], [SchemeCode], [SchemeName], [SchemeType], [SchemeVersion], [SchemeCanUser], [SchemeContent], [FrmId], [FrmType], [AuthorizeType], [SortCode], [DeleteMark], [Disabled], [Description], [CreateDate], [CreateUserId], [CreateUserName], [ModifyDate], [ModifyUserId], [ModifyUserName], [OrgId]) VALUES (N'bfd4f0f9-6f61-4af9-977e-cbcf7c30dd35', N'1564334009729', N'带分支条件的请假', N'', N'', N'', N'{"title":"newFlow_1","nodes":[{"name":"node_1","left":44,"top":27,"type":"start round mix","id":"1564334138399","width":26,"height":26,"alt":true},{"name":"node_2","left":50,"top":295,"type":"end round","id":"1564334139783","width":26,"height":26,"alt":true},{"name":"所有人可以审批","left":163,"top":43,"type":"node","id":"1564334153687","width":104,"height":56,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"ALL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":[]}}},{"name":"小于3的test可以审批","left":23,"top":141,"type":"node","id":"1564334154471","width":167,"height":76,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":["6ba79766-faa0-4259-8139-a4a6d35784e0"],"roles":[]}}},{"name":"大于3的admin可以审批","left":288,"top":146,"type":"node","id":"1564334155295","width":143,"height":56,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":["49df1602-f5f3-4d52-afb7-3802da619558"],"roles":[]}}},{"name":"默认","left":171,"top":291,"type":"node","id":"1564334156607","width":104,"height":36,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"ALL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":[]}}}],"lines":[{"type":"sl","from":"1564334138399","to":"1564334153687","id":"1564334158551","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334153687","to":"1564334154471","id":"1564334159304","name":"","dash":false,"alt":true,"Compares":[{"FieldName":"DAYS","Operation":"<","Value":"3"}]},{"type":"sl","from":"1564334153687","to":"1564334155295","id":"1564334160383","name":"","dash":false,"alt":true,"Compares":[{"FieldName":"DAYS","Operation":">=","Value":"3"}]},{"type":"sl","from":"1564334154471","to":"1564334156607","id":"1564334161911","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334155295","to":"1564334156607","id":"1564334163959","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334156607","to":"1564334139783","id":"1564334165255","name":"","dash":false,"alt":true}],"areas":[],"initNum":16}', N'ef89f96a-af33-407c-b02e-897faf46ecf0', N'0', N'0', N'0', N'0', N'0', N'在连接线上可以设置分支条件', N'2019-07-29 01:17:46.000', N'', N'', N'2019-07-29 01:17:46.000', N'', N'', NULL)
+INSERT INTO [dbo].[FlowScheme] ([Id], [SchemeCode], [SchemeName], [SchemeType], [SchemeVersion], [SchemeCanUser], [SchemeContent], [FrmId], [FrmType], [AuthorizeType], [SortCode], [DeleteMark], [Disabled], [Description], [CreateDate], [CreateUserId], [CreateUserName], [ModifyDate], [ModifyUserId], [ModifyUserName], [OrgId], [FrmUrlTemplate]) VALUES (N'1648a05b-013c-4dd0-8ecb-5695d08fb8f4', N'1584630870659', N'【研发小组】测试申请', N'', N'', N'', N'{"title":"newFlow_1","nodes":[{"name":"node_1","left":44,"top":49,"type":"start round mix","id":"1584630893821","width":26,"height":26,"alt":true},{"name":"node_2","left":58,"top":120,"type":"node","id":"1584630895194","width":104,"height":26,"alt":true,"setInfo":{"NodeName":"node_2","NodeCode":"node_2","NodeRejectType":"0","NodeDesignate":"ALL_USER","NodeConfluenceType":"all","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":[],"orgs":[]}}},{"name":"node_3","left":42,"top":219,"type":"end round","id":"1584630896886","width":26,"height":26,"alt":true}],"lines":[{"type":"sl","from":"1584630893821","to":"1584630895194","id":"1584630898567","name":"","dash":false,"alt":true},{"type":"sl","from":"1584630895194","to":"1584630896886","id":"1584630899588","name":"","dash":false,"alt":true}],"areas":[],"initNum":7}', N'0411376a-18fd-4f52-bffb-22ae0d3fa21d', N'0', N'0', N'1', N'0', N'0', N'只有【test3】账号或可以看到【研发小组】的【管理员】才能看到', N'2020-03-19 23:15:03.000', N'229f3a49-ab27-49ce-b383-9f10ca23a9d5', N'test3', N'2020-03-19 23:15:03.000', N'', N'', N'08f41bf6-4388-4b1e-bd3e-2ff538b44b1b', NULL)
 GO
 
-INSERT INTO [dbo].[FlowScheme] ([Id], [SchemeCode], [SchemeName], [SchemeType], [SchemeVersion], [SchemeCanUser], [SchemeContent], [FrmId], [FrmType], [AuthorizeType], [SortCode], [DeleteMark], [Disabled], [Description], [CreateDate], [CreateUserId], [CreateUserName], [ModifyDate], [ModifyUserId], [ModifyUserName], [OrgId]) VALUES (N'7831e5d0-0ecf-4539-99bc-cd7ecfc8f88f', N'1584630806811', N'【研发小组】爱好调研', N'', N'', N'', N'{"title":"newFlow_1","nodes":[{"name":"node_1","left":47,"top":23,"type":"start round mix","id":"1584630842462","width":26,"height":26,"alt":true},{"name":"node_2","left":74,"top":102,"type":"node","id":"1584630843608","width":104,"height":26,"alt":true,"setInfo":{"NodeName":"node_2","NodeCode":"node_2","NodeRejectType":"0","NodeDesignate":"ALL_USER","NodeConfluenceType":"all","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":[],"orgs":[]}}},{"name":"node_3","left":41,"top":179,"type":"end round","id":"1584630845368","width":26,"height":26,"alt":true}],"lines":[{"type":"sl","from":"1584630842462","to":"1584630843608","id":"1584630846980","name":"","dash":false,"alt":true},{"type":"sl","from":"1584630843608","to":"1584630845368","id":"1584630847962","name":"","dash":false,"alt":true}],"areas":[],"initNum":7}', N'0411376a-18fd-4f52-bffb-22ae0d3fa21d', N'0', N'0', N'1', N'0', N'0', N'只有【test】账号或可以看到【研发小组】的【管理员】才能看到', N'2020-03-19 23:14:13.657', N'6ba79766-faa0-4259-8139-a4a6d35784e0', N'test', N'2020-03-19 23:14:13.657', N'', N'', N'08f41bf6-4388-4b1e-bd3e-2ff538b44b1b')
+INSERT INTO [dbo].[FlowScheme] ([Id], [SchemeCode], [SchemeName], [SchemeType], [SchemeVersion], [SchemeCanUser], [SchemeContent], [FrmId], [FrmType], [AuthorizeType], [SortCode], [DeleteMark], [Disabled], [Description], [CreateDate], [CreateUserId], [CreateUserName], [ModifyDate], [ModifyUserId], [ModifyUserName], [OrgId], [FrmUrlTemplate]) VALUES (N'61806396-9498-492b-bc22-9f9e95a389bc', N'1564334009729', N'普通的请假', N'', N'', N'', N'{"title":"newFlow_1","nodes":[{"name":"node_1","left":19,"top":36,"type":"start round mix","id":"1564334032785","width":26,"height":26,"alt":true},{"name":"所有人可以审批","left":133,"top":50,"type":"node","id":"1564334035352","width":104,"height":56,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"ALL_USER","ThirdPartyUrl":"http://xxxx.com/api/workflow/callback","NodeDesignateData":{"users":[],"roles":[]}}},{"name":"所有人可以审批","left":139,"top":123,"type":"node","id":"1564334036152","width":104,"height":56,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"ALL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":[]}}},{"name":"node_4","left":47,"top":193,"type":"end round","id":"1564334038904","width":26,"height":26,"alt":true}],"lines":[{"type":"sl","from":"1564334032785","to":"1564334035352","id":"1564334041040","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334035352","to":"1564334036152","id":"1564334041720","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334036152","to":"1564334038904","id":"1564334042927","name":"","dash":false,"alt":true}],"areas":[],"initNum":9}', N'ef89f96a-af33-407c-b02e-897faf46ecf0', N'0', N'0', N'0', N'0', N'0', N'非常简单的请假流程', N'2019-07-29 01:14:48.000', N'', N'', N'2019-07-29 01:14:48.000', N'', N'', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[FlowScheme] ([Id], [SchemeCode], [SchemeName], [SchemeType], [SchemeVersion], [SchemeCanUser], [SchemeContent], [FrmId], [FrmType], [AuthorizeType], [SortCode], [DeleteMark], [Disabled], [Description], [CreateDate], [CreateUserId], [CreateUserName], [ModifyDate], [ModifyUserId], [ModifyUserName], [OrgId]) VALUES (N'fb1f3cac-a259-4969-9171-addbe22ab102', N'1584631233711', N'【研发小组】高层汇报', N'', N'', N'', N'{"title":"newFlow_1","nodes":[{"name":"node_1","left":52,"top":43,"type":"start round mix","id":"1584631275414","width":26,"height":26,"alt":true},{"name":"node_2","left":57,"top":113,"type":"node","id":"1584631276803","width":104,"height":26,"alt":true,"setInfo":{"NodeName":"node_2","NodeCode":"node_2","NodeRejectType":"0","NodeDesignate":"ALL_USER","NodeConfluenceType":"all","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":[],"orgs":[]}}},{"name":"node_3","left":60,"top":192,"type":"end round","id":"1584631278737","width":26,"height":26,"alt":true}],"lines":[{"type":"sl","from":"1584631275414","to":"1584631276803","id":"1584631280569","name":"","dash":false,"alt":true},{"type":"sl","from":"1584631276803","to":"1584631278737","id":"1584631281701","name":"","dash":false,"alt":true}],"areas":[],"initNum":7}', N'0411376a-18fd-4f52-bffb-22ae0d3fa21d', N'0', N'0', N'1', N'0', N'0', N'只有可以看到【研发小组】的【管理员】才能看到', N'2020-03-19 23:21:43.270', N'49df1602-f5f3-4d52-afb7-3802da619558', N'admin', N'2020-03-19 23:21:43.270', N'', N'', N'08f41bf6-4388-4b1e-bd3e-2ff538b44b1b')
+INSERT INTO [dbo].[FlowScheme] ([Id], [SchemeCode], [SchemeName], [SchemeType], [SchemeVersion], [SchemeCanUser], [SchemeContent], [FrmId], [FrmType], [AuthorizeType], [SortCode], [DeleteMark], [Disabled], [Description], [CreateDate], [CreateUserId], [CreateUserName], [ModifyDate], [ModifyUserId], [ModifyUserName], [OrgId], [FrmUrlTemplate]) VALUES (N'73819920-f085-4003-8874-4361b6461c92', N'1564334009729', N'会签', N'', N'', N'', N'{"title":"newFlow_1","nodes":[{"name":"node_1","left":17,"top":12,"type":"start round mix","id":"1564334430924","width":26,"height":26,"alt":true},{"name":"node_2","left":141,"top":49,"type":"node","id":"1564334435460","width":104,"height":26,"alt":true},{"name":"会签入口，设置会签类型","left":141,"top":138,"type":"fork","id":"1564334437844","width":104,"height":76,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"ALL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":[]}}},{"name":"admin","left":23,"top":272,"type":"node","id":"1564334439828","width":104,"height":36,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":["49df1602-f5f3-4d52-afb7-3802da619558"],"roles":[]}}},{"name":"test","left":234,"top":265,"type":"node","id":"1564334440404","width":104,"height":36,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"SPECIAL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":["6ba79766-faa0-4259-8139-a4a6d35784e0"],"roles":[]}}},{"name":"默认所有人","left":140,"top":406,"type":"join","id":"1564334441965","width":104,"height":56,"alt":true,"setInfo":{"NodeConfluenceType":"all","NodeDesignate":"ALL_USER","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":[]}}},{"name":"node_7","left":351,"top":420,"type":"end round","id":"1564334444885","width":26,"height":26,"alt":true}],"lines":[{"type":"sl","from":"1564334430924","to":"1564334435460","id":"1564334446774","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334435460","to":"1564334437844","id":"1564334447796","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334437844","to":"1564334439828","id":"1564334448572","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334437844","to":"1564334440404","id":"1564334449628","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334439828","to":"1564334441965","id":"1564334450572","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334440404","to":"1564334441965","id":"1564334451684","name":"","dash":false,"alt":true},{"type":"sl","from":"1564334441965","to":"1564334444885","id":"1564334453900","name":"","dash":false,"alt":true}],"areas":[],"initNum":16}', N'ef89f96a-af33-407c-b02e-897faf46ecf0', N'0', N'0', N'0', N'0', N'0', N'需要多人审批的流程，比如需要多人全部批准该步骤才能通过，或至少有一个通过', N'2019-07-29 01:22:03.000', N'', N'', N'2019-07-29 01:22:03.000', N'', N'', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[FlowScheme] ([Id], [SchemeCode], [SchemeName], [SchemeType], [SchemeVersion], [SchemeCanUser], [SchemeContent], [FrmId], [FrmType], [AuthorizeType], [SortCode], [DeleteMark], [Disabled], [Description], [CreateDate], [CreateUserId], [CreateUserName], [ModifyDate], [ModifyUserId], [ModifyUserName], [OrgId]) VALUES (N'1648a05b-013c-4dd0-8ecb-5695d08fb8f4', N'1584630870659', N'【研发小组】测试申请', N'', N'', N'', N'{"title":"newFlow_1","nodes":[{"name":"node_1","left":44,"top":49,"type":"start round mix","id":"1584630893821","width":26,"height":26,"alt":true},{"name":"node_2","left":58,"top":120,"type":"node","id":"1584630895194","width":104,"height":26,"alt":true,"setInfo":{"NodeName":"node_2","NodeCode":"node_2","NodeRejectType":"0","NodeDesignate":"ALL_USER","NodeConfluenceType":"all","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":[],"orgs":[]}}},{"name":"node_3","left":42,"top":219,"type":"end round","id":"1584630896886","width":26,"height":26,"alt":true}],"lines":[{"type":"sl","from":"1584630893821","to":"1584630895194","id":"1584630898567","name":"","dash":false,"alt":true},{"type":"sl","from":"1584630895194","to":"1584630896886","id":"1584630899588","name":"","dash":false,"alt":true}],"areas":[],"initNum":7}', N'0411376a-18fd-4f52-bffb-22ae0d3fa21d', N'0', N'0', N'1', N'0', N'0', N'只有【test3】账号或可以看到【研发小组】的【管理员】才能看到', N'2020-03-19 23:15:03.490', N'229f3a49-ab27-49ce-b383-9f10ca23a9d5', N'test3', N'2020-03-19 23:15:03.490', N'', N'', N'08f41bf6-4388-4b1e-bd3e-2ff538b44b1b')
+INSERT INTO [dbo].[FlowScheme] ([Id], [SchemeCode], [SchemeName], [SchemeType], [SchemeVersion], [SchemeCanUser], [SchemeContent], [FrmId], [FrmType], [AuthorizeType], [SortCode], [DeleteMark], [Disabled], [Description], [CreateDate], [CreateUserId], [CreateUserName], [ModifyDate], [ModifyUserId], [ModifyUserName], [OrgId], [FrmUrlTemplate]) VALUES (N'7831e5d0-0ecf-4539-99bc-cd7ecfc8f88f', N'1584630806811', N'【研发小组】爱好调研', N'', N'', N'', N'{"title":"newFlow_1","nodes":[{"name":"node_1","left":47,"top":23,"type":"start round mix","id":"1584630842462","width":26,"height":26,"alt":true},{"name":"node_2","left":74,"top":102,"type":"node","id":"1584630843608","width":104,"height":26,"alt":true,"setInfo":{"NodeName":"node_2","NodeCode":"node_2","NodeRejectType":"0","NodeDesignate":"ALL_USER","NodeConfluenceType":"all","ThirdPartyUrl":"","NodeDesignateData":{"users":[],"roles":[],"orgs":[]}}},{"name":"node_3","left":41,"top":179,"type":"end round","id":"1584630845368","width":26,"height":26,"alt":true}],"lines":[{"type":"sl","from":"1584630842462","to":"1584630843608","id":"1584630846980","name":"","dash":false,"alt":true},{"type":"sl","from":"1584630843608","to":"1584630845368","id":"1584630847962","name":"","dash":false,"alt":true}],"areas":[],"initNum":7}', N'0411376a-18fd-4f52-bffb-22ae0d3fa21d', N'0', N'0', N'1', N'0', N'0', N'只有【test】账号或可以看到【研发小组】的【管理员】才能看到', N'2020-03-19 23:14:14.000', N'6ba79766-faa0-4259-8139-a4a6d35784e0', N'test', N'2020-03-19 23:14:14.000', N'', N'', N'08f41bf6-4388-4b1e-bd3e-2ff538b44b1b', NULL)
 GO
 
 
@@ -2340,6 +2636,12 @@ GO
 -- ----------------------------
 -- Records of Form
 -- ----------------------------
+INSERT INTO [dbo].[Form] ([Id], [Name], [FrmType], [WebId], [Fields], [ContentData], [ContentParse], [Content], [SortCode], [DeleteMark], [DbName], [Disabled], [Description], [CreateDate], [CreateUserId], [CreateUserName], [ModifyDate], [ModifyUserId], [ModifyUserName], [OrgId]) VALUES (N'0411376a-18fd-4f52-bffb-22ae0d3fa21d', N'【研发小组】新人报到', N'0', N'', N'0', N'[{"type":"text","name":"USERNAME","title":"USERNAME","value":"","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"USERNAME\" value=\"\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', N'<p>你的姓名：{USERNAME}</p>', N'<p>你的姓名：<input name="leipiNewField" type="text" title="USERNAME" value="" leipiplugins="text" orghide="0" orgalign="left" orgwidth="150" orgtype="text" style="text-align: left; width: 150px;"/></p>', N'1', N'0', NULL, N'0', N'这个表单只有【研发小组】权限的人可以看到', N'2020-03-18 22:56:02.000', N'', N'', N'2020-03-18 22:56:44.000', N'', N'', N'08f41bf6-4388-4b1e-bd3e-2ff538b44b1b')
+GO
+
+INSERT INTO [dbo].[Form] ([Id], [Name], [FrmType], [WebId], [Fields], [ContentData], [ContentParse], [Content], [SortCode], [DeleteMark], [DbName], [Disabled], [Description], [CreateDate], [CreateUserId], [CreateUserName], [ModifyDate], [ModifyUserId], [ModifyUserName], [OrgId]) VALUES (N'318bb233-c9df-4374-9937-e55b71fbcf99', N'【西南片区】报道', N'0', N'', N'0', N'[{"type":"text","name":"USERNAME","title":"USERNAME","value":"","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"USERNAME\" value=\"\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', N'<p>{USERNAME}，欢迎来到西南大区</p>', N'<p><input name="leipiNewField" type="text" title="USERNAME" value="" leipiplugins="text" orghide="0" orgalign="left" orgwidth="150" orgtype="text" style="text-align: left; width: 150px;"/>，欢迎来到西南大区</p>', N'1', N'0', NULL, N'0', N'只有可以访问【西南片区】的用户可以看到', N'2020-03-18 22:58:44.000', N'', N'', N'2020-03-18 22:58:44.000', N'', N'', N'60620558-89a2-4b28-8637-52f514773725')
+GO
+
 INSERT INTO [dbo].[Form] ([Id], [Name], [FrmType], [WebId], [Fields], [ContentData], [ContentParse], [Content], [SortCode], [DeleteMark], [DbName], [Disabled], [Description], [CreateDate], [CreateUserId], [CreateUserName], [ModifyDate], [ModifyUserId], [ModifyUserName], [OrgId]) VALUES (N'8faff4e5-b729-44d2-ac26-e899a228f63d', N'系统内置的复杂请假条表单', N'1', N'FrmLeaveReq', N'0', N'', N'', N'', N'0', N'0', N'', N'0', N'企业版内置的复杂请假条表单', N'2019-07-29 01:03:36.000', N'', N'', N'2019-07-29 01:03:36.000', N'', N'', NULL)
 GO
 
@@ -2350,12 +2652,6 @@ INSERT INTO [dbo].[Form] ([Id], [Name], [FrmType], [WebId], [Fields], [ContentDa
 GO
 
 INSERT INTO [dbo].[Form] ([Id], [Name], [FrmType], [WebId], [Fields], [ContentData], [ContentParse], [Content], [SortCode], [DeleteMark], [DbName], [Disabled], [Description], [CreateDate], [CreateUserId], [CreateUserName], [ModifyDate], [ModifyUserId], [ModifyUserName], [OrgId]) VALUES (N'febe218d-21a6-44b6-b7ce-b83e73556ad9', N'审批流程', N'0', N'FrmLeaveReq', N'0', N'[{"type":"text","name":"姓名","title":"姓名","value":"","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"姓名\" value=\"\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', N'<p>{姓名}</p>', N'<p><input name="leipiNewField" type="text" title="姓名" value="" leipiplugins="text" orghide="0" orgalign="left" orgwidth="150" orgtype="text" style="text-align: left; width: 150px;"/></p>', N'0', N'0', N'', N'0', N'', N'2019-10-29 13:57:35.000', N'', N'', N'2019-10-29 13:57:35.000', N'', N'', NULL)
-GO
-
-INSERT INTO [dbo].[Form] ([Id], [Name], [FrmType], [WebId], [Fields], [ContentData], [ContentParse], [Content], [SortCode], [DeleteMark], [DbName], [Disabled], [Description], [CreateDate], [CreateUserId], [CreateUserName], [ModifyDate], [ModifyUserId], [ModifyUserName], [OrgId]) VALUES (N'0411376a-18fd-4f52-bffb-22ae0d3fa21d', N'【研发小组】新人报到', N'0', N'', N'0', N'[{"type":"text","name":"USERNAME","title":"USERNAME","value":"","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"USERNAME\" value=\"\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', N'<p>你的姓名：{USERNAME}</p>', N'<p>你的姓名：<input name="leipiNewField" type="text" title="USERNAME" value="" leipiplugins="text" orghide="0" orgalign="left" orgwidth="150" orgtype="text" style="text-align: left; width: 150px;"/></p>', N'1', N'0', NULL, N'0', N'这个表单只有【研发小组】权限的人可以看到', N'2020-03-18 22:56:01.550', N'', N'', N'2020-03-18 22:56:44.100', N'', N'', N'08f41bf6-4388-4b1e-bd3e-2ff538b44b1b')
-GO
-
-INSERT INTO [dbo].[Form] ([Id], [Name], [FrmType], [WebId], [Fields], [ContentData], [ContentParse], [Content], [SortCode], [DeleteMark], [DbName], [Disabled], [Description], [CreateDate], [CreateUserId], [CreateUserName], [ModifyDate], [ModifyUserId], [ModifyUserName], [OrgId]) VALUES (N'318bb233-c9df-4374-9937-e55b71fbcf99', N'【西南片区】报道', N'0', N'', N'0', N'[{"type":"text","name":"USERNAME","title":"USERNAME","value":"","leipiplugins":"text","orghide":"0","orgalign":"left","orgwidth":"150","orgtype":"text","style":"text-align: left; width: 150px;","content":"<input name=\"leipiNewField\" type=\"text\" title=\"USERNAME\" value=\"\" leipiplugins=\"text\" orghide=\"0\" orgalign=\"left\" orgwidth=\"150\" orgtype=\"text\" style=\"text-align: left; width: 150px;\"/>"}]', N'<p>{USERNAME}，欢迎来到西南大区</p>', N'<p><input name="leipiNewField" type="text" title="USERNAME" value="" leipiplugins="text" orghide="0" orgalign="left" orgwidth="150" orgtype="text" style="text-align: left; width: 150px;"/>，欢迎来到西南大区</p>', N'1', N'0', NULL, N'0', N'只有可以访问【西南片区】的用户可以看到', N'2020-03-18 22:58:43.990', N'', N'', N'2020-03-18 22:58:43.990', N'', N'', N'60620558-89a2-4b28-8637-52f514773725')
 GO
 
 
@@ -3176,7 +3472,7 @@ GO
 -- ----------------------------
 -- Records of OpenJob
 -- ----------------------------
-INSERT INTO [dbo].[OpenJob] ([Id], [JobName], [RunCount], [ErrorCount], [NextRunTime], [LastRunTime], [LastErrorTime], [JobType], [JobCall], [JobCallParams], [Cron], [Status], [Remark], [CreateTime], [CreateUserId], [CreateUserName], [UpdateTime], [UpdateUserId], [UpdateUserName], [OrgId]) VALUES (N'f40fe48d-71a4-4f47-b324-6178d97abfb9', N'定时日志任务', N'0', N'0', N'2020-04-25 12:16:19.767', N'2020-04-25 12:16:19.767', N'2020-04-25 12:16:19.767', N'0', N'OpenAuth.App.Jobs.SysLogJob', N'null', N'0/10 * * * * ?', N'0', N'这是个每10秒运行一次的任务，可以在系统日志中查看运行结果', N'2020-04-25 12:16:19.770', N'00000000-0000-0000-0000-000000000000', N'超级管理员', N'2020-04-25 19:31:37.503', N'00000000-0000-0000-0000-000000000000', N'超级管理员', N'')
+INSERT INTO [dbo].[OpenJob] ([Id], [JobName], [RunCount], [ErrorCount], [NextRunTime], [LastRunTime], [LastErrorTime], [JobType], [JobCall], [JobCallParams], [Cron], [Status], [Remark], [CreateTime], [CreateUserId], [CreateUserName], [UpdateTime], [UpdateUserId], [UpdateUserName], [OrgId]) VALUES (N'f40fe48d-71a4-4f47-b324-6178d97abfb9', N'定时日志任务', N'0', N'0', N'2020-04-25 12:16:20.000', N'2020-04-25 12:16:20.000', N'2020-04-25 12:16:20.000', N'0', N'OpenAuth.App.Jobs.SysLogJob', N'null', N'0/10 * * * * ?', N'0', N'这是个每10秒运行一次的任务，可以在系统日志中查看运行结果', N'2020-04-25 12:16:20.000', N'00000000-0000-0000-0000-000000000000', N'超级管理员', N'2020-04-25 19:31:38.000', N'00000000-0000-0000-0000-000000000000', N'超级管理员', N'')
 GO
 
 
@@ -3510,16 +3806,16 @@ GO
 -- ----------------------------
 -- Records of Relevance
 -- ----------------------------
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'00ae6b5c-21fa-4dc9-8ca4-7df669253255', N'', N'RoleElement', N'0', N'2020-03-19 21:23:18.730', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'c3d7b478-21e9-4c1e-b866-a3c80be7909b', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'00ae6b5c-21fa-4dc9-8ca4-7df669253255', N'', N'RoleElement', N'0', N'2020-03-19 21:23:19.000', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'c3d7b478-21e9-4c1e-b866-a3c80be7909b', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'01ba383d-fe81-473a-84a1-f64ce8a5aae5', N'', N'UserOrg', N'0', N'2019-10-31 21:50:42.000', N'', N'229f3a49-ab27-49ce-b383-9f10ca23a9d5', N'08f41bf6-4388-4b1e-bd3e-2ff538b44b1b', N'', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'026ffa48-8cdf-4452-9ac7-b1b55e58e02a', N'', N'RoleElement', N'0', N'2020-03-19 21:23:18.730', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'c35d8f5b-0d38-4f31-84f9-39e476eeab08', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'026ffa48-8cdf-4452-9ac7-b1b55e58e02a', N'', N'RoleElement', N'0', N'2020-03-19 21:23:19.000', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'c35d8f5b-0d38-4f31-84f9-39e476eeab08', N'', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'032e20b6-7273-49f9-9b84-0040323114c0', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:01.923', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'WmsInboundOrderTbl', N'CreateUserId', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'032e20b6-7273-49f9-9b84-0040323114c0', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:02.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'WmsInboundOrderTbl', N'CreateUserId', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'03b55a9e-a44f-44fa-9383-4117bf8aba60', N'', N'RoleResource', N'0', N'2018-09-12 00:15:54.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'XXX_DELETEACCOUNT', NULL, NULL)
@@ -3528,7 +3824,7 @@ GO
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'03be9b5e-38b0-4525-8431-b26d35ce6ce3', N'', N'UserElement', N'0', N'2016-09-07 15:30:43.000', N'0', N'3a95e392-07d4-4af3-b30d-140ca93340f5', N'816b12b3-e916-446d-a2fa-329cfd13c831', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'054a8347-a62c-4e62-b9b2-0b2d14e9ff94', N'', N'RoleModule', N'0', N'2020-03-19 21:23:18.730', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'7580672f-a390-4bb6-982d-9a4570cb5199', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'054a8347-a62c-4e62-b9b2-0b2d14e9ff94', N'', N'RoleModule', N'0', N'2020-03-19 21:23:19.000', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'7580672f-a390-4bb6-982d-9a4570cb5199', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'06dfd97d-17e0-42b8-bde7-40006d8c8eb2', N'', N'UserElement', N'0', N'2018-04-06 14:50:37.000', N'', N'49df1602-f5f3-4d52-afb7-3802da619558', N'584c7a3b-d28a-47b4-8648-7797d05d83d1', NULL, NULL)
@@ -3552,7 +3848,7 @@ GO
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'10669494-70e2-4583-b5fd-191d7219b792', N'', N'RoleDataProperty', N'0', N'2019-11-23 00:51:40.000', N'', N'd27ae3cf-135f-4d57-93a6-2120ddf98650', N'Resource', N'AppId', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'109dcd85-9f50-4b7b-8615-c107496986ba', N'', N'RoleElement', N'0', N'2020-03-19 00:16:54.797', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'b3e23ebc-0ff2-41b3-bff0-fd5e93f6828a', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'109dcd85-9f50-4b7b-8615-c107496986ba', N'', N'RoleElement', N'0', N'2020-03-19 00:16:55.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'b3e23ebc-0ff2-41b3-bff0-fd5e93f6828a', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'10a76196-ba0c-4294-bb8f-dcd063eb4aab', N'', N'UserOrg', N'0', N'2017-10-12 09:13:38.000', N'', N'3eacdedd-e93a-4816-b49c-99ba3d5323c2', N'990cb229-cc18-41f3-8e2b-13f0f0110798', NULL, NULL)
@@ -3573,16 +3869,16 @@ GO
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'13612a4c-b20c-4bd0-a2cd-0ae47576364d', N'', N'UserElement', N'0', N'2016-10-20 16:34:12.000', N'0', N'3a95e392-07d4-4af3-b30d-140ca93340f5', N'c7d7daf0-3669-4a22-8bed-b092617deb9c', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'148e317e-dacf-44b4-b3b8-7f68af74acdd', N'', N'RoleModule', N'0', N'2020-03-19 21:23:18.730', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'069475e3-c997-487a-9f29-e6a864c5c1d4', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'148e317e-dacf-44b4-b3b8-7f68af74acdd', N'', N'RoleModule', N'0', N'2020-03-19 21:23:19.000', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'069475e3-c997-487a-9f29-e6a864c5c1d4', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'1490edd4-9bd3-4e71-bfa4-56f6558c1d3f', N'', N'UserElement', N'0', N'2018-04-06 09:48:24.000', N'', N'6ba79766-faa0-4259-8139-a4a6d35784e0', N'79dcd3eb-3aaf-4e08-83c9-713d8ff446fe', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'15705855-3e8d-4404-98f4-59af683f20ce', N'', N'RoleModule', N'0', N'2020-03-19 21:23:18.730', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'98a949e8-8704-40a7-b9a1-c0e8801e4057', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'15705855-3e8d-4404-98f4-59af683f20ce', N'', N'RoleModule', N'0', N'2020-03-19 21:23:19.000', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'98a949e8-8704-40a7-b9a1-c0e8801e4057', N'', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'15e66b55-cdce-47a1-9c08-21d5525524e8', N'', N'RoleModule', N'0', N'2020-03-19 00:16:54.723', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'0031262c-689c-4b96-bae2-2c9d67076ade', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'15e66b55-cdce-47a1-9c08-21d5525524e8', N'', N'RoleModule', N'0', N'2020-03-19 00:16:55.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'0031262c-689c-4b96-bae2-2c9d67076ade', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'16154fc4-d18e-44a3-bcf2-5539b168aba7', N'', N'RoleElement', N'0', N'2016-10-24 17:25:15.000', N'0', N'db309d88-fd21-4b81-a4d9-ae6276a1d813', N'18cc3217-28a6-49b2-9a20-080230065984', NULL, NULL)
@@ -3591,7 +3887,7 @@ GO
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'1740ff26-a4d0-44cc-9fab-a0105c2c60b6', N'', N'UserOrg', N'0', N'2017-10-12 13:59:49.000', N'', N'63c9c82a-e0d3-4bde-bbd2-057cda2f5283', N'08f41bf6-4388-4b1e-bd3e-2ff538b44b1b', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'18389d29-c82d-4181-8ea0-1440ca1c2093', N'', N'RoleElement', N'0', N'2020-03-19 22:31:02.460', N'', N'd27ae3cf-135f-4d57-93a6-2120ddf98650', N'9e2c6754-f258-4b14-96a0-b9d981196a65', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'18389d29-c82d-4181-8ea0-1440ca1c2093', N'', N'RoleElement', N'0', N'2020-03-19 22:31:02.000', N'', N'd27ae3cf-135f-4d57-93a6-2120ddf98650', N'9e2c6754-f258-4b14-96a0-b9d981196a65', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'183905f3-620c-4995-aead-1e80c5899517', N'', N'RoleDataProperty', N'0', N'2019-11-23 00:19:30.000', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'Category', N'Id', N'')
@@ -3600,7 +3896,7 @@ GO
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'1873ed85-a88a-4236-bd40-2c416aa2576c', N'', N'RoleModule', N'0', N'2016-09-02 17:03:39.000', N'0', N'211e12c7-e466-496e-8d26-0660a38e24cc', N'7580672f-a390-4bb6-982d-9a4570cb5199', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'18aa904d-6625-430d-9475-ec84d8c8e605', N'', N'RoleModule', N'0', N'2020-03-19 22:31:02.443', N'', N'd27ae3cf-135f-4d57-93a6-2120ddf98650', N'e8dc5db6-4fc4-4795-a1cc-681cbcceec91', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'18aa904d-6625-430d-9475-ec84d8c8e605', N'', N'RoleModule', N'0', N'2020-03-19 22:31:02.000', N'', N'd27ae3cf-135f-4d57-93a6-2120ddf98650', N'e8dc5db6-4fc4-4795-a1cc-681cbcceec91', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'19c9621c-3d23-46b7-a841-54d5c82ec8e8', N'', N'UserOrg', N'0', N'2016-09-02 13:56:53.000', N'0', N'3b64b643-cb9a-4654-81e4-6dd9b2f8a6f7', N'990cb229-cc18-41f3-8e2b-13f0f0110798', NULL, NULL)
@@ -3618,10 +3914,10 @@ GO
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'1cf19b35-e2c2-436f-99b9-03ac2b232cc6', N'', N'RoleElement', N'0', N'2016-09-04 23:21:04.000', N'0', N'db309d88-fd21-4b81-a4d9-ae6276a1d813', N'44075557-496e-4dde-bb75-7b69f51ab4fe', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'1dca9a35-06e8-4275-8902-13c619880357', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:01.923', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'WmsInboundOrderTbl', N'ScheduledInboundTime', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'1dca9a35-06e8-4275-8902-13c619880357', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:02.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'WmsInboundOrderTbl', N'ScheduledInboundTime', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'1e84dafd-3f4d-4b13-a738-2cf0c98e2351', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:01.923', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'Resource', N'AppId', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'1e84dafd-3f4d-4b13-a738-2cf0c98e2351', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:02.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'Resource', N'AppId', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'1fb6b802-2a1f-49a8-b2fa-c5d223a8538c', N'', N'RoleDataProperty', N'0', N'2019-11-23 00:51:40.000', N'', N'd27ae3cf-135f-4d57-93a6-2120ddf98650', N'Resource', N'UpdateTime', N'')
@@ -3633,13 +3929,13 @@ GO
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'224fa0b0-cdd6-47cf-89c5-45ad2a64bfd5', N'', N'RoleDataProperty', N'0', N'2019-11-23 01:05:44.000', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'WmsInboundOrderTbl', N'OrderType', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'23339fa0-94f4-4d35-a775-bda84d152841', N'', N'RoleModule', N'0', N'2020-03-19 00:16:54.723', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'069475e3-c997-487a-9f29-e6a864c5c1d4', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'23339fa0-94f4-4d35-a775-bda84d152841', N'', N'RoleModule', N'0', N'2020-03-19 00:16:55.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'069475e3-c997-487a-9f29-e6a864c5c1d4', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'242e9543-3343-41d4-8816-15ffeeaef551', N'', N'UserElement', N'0', N'2016-09-07 15:31:16.000', N'0', N'ea25646b-964b-4d41-ab03-d8964e1494fb', N'584c7a3b-d28a-47b4-8648-7797d05d83d1', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'24dbc2ce-8474-463f-871b-96cb5edb9800', N'', N'RoleElement', N'0', N'2020-04-25 11:49:36.490', N'', N'd27ae3cf-135f-4d57-93a6-2120ddf98650', N'4770af29-1375-4d27-ab0c-fdbeab87b710', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'24dbc2ce-8474-463f-871b-96cb5edb9800', N'', N'RoleElement', N'0', N'2020-04-25 11:49:36.000', N'', N'd27ae3cf-135f-4d57-93a6-2120ddf98650', N'4770af29-1375-4d27-ab0c-fdbeab87b710', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'27c4d50c-32da-4dbc-88a1-84b343cdd649', N'', N'UserElement', N'0', N'2016-10-20 17:01:00.000', N'0', N'3a95e392-07d4-4af3-b30d-140ca93340f5', N'6839a297-350b-4215-b680-4e5dfdae5615', NULL, NULL)
@@ -3651,7 +3947,7 @@ GO
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'2a36a2b7-41aa-4190-b88c-75d44a56ad6e', N'', N'UserModule', N'0', N'2017-02-06 00:14:18.000', N'0', N'3a95e392-07d4-4af3-b30d-140ca93340f5', N'92b00259-2d15-43e7-9321-adffb29e8bf2', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'2a818d22-1ca8-48e2-a2ed-3dbc3d05cc8b', N'', N'RoleElement', N'0', N'2020-04-25 11:49:11.127', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'5fba6316-5599-4245-822c-48ff33299868', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'2a818d22-1ca8-48e2-a2ed-3dbc3d05cc8b', N'', N'RoleElement', N'0', N'2020-04-25 11:49:11.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'5fba6316-5599-4245-822c-48ff33299868', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'2a8a790f-0b9a-4ab3-8e4f-aae4bfddc609', N'', N'RoleDataProperty', N'0', N'2019-11-23 01:05:44.000', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'WmsInboundOrderTbl', N'PurchaseNo', N'')
@@ -3660,7 +3956,7 @@ GO
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'2bb3fddb-0f51-442e-8dbf-236beb47d8a6', N'', N'RoleOrg', N'0', N'2018-04-14 13:16:45.000', N'', N'77e6d0c3-f9e1-4933-92c3-c1c6eef75593', N'08f41bf6-4388-4b1e-bd3e-2ff538b44b1b', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'2c67ac44-5b67-4942-b457-2212e9a5dbf9', N'', N'RoleModule', N'0', N'2020-03-19 00:16:54.723', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'e8dc5db6-4fc4-4795-a1cc-681cbcceec91', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'2c67ac44-5b67-4942-b457-2212e9a5dbf9', N'', N'RoleModule', N'0', N'2020-03-19 00:16:55.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'e8dc5db6-4fc4-4795-a1cc-681cbcceec91', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'2ca288a6-d222-4328-951e-c01c3e77a0c7', N'', N'RoleElement', N'0', N'2016-09-04 23:21:00.000', N'0', N'db309d88-fd21-4b81-a4d9-ae6276a1d813', N'7f071c63-1620-4486-9264-5806b2e63218', NULL, NULL)
@@ -3672,7 +3968,7 @@ GO
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'2d15e438-cc3a-41e9-9b13-325bfd5c804a', N'', N'RoleElement', N'0', N'2016-09-04 23:21:09.000', N'0', N'db309d88-fd21-4b81-a4d9-ae6276a1d813', N'84e38920-f6e5-499c-bf52-a3c6f8499ff7', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'2e1d286c-b771-43b0-947e-eeab185cc014', N'', N'RoleModule', N'0', N'2020-03-19 21:23:18.730', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'4abafc83-c8f5-452f-9882-e113a86e7a3e', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'2e1d286c-b771-43b0-947e-eeab185cc014', N'', N'RoleModule', N'0', N'2020-03-19 21:23:19.000', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'4abafc83-c8f5-452f-9882-e113a86e7a3e', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'2ebff9a4-b2d5-4a35-a7dd-2cfa2f5b0522', N'', N'ProcessUser', N'0', N'2016-09-07 17:33:39.000', N'0', N'52cc7933-a045-4dcc-8c17-1b618bfa772b', N'3b64b643-cb9a-4654-81e4-6dd9b2f8a6f7', NULL, NULL)
@@ -3681,7 +3977,7 @@ GO
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'30c82d18-7892-4e5f-9aee-e4f483a858c2', N'', N'UserModule', N'0', N'2016-09-05 16:24:55.000', N'0', N'ea25646b-964b-4d41-ab03-d8964e1494fb', N'9486ff22-b696-4d7f-8093-8a3e53c45453', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'3225a4dc-c988-410c-8bcd-9afbccbafc09', N'', N'RoleElement', N'0', N'2020-03-19 00:16:54.797', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'584c7a3b-d28a-47b4-8648-7797d05d83d1', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'3225a4dc-c988-410c-8bcd-9afbccbafc09', N'', N'RoleElement', N'0', N'2020-03-19 00:16:55.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'584c7a3b-d28a-47b4-8648-7797d05d83d1', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'332a373c-f485-4f85-9af9-7792f7462bf1', N'', N'RoleModule', N'0', N'2016-09-02 17:03:47.000', N'0', N'648b04c4-4ac2-4d69-bef6-07081ef27871', N'89c3bfbe-246f-4112-8eb1-b6789da54202', NULL, NULL)
@@ -3702,10 +3998,10 @@ GO
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'361feb63-bde2-49c7-86ec-6df3ec6f0fe3', N'', N'RoleElement', N'0', N'2016-09-04 23:21:13.000', N'0', N'db309d88-fd21-4b81-a4d9-ae6276a1d813', N'1c870438-4260-43a5-8996-a6e1dc8bbf6a', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'388f792e-dbd1-40a1-8374-9339e7e60d9e', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:01.923', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'WmsInboundOrderTbl', N'UpdateTime', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'388f792e-dbd1-40a1-8374-9339e7e60d9e', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:02.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'WmsInboundOrderTbl', N'UpdateTime', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'3905b8a3-ed7e-4fe0-9e6d-747f6bc79235', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:01.923', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'Resource', N'TypeName', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'3905b8a3-ed7e-4fe0-9e6d-747f6bc79235', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:02.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'Resource', N'TypeName', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'392dc41e-7186-4efb-a8e5-b5317e4122fb', N'', N'RoleResource', N'0', N'2018-09-10 12:54:14.000', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'OPENAUTH_DELETEACCOUNT', NULL, NULL)
@@ -3714,10 +4010,10 @@ GO
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'3931d5b7-dde2-4530-bb2d-79b73f76e19b', N'', N'RoleDataProperty', N'0', N'2019-11-23 00:19:30.000', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'Category', N'Name', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'3aa0cdcb-ec57-420e-b1b0-eb4d77b8a8d5', N'', N'UserOrg', N'0', N'2020-03-19 21:20:04.110', N'', N'49df1602-f5f3-4d52-afb7-3802da619558', N'86449128-d5ac-44bf-b999-f7735b7458fd', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'3aa0cdcb-ec57-420e-b1b0-eb4d77b8a8d5', N'', N'UserOrg', N'0', N'2020-03-19 21:20:04.000', N'', N'49df1602-f5f3-4d52-afb7-3802da619558', N'86449128-d5ac-44bf-b999-f7735b7458fd', N'', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'3b4845a5-d7a2-4da7-b95c-43ad03980fda', N'', N'UserOrg', N'0', N'2020-03-19 21:20:04.110', N'', N'49df1602-f5f3-4d52-afb7-3802da619558', N'08f41bf6-4388-4b1e-bd3e-2ff538b44b1b', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'3b4845a5-d7a2-4da7-b95c-43ad03980fda', N'', N'UserOrg', N'0', N'2020-03-19 21:20:04.000', N'', N'49df1602-f5f3-4d52-afb7-3802da619558', N'08f41bf6-4388-4b1e-bd3e-2ff538b44b1b', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'3bcaab20-e096-480e-a9bb-0fdb70686714', N'', N'RoleElement', N'0', N'2016-09-04 23:21:00.000', N'0', N'db309d88-fd21-4b81-a4d9-ae6276a1d813', N'cf7388be-2677-427c-ad78-8f00f1062b96', NULL, NULL)
@@ -3729,31 +4025,31 @@ GO
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'4190f00a-11a0-4814-849b-cc5232fa4dd4', N'', N'RoleResource', N'0', N'2018-09-12 00:15:54.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'OPENAUTH_DELETEACCOUNT', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'42ba8a59-5493-4e11-b61b-d87000092767', N'', N'RoleModule', N'0', N'2020-03-19 00:16:54.723', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'4abafc83-c8f5-452f-9882-e113a86e7a3e', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'42ba8a59-5493-4e11-b61b-d87000092767', N'', N'RoleModule', N'0', N'2020-03-19 00:16:55.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'4abafc83-c8f5-452f-9882-e113a86e7a3e', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'4459ffd7-446b-456b-aee5-48e67ca000f8', N'', N'UserOrg', N'0', N'2019-10-31 21:51:45.000', N'', N'6ba79766-faa0-4259-8139-a4a6d35784e0', N'08f41bf6-4388-4b1e-bd3e-2ff538b44b1b', N'', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'456ddfed-6607-41e9-9c46-0d4c7c9c38d4', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:01.923', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'WmsInboundOrderTbl', N'Status', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'456ddfed-6607-41e9-9c46-0d4c7c9c38d4', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:02.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'WmsInboundOrderTbl', N'Status', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'45744773-1b85-4913-bc1b-2f00b95a8198', N'', N'RoleElement', N'0', N'2020-03-19 00:16:54.797', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'9e2c6754-f258-4b14-96a0-b9d981196a65', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'45744773-1b85-4913-bc1b-2f00b95a8198', N'', N'RoleElement', N'0', N'2020-03-19 00:16:55.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'9e2c6754-f258-4b14-96a0-b9d981196a65', N'', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'45dee058-6b62-4005-a134-dcf7c2781851', N'', N'RoleElement', N'0', N'2020-04-25 11:50:18.427', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'a6b61073-9e76-40ef-88ad-15c8789e2033', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'45dee058-6b62-4005-a134-dcf7c2781851', N'', N'RoleElement', N'0', N'2020-04-25 11:50:18.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'a6b61073-9e76-40ef-88ad-15c8789e2033', N'', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'45e97612-46d8-4c36-b89e-ce6572ed7988', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:01.923', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'Resource', N'Id', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'45e97612-46d8-4c36-b89e-ce6572ed7988', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:02.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'Resource', N'Id', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'460d1c98-2a68-43cf-8d38-d40ceb89916f', N'', N'UserOrg', N'0', N'2017-10-12 09:13:38.000', N'', N'3eacdedd-e93a-4816-b49c-99ba3d5323c2', N'86449128-d5ac-44bf-b999-f7735b7458fd', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'465b8bc0-b817-410d-849e-55f66b2a3211', N'', N'RoleModule', N'0', N'2020-03-19 00:16:54.723', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'98a949e8-8704-40a7-b9a1-c0e8801e4057', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'465b8bc0-b817-410d-849e-55f66b2a3211', N'', N'RoleModule', N'0', N'2020-03-19 00:16:55.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'98a949e8-8704-40a7-b9a1-c0e8801e4057', N'', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'471e98ee-9cc5-4dc7-8762-a452e855dbd5', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:01.923', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'WmsInboundOrderTbl', N'CreateTime', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'471e98ee-9cc5-4dc7-8762-a452e855dbd5', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:02.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'WmsInboundOrderTbl', N'CreateTime', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'4757bb30-e4bc-4c2d-a824-947ef151d341', N'', N'UserRole', N'0', N'2016-09-07 20:21:16.000', N'0', N'3b64b643-cb9a-4654-81e4-6dd9b2f8a6f7', N'4980a85b-e3db-4607-bc2c-0baf0140d7df', NULL, NULL)
@@ -3792,10 +4088,10 @@ GO
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'5167dbcd-3a32-4ae8-827e-6f381cc58fa2', N'', N'RoleElement', N'0', N'2016-09-04 23:21:00.000', N'0', N'db309d88-fd21-4b81-a4d9-ae6276a1d813', N'fa816af1-a28d-47b5-9b8b-c46e18f902e9', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'51c56567-bbf8-466e-8678-9b6bfb38c493', N'', N'RoleElement', N'0', N'2020-04-25 11:49:11.130', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'5fba6316-5599-4245-822c-48ff33299868', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'51c56567-bbf8-466e-8678-9b6bfb38c493', N'', N'RoleElement', N'0', N'2020-04-25 11:49:11.000', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'5fba6316-5599-4245-822c-48ff33299868', N'', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'526d6f39-e75a-402b-8ba6-9bb08731da1e', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:01.923', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'Resource', N'CreateTime', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'526d6f39-e75a-402b-8ba6-9bb08731da1e', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:02.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'Resource', N'CreateTime', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'53a4be87-4fa8-415b-97b5-2298ce8b17c8', N'', N'UserResource', N'0', N'2018-04-14 14:38:04.000', N'', N'49df1602-f5f3-4d52-afb7-3802da619558', N'XXX_LOGIN', NULL, NULL)
@@ -3804,7 +4100,7 @@ GO
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'54b2e9b6-1f7c-4a39-92c9-98f58429c1fc', N'', N'RoleModule', N'0', N'2016-09-02 17:03:39.000', N'0', N'211e12c7-e466-496e-8d26-0660a38e24cc', N'bc80478d-0547-4437-9cff-be4b40144bdf', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'54eadc62-a77e-4baa-aa6d-34f5af2d6774', N'', N'RoleElement', N'0', N'2020-04-25 11:49:36.490', N'', N'77e6d0c3-f9e1-4933-92c3-c1c6eef75593', N'4770af29-1375-4d27-ab0c-fdbeab87b710', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'54eadc62-a77e-4baa-aa6d-34f5af2d6774', N'', N'RoleElement', N'0', N'2020-04-25 11:49:36.000', N'', N'77e6d0c3-f9e1-4933-92c3-c1c6eef75593', N'4770af29-1375-4d27-ab0c-fdbeab87b710', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'55b10ecc-3fb3-4127-b69e-e7a3467d7a1a', N'', N'RoleElement', N'0', N'2016-09-05 09:22:11.000', N'0', N'4980a85b-e3db-4607-bc2c-0baf0140d7df', N'6db928fe-93df-460f-9472-8bb0b6cae52c', NULL, NULL)
@@ -3816,16 +4112,16 @@ GO
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'575221eb-0e4d-4cfa-9cd8-59607784d43d', N'', N'UserRole', N'0', N'2019-10-31 21:59:41.000', N'', N'6ba79766-faa0-4259-8139-a4a6d35784e0', N'3e761e88-ddf7-4a62-b219-9a315b4564f2', N'', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'5965ae4d-c718-421f-9895-fdf6255a002e', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:01.923', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'WmsInboundOrderTbl', N'ReturnBoxNum', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'5965ae4d-c718-421f-9895-fdf6255a002e', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:02.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'WmsInboundOrderTbl', N'ReturnBoxNum', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'59c8b633-167e-47c1-bb63-837780ea93dc', N'', N'RoleModule', N'0', N'2020-04-25 11:48:19.567', N'', N'77e6d0c3-f9e1-4933-92c3-c1c6eef75593', N'5c55f7eb-4552-4610-a584-d72685f8d064', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'59c8b633-167e-47c1-bb63-837780ea93dc', N'', N'RoleModule', N'0', N'2020-04-25 11:48:20.000', N'', N'77e6d0c3-f9e1-4933-92c3-c1c6eef75593', N'5c55f7eb-4552-4610-a584-d72685f8d064', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'5a20d59c-6ee6-4fe2-98fe-7b35b11026ae', N'', N'UserElement', N'0', N'2016-09-07 15:30:20.000', N'0', N'3b64b643-cb9a-4654-81e4-6dd9b2f8a6f7', N'68484265-7802-4f06-b024-33e8b2f2edcf', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'5aa8ae27-e5b1-4f46-9342-73f1ba11c14c', N'', N'RoleElement', N'0', N'2020-03-19 21:23:18.730', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'826b12b3-e916-446d-a2fa-329cfd13c831', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'5aa8ae27-e5b1-4f46-9342-73f1ba11c14c', N'', N'RoleElement', N'0', N'2020-03-19 21:23:19.000', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'826b12b3-e916-446d-a2fa-329cfd13c831', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'5b2d5db8-d603-4be3-add2-c85ef3c53ddc', N'', N'UserResource', N'0', N'2018-04-14 14:38:05.000', N'', N'49df1602-f5f3-4d52-afb7-3802da619558', N'OPENAUTH_LOGIN', NULL, NULL)
@@ -3834,16 +4130,16 @@ GO
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'5ccce632-f8f0-452b-8faf-4a5372004e85', N'', N'RoleResource', N'0', N'2018-09-12 00:15:54.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'XXX_CHECKUSER', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'5f616264-84f0-42de-a84a-61d11f2f4786', N'', N'RoleElement', N'0', N'2020-03-19 00:16:54.797', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'4bfa8ea0-6b0d-426f-8687-b654575ca780', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'5f616264-84f0-42de-a84a-61d11f2f4786', N'', N'RoleElement', N'0', N'2020-03-19 00:16:55.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'4bfa8ea0-6b0d-426f-8687-b654575ca780', N'', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'5f8ac964-c87d-44c0-b780-c4c1382800ea', N'', N'RoleElement', N'0', N'2020-03-19 22:31:02.460', N'', N'd27ae3cf-135f-4d57-93a6-2120ddf98650', N'6c814946-db5c-48bd-84dd-b1c38196ad74', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'5f8ac964-c87d-44c0-b780-c4c1382800ea', N'', N'RoleElement', N'0', N'2020-03-19 22:31:02.000', N'', N'd27ae3cf-135f-4d57-93a6-2120ddf98650', N'6c814946-db5c-48bd-84dd-b1c38196ad74', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'620b368a-7b56-4c74-ab85-8bc91d08ddc9', N'', N'RoleElement', N'0', N'2016-09-04 23:20:42.000', N'0', N'db309d88-fd21-4b81-a4d9-ae6276a1d813', N'1c9acc3e-a40d-4d07-b495-6e60eb9b71b9', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'635779b1-f223-41f2-b9a4-7f35633008d7', N'', N'RoleElement', N'0', N'2020-03-19 00:16:54.797', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'18cc3217-28a6-49b2-9a20-080230065984', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'635779b1-f223-41f2-b9a4-7f35633008d7', N'', N'RoleElement', N'0', N'2020-03-19 00:16:55.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'18cc3217-28a6-49b2-9a20-080230065984', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'6431a464-6f1f-4ffc-8157-89212b70f09a', N'', N'RoleOrg', N'0', N'2016-09-05 00:00:00.000', N'0', N'4980a85b-e3db-4607-bc2c-0baf0140d7df', N'08f41bf6-4388-4b1e-bd3e-2ff538b44b1b', NULL, NULL)
@@ -3855,7 +4151,7 @@ GO
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'6532f9c1-3067-4952-b008-e766f833050e', N'', N'UserRole', N'0', N'2019-11-23 00:48:41.000', N'', N'96f63f9d-e8c8-4258-963e-3327ed7d6f56', N'77e6d0c3-f9e1-4933-92c3-c1c6eef75593', N'', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'6552d053-69b3-4ae9-b1f2-497582dcb8aa', N'', N'RoleElement', N'0', N'2020-03-19 00:16:54.797', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'c7d7daf0-3669-4a22-8bed-b092617deb9c', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'6552d053-69b3-4ae9-b1f2-497582dcb8aa', N'', N'RoleElement', N'0', N'2020-03-19 00:16:55.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'c7d7daf0-3669-4a22-8bed-b092617deb9c', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'6645b6fb-efcf-4e48-9c13-84f79bc5be34', N'', N'RoleOrg', N'0', N'2018-04-14 13:16:45.000', N'', N'77e6d0c3-f9e1-4933-92c3-c1c6eef75593', N'86449128-d5ac-44bf-b999-f7735b7458fd', NULL, NULL)
@@ -3864,7 +4160,7 @@ GO
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'66e25fc5-093d-42ab-85dc-a38f6600889b', N'', N'UserOrg', N'0', N'2016-09-02 13:57:32.000', N'0', N'ea25646b-964b-4d41-ab03-d8964e1494fb', N'c36e43df-3a99-45da-80d9-3ac5d24f4014', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'67c502cf-c9bf-4ad3-b749-eda1c7f388e7', N'', N'RoleElement', N'0', N'2020-04-25 11:50:18.430', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'a6b61073-9e76-40ef-88ad-15c8789e2033', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'67c502cf-c9bf-4ad3-b749-eda1c7f388e7', N'', N'RoleElement', N'0', N'2020-04-25 11:50:18.000', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'a6b61073-9e76-40ef-88ad-15c8789e2033', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'68912e65-256e-45b6-b48e-036382598d32', N'', N'RoleOrg', N'0', N'2016-10-17 10:03:49.000', N'0', N'2eb423d6-6ad9-4efe-b423-872478a2a434', N'990cb229-cc18-41f3-8e2b-13f0f0110798', NULL, NULL)
@@ -3873,16 +4169,16 @@ GO
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'68984a83-ce96-4144-9e23-0e0f2249fb45', N'', N'UserOrg', N'0', N'2019-10-31 21:51:30.000', N'', N'de8be521-f1ec-4483-b124-0be342890507', N'c36e43df-3a99-45da-80d9-3ac5d24f4014', N'', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'6a0d3b61-67d0-4090-a622-08d5643e1af8', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:01.923', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'Resource', N'Name', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'6a0d3b61-67d0-4090-a622-08d5643e1af8', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:02.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'Resource', N'Name', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'6a427baa-c54c-4830-a2fe-34e206f471c5', N'', N'RoleElement', N'0', N'2020-03-19 21:23:18.730', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'2d595a2a-5de5-479e-a331-b53c799a6b10', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'6a427baa-c54c-4830-a2fe-34e206f471c5', N'', N'RoleElement', N'0', N'2020-03-19 21:23:19.000', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'2d595a2a-5de5-479e-a331-b53c799a6b10', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'6b9c4789-042c-4f6f-a749-ee68ee87462d', N'', N'ProcessUser', N'0', N'2016-10-27 16:47:52.000', N'0', N'054ff054-d8ae-4911-a596-8fb1f66b348f', N'3a95e392-07d4-4af3-b30d-140ca93340f5', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'6d6eb70e-0caf-485f-943c-671be021a588', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:01.923', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'Resource', N'AppName', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'6d6eb70e-0caf-485f-943c-671be021a588', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:02.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'Resource', N'AppName', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'6da6d662-8cef-47cd-80b3-fa885b2dca7a', N'', N'RoleOrg', N'0', N'2018-04-14 13:16:45.000', N'', N'77e6d0c3-f9e1-4933-92c3-c1c6eef75593', N'990cb229-cc18-41f3-8e2b-13f0f0110798', NULL, NULL)
@@ -3894,7 +4190,7 @@ GO
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'6fe52499-f800-47ce-96fc-a2b5b43505d5', N'', N'UserElement', N'0', N'2018-04-06 09:48:22.000', N'', N'6ba79766-faa0-4259-8139-a4a6d35784e0', N'584c7a3b-d28a-47b4-8648-7797d05d83d1', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'7024c6fa-28d2-494f-93af-0651c690e063', N'', N'RoleModule', N'0', N'2020-04-25 11:48:19.567', N'', N'd27ae3cf-135f-4d57-93a6-2120ddf98650', N'5c55f7eb-4552-4610-a584-d72685f8d064', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'7024c6fa-28d2-494f-93af-0651c690e063', N'', N'RoleModule', N'0', N'2020-04-25 11:48:20.000', N'', N'd27ae3cf-135f-4d57-93a6-2120ddf98650', N'5c55f7eb-4552-4610-a584-d72685f8d064', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'7082bc48-535e-4b92-9dc0-c58340a8239d', N'', N'RoleDataProperty', N'0', N'2019-11-23 01:05:44.000', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'Resource', N'Name', N'')
@@ -3909,13 +4205,13 @@ GO
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'72bf4729-af60-42f5-b0d7-717362ffad7f', N'', N'RoleElement', N'0', N'2016-09-04 23:21:00.000', N'0', N'db309d88-fd21-4b81-a4d9-ae6276a1d813', N'2feefce1-e3d8-42ac-b811-2352679628da', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'736141c8-330b-4600-a781-8d0e7cdc01e5', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:01.923', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'WmsInboundOrderTbl', N'SupplierId', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'736141c8-330b-4600-a781-8d0e7cdc01e5', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:02.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'WmsInboundOrderTbl', N'SupplierId', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'736e90f7-3747-472e-816d-dbb7fdf3b0bb', N'', N'RoleOrg', N'0', N'2018-09-12 00:08:42.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'08f41bf6-4388-4b1e-bd3e-2ff538b44b1b', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'744da0ee-6c57-4bfc-9937-5ab799112996', N'', N'RoleModule', N'0', N'2020-03-19 00:16:54.723', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'7bc7e527-478d-49fd-868d-5f31951586f5', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'744da0ee-6c57-4bfc-9937-5ab799112996', N'', N'RoleModule', N'0', N'2020-03-19 00:16:55.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'7bc7e527-478d-49fd-868d-5f31951586f5', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'7475b0c3-f204-4f95-a22f-80591fe76bc7', N'', N'ProcessUser', N'0', N'2016-10-31 11:52:39.000', N'0', N'b8bcdf59-1e29-4d97-a364-12ac8e8c5c61', N'3b64b643-cb9a-4654-81e4-6dd9b2f8a6f7', NULL, NULL)
@@ -3927,13 +4223,13 @@ GO
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'759c09ce-f93a-4de7-96fc-cffabc1cd1ac', N'', N'RoleDataProperty', N'0', N'2019-11-23 01:05:44.000', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'Resource', N'AppName', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'76a5b31b-f855-416c-b7ce-4b9ff1cdb4bc', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:01.923', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'Resource', N'CreateUserName', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'76a5b31b-f855-416c-b7ce-4b9ff1cdb4bc', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:02.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'Resource', N'CreateUserName', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'76e6629f-764f-4761-afd3-c41e0e9e4310', N'', N'RoleElement', N'0', N'2020-03-19 21:23:18.730', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'6c814946-db5c-48bd-84dd-b1c38196ad74', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'76e6629f-764f-4761-afd3-c41e0e9e4310', N'', N'RoleElement', N'0', N'2020-03-19 21:23:19.000', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'6c814946-db5c-48bd-84dd-b1c38196ad74', N'', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'77824f78-792b-4661-b7d9-653f6e0a443c', N'', N'RoleElement', N'0', N'2020-03-19 00:16:54.797', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'9c96e485-84a6-45f0-b6a7-f01dab94b0c6', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'77824f78-792b-4661-b7d9-653f6e0a443c', N'', N'RoleElement', N'0', N'2020-03-19 00:16:55.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'9c96e485-84a6-45f0-b6a7-f01dab94b0c6', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'77ac794c-9142-443f-b19c-3b9d960c8ba4', N'', N'UserOrg', N'0', N'2019-10-31 21:51:45.000', N'', N'6ba79766-faa0-4259-8139-a4a6d35784e0', N'86449128-d5ac-44bf-b999-f7735b7458fd', N'', N'')
@@ -3942,7 +4238,7 @@ GO
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'77bd93da-2c2b-4ba8-bf05-3a1382811a6a', N'', N'RoleModule', N'0', N'2016-09-02 17:03:39.000', N'0', N'211e12c7-e466-496e-8d26-0660a38e24cc', N'e8dc5db6-4fc4-4795-a1cc-681cbcceec91', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'77d25c9e-4773-4f95-8048-8d59398835f6', N'', N'RoleElement', N'0', N'2020-03-19 00:16:54.797', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'3dc0ec4d-bf86-4bae-9ec0-1d6c2403fb99', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'77d25c9e-4773-4f95-8048-8d59398835f6', N'', N'RoleElement', N'0', N'2020-03-19 00:16:55.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'3dc0ec4d-bf86-4bae-9ec0-1d6c2403fb99', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'77eec82a-f713-4584-872c-761fdbcdb456', N'', N'UserElement', N'0', N'2018-04-06 14:50:37.000', N'', N'49df1602-f5f3-4d52-afb7-3802da619558', N'68484265-7802-4f06-b024-33e8b2f2edcf', NULL, NULL)
@@ -3960,22 +4256,22 @@ GO
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'7ab6db05-1098-4134-b228-3329792dc6db', N'', N'RoleDataProperty', N'0', N'2019-11-23 00:51:40.000', N'', N'd27ae3cf-135f-4d57-93a6-2120ddf98650', N'Resource', N'UpdateUserName', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'7b177a26-efdd-406b-8873-24f6565b121f', N'', N'RoleElement', N'0', N'2020-03-19 00:16:54.797', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'054e9699-7828-4b8b-a28b-d7ae45ed3306', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'7b177a26-efdd-406b-8873-24f6565b121f', N'', N'RoleElement', N'0', N'2020-03-19 00:16:55.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'054e9699-7828-4b8b-a28b-d7ae45ed3306', N'', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'7c0e613e-2e8e-43e2-93af-cf38bfd56dcb', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:01.923', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'WmsInboundOrderTbl', N'StockId', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'7c0e613e-2e8e-43e2-93af-cf38bfd56dcb', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:02.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'WmsInboundOrderTbl', N'StockId', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'7d929ccc-4185-41d0-a81f-42fc0f27a85c', N'', N'RoleModule', N'0', N'2020-03-19 21:23:18.730', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'15a3a401-e8eb-4d8b-9035-ecd5f53ed0c9', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'7d929ccc-4185-41d0-a81f-42fc0f27a85c', N'', N'RoleModule', N'0', N'2020-03-19 21:23:19.000', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'15a3a401-e8eb-4d8b-9035-ecd5f53ed0c9', N'', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'7d995d7b-5967-4bd0-a601-180925fe4a77', N'', N'RoleModule', N'0', N'2020-03-19 00:16:54.723', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'7580672f-a390-4bb6-982d-9a4570cb5199', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'7d995d7b-5967-4bd0-a601-180925fe4a77', N'', N'RoleModule', N'0', N'2020-03-19 00:16:55.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'7580672f-a390-4bb6-982d-9a4570cb5199', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'7dcc9577-f27b-429f-8552-d223d4b48617', N'', N'UserRole', N'0', N'2019-10-31 21:59:41.000', N'', N'6ba79766-faa0-4259-8139-a4a6d35784e0', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'7e54557a-5f1d-494c-90c1-509525dd5c08', N'', N'RoleModule', N'0', N'2020-03-19 00:16:54.723', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'9486ff22-b696-4d7f-8093-8a3e53c45453', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'7e54557a-5f1d-494c-90c1-509525dd5c08', N'', N'RoleModule', N'0', N'2020-03-19 00:16:55.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'9486ff22-b696-4d7f-8093-8a3e53c45453', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'7e8ce905-fa6e-490d-9d33-bde6b6529804', N'', N'RoleDataProperty', N'0', N'2019-11-23 00:19:30.000', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'Category', N'Description', N'')
@@ -3984,7 +4280,7 @@ GO
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'7f25286f-246b-4143-98eb-c3e574fe7455', N'', N'ProcessUser', N'0', N'2016-09-07 17:33:39.000', N'0', N'52cc7933-a045-4dcc-8c17-1b618bfa772b', N'3a95e392-07d4-4af3-b30d-140ca93340f5', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'7faeac11-cf1f-40aa-a6ad-2c7768106b9a', N'', N'RoleElement', N'0', N'2020-03-19 00:16:54.797', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'4f2737db-633f-4946-8a71-b08b9885f151', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'7faeac11-cf1f-40aa-a6ad-2c7768106b9a', N'', N'RoleElement', N'0', N'2020-03-19 00:16:55.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'4f2737db-633f-4946-8a71-b08b9885f151', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'7fd7f976-f10e-44aa-a7ba-7ca40d2e8f90', N'', N'RoleOrg', N'0', N'2016-10-17 10:03:30.000', N'0', N'db309d88-fd21-4b81-a4d9-ae6276a1d813', N'08f41bf6-4388-4b1e-bd3e-2ff538b44b1b', NULL, NULL)
@@ -4002,16 +4298,16 @@ GO
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'854e0658-ab8a-4869-b157-9941955acdc6', N'', N'RoleElement', N'0', N'2016-09-04 23:21:09.000', N'0', N'db309d88-fd21-4b81-a4d9-ae6276a1d813', N'1a473afd-cbd4-41e9-9471-81f9435aaabe', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'85b5f9e0-a4d2-4224-9488-c0fb98149f0b', N'', N'RoleElement', N'0', N'2020-03-19 00:16:54.797', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'c3d7b478-21e9-4c1e-b866-a3c80be7909b', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'85b5f9e0-a4d2-4224-9488-c0fb98149f0b', N'', N'RoleElement', N'0', N'2020-03-19 00:16:55.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'c3d7b478-21e9-4c1e-b866-a3c80be7909b', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'88a4c966-d042-4a2e-b133-ff7eded1c5de', N'', N'RoleElement', N'0', N'2016-09-04 23:21:13.000', N'0', N'db309d88-fd21-4b81-a4d9-ae6276a1d813', N'7b2b1ffb-398b-4f7b-83da-8f484e1bcea0', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'89ea1898-7649-4c3d-ae68-ace9bd9a316b', N'', N'RoleModule', N'0', N'2020-03-19 00:16:54.723', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'a94d5648-c2a9-405e-ba6f-f1602ec9b807', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'89ea1898-7649-4c3d-ae68-ace9bd9a316b', N'', N'RoleModule', N'0', N'2020-03-19 00:16:55.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'a94d5648-c2a9-405e-ba6f-f1602ec9b807', N'', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'8adae84f-6516-4d87-a476-353bc48ae597', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:01.923', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'Category', N'Description', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'8adae84f-6516-4d87-a476-353bc48ae597', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:02.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'Category', N'Description', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'8af3581e-257f-4655-bac2-5b5afb85ef88', N'', N'UserOrg', N'0', N'2019-10-31 21:59:08.000', N'', N'758a34c7-5a31-438c-bdf7-02fdd846b901', N'b2083488-64e5-44cc-b8f4-929ffa6f2f72', N'', N'')
@@ -4023,19 +4319,19 @@ GO
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'8c93cb3c-b535-4ab1-af9e-b3ad50847423', N'', N'RoleDataProperty', N'0', N'2019-11-23 00:51:40.000', N'', N'd27ae3cf-135f-4d57-93a6-2120ddf98650', N'Resource', N'Id', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'8e229d71-3b25-4efe-a2fe-829be732a1c6', N'', N'RoleElement', N'0', N'2020-04-25 11:49:11.133', N'', N'd27ae3cf-135f-4d57-93a6-2120ddf98650', N'5fba6316-5599-4245-822c-48ff33299868', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'8e229d71-3b25-4efe-a2fe-829be732a1c6', N'', N'RoleElement', N'0', N'2020-04-25 11:49:11.000', N'', N'd27ae3cf-135f-4d57-93a6-2120ddf98650', N'5fba6316-5599-4245-822c-48ff33299868', N'', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'8f741d9e-e7f5-4b73-95f4-4b55e0cf6605', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:01.923', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'WmsInboundOrderTbl', N'UpdateUserId', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'8f741d9e-e7f5-4b73-95f4-4b55e0cf6605', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:02.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'WmsInboundOrderTbl', N'UpdateUserId', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'8fa4a52f-9c0a-43c9-9b7e-b378efb4e1df', N'', N'RoleResource', N'0', N'2018-09-10 12:54:14.000', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'OPENAUTH_LOGIN', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'90f19c4e-609f-4dc6-84f7-8b936be05568', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:01.923', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'Category', N'Name', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'90f19c4e-609f-4dc6-84f7-8b936be05568', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:02.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'Category', N'Name', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'928e8ddd-b990-471e-983d-f2dac77428d7', N'', N'RoleElement', N'0', N'2020-03-19 21:23:18.730', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'68484265-7802-4f06-b024-33e8b2f2edcf', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'928e8ddd-b990-471e-983d-f2dac77428d7', N'', N'RoleElement', N'0', N'2020-03-19 21:23:19.000', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'68484265-7802-4f06-b024-33e8b2f2edcf', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'92b2d699-9875-4978-af79-24c83ff4e212', N'', N'UserOrg', N'0', N'2019-10-31 21:58:43.000', N'', N'96f63f9d-e8c8-4258-963e-3327ed7d6f56', N'df442c27-68a0-428e-a309-cba23a994a9d', N'', N'')
@@ -4047,7 +4343,7 @@ GO
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'93bcac7a-0ff1-488c-8d1c-3da7e44cbefc', N'', N'RoleElement', N'0', N'2016-09-04 23:21:00.000', N'0', N'db309d88-fd21-4b81-a4d9-ae6276a1d813', N'd1ba6a72-ba14-44c0-baba-46d0ad96fe8a', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'95b51b38-177e-4e69-9265-d2c9fcd8b09a', N'', N'RoleElement', N'0', N'2020-04-25 11:50:18.433', N'', N'77e6d0c3-f9e1-4933-92c3-c1c6eef75593', N'a6b61073-9e76-40ef-88ad-15c8789e2033', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'95b51b38-177e-4e69-9265-d2c9fcd8b09a', N'', N'RoleElement', N'0', N'2020-04-25 11:50:18.000', N'', N'77e6d0c3-f9e1-4933-92c3-c1c6eef75593', N'a6b61073-9e76-40ef-88ad-15c8789e2033', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'960224e6-5910-472b-a5ef-b2aa9a8b106f', N'', N'UserRole', N'0', N'2016-09-06 17:06:15.000', N'0', N'3b64b643-cb9a-4654-81e4-6dd9b2f8a6f7', N'db309d88-fd21-4b81-a4d9-ae6276a1d813', NULL, NULL)
@@ -4062,7 +4358,7 @@ GO
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'98136fef-6d02-4823-bc12-6e5e619e1275', N'', N'UserRole', N'0', N'2019-10-31 21:59:25.000', N'', N'758a34c7-5a31-438c-bdf7-02fdd846b901', N'77e6d0c3-f9e1-4933-92c3-c1c6eef75593', N'', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'9a6850d8-fc90-45fe-ab34-cfe0aa1b80ee', N'', N'RoleElement', N'0', N'2020-03-19 00:16:54.797', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'79dcd3eb-3aaf-4e08-83c9-713d8ff446fe', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'9a6850d8-fc90-45fe-ab34-cfe0aa1b80ee', N'', N'RoleElement', N'0', N'2020-03-19 00:16:55.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'79dcd3eb-3aaf-4e08-83c9-713d8ff446fe', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'9a7648a6-12ac-4473-82ec-c2c845d9047e', N'', N'RoleElement', N'0', N'2019-11-06 10:31:03.000', N'', N'3e761e88-ddf7-4a62-b219-9a315b4564f2', N'054e9699-7828-4b8b-a28b-d7ae45ed3306', N'', N'')
@@ -4071,16 +4367,16 @@ GO
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'9ad706e3-8e6b-4bc7-a502-371b298ef062', N'', N'RoleElement', N'0', N'2016-09-04 23:21:13.000', N'0', N'db309d88-fd21-4b81-a4d9-ae6276a1d813', N'ef42721f-d223-4a00-a1d9-80b81121f21a', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'9ba32bd8-4406-43bf-aac5-0bb0dbd6d228', N'', N'RoleElement', N'0', N'2020-03-19 00:16:54.797', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'c35d8f5b-0d38-4f31-84f9-39e476eeab08', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'9ba32bd8-4406-43bf-aac5-0bb0dbd6d228', N'', N'RoleElement', N'0', N'2020-03-19 00:16:55.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'c35d8f5b-0d38-4f31-84f9-39e476eeab08', N'', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'9bff1b59-f0fd-41db-9c55-e3275eccfc88', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:01.923', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'Resource', N'Description', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'9bff1b59-f0fd-41db-9c55-e3275eccfc88', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:02.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'Resource', N'Description', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'9d568d6d-d78d-47d6-8fb6-b1327cdbe83a', N'', N'RoleModule', N'0', N'2016-09-04 23:20:34.000', N'0', N'db309d88-fd21-4b81-a4d9-ae6276a1d813', N'a94d5648-c2a9-405e-ba6f-f1602ec9b807', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'9ded6370-099c-4691-aecd-1ee09542c9d5', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:01.923', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'Resource', N'Disable', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'9ded6370-099c-4691-aecd-1ee09542c9d5', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:02.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'Resource', N'Disable', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'9e46a946-6e81-4f61-bcba-21e4f7fac3df', N'', N'RoleModule', N'0', N'2016-09-02 17:03:39.000', N'0', N'211e12c7-e466-496e-8d26-0660a38e24cc', N'ef386d5d-cd58-43c0-a4ab-80afd0dbcd6c', NULL, NULL)
@@ -4104,19 +4400,19 @@ GO
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'a0904102-e26a-4bc5-9c95-ed5ef977586b', N'', N'RoleModule', N'0', N'2016-09-02 17:03:39.000', N'0', N'211e12c7-e466-496e-8d26-0660a38e24cc', N'6a9e1346-0c01-44d2-8eb1-f929fdab542a', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'a314a714-95f0-46e2-8341-5a29b9b4f321', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:01.923', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'WmsInboundOrderTbl', N'ShipperId', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'a314a714-95f0-46e2-8341-5a29b9b4f321', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:02.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'WmsInboundOrderTbl', N'ShipperId', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'a3876834-411d-4228-b7ba-230c29b76295', N'', N'RoleElement', N'0', N'2020-03-19 00:16:54.797', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'd352c8ee-3dff-4d28-a0de-903ae68f2533', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'a3876834-411d-4228-b7ba-230c29b76295', N'', N'RoleElement', N'0', N'2020-03-19 00:16:55.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'd352c8ee-3dff-4d28-a0de-903ae68f2533', N'', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'a3c0d154-4bcc-47a4-9c0e-c0a406686167', N'', N'RoleElement', N'0', N'2020-03-19 21:23:18.730', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'9e2c6754-f258-4b14-96a0-b9d981196a65', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'a3c0d154-4bcc-47a4-9c0e-c0a406686167', N'', N'RoleElement', N'0', N'2020-03-19 21:23:19.000', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'9e2c6754-f258-4b14-96a0-b9d981196a65', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'a5bef7bf-ecdb-4480-ad64-b39a02269607', N'', N'UserModule', N'0', N'2018-04-06 09:48:37.000', N'', N'49df1602-f5f3-4d52-afb7-3802da619558', N'069475e3-c997-487a-9f29-e6a864c5c1d4', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'a6c7d18e-129f-4922-94bd-8306d1004480', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:01.923', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'WmsInboundOrderTbl', N'Enable', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'a6c7d18e-129f-4922-94bd-8306d1004480', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:02.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'WmsInboundOrderTbl', N'Enable', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'a8094b46-de5a-40ea-a8ee-69ea905480ef', N'', N'RoleModule', N'0', N'2016-09-05 09:21:56.000', N'0', N'4980a85b-e3db-4607-bc2c-0baf0140d7df', N'069475e3-c997-487a-9f29-e6a864c5c1d4', NULL, NULL)
@@ -4125,7 +4421,7 @@ GO
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'a8123b37-ba70-4aab-aef6-1938733b5210', N'', N'RoleElement', N'0', N'2016-09-04 23:20:42.000', N'0', N'db309d88-fd21-4b81-a4d9-ae6276a1d813', N'c0d8505c-061a-467d-862a-c94f27caa208', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'a84c4bee-4bf6-4dd7-a0a4-3da64d366535', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:01.923', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'WmsInboundOrderTbl', N'Remark', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'a84c4bee-4bf6-4dd7-a0a4-3da64d366535', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:02.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'WmsInboundOrderTbl', N'Remark', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'a9821db0-49bd-49be-a554-afa811c99760', N'', N'RoleResource', N'0', N'2016-09-04 23:20:22.000', N'0', N'db309d88-fd21-4b81-a4d9-ae6276a1d813', N'ec99f670-0eca-465c-9f64-d4d5dc510b83', NULL, NULL)
@@ -4134,7 +4430,7 @@ GO
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'aa051096-a23a-431d-9053-bb954f9453a7', N'', N'RoleElement', N'0', N'2016-09-04 23:20:54.000', N'0', N'db309d88-fd21-4b81-a4d9-ae6276a1d813', N'4bfa8ea0-6b0d-426f-8687-b654575ca780', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'aac9206e-a77b-421c-9c85-5f202fddeb31', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:01.923', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'WmsInboundOrderTbl', N'TransferType', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'aac9206e-a77b-421c-9c85-5f202fddeb31', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:02.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'WmsInboundOrderTbl', N'TransferType', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'ab84b111-fb5d-4ddd-99d5-479954d9d521', N'', N'RoleOrg', N'0', N'2016-09-08 16:19:18.000', N'0', N'36094f5d-07e7-40d5-91dc-ff60f98b496a', N'08f41bf6-4388-4b1e-bd3e-2ff538b44b1b', NULL, NULL)
@@ -4143,7 +4439,7 @@ GO
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'ab924ba7-8a74-4804-82b0-ecbbedf4c13e', N'', N'RoleElement', N'0', N'2016-09-05 09:22:11.000', N'0', N'4980a85b-e3db-4607-bc2c-0baf0140d7df', N'38109ca0-32ec-44bd-a243-017e591b532b', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'abbf150f-907d-450c-836c-6ad3d6885549', N'', N'RoleModule', N'0', N'2020-04-25 11:48:19.563', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'5c55f7eb-4552-4610-a584-d72685f8d064', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'abbf150f-907d-450c-836c-6ad3d6885549', N'', N'RoleModule', N'0', N'2020-04-25 11:48:20.000', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'5c55f7eb-4552-4610-a584-d72685f8d064', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'ac184827-9899-4b40-8939-61fe9d2b187c', N'', N'UserElement', N'0', N'2016-09-07 17:48:49.000', N'0', N'3a95e392-07d4-4af3-b30d-140ca93340f5', N'584c7a3b-d28a-47b4-8648-7797d05d83d1', NULL, NULL)
@@ -4176,13 +4472,13 @@ GO
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'ae619801-1959-44fd-a75b-a8cca4d559b4', N'', N'RoleOrg', N'0', N'2018-09-12 00:08:37.000', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'543a9fcf-4770-4fd9-865f-030e562be238', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'ae95e6e1-ae92-4c2e-b8d8-c32031f35805', N'', N'RoleElement', N'0', N'2020-03-19 21:23:18.730', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'79dcd3eb-3aaf-4e08-83c9-713d8ff446fe', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'ae95e6e1-ae92-4c2e-b8d8-c32031f35805', N'', N'RoleElement', N'0', N'2020-03-19 21:23:19.000', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'79dcd3eb-3aaf-4e08-83c9-713d8ff446fe', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'af263192-daa8-4f29-99b9-1efb96e31627', N'', N'RoleElement', N'0', N'2016-09-04 23:20:42.000', N'0', N'db309d88-fd21-4b81-a4d9-ae6276a1d813', N'645b40ac-4223-44a7-aab4-66eb56cf9864', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'af47386e-142b-4afc-a42a-1ff138ac377c', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:01.923', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'WmsInboundOrderTbl', N'CreateUserName', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'af47386e-142b-4afc-a42a-1ff138ac377c', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:02.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'WmsInboundOrderTbl', N'CreateUserName', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'b0174f58-3f6c-431a-8bd8-0caba54fd848', N'', N'RoleElement', N'0', N'2019-11-06 10:31:03.000', N'', N'77e6d0c3-f9e1-4933-92c3-c1c6eef75593', N'054e9699-7828-4b8b-a28b-d7ae45ed3306', N'', N'')
@@ -4203,7 +4499,7 @@ GO
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'b2edfee4-f980-4aa5-b547-492d677e0674', N'', N'RoleModule', N'0', N'2016-09-04 23:20:34.000', N'0', N'db309d88-fd21-4b81-a4d9-ae6276a1d813', N'ef386d5d-cd58-43c0-a4ab-80afd0dbcd6c', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'b2f1a511-26ac-4b5b-bc3a-b7fc52297b41', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:01.923', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'Resource', N'UpdateUserName', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'b2f1a511-26ac-4b5b-bc3a-b7fc52297b41', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:02.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'Resource', N'UpdateUserName', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'b3245529-7cad-4130-bd2d-ac1129deb2f0', N'', N'RoleDataProperty', N'0', N'2019-11-23 01:05:44.000', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'WmsInboundOrderTbl', N'UpdateTime', N'')
@@ -4212,31 +4508,31 @@ GO
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'b3b8f695-a179-489b-90b4-7814ab048a69', N'', N'UserElement', N'0', N'2018-04-06 09:48:21.000', N'', N'6ba79766-faa0-4259-8139-a4a6d35784e0', N'816b12b3-e916-446d-a2fa-329cfd13c831', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'b3cb3391-4ff4-4071-910e-18c46362ab5d', N'', N'RoleElement', N'0', N'2020-03-19 22:31:02.460', N'', N'd27ae3cf-135f-4d57-93a6-2120ddf98650', N'18cc3217-28a6-49b2-9a20-080230065984', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'b3cb3391-4ff4-4071-910e-18c46362ab5d', N'', N'RoleElement', N'0', N'2020-03-19 22:31:02.000', N'', N'd27ae3cf-135f-4d57-93a6-2120ddf98650', N'18cc3217-28a6-49b2-9a20-080230065984', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'b4c2a294-125c-4768-9214-cea3ccf39a1c', N'', N'RoleOrg', N'0', N'2018-09-12 00:08:42.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'543a9fcf-4770-4fd9-865f-030e562be238', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'b51345b9-325c-4a30-b147-5562c93c3ed3', N'', N'RoleElement', N'0', N'2020-03-19 00:16:54.797', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'816b12b3-e916-446d-a2fa-329cfd13c831', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'b51345b9-325c-4a30-b147-5562c93c3ed3', N'', N'RoleElement', N'0', N'2020-03-19 00:16:55.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'816b12b3-e916-446d-a2fa-329cfd13c831', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'b55798b2-6768-4051-8cdc-9da72c73718d', N'', N'RoleDataProperty', N'0', N'2019-11-23 00:51:40.000', N'', N'd27ae3cf-135f-4d57-93a6-2120ddf98650', N'Resource', N'Name', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'b5c0e181-5f32-4a92-846c-24ff6253b6df', N'', N'RoleElement', N'0', N'2020-03-19 21:23:18.730', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'054e9699-7828-4b8b-a28b-d7ae45ed3306', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'b5c0e181-5f32-4a92-846c-24ff6253b6df', N'', N'RoleElement', N'0', N'2020-03-19 21:23:19.000', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'054e9699-7828-4b8b-a28b-d7ae45ed3306', N'', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'b647148b-21be-42b8-8811-1cb03a6fc349', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:01.923', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'WmsInboundOrderTbl', N'ExternalType', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'b647148b-21be-42b8-8811-1cb03a6fc349', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:02.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'WmsInboundOrderTbl', N'ExternalType', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'b6712915-5fc8-4271-b651-6b467ec1d8a8', N'', N'RoleModule', N'0', N'2020-03-19 22:31:02.443', N'', N'd27ae3cf-135f-4d57-93a6-2120ddf98650', N'0031262c-689c-4b96-bae2-2c9d67076ade', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'b6712915-5fc8-4271-b651-6b467ec1d8a8', N'', N'RoleModule', N'0', N'2020-03-19 22:31:02.000', N'', N'd27ae3cf-135f-4d57-93a6-2120ddf98650', N'0031262c-689c-4b96-bae2-2c9d67076ade', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'b672a830-c3a5-408b-a746-65608534b24c', N'', N'UserModule', N'0', N'2017-12-15 17:07:05.000', N'', N'49df1602-f5f3-4d52-afb7-3802da619558', N'9486ff22-b696-4d7f-8093-8a3e53c45453', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'b918e504-ba39-4be7-8452-76cef09191d3', N'', N'RoleElement', N'0', N'2020-03-19 00:16:54.797', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'826b12b3-e916-446d-a2fa-329cfd13c831', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'b918e504-ba39-4be7-8452-76cef09191d3', N'', N'RoleElement', N'0', N'2020-03-19 00:16:55.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'826b12b3-e916-446d-a2fa-329cfd13c831', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'b9e63d17-35c8-4456-abab-8f43a1c99adc', N'', N'UserModule', N'0', N'2018-04-06 09:47:59.000', N'', N'49df1602-f5f3-4d52-afb7-3802da619558', N'4abafc83-c8f5-452f-9882-e113a86e7a3e', NULL, NULL)
@@ -4245,13 +4541,13 @@ GO
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'ba5f4663-04e1-4b09-8e84-459507df2aeb', N'', N'UserOrg', N'0', N'2019-10-31 21:50:51.000', N'', N'1df68dfd-3b6d-4491-872f-00a0fc6c5a64', N'08f41bf6-4388-4b1e-bd3e-2ff538b44b1b', N'', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'bbca349a-5d29-4cce-9f7e-0d5d4ce65a54', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:01.923', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'WmsInboundOrderTbl', N'OwnerId', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'bbca349a-5d29-4cce-9f7e-0d5d4ce65a54', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:02.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'WmsInboundOrderTbl', N'OwnerId', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'bbdc3ea9-3f21-48b0-9d7a-39545d6183d0', N'', N'UserElement', N'0', N'2018-04-06 09:48:25.000', N'', N'6ba79766-faa0-4259-8139-a4a6d35784e0', N'826b12b3-e916-446d-a2fa-329cfd13c831', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'bc39df48-cbcf-4757-af8c-b023ad195721', N'', N'RoleElement', N'0', N'2020-03-19 21:23:18.730', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'816b12b3-e916-446d-a2fa-329cfd13c831', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'bc39df48-cbcf-4757-af8c-b023ad195721', N'', N'RoleElement', N'0', N'2020-03-19 21:23:19.000', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'816b12b3-e916-446d-a2fa-329cfd13c831', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'bc63b763-cdb8-4516-a3c4-fabe74d7dc56', N'', N'RoleDataProperty', N'0', N'2019-11-23 00:19:30.000', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'Category', N'DtValue', N'')
@@ -4260,13 +4556,13 @@ GO
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'bd783f53-23fa-41f4-8cec-7c61fab52072', N'', N'UserOrg', N'0', N'2018-03-15 09:19:06.000', N'', N'0ceff0f8-f848-440c-bc26-d8605ac858cd', N'86449128-d5ac-44bf-b999-f7735b7458fd', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'bd82fa18-2500-4e6b-920d-dc235b57f788', N'', N'RoleModule', N'0', N'2020-04-25 11:48:19.553', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'5c55f7eb-4552-4610-a584-d72685f8d064', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'bd82fa18-2500-4e6b-920d-dc235b57f788', N'', N'RoleModule', N'0', N'2020-04-25 11:48:20.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'5c55f7eb-4552-4610-a584-d72685f8d064', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'bda5f089-64d6-4fb8-9012-d7f3ff36902a', N'', N'UserOrg', N'0', N'2017-10-12 13:59:09.000', N'', N'ffd92ed2-5330-4ec2-a42d-6e0e9005db3b', N'990cb229-cc18-41f3-8e2b-13f0f0110798', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'be17df2b-a4bb-4080-9d3f-465875a0bd52', N'', N'RoleModule', N'0', N'2020-03-19 21:23:18.730', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'9486ff22-b696-4d7f-8093-8a3e53c45453', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'be17df2b-a4bb-4080-9d3f-465875a0bd52', N'', N'RoleModule', N'0', N'2020-03-19 21:23:19.000', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'9486ff22-b696-4d7f-8093-8a3e53c45453', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'bee6572d-8fb8-4e0e-af15-93aafc989717', N'', N'RoleElement', N'0', N'2016-09-04 23:20:42.000', N'0', N'db309d88-fd21-4b81-a4d9-ae6276a1d813', N'68fc793f-069f-43e1-a012-42ac2d7c585c', NULL, NULL)
@@ -4293,7 +4589,7 @@ GO
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'c3050d65-d26b-4e46-bece-a212b0cc00ec', N'', N'RoleElement', N'0', N'2016-09-04 23:20:42.000', N'0', N'db309d88-fd21-4b81-a4d9-ae6276a1d813', N'15a4f88c-4fae-4cab-ba2f-0cbd2cca8736', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'c3227c77-d60e-4157-9dd3-a8bcdb3af52b', N'', N'RoleModule', N'0', N'2020-03-19 21:23:18.730', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'e8dc5db6-4fc4-4795-a1cc-681cbcceec91', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'c3227c77-d60e-4157-9dd3-a8bcdb3af52b', N'', N'RoleModule', N'0', N'2020-03-19 21:23:19.000', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'e8dc5db6-4fc4-4795-a1cc-681cbcceec91', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'c4771ac5-3375-4de9-adb8-a603398f0d62', N'', N'RoleElement', N'0', N'2016-09-04 23:21:09.000', N'0', N'db309d88-fd21-4b81-a4d9-ae6276a1d813', N'2d595a2a-5de5-479e-a331-b53c799a6b10', NULL, NULL)
@@ -4314,34 +4610,34 @@ GO
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'c98b3d02-a76b-4ecc-94a5-cfeffd5e29fb', N'', N'RoleModule', N'0', N'2016-09-02 17:03:39.000', N'0', N'211e12c7-e466-496e-8d26-0660a38e24cc', N'bedb41a2-f310-4775-af99-01be08adda93', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'cd500e9c-7599-42d5-94d8-0234369efd41', N'', N'RoleModule', N'0', N'2020-03-19 00:16:54.723', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'37bb9414-19a0-4223-9056-71f8c758a930', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'cd500e9c-7599-42d5-94d8-0234369efd41', N'', N'RoleModule', N'0', N'2020-03-19 00:16:55.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'37bb9414-19a0-4223-9056-71f8c758a930', N'', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'ce7a6891-361e-44a0-b543-e2a7d8ca0fc0', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:01.923', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'WmsInboundOrderTbl', N'GoodsType', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'ce7a6891-361e-44a0-b543-e2a7d8ca0fc0', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:02.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'WmsInboundOrderTbl', N'GoodsType', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'd060436e-4eac-4109-a4f2-9e5ffb3f843e', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:01.923', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'WmsInboundOrderTbl', N'PurchaseNo', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'd060436e-4eac-4109-a4f2-9e5ffb3f843e', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:02.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'WmsInboundOrderTbl', N'PurchaseNo', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'd1f194c3-3b20-41ee-805b-77c94ee40785', N'', N'UserOrg', N'0', N'2020-03-19 21:20:04.110', N'', N'49df1602-f5f3-4d52-afb7-3802da619558', N'543a9fcf-4770-4fd9-865f-030e562be238', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'd1f194c3-3b20-41ee-805b-77c94ee40785', N'', N'UserOrg', N'0', N'2020-03-19 21:20:04.000', N'', N'49df1602-f5f3-4d52-afb7-3802da619558', N'543a9fcf-4770-4fd9-865f-030e562be238', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'd65f9601-b07e-4c89-8c35-ddc6c3edf3b1', N'', N'UserRole', N'0', N'2019-11-23 00:48:02.000', N'', N'1df68dfd-3b6d-4491-872f-00a0fc6c5a64', N'd27ae3cf-135f-4d57-93a6-2120ddf98650', N'', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'd72b9de9-998b-432c-9ccf-d961d386d778', N'', N'RoleModule', N'0', N'2020-03-19 00:16:54.723', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'b19bce90-5508-43b6-93ed-cd9ff9e356a9', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'd72b9de9-998b-432c-9ccf-d961d386d778', N'', N'RoleModule', N'0', N'2020-03-19 00:16:55.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'b19bce90-5508-43b6-93ed-cd9ff9e356a9', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'd892294d-2a2f-410e-bae9-86be3f6e3674', N'', N'RoleDataProperty', N'0', N'2019-11-23 01:05:44.000', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'WmsInboundOrderTbl', N'StockId', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'd967ed9b-a083-4398-954b-ea73edcefa32', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:01.923', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'WmsInboundOrderTbl', N'ExternalNo', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'd967ed9b-a083-4398-954b-ea73edcefa32', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:02.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'WmsInboundOrderTbl', N'ExternalNo', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'da6c0645-0bf9-4ade-9dd3-1b09e91e504c', N'', N'RoleElement', N'0', N'2016-09-05 09:22:07.000', N'0', N'4980a85b-e3db-4607-bc2c-0baf0140d7df', N'816b12b3-e916-446d-a2fa-329cfd13c831', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'db621de5-12e0-4ff1-9532-4cd7a696cf65', N'', N'RoleElement', N'0', N'2020-04-25 11:50:18.433', N'', N'd27ae3cf-135f-4d57-93a6-2120ddf98650', N'a6b61073-9e76-40ef-88ad-15c8789e2033', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'db621de5-12e0-4ff1-9532-4cd7a696cf65', N'', N'RoleElement', N'0', N'2020-04-25 11:50:18.000', N'', N'd27ae3cf-135f-4d57-93a6-2120ddf98650', N'a6b61073-9e76-40ef-88ad-15c8789e2033', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'dbdd5bf2-5910-4644-b087-2f50711840df', N'', N'UserRole', N'0', N'2019-11-23 00:48:35.000', N'', N'49df1602-f5f3-4d52-afb7-3802da619558', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'', N'')
@@ -4350,7 +4646,7 @@ GO
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'dc7dd8ef-c8e6-414f-8e97-31774718654c', N'', N'RoleDataProperty', N'0', N'2019-11-23 01:05:44.000', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'WmsInboundOrderTbl', N'Id', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'de4205b7-4832-40d4-b6ae-956f7b4997ba', N'', N'RoleModule', N'0', N'2020-03-19 22:31:02.443', N'', N'd27ae3cf-135f-4d57-93a6-2120ddf98650', N'7580672f-a390-4bb6-982d-9a4570cb5199', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'de4205b7-4832-40d4-b6ae-956f7b4997ba', N'', N'RoleModule', N'0', N'2020-03-19 22:31:02.000', N'', N'd27ae3cf-135f-4d57-93a6-2120ddf98650', N'7580672f-a390-4bb6-982d-9a4570cb5199', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'df2d90b3-4e2e-40e9-b406-220009726460', N'', N'RoleModule', N'0', N'2016-09-04 23:20:34.000', N'0', N'db309d88-fd21-4b81-a4d9-ae6276a1d813', N'6a9e1346-0c01-44d2-8eb1-f929fdab542a', NULL, NULL)
@@ -4365,19 +4661,19 @@ GO
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'e28c0dcd-168a-4b60-a514-7b6eb8026709', N'', N'RoleOrg', N'0', N'2016-10-17 10:03:30.000', N'0', N'db309d88-fd21-4b81-a4d9-ae6276a1d813', N'990cb229-cc18-41f3-8e2b-13f0f0110798', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'e4ccd68d-b31b-4d2d-b591-665818a7bd9f', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:01.923', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'Category', N'Id', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'e4ccd68d-b31b-4d2d-b591-665818a7bd9f', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:02.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'Category', N'Id', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'e50d78ae-004d-4f89-95a2-bd5c6327d16c', N'', N'RoleModule', N'0', N'2020-03-19 21:23:18.730', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'0031262c-689c-4b96-bae2-2c9d67076ade', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'e50d78ae-004d-4f89-95a2-bd5c6327d16c', N'', N'RoleModule', N'0', N'2020-03-19 21:23:19.000', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'0031262c-689c-4b96-bae2-2c9d67076ade', N'', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'e5aa43b8-86df-43be-b5f1-9edd13dc07f8', N'', N'RoleElement', N'0', N'2020-04-25 11:49:36.487', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'4770af29-1375-4d27-ab0c-fdbeab87b710', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'e5aa43b8-86df-43be-b5f1-9edd13dc07f8', N'', N'RoleElement', N'0', N'2020-04-25 11:49:36.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'4770af29-1375-4d27-ab0c-fdbeab87b710', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'e619a82e-edfb-4542-94df-0b92850667ad', N'', N'RoleResource', N'0', N'2018-04-14 14:39:56.000', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'OPENAUTH_MODIFYACCOUNT', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'e6bd480f-592a-46e0-9f83-2adefb12dca0', N'', N'RoleElement', N'0', N'2020-03-19 00:16:54.797', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'8966b04f-8e26-4046-8b03-0c64f9f833dd', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'e6bd480f-592a-46e0-9f83-2adefb12dca0', N'', N'RoleElement', N'0', N'2020-03-19 00:16:55.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'8966b04f-8e26-4046-8b03-0c64f9f833dd', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'e785147c-f46b-474f-8fad-73b14fa69822', N'', N'UserRole', N'0', N'2016-09-06 17:06:29.000', N'0', N'3a95e392-07d4-4af3-b30d-140ca93340f5', N'4980a85b-e3db-4607-bc2c-0baf0140d7df', NULL, NULL)
@@ -4404,25 +4700,25 @@ GO
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'eec41fcb-61c0-4e56-a5c0-a9f8be6e6fdc', N'', N'UserModule', N'0', N'2016-09-07 15:30:06.000', N'0', N'3b64b643-cb9a-4654-81e4-6dd9b2f8a6f7', N'069475e3-c997-487a-9f29-e6a864c5c1d4', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'ef43a7a6-4a4c-46fe-82d4-1e1055fdac6d', N'', N'RoleElement', N'0', N'2020-03-19 00:16:54.797', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'17ae4fd4-ab4e-439e-ba1d-2a53b46d112b', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'ef43a7a6-4a4c-46fe-82d4-1e1055fdac6d', N'', N'RoleElement', N'0', N'2020-03-19 00:16:55.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'17ae4fd4-ab4e-439e-ba1d-2a53b46d112b', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'ef8024e8-dab3-4b85-9952-821a005c1f2b', N'', N'RoleDataProperty', N'0', N'2019-11-23 00:51:40.000', N'', N'd27ae3cf-135f-4d57-93a6-2120ddf98650', N'Resource', N'CascadeId', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'f012d886-f204-4599-a00d-7b9847cc0bb7', N'', N'RoleModule', N'0', N'2020-03-19 00:16:54.723', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'92b00259-2d15-43e7-9321-adffb29e8bf2', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'f012d886-f204-4599-a00d-7b9847cc0bb7', N'', N'RoleModule', N'0', N'2020-03-19 00:16:55.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'92b00259-2d15-43e7-9321-adffb29e8bf2', N'', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'f125441c-f28c-4ffa-9183-c8168ab09afb', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:01.923', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'Category', N'TypeId', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'f125441c-f28c-4ffa-9183-c8168ab09afb', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:02.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'Category', N'TypeId', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'f163873c-2b44-4279-8b2c-498bcd01f05b', N'', N'RoleElement', N'0', N'2020-04-25 11:49:36.490', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'4770af29-1375-4d27-ab0c-fdbeab87b710', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'f163873c-2b44-4279-8b2c-498bcd01f05b', N'', N'RoleElement', N'0', N'2020-04-25 11:49:36.000', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'4770af29-1375-4d27-ab0c-fdbeab87b710', N'', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'f25d98ff-46bc-48e7-86a0-5eca5e6d98c2', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:01.923', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'WmsInboundOrderTbl', N'UpdateUserName', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'f25d98ff-46bc-48e7-86a0-5eca5e6d98c2', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:02.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'WmsInboundOrderTbl', N'UpdateUserName', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'f3671c95-a33f-4a11-89dd-00d734d4a230', N'', N'RoleModule', N'0', N'2020-03-19 00:16:54.723', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'15a3a401-e8eb-4d8b-9035-ecd5f53ed0c9', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'f3671c95-a33f-4a11-89dd-00d734d4a230', N'', N'RoleModule', N'0', N'2020-03-19 00:16:55.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'15a3a401-e8eb-4d8b-9035-ecd5f53ed0c9', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'f4ba636a-9002-43e6-93eb-95132a3e68c5', N'', N'ProcessUser', N'0', N'2016-09-28 09:23:30.000', N'0', N'68295d2a-4dfd-4c5e-81e3-9c787e2603bc', N'3a95e392-07d4-4af3-b30d-140ca93340f5', NULL, NULL)
@@ -4440,13 +4736,13 @@ GO
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'f671f582-9111-4000-aadd-660449d0d4b0', N'', N'RoleResource', N'0', N'2018-09-12 00:15:54.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'XXX_LOGIN', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'f714b860-447e-4d22-a206-1b545cc98fbb', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:01.923', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'WmsInboundOrderTbl', N'InBondedArea', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'f714b860-447e-4d22-a206-1b545cc98fbb', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:02.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'WmsInboundOrderTbl', N'InBondedArea', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'f8d157b4-12e3-4488-9e4c-b9670e11b4c6', N'', N'RoleDataProperty', N'0', N'2019-11-23 01:05:44.000', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'WmsInboundOrderTbl', N'UpdateUserName', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'f8e65a18-a86a-47b1-be87-c437ba5e5fd9', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:01.923', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'WmsInboundOrderTbl', N'Id', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'f8e65a18-a86a-47b1-be87-c437ba5e5fd9', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:02.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'WmsInboundOrderTbl', N'Id', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'fa52d20f-204d-4cdd-a1e5-5b7faaac4cd7', N'', N'RoleDataProperty', N'0', N'2019-11-23 00:51:40.000', N'', N'd27ae3cf-135f-4d57-93a6-2120ddf98650', N'Resource', N'CreateUserName', N'')
@@ -4455,215 +4751,25 @@ GO
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'fa7c4d39-b31a-4668-8716-d40a62aa722b', N'', N'UserOrg', N'0', N'2017-10-12 13:59:49.000', N'', N'63c9c82a-e0d3-4bde-bbd2-057cda2f5283', N'990cb229-cc18-41f3-8e2b-13f0f0110798', NULL, NULL)
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'fa955d08-fe15-42d2-ae39-98e22e4f9b50', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:01.923', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'WmsInboundOrderTbl', N'OrderType', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'fa955d08-fe15-42d2-ae39-98e22e4f9b50', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:02.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'WmsInboundOrderTbl', N'OrderType', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'fa9ce486-4b1f-4630-bad3-7625744cb8e8', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:01.923', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'Resource', N'CascadeId', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'fa9ce486-4b1f-4630-bad3-7625744cb8e8', N'', N'RoleDataProperty', N'0', N'2020-03-19 00:17:02.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'Resource', N'CascadeId', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'faf837f2-8ac3-4269-8a1c-b2af432bf7b5', N'', N'RoleElement', N'0', N'2020-03-19 21:23:18.730', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'a7eea5dc-3b10-4550-9cf3-0dba9b9fc32c', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'faf837f2-8ac3-4269-8a1c-b2af432bf7b5', N'', N'RoleElement', N'0', N'2020-03-19 21:23:19.000', N'', N'0a7ebd0c-78d6-4fbc-8fbe-6fc25c3a932d', N'a7eea5dc-3b10-4550-9cf3-0dba9b9fc32c', N'', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'fafcaba7-57fe-44dd-9343-6112db385dce', N'', N'RoleElement', N'0', N'2020-04-25 11:49:11.133', N'', N'77e6d0c3-f9e1-4933-92c3-c1c6eef75593', N'5fba6316-5599-4245-822c-48ff33299868', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'fafcaba7-57fe-44dd-9343-6112db385dce', N'', N'RoleElement', N'0', N'2020-04-25 11:49:11.000', N'', N'77e6d0c3-f9e1-4933-92c3-c1c6eef75593', N'5fba6316-5599-4245-822c-48ff33299868', N'', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'fdc16578-e4eb-474d-8cc8-4188693a7c12', N'', N'RoleElement', N'0', N'2020-03-19 00:16:54.797', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'6c814946-db5c-48bd-84dd-b1c38196ad74', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'fdc16578-e4eb-474d-8cc8-4188693a7c12', N'', N'RoleElement', N'0', N'2020-03-19 00:16:55.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'6c814946-db5c-48bd-84dd-b1c38196ad74', N'', N'')
 GO
 
 INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'feec44e3-3f88-4ac2-a4ad-a5bd3161f1bb', N'', N'UserOrg', N'0', N'2019-10-31 21:59:08.000', N'', N'758a34c7-5a31-438c-bdf7-02fdd846b901', N'66386671-0494-4e83-8346-fbcf73283f7b', N'', N'')
 GO
 
-INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'fef68b50-ef7f-45a4-8f0e-38e8d8ecaaea', N'', N'RoleElement', N'0', N'2020-03-19 00:16:54.797', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'68484265-7802-4f06-b024-33e8b2f2edcf', N'', N'')
-GO
-
-
--- ----------------------------
--- Table structure for SysResource
--- ----------------------------
-IF EXISTS (SELECT * FROM sys.all_objects WHERE object_id = OBJECT_ID(N'[dbo].[SysResource]') AND type IN ('U'))
-	DROP TABLE [dbo].[SysResource]
-GO
-
-CREATE TABLE [dbo].[SysResource] (
-  [Id] varchar(50) COLLATE Chinese_PRC_CI_AS  NOT NULL,
-  [CascadeId] varchar(255) COLLATE Chinese_PRC_CI_AS  NOT NULL,
-  [Name] varchar(255) COLLATE Chinese_PRC_CI_AS  NOT NULL,
-  [SortNo] int  NOT NULL,
-  [Description] varchar(500) COLLATE Chinese_PRC_CI_AS  NOT NULL,
-  [ParentName] varchar(50) COLLATE Chinese_PRC_CI_AS  NULL,
-  [ParentId] varchar(50) COLLATE Chinese_PRC_CI_AS  NULL,
-  [AppId] varchar(50) COLLATE Chinese_PRC_CI_AS  NULL,
-  [AppName] varchar(50) COLLATE Chinese_PRC_CI_AS  NULL,
-  [TypeName] varchar(20) COLLATE Chinese_PRC_CI_AS  NULL,
-  [TypeId] varchar(50) COLLATE Chinese_PRC_CI_AS  NULL,
-  [Disable] bit  NOT NULL,
-  [CreateTime] datetime2(7)  NOT NULL,
-  [CreateUserId] varchar(50) COLLATE Chinese_PRC_CI_AS  NOT NULL,
-  [CreateUserName] varchar(200) COLLATE Chinese_PRC_CI_AS  NOT NULL,
-  [UpdateTime] datetime2(7)  NULL,
-  [UpdateUserId] varchar(50) COLLATE Chinese_PRC_CI_AS  NULL,
-  [UpdateUserName] varchar(200) COLLATE Chinese_PRC_CI_AS  NULL
-)
-GO
-
-ALTER TABLE [dbo].[SysResource] SET (LOCK_ESCALATION = TABLE)
-GO
-
-EXEC sp_addextendedproperty
-'MS_Description', N'资源标识',
-'SCHEMA', N'dbo',
-'TABLE', N'SysResource',
-'COLUMN', N'Id'
-GO
-
-EXEC sp_addextendedproperty
-'MS_Description', N'节点语义ID',
-'SCHEMA', N'dbo',
-'TABLE', N'SysResource',
-'COLUMN', N'CascadeId'
-GO
-
-EXEC sp_addextendedproperty
-'MS_Description', N'名称',
-'SCHEMA', N'dbo',
-'TABLE', N'SysResource',
-'COLUMN', N'Name'
-GO
-
-EXEC sp_addextendedproperty
-'MS_Description', N'排序号',
-'SCHEMA', N'dbo',
-'TABLE', N'SysResource',
-'COLUMN', N'SortNo'
-GO
-
-EXEC sp_addextendedproperty
-'MS_Description', N'描述',
-'SCHEMA', N'dbo',
-'TABLE', N'SysResource',
-'COLUMN', N'Description'
-GO
-
-EXEC sp_addextendedproperty
-'MS_Description', N'父节点名称',
-'SCHEMA', N'dbo',
-'TABLE', N'SysResource',
-'COLUMN', N'ParentName'
-GO
-
-EXEC sp_addextendedproperty
-'MS_Description', N'父节点流ID',
-'SCHEMA', N'dbo',
-'TABLE', N'SysResource',
-'COLUMN', N'ParentId'
-GO
-
-EXEC sp_addextendedproperty
-'MS_Description', N'资源所属应用ID',
-'SCHEMA', N'dbo',
-'TABLE', N'SysResource',
-'COLUMN', N'AppId'
-GO
-
-EXEC sp_addextendedproperty
-'MS_Description', N'所属应用名称',
-'SCHEMA', N'dbo',
-'TABLE', N'SysResource',
-'COLUMN', N'AppName'
-GO
-
-EXEC sp_addextendedproperty
-'MS_Description', N'分类名称',
-'SCHEMA', N'dbo',
-'TABLE', N'SysResource',
-'COLUMN', N'TypeName'
-GO
-
-EXEC sp_addextendedproperty
-'MS_Description', N'分类ID',
-'SCHEMA', N'dbo',
-'TABLE', N'SysResource',
-'COLUMN', N'TypeId'
-GO
-
-EXEC sp_addextendedproperty
-'MS_Description', N'是否可用',
-'SCHEMA', N'dbo',
-'TABLE', N'SysResource',
-'COLUMN', N'Disable'
-GO
-
-EXEC sp_addextendedproperty
-'MS_Description', N'创建时间',
-'SCHEMA', N'dbo',
-'TABLE', N'SysResource',
-'COLUMN', N'CreateTime'
-GO
-
-EXEC sp_addextendedproperty
-'MS_Description', N'创建人ID',
-'SCHEMA', N'dbo',
-'TABLE', N'SysResource',
-'COLUMN', N'CreateUserId'
-GO
-
-EXEC sp_addextendedproperty
-'MS_Description', N'创建人',
-'SCHEMA', N'dbo',
-'TABLE', N'SysResource',
-'COLUMN', N'CreateUserName'
-GO
-
-EXEC sp_addextendedproperty
-'MS_Description', N'最后更新时间',
-'SCHEMA', N'dbo',
-'TABLE', N'SysResource',
-'COLUMN', N'UpdateTime'
-GO
-
-EXEC sp_addextendedproperty
-'MS_Description', N'最后更新人ID',
-'SCHEMA', N'dbo',
-'TABLE', N'SysResource',
-'COLUMN', N'UpdateUserId'
-GO
-
-EXEC sp_addextendedproperty
-'MS_Description', N'最后更新人',
-'SCHEMA', N'dbo',
-'TABLE', N'SysResource',
-'COLUMN', N'UpdateUserName'
-GO
-
-EXEC sp_addextendedproperty
-'MS_Description', N'资源表',
-'SCHEMA', N'dbo',
-'TABLE', N'SysResource'
-GO
-
-
--- ----------------------------
--- Records of SysResource
--- ----------------------------
-INSERT INTO [dbo].[SysResource] ([Id], [CascadeId], [Name], [SortNo], [Description], [ParentName], [ParentId], [AppId], [AppName], [TypeName], [TypeId], [Disable], [CreateTime], [CreateUserId], [CreateUserName], [UpdateTime], [UpdateUserId], [UpdateUserName]) VALUES (N'SYS_DEL_USER', N'.0.2.', N'删除用户', N'0', N'拥有删除OpenAuth.Net系统用户信息的权限', N'根节点', NULL, N'110', N'OpenAuth.Net', NULL, NULL, N'0', N'2019-11-23 00:27:58.0000000', N'00000000-0000-0000-0000-000000000000', N'超级管理员', N'2019-11-23 00:27:58.0000000', N'', N'')
-GO
-
-INSERT INTO [dbo].[SysResource] ([Id], [CascadeId], [Name], [SortNo], [Description], [ParentName], [ParentId], [AppId], [AppName], [TypeName], [TypeId], [Disable], [CreateTime], [CreateUserId], [CreateUserName], [UpdateTime], [UpdateUserId], [UpdateUserName]) VALUES (N'SYS_UPDATE_USER', N'.0.1.', N'更新用户信息', N'0', N'拥有更新OpenAuth.Net系统用户信息的权限', N'根节点', NULL, N'110', N'OpenAuth.Net', NULL, NULL, N'0', N'2019-11-23 00:27:17.0000000', N'00000000-0000-0000-0000-000000000000', N'超级管理员', N'2019-11-23 00:27:12.0000000', N'', N'')
-GO
-
-INSERT INTO [dbo].[SysResource] ([Id], [CascadeId], [Name], [SortNo], [Description], [ParentName], [ParentId], [AppId], [AppName], [TypeName], [TypeId], [Disable], [CreateTime], [CreateUserId], [CreateUserName], [UpdateTime], [UpdateUserId], [UpdateUserName]) VALUES (N'SYS_VIEW_USER', N'.0.3.', N'查看用户列表', N'0', N'查看OpenAuth.Net用户列表', N'根节点', NULL, N'110', N'OpenAuth.Net', NULL, NULL, N'0', N'2019-11-23 00:44:39.0000000', N'6ba79766-faa0-4259-8139-a4a6d35784e0', N'test', N'2019-11-23 00:44:39.0000000', N'', N'')
-GO
-
-INSERT INTO [dbo].[SysResource] ([Id], [CascadeId], [Name], [SortNo], [Description], [ParentName], [ParentId], [AppId], [AppName], [TypeName], [TypeId], [Disable], [CreateTime], [CreateUserId], [CreateUserName], [UpdateTime], [UpdateUserId], [UpdateUserName]) VALUES (N'XXX_ADDORDER', N'.0.6.', N'创建订单', N'0', N'在XXX平台创建订单', N'根节点', NULL, N'119', N'XXX管理平台', NULL, NULL, N'0', N'2019-11-23 00:53:24.0000000', N'6ba79766-faa0-4259-8139-a4a6d35784e0', N'test', N'2019-11-23 00:53:24.0000000', N'', N'')
-GO
-
-INSERT INTO [dbo].[SysResource] ([Id], [CascadeId], [Name], [SortNo], [Description], [ParentName], [ParentId], [AppId], [AppName], [TypeName], [TypeId], [Disable], [CreateTime], [CreateUserId], [CreateUserName], [UpdateTime], [UpdateUserId], [UpdateUserName]) VALUES (N'XXX_DEL_LOG', N'.0.4.', N'删除XXX平台日志', N'0', N'删除XXX平台日志', N'根节点', NULL, N'119', N'XXX管理平台', NULL, NULL, N'0', N'2019-11-23 00:45:02.0000000', N'6ba79766-faa0-4259-8139-a4a6d35784e0', N'test', N'2019-11-23 00:45:02.0000000', N'', N'')
-GO
-
-INSERT INTO [dbo].[SysResource] ([Id], [CascadeId], [Name], [SortNo], [Description], [ParentName], [ParentId], [AppId], [AppName], [TypeName], [TypeId], [Disable], [CreateTime], [CreateUserId], [CreateUserName], [UpdateTime], [UpdateUserId], [UpdateUserName]) VALUES (N'XXX_LOGIN', N'.0.7.', N'登录', N'0', N'登录XXX平台', N'根节点', NULL, N'119', N'XXX管理平台', NULL, NULL, N'0', N'2019-11-23 00:55:20.0000000', N'00000000-0000-0000-0000-000000000000', N'超级管理员', N'2019-11-23 00:55:20.0000000', N'', N'')
-GO
-
-INSERT INTO [dbo].[SysResource] ([Id], [CascadeId], [Name], [SortNo], [Description], [ParentName], [ParentId], [AppId], [AppName], [TypeName], [TypeId], [Disable], [CreateTime], [CreateUserId], [CreateUserName], [UpdateTime], [UpdateUserId], [UpdateUserName]) VALUES (N'XXX_VIEW_USER', N'.0.5.', N'查看用户', N'0', N'查看XXX平台用户列表', N'根节点', NULL, N'119', N'XXX管理平台', NULL, NULL, N'0', N'2019-11-23 00:53:01.0000000', N'6ba79766-faa0-4259-8139-a4a6d35784e0', N'test', N'2019-11-23 00:53:01.0000000', N'', N'')
+INSERT INTO [dbo].[Relevance] ([Id], [Description], [Key], [Status], [OperateTime], [OperatorId], [FirstId], [SecondId], [ThirdId], [ExtendInfo]) VALUES (N'fef68b50-ef7f-45a4-8f0e-38e8d8ecaaea', N'', N'RoleElement', N'0', N'2020-03-19 00:16:55.000', N'', N'09ee2ffa-7463-4938-ae0b-1cb4e80c7c13', N'68484265-7802-4f06-b024-33e8b2f2edcf', N'', N'')
 GO
 
 
@@ -5213,6 +5319,341 @@ GO
 -- ----------------------------
 
 -- ----------------------------
+-- Table structure for SysResource
+-- ----------------------------
+IF EXISTS (SELECT * FROM sys.all_objects WHERE object_id = OBJECT_ID(N'[dbo].[SysResource]') AND type IN ('U'))
+	DROP TABLE [dbo].[SysResource]
+GO
+
+CREATE TABLE [dbo].[SysResource] (
+  [Id] varchar(50) COLLATE Chinese_PRC_CI_AS  NOT NULL,
+  [CascadeId] varchar(255) COLLATE Chinese_PRC_CI_AS  NOT NULL,
+  [Name] varchar(255) COLLATE Chinese_PRC_CI_AS  NOT NULL,
+  [SortNo] int  NOT NULL,
+  [Description] varchar(500) COLLATE Chinese_PRC_CI_AS  NOT NULL,
+  [ParentName] varchar(50) COLLATE Chinese_PRC_CI_AS  NULL,
+  [ParentId] varchar(50) COLLATE Chinese_PRC_CI_AS  NULL,
+  [AppId] varchar(50) COLLATE Chinese_PRC_CI_AS  NULL,
+  [AppName] varchar(50) COLLATE Chinese_PRC_CI_AS  NULL,
+  [TypeName] varchar(20) COLLATE Chinese_PRC_CI_AS  NULL,
+  [TypeId] varchar(50) COLLATE Chinese_PRC_CI_AS  NULL,
+  [Disable] bit  NOT NULL,
+  [CreateTime] datetime2(7)  NOT NULL,
+  [CreateUserId] varchar(50) COLLATE Chinese_PRC_CI_AS  NOT NULL,
+  [CreateUserName] varchar(200) COLLATE Chinese_PRC_CI_AS  NOT NULL,
+  [UpdateTime] datetime2(7)  NULL,
+  [UpdateUserId] varchar(50) COLLATE Chinese_PRC_CI_AS  NULL,
+  [UpdateUserName] varchar(200) COLLATE Chinese_PRC_CI_AS  NULL
+)
+GO
+
+ALTER TABLE [dbo].[SysResource] SET (LOCK_ESCALATION = TABLE)
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'资源标识',
+'SCHEMA', N'dbo',
+'TABLE', N'SysResource',
+'COLUMN', N'Id'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'节点语义ID',
+'SCHEMA', N'dbo',
+'TABLE', N'SysResource',
+'COLUMN', N'CascadeId'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'名称',
+'SCHEMA', N'dbo',
+'TABLE', N'SysResource',
+'COLUMN', N'Name'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'排序号',
+'SCHEMA', N'dbo',
+'TABLE', N'SysResource',
+'COLUMN', N'SortNo'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'描述',
+'SCHEMA', N'dbo',
+'TABLE', N'SysResource',
+'COLUMN', N'Description'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'父节点名称',
+'SCHEMA', N'dbo',
+'TABLE', N'SysResource',
+'COLUMN', N'ParentName'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'父节点流ID',
+'SCHEMA', N'dbo',
+'TABLE', N'SysResource',
+'COLUMN', N'ParentId'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'资源所属应用ID',
+'SCHEMA', N'dbo',
+'TABLE', N'SysResource',
+'COLUMN', N'AppId'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'所属应用名称',
+'SCHEMA', N'dbo',
+'TABLE', N'SysResource',
+'COLUMN', N'AppName'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'分类名称',
+'SCHEMA', N'dbo',
+'TABLE', N'SysResource',
+'COLUMN', N'TypeName'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'分类ID',
+'SCHEMA', N'dbo',
+'TABLE', N'SysResource',
+'COLUMN', N'TypeId'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'是否可用',
+'SCHEMA', N'dbo',
+'TABLE', N'SysResource',
+'COLUMN', N'Disable'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'创建时间',
+'SCHEMA', N'dbo',
+'TABLE', N'SysResource',
+'COLUMN', N'CreateTime'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'创建人ID',
+'SCHEMA', N'dbo',
+'TABLE', N'SysResource',
+'COLUMN', N'CreateUserId'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'创建人',
+'SCHEMA', N'dbo',
+'TABLE', N'SysResource',
+'COLUMN', N'CreateUserName'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'最后更新时间',
+'SCHEMA', N'dbo',
+'TABLE', N'SysResource',
+'COLUMN', N'UpdateTime'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'最后更新人ID',
+'SCHEMA', N'dbo',
+'TABLE', N'SysResource',
+'COLUMN', N'UpdateUserId'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'最后更新人',
+'SCHEMA', N'dbo',
+'TABLE', N'SysResource',
+'COLUMN', N'UpdateUserName'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'资源表',
+'SCHEMA', N'dbo',
+'TABLE', N'SysResource'
+GO
+
+
+-- ----------------------------
+-- Records of SysResource
+-- ----------------------------
+INSERT INTO [dbo].[SysResource] ([Id], [CascadeId], [Name], [SortNo], [Description], [ParentName], [ParentId], [AppId], [AppName], [TypeName], [TypeId], [Disable], [CreateTime], [CreateUserId], [CreateUserName], [UpdateTime], [UpdateUserId], [UpdateUserName]) VALUES (N'SYS_DEL_USER', N'.0.2.', N'删除用户', N'0', N'拥有删除OpenAuth.Net系统用户信息的权限', N'根节点', NULL, N'110', N'OpenAuth.Net', NULL, NULL, N'0', N'2019-11-23 00:27:58.0000000', N'00000000-0000-0000-0000-000000000000', N'超级管理员', N'2019-11-23 00:27:58.0000000', N'', N'')
+GO
+
+INSERT INTO [dbo].[SysResource] ([Id], [CascadeId], [Name], [SortNo], [Description], [ParentName], [ParentId], [AppId], [AppName], [TypeName], [TypeId], [Disable], [CreateTime], [CreateUserId], [CreateUserName], [UpdateTime], [UpdateUserId], [UpdateUserName]) VALUES (N'SYS_UPDATE_USER', N'.0.1.', N'更新用户信息', N'0', N'拥有更新OpenAuth.Net系统用户信息的权限', N'根节点', NULL, N'110', N'OpenAuth.Net', NULL, NULL, N'0', N'2019-11-23 00:27:17.0000000', N'00000000-0000-0000-0000-000000000000', N'超级管理员', N'2019-11-23 00:27:12.0000000', N'', N'')
+GO
+
+INSERT INTO [dbo].[SysResource] ([Id], [CascadeId], [Name], [SortNo], [Description], [ParentName], [ParentId], [AppId], [AppName], [TypeName], [TypeId], [Disable], [CreateTime], [CreateUserId], [CreateUserName], [UpdateTime], [UpdateUserId], [UpdateUserName]) VALUES (N'SYS_VIEW_USER', N'.0.3.', N'查看用户列表', N'0', N'查看OpenAuth.Net用户列表', N'根节点', NULL, N'110', N'OpenAuth.Net', NULL, NULL, N'0', N'2019-11-23 00:44:39.0000000', N'6ba79766-faa0-4259-8139-a4a6d35784e0', N'test', N'2019-11-23 00:44:39.0000000', N'', N'')
+GO
+
+INSERT INTO [dbo].[SysResource] ([Id], [CascadeId], [Name], [SortNo], [Description], [ParentName], [ParentId], [AppId], [AppName], [TypeName], [TypeId], [Disable], [CreateTime], [CreateUserId], [CreateUserName], [UpdateTime], [UpdateUserId], [UpdateUserName]) VALUES (N'XXX_ADDORDER', N'.0.6.', N'创建订单', N'0', N'在XXX平台创建订单', N'根节点', NULL, N'119', N'XXX管理平台', NULL, NULL, N'0', N'2019-11-23 00:53:24.0000000', N'6ba79766-faa0-4259-8139-a4a6d35784e0', N'test', N'2019-11-23 00:53:24.0000000', N'', N'')
+GO
+
+INSERT INTO [dbo].[SysResource] ([Id], [CascadeId], [Name], [SortNo], [Description], [ParentName], [ParentId], [AppId], [AppName], [TypeName], [TypeId], [Disable], [CreateTime], [CreateUserId], [CreateUserName], [UpdateTime], [UpdateUserId], [UpdateUserName]) VALUES (N'XXX_DEL_LOG', N'.0.4.', N'删除XXX平台日志', N'0', N'删除XXX平台日志', N'根节点', NULL, N'119', N'XXX管理平台', NULL, NULL, N'0', N'2019-11-23 00:45:02.0000000', N'6ba79766-faa0-4259-8139-a4a6d35784e0', N'test', N'2019-11-23 00:45:02.0000000', N'', N'')
+GO
+
+INSERT INTO [dbo].[SysResource] ([Id], [CascadeId], [Name], [SortNo], [Description], [ParentName], [ParentId], [AppId], [AppName], [TypeName], [TypeId], [Disable], [CreateTime], [CreateUserId], [CreateUserName], [UpdateTime], [UpdateUserId], [UpdateUserName]) VALUES (N'XXX_LOGIN', N'.0.7.', N'登录', N'0', N'登录XXX平台', N'根节点', NULL, N'119', N'XXX管理平台', NULL, NULL, N'0', N'2019-11-23 00:55:20.0000000', N'00000000-0000-0000-0000-000000000000', N'超级管理员', N'2019-11-23 00:55:20.0000000', N'', N'')
+GO
+
+INSERT INTO [dbo].[SysResource] ([Id], [CascadeId], [Name], [SortNo], [Description], [ParentName], [ParentId], [AppId], [AppName], [TypeName], [TypeId], [Disable], [CreateTime], [CreateUserId], [CreateUserName], [UpdateTime], [UpdateUserId], [UpdateUserName]) VALUES (N'XXX_VIEW_USER', N'.0.5.', N'查看用户', N'0', N'查看XXX平台用户列表', N'根节点', NULL, N'119', N'XXX管理平台', NULL, NULL, N'0', N'2019-11-23 00:53:01.0000000', N'6ba79766-faa0-4259-8139-a4a6d35784e0', N'test', N'2019-11-23 00:53:01.0000000', N'', N'')
+GO
+
+
+-- ----------------------------
+-- Table structure for SysUser
+-- ----------------------------
+IF EXISTS (SELECT * FROM sys.all_objects WHERE object_id = OBJECT_ID(N'[dbo].[SysUser]') AND type IN ('U'))
+	DROP TABLE [dbo].[SysUser]
+GO
+
+CREATE TABLE [dbo].[SysUser] (
+  [Id] [dbo].[PrimaryKey]  NOT NULL,
+  [Account] varchar(255) COLLATE Chinese_PRC_CI_AS DEFAULT ' ' NOT NULL,
+  [Password] varchar(255) COLLATE Chinese_PRC_CI_AS DEFAULT ' ' NOT NULL,
+  [Name] varchar(255) COLLATE Chinese_PRC_CI_AS DEFAULT ' ' NOT NULL,
+  [Sex] int DEFAULT 0 NOT NULL,
+  [Status] int DEFAULT 0 NOT NULL,
+  [BizCode] varchar(255) COLLATE Chinese_PRC_CI_AS DEFAULT ' ' NOT NULL,
+  [CreateTime] datetime DEFAULT getdate() NOT NULL,
+  [CreateId] [dbo].[PrimaryKey]  NULL,
+  [TypeName] nvarchar(20) COLLATE Chinese_PRC_CI_AS  NULL,
+  [TypeId] [dbo].[PrimaryKey]  NULL,
+  [ParentId] [dbo].[PrimaryKey]  NULL
+)
+GO
+
+ALTER TABLE [dbo].[SysUser] SET (LOCK_ESCALATION = TABLE)
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'流水号',
+'SCHEMA', N'dbo',
+'TABLE', N'SysUser',
+'COLUMN', N'Id'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'用户登录帐号',
+'SCHEMA', N'dbo',
+'TABLE', N'SysUser',
+'COLUMN', N'Account'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'密码',
+'SCHEMA', N'dbo',
+'TABLE', N'SysUser',
+'COLUMN', N'Password'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'用户姓名',
+'SCHEMA', N'dbo',
+'TABLE', N'SysUser',
+'COLUMN', N'Name'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'性别',
+'SCHEMA', N'dbo',
+'TABLE', N'SysUser',
+'COLUMN', N'Sex'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'用户状态',
+'SCHEMA', N'dbo',
+'TABLE', N'SysUser',
+'COLUMN', N'Status'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'业务对照码',
+'SCHEMA', N'dbo',
+'TABLE', N'SysUser',
+'COLUMN', N'BizCode'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'经办时间',
+'SCHEMA', N'dbo',
+'TABLE', N'SysUser',
+'COLUMN', N'CreateTime'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'创建人',
+'SCHEMA', N'dbo',
+'TABLE', N'SysUser',
+'COLUMN', N'CreateId'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'分类名称',
+'SCHEMA', N'dbo',
+'TABLE', N'SysUser',
+'COLUMN', N'TypeName'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'分类ID',
+'SCHEMA', N'dbo',
+'TABLE', N'SysUser',
+'COLUMN', N'TypeId'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'直属上级',
+'SCHEMA', N'dbo',
+'TABLE', N'SysUser',
+'COLUMN', N'ParentId'
+GO
+
+EXEC sp_addextendedproperty
+'MS_Description', N'用户基本信息表',
+'SCHEMA', N'dbo',
+'TABLE', N'SysUser'
+GO
+
+
+-- ----------------------------
+-- Records of SysUser
+-- ----------------------------
+INSERT INTO [dbo].[SysUser] ([Id], [Account], [Password], [Name], [Sex], [Status], [BizCode], [CreateTime], [CreateId], [TypeName], [TypeId], [ParentId]) VALUES (N'0ceff0f8-f848-440c-bc26-d8605ac858cd', N'test5', N'test5', N'test5', N'1', N'1', N'', N'2022-03-15 09:19:05.000', N'', N'', N'', N'6ba79766-faa0-4259-8139-a4a6d35784e0')
+GO
+
+INSERT INTO [dbo].[SysUser] ([Id], [Account], [Password], [Name], [Sex], [Status], [BizCode], [CreateTime], [CreateId], [TypeName], [TypeId], [ParentId]) VALUES (N'1df68dfd-3b6d-4491-872f-00a0fc6c5a64', N'test4', N'test4', N'test4', N'1', N'1', N'', N'2022-12-12 14:07:11.000', N'', N'', N'', N'6ba79766-faa0-4259-8139-a4a6d35784e0')
+GO
+
+INSERT INTO [dbo].[SysUser] ([Id], [Account], [Password], [Name], [Sex], [Status], [BizCode], [CreateTime], [CreateId], [TypeName], [TypeId], [ParentId]) VALUES (N'229f3a49-ab27-49ce-b383-9f10ca23a9d5', N'test3', N'test3', N'test3', N'1', N'0', N'', N'2022-12-12 14:07:05.000', N'', N'', N'', N'6ba79766-faa0-4259-8139-a4a6d35784e0')
+GO
+
+INSERT INTO [dbo].[SysUser] ([Id], [Account], [Password], [Name], [Sex], [Status], [BizCode], [CreateTime], [CreateId], [TypeName], [TypeId], [ParentId]) VALUES (N'49df1602-f5f3-4d52-afb7-3802da619558', N'admin', N'admin', N'admin', N'1', N'0', N'', N'2022-12-11 16:18:54.000', N'', N'', N'', NULL)
+GO
+
+INSERT INTO [dbo].[SysUser] ([Id], [Account], [Password], [Name], [Sex], [Status], [BizCode], [CreateTime], [CreateId], [TypeName], [TypeId], [ParentId]) VALUES (N'6ba79766-faa0-4259-8139-a4a6d35784e0', N'test', N'test', N'test', N'1', N'0', N'', N'2022-12-11 16:19:00.000', N'', N'', N'', N'49df1602-f5f3-4d52-afb7-3802da619558')
+GO
+
+INSERT INTO [dbo].[SysUser] ([Id], [Account], [Password], [Name], [Sex], [Status], [BizCode], [CreateTime], [CreateId], [TypeName], [TypeId], [ParentId]) VALUES (N'758a34c7-5a31-438c-bdf7-02fdd846b901', N'test77', N'test77', N'test77', N'0', N'0', N'', N'2022-10-31 21:59:08.000', N'00000000-0000-0000-0000-000000000000', N'', N'', NULL)
+GO
+
+INSERT INTO [dbo].[SysUser] ([Id], [Account], [Password], [Name], [Sex], [Status], [BizCode], [CreateTime], [CreateId], [TypeName], [TypeId], [ParentId]) VALUES (N'96f63f9d-e8c8-4258-963e-3327ed7d6f56', N'test66', N'test66', N'test66', N'0', N'0', N'', N'2022-10-31 21:58:43.000', N'00000000-0000-0000-0000-000000000000', N'', N'', NULL)
+GO
+
+INSERT INTO [dbo].[SysUser] ([Id], [Account], [Password], [Name], [Sex], [Status], [BizCode], [CreateTime], [CreateId], [TypeName], [TypeId], [ParentId]) VALUES (N'de8be521-f1ec-4483-b124-0be342890507', N'test2', N'test2', N'test2', N'1', N'0', N'', N'2022-12-11 16:19:06.000', N'', N'', N'', N'49df1602-f5f3-4d52-afb7-3802da619558')
+GO
+
+
+-- ----------------------------
 -- Table structure for UploadFile
 -- ----------------------------
 IF EXISTS (SELECT * FROM sys.all_objects WHERE object_id = OBJECT_ID(N'[dbo].[UploadFile]') AND type IN ('U'))
@@ -5364,151 +5805,6 @@ GO
 -- ----------------------------
 -- Records of UploadFile
 -- ----------------------------
-
--- ----------------------------
--- Table structure for User
--- ----------------------------
-IF EXISTS (SELECT * FROM sys.all_objects WHERE object_id = OBJECT_ID(N'[dbo].[SysUser]') AND type IN ('U'))
-	DROP TABLE [dbo].[SysUser]
-GO
-
-CREATE TABLE [dbo].[SysUser] (
-  [Id] [dbo].[PrimaryKey]  NOT NULL,
-  [Account] varchar(255) COLLATE Chinese_PRC_CI_AS DEFAULT ' ' NOT NULL,
-  [Password] varchar(255) COLLATE Chinese_PRC_CI_AS DEFAULT ' ' NOT NULL,
-  [Name] varchar(255) COLLATE Chinese_PRC_CI_AS DEFAULT ' ' NOT NULL,
-  [Sex] int DEFAULT 0 NOT NULL,
-  [Status] int DEFAULT 0 NOT NULL,
-  [BizCode] varchar(255) COLLATE Chinese_PRC_CI_AS DEFAULT ' ' NOT NULL,
-  [CreateTime] datetime DEFAULT getdate() NOT NULL,
-  [CreateId] [dbo].[PrimaryKey]  NULL,
-  [TypeName] nvarchar(20) COLLATE Chinese_PRC_CI_AS  NULL,
-  [TypeId] [dbo].[PrimaryKey]  NULL,
-  [ParentId] [dbo].[PrimaryKey]  NULL
-)
-GO
-
-ALTER TABLE [dbo].[SysUser] SET (LOCK_ESCALATION = TABLE)
-GO
-
-EXEC sp_addextendedproperty
-'MS_Description', N'流水号',
-'SCHEMA', N'dbo',
-'TABLE', N'SysUser',
-'COLUMN', N'Id'
-GO
-
-EXEC sp_addextendedproperty
-'MS_Description', N'用户登录帐号',
-'SCHEMA', N'dbo',
-'TABLE', N'SysUser',
-'COLUMN', N'Account'
-GO
-
-EXEC sp_addextendedproperty
-'MS_Description', N'密码',
-'SCHEMA', N'dbo',
-'TABLE', N'SysUser',
-'COLUMN', N'Password'
-GO
-
-EXEC sp_addextendedproperty
-'MS_Description', N'用户姓名',
-'SCHEMA', N'dbo',
-  'TABLE', N'SysUser',
-'COLUMN', N'Name'
-GO
-
-EXEC sp_addextendedproperty
-'MS_Description', N'性别',
-'SCHEMA', N'dbo',
-'TABLE', N'SysUser',
-'COLUMN', N'Sex'
-GO
-
-EXEC sp_addextendedproperty
-'MS_Description', N'用户状态',
-'SCHEMA', N'dbo',
-  'TABLE', N'SysUser',
-'COLUMN', N'Status'
-GO
-
-EXEC sp_addextendedproperty
-'MS_Description', N'业务对照码',
-'SCHEMA', N'dbo',
-  'TABLE', N'SysUser',
-'COLUMN', N'BizCode'
-GO
-
-EXEC sp_addextendedproperty
-'MS_Description', N'经办时间',
-'SCHEMA', N'dbo',
-  'TABLE', N'SysUser',
-'COLUMN', N'CreateTime'
-GO
-
-EXEC sp_addextendedproperty
-'MS_Description', N'创建人',
-'SCHEMA', N'dbo',
-  'TABLE', N'SysUser',
-'COLUMN', N'CreateId'
-GO
-
-EXEC sp_addextendedproperty
-'MS_Description', N'分类名称',
-'SCHEMA', N'dbo',
-  'TABLE', N'SysUser',
-'COLUMN', N'TypeName'
-GO
-
-EXEC sp_addextendedproperty
-'MS_Description', N'分类ID',
-'SCHEMA', N'dbo',
-  'TABLE', N'SysUser',
-'COLUMN', N'TypeId'
-GO
-
-EXEC sp_addextendedproperty
-'MS_Description', N'直属上级',
-'SCHEMA', N'dbo',
-  'TABLE', N'SysUser',
-'COLUMN', N'ParentId'
-GO
-
-EXEC sp_addextendedproperty
-'MS_Description', N'用户基本信息表',
-'SCHEMA', N'dbo',
-  'TABLE', N'SysUser'
-GO
-
-
--- ----------------------------
-  -- Records of SysUser
--- ----------------------------
-INSERT INTO [dbo].[SysUser] ([Id], [Account], [Password], [Name], [Sex], [Status], [BizCode], [CreateTime], [CreateId], [TypeName], [TypeId], [ParentId]) VALUES (N'0ceff0f8-f848-440c-bc26-d8605ac858cd', N'test5', N'test5', N'test5', N'1', N'1', N'', N'2022-03-15 09:19:05.000', N'', N'', N'', N'6ba79766-faa0-4259-8139-a4a6d35784e0')
-GO
-
-INSERT INTO [dbo].[SysUser] ([Id], [Account], [Password], [Name], [Sex], [Status], [BizCode], [CreateTime], [CreateId], [TypeName], [TypeId], [ParentId]) VALUES (N'1df68dfd-3b6d-4491-872f-00a0fc6c5a64', N'test4', N'test4', N'test4', N'1', N'1', N'', N'2022-12-12 14:07:11.000', N'', N'', N'', N'6ba79766-faa0-4259-8139-a4a6d35784e0')
-GO
-
-INSERT INTO [dbo].[SysUser] ([Id], [Account], [Password], [Name], [Sex], [Status], [BizCode], [CreateTime], [CreateId], [TypeName], [TypeId], [ParentId]) VALUES (N'229f3a49-ab27-49ce-b383-9f10ca23a9d5', N'test3', N'test3', N'test3', N'1', N'0', N'', N'2022-12-12 14:07:05.000', N'', N'', N'', N'6ba79766-faa0-4259-8139-a4a6d35784e0')
-GO
-
-INSERT INTO [dbo].[SysUser] ([Id], [Account], [Password], [Name], [Sex], [Status], [BizCode], [CreateTime], [CreateId], [TypeName], [TypeId], [ParentId]) VALUES (N'49df1602-f5f3-4d52-afb7-3802da619558', N'admin', N'admin', N'admin', N'1', N'0', N'', N'2022-12-11 16:18:54.000', N'', N'', N'', NULL)
-GO
-
-INSERT INTO [dbo].[SysUser] ([Id], [Account], [Password], [Name], [Sex], [Status], [BizCode], [CreateTime], [CreateId], [TypeName], [TypeId], [ParentId]) VALUES (N'6ba79766-faa0-4259-8139-a4a6d35784e0', N'test', N'test', N'test', N'1', N'0', N'', N'2022-12-11 16:19:00.000', N'', N'', N'', N'49df1602-f5f3-4d52-afb7-3802da619558')
-GO
-
-INSERT INTO [dbo].[SysUser] ([Id], [Account], [Password], [Name], [Sex], [Status], [BizCode], [CreateTime], [CreateId], [TypeName], [TypeId], [ParentId]) VALUES (N'758a34c7-5a31-438c-bdf7-02fdd846b901', N'test77', N'test77', N'test77', N'0', N'0', N'', N'2022-10-31 21:59:08.000', N'00000000-0000-0000-0000-000000000000', N'', N'', NULL)
-GO
-
-INSERT INTO [dbo].[SysUser] ([Id], [Account], [Password], [Name], [Sex], [Status], [BizCode], [CreateTime], [CreateId], [TypeName], [TypeId], [ParentId]) VALUES (N'96f63f9d-e8c8-4258-963e-3327ed7d6f56', N'test66', N'test66', N'test66', N'0', N'0', N'', N'2022-10-31 21:58:43.000', N'00000000-0000-0000-0000-000000000000', N'', N'', NULL)
-GO
-
-INSERT INTO [dbo].[SysUser] ([Id], [Account], [Password], [Name], [Sex], [Status], [BizCode], [CreateTime], [CreateId], [TypeName], [TypeId], [ParentId]) VALUES (N'de8be521-f1ec-4483-b124-0be342890507', N'test2', N'test2', N'test2', N'1', N'0', N'', N'2022-12-11 16:19:06.000', N'', N'', N'', N'49df1602-f5f3-4d52-afb7-3802da619558')
-GO
-
 
 -- ----------------------------
 -- Table structure for WmsInboundOrderDtbl
@@ -6040,7 +6336,7 @@ GO
 -- ----------------------------
 -- Primary Key structure for table Category
 -- ----------------------------
-ALTER TABLE [dbo].[Category] ADD CONSTRAINT [PK__Category__3214EC0757425361] PRIMARY KEY CLUSTERED ([Id])
+ALTER TABLE [dbo].[Category] ADD CONSTRAINT [PK__CATEGORY] PRIMARY KEY CLUSTERED ([Id])
 WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = OFF, ALLOW_PAGE_LOCKS = OFF)  
 ON [PRIMARY]
 GO
@@ -6058,8 +6354,26 @@ GO
 -- ----------------------------
 -- Primary Key structure for table DataPrivilegeRule
 -- ----------------------------
-ALTER TABLE [dbo].[DataPrivilegeRule] ADD CONSTRAINT [PK__DataPriv__3214EC0782473638] PRIMARY KEY CLUSTERED ([Id])
+ALTER TABLE [dbo].[DataPrivilegeRule] ADD CONSTRAINT [PK__DATAPRIVILEGERULE] PRIMARY KEY CLUSTERED ([Id])
 WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = OFF, ALLOW_PAGE_LOCKS = OFF)  
+ON [PRIMARY]
+GO
+
+
+-- ----------------------------
+-- Primary Key structure for table ExternalDataSource
+-- ----------------------------
+ALTER TABLE [dbo].[ExternalDataSource] ADD CONSTRAINT [PK__External__3214EC07E00F727E] PRIMARY KEY CLUSTERED ([Id])
+WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)  
+ON [PRIMARY]
+GO
+
+
+-- ----------------------------
+-- Primary Key structure for table FlowApprover
+-- ----------------------------
+ALTER TABLE [dbo].[FlowApprover] ADD CONSTRAINT [PK__FlowAppr__3214EC079D284B58] PRIMARY KEY CLUSTERED ([Id])
+WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)  
 ON [PRIMARY]
 GO
 
@@ -6139,7 +6453,7 @@ GO
 -- ----------------------------
 -- Primary Key structure for table OpenJob
 -- ----------------------------
-ALTER TABLE [dbo].[OpenJob] ADD CONSTRAINT [PK_OPENJOB] PRIMARY KEY CLUSTERED ([Id])
+ALTER TABLE [dbo].[OpenJob] ADD CONSTRAINT [PK_OPENJOB] PRIMARY KEY NONCLUSTERED ([Id])
 WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)  
 ON [PRIMARY]
 GO
@@ -6159,15 +6473,6 @@ GO
 -- ----------------------------
 ALTER TABLE [dbo].[Relevance] ADD CONSTRAINT [PK_RELEVANCE] PRIMARY KEY CLUSTERED ([Id])
 WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)  
-ON [PRIMARY]
-GO
-
-
--- ----------------------------
--- Primary Key structure for table SysResource
--- ----------------------------
-ALTER TABLE [dbo].[SysResource] ADD CONSTRAINT [PK__Resource__3214EC07A3FEAC15] PRIMARY KEY CLUSTERED ([Id])
-WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = OFF, ALLOW_PAGE_LOCKS = OFF)  
 ON [PRIMARY]
 GO
 
@@ -6209,6 +6514,33 @@ GO
 
 
 -- ----------------------------
+-- Primary Key structure for table SysPrinterPlan
+-- ----------------------------
+ALTER TABLE [dbo].[SysPrinterPlan] ADD CONSTRAINT [PK__sysprint__3214EC07BFDE647D] PRIMARY KEY CLUSTERED ([Id])
+WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)  
+ON [PRIMARY]
+GO
+
+
+-- ----------------------------
+-- Primary Key structure for table SysResource
+-- ----------------------------
+ALTER TABLE [dbo].[SysResource] ADD CONSTRAINT [PK__RESOURCE] PRIMARY KEY CLUSTERED ([Id])
+WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = OFF, ALLOW_PAGE_LOCKS = OFF)  
+ON [PRIMARY]
+GO
+
+
+-- ----------------------------
+-- Primary Key structure for table SysUser
+-- ----------------------------
+ALTER TABLE [dbo].[SysUser] ADD CONSTRAINT [PK_USER] PRIMARY KEY CLUSTERED ([Id])
+WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)  
+ON [PRIMARY]
+GO
+
+
+-- ----------------------------
 -- Primary Key structure for table UploadFile
 -- ----------------------------
 ALTER TABLE [dbo].[UploadFile] ADD CONSTRAINT [PK_FILE] PRIMARY KEY NONCLUSTERED ([Id])
@@ -6218,18 +6550,9 @@ GO
 
 
 -- ----------------------------
--- Primary Key structure for table User
--- ----------------------------
-ALTER TABLE [dbo].[SysUser] ADD CONSTRAINT [PK_USER] PRIMARY KEY CLUSTERED ([Id])
-WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)  
-ON [PRIMARY]
-GO
-
-
--- ----------------------------
 -- Primary Key structure for table WmsInboundOrderDtbl
 -- ----------------------------
-ALTER TABLE [dbo].[WmsInboundOrderDtbl] ADD CONSTRAINT [PK__WmsInbou__DE2DE9BB34BC7C0B] PRIMARY KEY CLUSTERED ([Id], [OrderId])
+ALTER TABLE [dbo].[WmsInboundOrderDtbl] ADD CONSTRAINT [PK__WMSINBOUNDORDERDTBL] PRIMARY KEY CLUSTERED ([Id], [OrderId])
 WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = OFF, ALLOW_PAGE_LOCKS = OFF)  
 ON [PRIMARY]
 GO
@@ -6238,7 +6561,7 @@ GO
 -- ----------------------------
 -- Primary Key structure for table WmsInboundOrderTbl
 -- ----------------------------
-ALTER TABLE [dbo].[WmsInboundOrderTbl] ADD CONSTRAINT [PK__WmsInbou__3214EC070A6E292B] PRIMARY KEY CLUSTERED ([Id])
+ALTER TABLE [dbo].[WmsInboundOrderTbl] ADD CONSTRAINT [PK__WMSINBOUNDORDERTBL] PRIMARY KEY CLUSTERED ([Id])
 WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = OFF, ALLOW_PAGE_LOCKS = OFF)  
 ON [PRIMARY]
 GO
