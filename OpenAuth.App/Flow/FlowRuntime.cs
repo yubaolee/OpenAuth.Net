@@ -14,6 +14,7 @@ using Infrastructure.Helpers;
 using OpenAuth.App.Interface;
 using OpenAuth.App.Request;
 using SqlSugar;
+using Microsoft.Extensions.Configuration;
 
 namespace OpenAuth.App.Flow
 {
@@ -524,6 +525,7 @@ namespace OpenAuth.App.Flow
             var postData = new
             {
                 flowInstanceId,
+                businessId = flowInstance.BusinessId,
                 nodeName = node.name,
                 nodeId = node.id,
                 userId = tag.UserId,
@@ -534,10 +536,23 @@ namespace OpenAuth.App.Flow
                 isFinish = node.type == FlowNode.END
             };
 
+            var url = node.setInfo.ThirdPartyUrl;
+            // 如果是相对路径，需要获取当前应用的基础URL
+            if (!url.StartsWith("http://") && !url.StartsWith("https://"))
+            {
+                var appConfig = AutofacContainerModule.GetService<IConfiguration>();
+                var baseUrl = appConfig.GetValue<string>("AppSetting:HttpHost")?.TrimEnd('/');
+                if (string.IsNullOrEmpty(baseUrl))
+                {
+                    return;
+                }
+                url = $"{baseUrl}/{url.TrimStart('/')}";
+            }
+
             using (HttpContent httpContent = new StringContent(JsonHelper.Instance.Serialize(postData), Encoding.UTF8))
             {
                 httpContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-                client.PostAsync(node.setInfo.ThirdPartyUrl, httpContent);
+                client.PostAsync(url, httpContent);
             }
         }
 
