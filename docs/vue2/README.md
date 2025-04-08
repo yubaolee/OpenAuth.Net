@@ -1,3 +1,7 @@
+::: warning 注意事项
+如何你使用的是vue3版本，请参考：[OpenAuth.Pro Vue3版本](/pro/)
+:::
+
 OpenAuth.Pro Vue2版本基于vue2 + element-ui。它使用开源版OpenAuth.Net的API接口（即：OpenAuth.WebApi）提供数据服务。二者的关系如下：
 
 ![系统架构](http://img.openauth.net.cn/系统架构.png)

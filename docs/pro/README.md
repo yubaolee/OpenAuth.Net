@@ -1,3 +1,7 @@
+::: warning 注意事项
+如何你使用的是vue2版本，请参考：[OpenAuth.Pro Vue2版本](/vue2/)
+:::
+
 OpenAuth.Pro Vue3版本基于vue3 + element-plus。它使用开源版OpenAuth.Net的API接口（即：OpenAuth.WebApi）提供数据服务。二者的关系如下：
 
 ![系统架构](http://img.openauth.net.cn/系统架构.png)
@@ -29,12 +33,15 @@ vue3版源代码获取方式：[http://old.openauth.net.cn/question/detail.html?
 
 下载最新版的vs code，或Cursor、Windsurf、Trae等工具用来作为OpenAuth.Pro Vue3版的开发工具。
 
+## 源码下载
+
+根据授权文件的下载指示，下载Vue3源码。注意：一定要使用下图中的数据库脚本：
+
+![2025-04-08-20-53-49](http://img.openauth.net.cn/2025-04-08-20-53-49.png)
 
 ## 创建数据库
 
-* 新建一个空数据库：OpenAuthPro。前端源码文件夹【sql脚本】中，运行`Sql Server脚本.sql`（或mysql脚本）
-
-![2025-04-08-20-53-49](http://img.openauth.net.cn/2025-04-08-20-53-49.png)
+* 新建一个空数据库：OpenAuthPro。使用上一步下载的【sql脚本】文件夹，根据你的数据库类型，选择运行你需要的脚本：`Sql Server脚本.sql`或`mysql脚本.sql`
 
 ## 启动后端
 
