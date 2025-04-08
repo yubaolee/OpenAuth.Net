@@ -79,18 +79,6 @@ getData() {
 在表单添加的下拉框里添加：
 ![20211228213129](http://img.openauth.net.cn/20211228213129.png)
 
-::: warning 注意
-企业Vue2 5.2或以前版本需要在项目main.js中注入：
-
-```javascript
-// 请假条表单和详情
-import FrmLeaveReqAdd from '@/views/forms/userDefine/frmLeaveReq/add'
-import FrmLeaveReqDetail from '@/views/forms/userDefine/frmLeaveReq/detail'
-Vue.component('FrmLeaveReqAdd', FrmLeaveReqAdd)
-Vue.component('FrmLeaveReqDetail', FrmLeaveReqDetail)
-```
-
-:::
 
 ## 配置表单
 
