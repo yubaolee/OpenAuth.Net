@@ -4,7 +4,7 @@ OpenAuth.Pro Vue2版本基于vue2 + element-ui。它使用开源版OpenAuth.Net�
 
 vue2版源代码获取方式：[http://old.openauth.net.cn/question/detail.html?id=a2be2d61-7fcb-4df8-8be2-9f296c22a89c](http://old.openauth.net.cn/question/detail.html?id=a2be2d61-7fcb-4df8-8be2-9f296c22a89c)
 
-演示地址： [http://demo.openauth.net.cn:1805/](http://demo.openauth.net.cn:1805/)
+演示地址： [http://demo.openauth.net.cn:1803/](http://demo.openauth.net.cn:1803/)
 
 ## OpenAuth.Net系列教学视频
 
@@ -27,7 +27,7 @@ vue2版源代码获取方式：[http://old.openauth.net.cn/question/detail.html?
 
 #### visual studio code
 
-下载最新版的vs code，或Cursor、Windsurf、Trae等工具用来作为OpenAuth.Pro的开发工具。
+下载最新版的vs code，或Cursor、Windsurf、Trae等工具用来作为OpenAuth.Pro Vue2版的开发工具。
 
 
 ## 创建数据库
