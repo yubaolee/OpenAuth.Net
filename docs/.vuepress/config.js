@@ -1,7 +1,7 @@
 /*
  * @Author: yubaolee <yubaolee@163.com> | ahfu~ <954478625@qq.com>
  * @Date: 2023-08-12 10:48:24
- * @LastEditTime: 2025-04-06 00:45:14
+ * @LastEditTime: 2025-04-08 16:59:10
  * @Description: 
  * @
  * @Copyright (c) 2023 by yubaolee | ahfu~ , All Rights Reserved. 
@@ -46,8 +46,13 @@ module.exports = {
             target: '_blank'
           },
           {
-            text: 'OpenAuth.Pro(企业vue2/vue3)',
+            text: 'OpenAuth.Pro(vue3版本)',
             link: '/pro/',
+            target: '_blank'
+          },
+          {
+            text: 'OpenAuth.Pro(vue2版本)',
+            link: '/vue2/',
             target: '_blank'
           }
         ],
@@ -122,6 +127,34 @@ module.exports = {
       ],
 
       '/pro/': [
+        ['', '项目介绍'],
+        'deploy',
+        'structure',
+        'devnew',
+        {
+          title: '基础开发', // 必要的
+          sidebarDepth: 1, // 可选的, 默认值是 1
+          collapsable: false,
+          children: ['router','openurl','keepalive'],
+        },
+        'datapropertyrule',
+        'printerplan',
+        {
+          title: '表单设计', // 必要的
+          sidebarDepth: 1, // 可选的, 默认值是 1
+          collapsable: false,
+          children: ['startform','dragform','dragformdetail'],
+        },
+        {
+          title: '工作流', // 必要的
+          sidebarDepth: 1, // 可选的, 默认值是 1
+          collapsable: false,
+          children: ['startflow','form'],
+        },
+        'components',
+        'faq',
+      ],
+      '/vue2/': [
         ['', '项目介绍'],
         'deploy',
         'structure',
