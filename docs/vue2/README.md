@@ -1,14 +1,10 @@
-OpenAuth.Pro是一套全新的前端界面，基于vue2 + element-ui /vue3 + element-plus，采用VUE全家桶（VUE+VUEX+VUE-ROUTER）单页面SPA开发。它使用开源版OpenAuth.Net的API接口（即：OpenAuth.WebApi）提供数据服务。二者的关系如下：
+OpenAuth.Pro Vue2版本基于vue2 + element-ui。它使用开源版OpenAuth.Net的API接口（即：OpenAuth.WebApi）提供数据服务。二者的关系如下：
 
 ![系统架构](http://img.openauth.net.cn/系统架构.png)
 
-企业版代码获取方式：[http://old.openauth.net.cn/question/detail.html?id=a2be2d61-7fcb-4df8-8be2-9f296c22a89c](http://old.openauth.net.cn/question/detail.html?id=a2be2d61-7fcb-4df8-8be2-9f296c22a89c)
+vue2版源代码获取方式：[http://old.openauth.net.cn/question/detail.html?id=a2be2d61-7fcb-4df8-8be2-9f296c22a89c](http://old.openauth.net.cn/question/detail.html?id=a2be2d61-7fcb-4df8-8be2-9f296c22a89c)
 
-Vue2演示地址： [http://demo.openauth.net.cn:1803/](http://demo.openauth.net.cn:1803/)
-
-Vue3演示地址： [http://demo.openauth.net.cn:1805/](http://demo.openauth.net.cn:1805/)
-
-移动H5版本演示（请使用浏览器移动模式或直接用手机打开）：[http://demo.openauth.net.cn:1804/](http://demo.openauth.net.cn:1804/)
+演示地址： [http://demo.openauth.net.cn:1805/](http://demo.openauth.net.cn:1805/)
 
 ## OpenAuth.Net系列教学视频
 
@@ -27,24 +23,16 @@ Vue3演示地址： [http://demo.openauth.net.cn:1805/](http://demo.openauth.net
 
 #### NodeJs
 
-前端环境为NodeJs，下载地址：[http://nodejs.cn/download/current/](http://nodejs.cn/download/current/)。其中：
-
-OpenAuth.Pro v4.6.4及以后的版本使用Node 18
-
-OpenAuth.Pro v4.6.3-v4.3 使用Node 16
-
-OpenAuth.Pro v4.3及以前的版本使用Node 14
+前端环境为NodeJs，下载地址：[http://nodejs.cn/download/current/](http://nodejs.cn/download/current/)
 
 #### visual studio code
 
-下载最新版的vs code，用来作为OpenAuth.Pro的开发工具。
+下载最新版的vs code，或Cursor、Windsurf、Trae等工具用来作为OpenAuth.Pro的开发工具。
 
 
 ## 创建数据库
 
-* 如果只使用开源的OpenAuth.Mvc。则新建一个空数据库：OpenAuthDB。然后在OpenAuth.Net项目文件夹【sql server 初始化脚本】中，运行`Sql Server脚本.sql`（或mysql初始化脚本）
-
-* 如果只使用企业版的OpenAuth.WebApi,则新建一个空数据库：OpenAuthPro。使用OpenAuth.Pro前端源码文件夹【sql脚本】中，运行`Sql Server脚本.sql`（或mysql脚本）
+* 使用下载的OpenAuth.Pro前端源码文件夹【sql脚本】中，运行`Sql Server脚本.sql`（或mysql脚本）
 
 ## 启动后端
 
