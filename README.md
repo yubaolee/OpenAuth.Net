@@ -32,9 +32,9 @@
 
 ## ▶️演示直达
 
-* Vue2演示地址： http://demo.openauth.net.cn:1803
-
 * Vue3演示地址： http://demo.openauth.net.cn:1805
+
+* Vue2演示地址： http://demo.openauth.net.cn:1803
 
 * 移动H5演示地址（请使用浏览器移动模式或直接用手机打开）： http://demo.openauth.net.cn:1804 
 
@@ -90,6 +90,8 @@
 * 全网最好用的打印解决方案。详情:[智能打印](http://doc.openauth.net.cn/pro/printerplan.html)
 
 * 基于Quartz.Net的定时任务控制,可随时启/停，可视化配置Cron表达式功能，请参考：[定时任务](http://doc.openauth.net.cn/core/job.html)
+
+* 零代码动态API接口，详情：[动态API](http://doc.openauth.net.cn/core/dynamicapi.html)
 
 * 基于CodeSmith的代码生成功能，可快速生成带有头/明细结构的页面
 
