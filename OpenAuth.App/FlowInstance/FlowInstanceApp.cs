@@ -2,7 +2,7 @@
  * @Author: yubaolee <yubaolee@163.com> | ahfu~ <954478625@qq.com>
  * @Date: 2024-12-13 16:55:17
  * @Description: 工作流实例表操作
- * @LastEditTime: 2025-04-06 02:25:02
+ * @LastEditTime: 2025-04-10 00:02:15
  * Copyright (c) 2024 by yubaolee | ahfu~ , All Rights Reserved.
  */
 
@@ -491,7 +491,7 @@ namespace OpenAuth.App
                     }
 
                     //如果是连续多级直属上级且还没到指定的角色，只改变执行人，不到下一个节点
-                    if (!wfruntime.currentNode.setInfo.NodeDesignateData.roles.Intersect(roles).Any())
+                    if (!wfruntime.currentNode.setInfo.NodeDesignateData.datas.Intersect(roles).Any())
                     {
                         canNext = false;
                         var parentId = _userManagerApp.GetParent(tag.UserId);

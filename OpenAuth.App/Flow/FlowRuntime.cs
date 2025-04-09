@@ -680,7 +680,7 @@ namespace OpenAuth.App.Flow
                 }
 
                 var orgManagerApp = AutofacContainerModule.GetService<OrgManagerApp>();
-                var chairmanIds = orgManagerApp.GetChairmanId(nextNode.setInfo.NodeDesignateData.orgs);
+                var chairmanIds = orgManagerApp.GetChairmanId(nextNode.setInfo.NodeDesignateData.datas);
                 makerList = GenericHelpers.ArrayToString(chairmanIds, makerList);
             }
             else
@@ -716,13 +716,21 @@ namespace OpenAuth.App.Flow
                 }
                 else if (node.setInfo.NodeDesignate == Setinfo.SPECIAL_USER) //指定成员
                 {
-                    makerList = GenericHelpers.ArrayToString(node.setInfo.NodeDesignateData.users, makerList);
+                    makerList = GenericHelpers.ArrayToString(node.setInfo.NodeDesignateData.datas, makerList);
                 }
                 else if (node.setInfo.NodeDesignate == Setinfo.SPECIAL_ROLE) //指定角色
                 {
                     var revelanceApp = AutofacContainerModule.GetService<RevelanceManagerApp>();
-                    var users = revelanceApp.Get(Define.USERROLE, false, node.setInfo.NodeDesignateData.roles);
+                    var users = revelanceApp.Get(Define.USERROLE, false, node.setInfo.NodeDesignateData.datas);
                     makerList = GenericHelpers.ArrayToString(users, makerList);
+                }
+                else if (node.setInfo.NodeDesignate == Setinfo.SPECIAL_SQL) //指定SQL
+                {
+                    //如果是指定SQL，则需要执行SQL，并返回结果
+                    var sql = node.setInfo.NodeDesignateData.datas[0];
+                    var sugarClient = AutofacContainerModule.GetService<ISqlSugarClient>();
+                    var result = sugarClient.Ado.SqlQuery<string>(sql);
+                    makerList = GenericHelpers.ArrayToString(result, makerList);
                 }
                 else if (node.setInfo.NodeDesignate == Setinfo.RUNTIME_SPECIAL_ROLE
                          || node.setInfo.NodeDesignate == Setinfo.RUNTIME_SPECIAL_USER)

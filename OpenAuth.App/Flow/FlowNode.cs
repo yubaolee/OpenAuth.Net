@@ -27,7 +27,6 @@
         /// <summary>
         /// 节点的附加数据项
         /// </summary>
-        /// <value>The set information.</value>
         public Setinfo setInfo { get; set; }
     }
 
@@ -36,6 +35,7 @@
         public const string ALL_USER = "ALL_USER"; //所有用户
         public const string SPECIAL_ROLE = "SPECIAL_ROLE"; //指定角色
         public const string SPECIAL_USER = "SPECIAL_USER"; //指定用户
+        public const string SPECIAL_SQL = "SPECIAL_SQL"; //指定SQL
         /// <summary>
         /// 连续多级直属上级
         /// <para>不同于钉钉的各上级部门负责人审批，OpenAuth以用户的各级直属上级审批模式</para>
@@ -101,12 +101,13 @@
 
     /// <summary>
     /// 节点执行人
+    /// <para>
+    /// 用一个类封装，因为datas存的是id,前端需要在类里面加一个Texts字段，用于显示具体的人或角色等
+    /// </para>
     /// </summary>
     public class Nodedesignatedata
     {
-        public string[] users { get; set; }
-        public string[] roles { get; set; }
-        public string[] orgs { get; set; }
+        public string[] datas { get; set; }
     }
 
     /// <summary>
