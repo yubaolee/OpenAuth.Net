@@ -39,6 +39,7 @@ namespace OpenAuth.App
 
             Repository.Update(u => new FlowScheme
             {
+                SchemeContent = flowScheme.SchemeContent,
                 SchemeName = flowScheme.SchemeName,
                 ModifyDate = DateTime.Now,
                 FrmId = flowScheme.FrmId,
