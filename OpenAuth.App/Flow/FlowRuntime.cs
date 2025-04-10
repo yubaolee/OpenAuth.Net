@@ -650,6 +650,19 @@ namespace OpenAuth.App.Flow
 
                 makerList = GenericHelpers.ArrayToString(request.NodeDesignates, makerList);
             }
+            else if (nextNode.setInfo.NodeDesignate == Setinfo.SPECIAL_SQL)
+            {
+                //如果是指定SQL
+                if (nextNode.setInfo.NodeDesignate != request.NodeDesignateType)
+                {
+                    throw new Exception("前端提交的节点权限类型异常，请检查流程");
+                }
+
+                var sql = ReplaceSql(nextNode.setInfo.NodeDesignateData.datas[0]);
+                var sugarClient = AutofacContainerModule.GetService<ISqlSugarClient>();
+                var result = sugarClient.Ado.SqlQuery<string>(sql);
+                makerList = GenericHelpers.ArrayToString(result, makerList);
+            }
             else if (nextNode.setInfo.NodeDesignate == Setinfo.RUNTIME_PARENT
                      || nextNode.setInfo.NodeDesignate == Setinfo.RUNTIME_MANY_PARENTS)
             {
@@ -727,7 +740,7 @@ namespace OpenAuth.App.Flow
                 else if (node.setInfo.NodeDesignate == Setinfo.SPECIAL_SQL) //指定SQL
                 {
                     //如果是指定SQL，则需要执行SQL，并返回结果
-                    var sql = node.setInfo.NodeDesignateData.datas[0];
+                    var sql = ReplaceSql(node.setInfo.NodeDesignateData.datas[0]);
                     var sugarClient = AutofacContainerModule.GetService<ISqlSugarClient>();
                     var result = sugarClient.Ado.SqlQuery<string>(sql);
                     makerList = GenericHelpers.ArrayToString(result, makerList);
@@ -744,6 +757,19 @@ namespace OpenAuth.App.Flow
             }
 
             return makerList;
+        }
+
+        /// <summary>
+        /// 替换SQL中的权限占位符
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <returns></returns>
+        private string ReplaceSql(string sql){
+            var loginUser = AutofacContainerModule.GetService<IAuth>().GetCurrentUser();
+            var res = sql.Replace(Define.DATAPRIVILEGE_LOGINUSER, loginUser.User.Id);
+            res = res.Replace(Define.DATAPRIVILEGE_LOGINROLE, string.Join(',', loginUser.Roles.Select(u => u.Id)));
+            res = res.Replace(Define.DATAPRIVILEGE_LOGINORG, string.Join(',', loginUser.Orgs.Select(u => u.Id)));
+            return res;
         }
 
         /// <summary>
