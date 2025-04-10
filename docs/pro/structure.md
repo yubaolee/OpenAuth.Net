@@ -1,5 +1,6 @@
 # 项目结构
 
+OpenAuth.Net Vue3版本参考业界标准结构进行划分，如需二次开发，可以在对应的文件夹进行代码修改。结构如下：
 ```
 📦openauthvue3
  ┣ 📂mock           //mock数据
