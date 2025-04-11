@@ -271,26 +271,29 @@
                             _popoverhtml += '<li>类型:' + _NodeDesignate[item.setInfo.NodeDesignate] + '</li>';
                             if (item.setInfo.NodeDesignateData != undefined) {
                                 var _rowstr = "";
-                                for (var i in item.setInfo.NodeDesignateData.roles) {
-                                    var _postitem = item.setInfo.NodeDesignateData.roles[i];
-                                    var _one = top.clientroleData[_postitem];
-                                    _rowstr += ' <span class="label label-success">' +
+
+                                if(item.setInfo.NodeDesignate == "SPECIAL_ROLE"){  //指定角色
+                                    for (var i in item.setInfo.NodeDesignateData.datas) {
+                                        var _postitem = item.setInfo.NodeDesignateData.datas[i];
+                                        var _one = top.clientroleData[_postitem];
+                                        _rowstr += ' <span class="label label-success">' +
                                         (_one == undefined ? _postitem : _one.FullName) +
                                         '</span>';
-                                    if (i == item.setInfo.NodeDesignateData.roles.length - 1) {
-                                        _popoverhtml += '<li>角色:' + _rowstr + '</li>';
+                                        if (i == item.setInfo.NodeDesignateData.datas.length - 1) {
+                                            _popoverhtml += '<li>角色:' + _rowstr + '</li>';
+                                        }
                                     }
                                 }
-
-                                _rowstr = "";
-                                for (var i in item.setInfo.NodeDesignateData.users) {
-                                    var _postitem = item.setInfo.NodeDesignateData.users[i];
-                                    var _one = clientuserData[_postitem];
-                                    _rowstr += ' <span class="label label-danger">' +
+                                else if(item.setInfo.NodeDesignate == "SPECIAL_USER"){  //指定用户
+                                    for (var i in item.setInfo.NodeDesignateData.datas) {
+                                        var _postitem = item.setInfo.NodeDesignateData.datas[i];
+                                        var _one = top.clientuserData[_postitem];
+                                        _rowstr += ' <span class="label label-danger">' +
                                         (_one == undefined ? _postitem : _one.RealName) +
                                         '</span>';
-                                    if (i == item.setInfo.NodeDesignateData.users.length - 1) {
-                                        _popoverhtml += '<li>用户:' + _rowstr + '</li>';
+                                        if (i == item.setInfo.NodeDesignateData.datas.length - 1) {
+                                            _popoverhtml += '<li>用户:' + _rowstr + '</li>';
+                                        }
                                     }
                                 }
                             }

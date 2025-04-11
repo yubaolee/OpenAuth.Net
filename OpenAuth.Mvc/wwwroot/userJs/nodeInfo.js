@@ -5,8 +5,7 @@ layui.config({
         transfer = layui.transfer,
         $ = layui.jquery;
     var form = layui.form;
-    var users = []; //节点的执行人
-    var roles = []; //节点执行角色
+    var datas = []; //节点的执行人
 
     var index = layer.getFrameIndex(window.name); //获取窗口索引
     //从flowschemes.js进入的节点信息
@@ -48,8 +47,7 @@ layui.config({
     //初始化节点设置信息
     if (node.setInfo != null) {
         vm.tmp = Object.assign({}, vm.tmp, node.setInfo)
-        users = node.setInfo.NodeDesignateData.users;
-        roles = node.setInfo.NodeDesignateData.roles;
+        datas = node.setInfo.NodeDesignateData.datas;
     }
     // form.render(); //重新渲染，防止radio/select等失效
 
@@ -143,15 +141,15 @@ layui.config({
                       //  console.log(data); //得到当前被穿梭的数据
                       //  console.log(index); //如果数据来自左边，index 为 0，否则为 1
                         if (index === 0) {
-                            roles = roles.concat(data.map(u =>u.value));
+                            datas = datas.concat(data.map(u =>u.value));
                         } else {
-                            roles = roles.filter(el => !(data.map(u =>u.value).includes(el))); 
+                            datas = datas.filter(el => !(data.map(u =>u.value).includes(el))); 
                         }
-                        console.log(roles);
+                        console.log(datas);
                     }
                     ,title: ['系统角色', '已分配角色']
                     ,data: json.Result
-                    ,value: roles
+                    ,value: datas
                 });
             });
         };
@@ -222,11 +220,11 @@ layui.config({
         function (data) {
             vm.tmp.NodeDesignate = data.value;
             if (data.value === "SPECIAL_USER") {
-                roles = [];
+                datas = [];
                 userstree.load();
                 ztree.reload();
             } else if (data.value === "SPECIAL_ROLE") {
-                users = [];
+                datas = [];
                 rolestransfer.load();
             }
         });
@@ -235,9 +233,7 @@ layui.config({
     getVal = function () {
         var result = {
             NodeDesignateData: { //节点指定操作人
-                users: users,
-                roles: roles,
-                orgs: []
+                datas: datas
             }
         };
       //  $.extend(result, vm.tmp);
