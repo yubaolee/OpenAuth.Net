@@ -52,7 +52,7 @@ namespace OpenAuth.App
         /// <param name="roleId">The role unique identifier.</param>
         public IEnumerable<Module> LoadForRole(string roleId)
         {
-            var moduleIds = UnitWork.Find<Relevance>(u => u.FirstId == roleId && u.Key == Define.ROLEMODULE)
+            var moduleIds = UnitWork.Find<Relevance>(u => u.FirstId == roleId && u.RelKey == Define.ROLEMODULE)
                 .Select(u => u.SecondId);
             return UnitWork.Find<Module>(u => moduleIds.Contains(u.Id)).OrderBy(u => u.SortNo);
         }

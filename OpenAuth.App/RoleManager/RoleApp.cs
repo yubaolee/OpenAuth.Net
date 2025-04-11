@@ -88,8 +88,8 @@ namespace OpenAuth.App
         {
             UnitWork.ExecuteWithTransaction(() =>
             {
-                UnitWork.Delete<Relevance>(u=>(u.Key == Define.ROLEMODULE || u.Key == Define.ROLEELEMENT) && ids.Contains(u.FirstId));
-                UnitWork.Delete<Relevance>(u=>u.Key == Define.USERROLE && ids.Contains(u.SecondId));
+                UnitWork.Delete<Relevance>(u=>(u.RelKey == Define.ROLEMODULE || u.RelKey == Define.ROLEELEMENT) && ids.Contains(u.FirstId));
+                UnitWork.Delete<Relevance>(u=>u.RelKey == Define.USERROLE && ids.Contains(u.SecondId));
                 UnitWork.Delete<Role>(u =>ids.Contains(u.Id));
                 UnitWork.Save();
             });

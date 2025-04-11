@@ -761,14 +761,18 @@ namespace OpenAuth.App.Flow
 
         /// <summary>
         /// 替换SQL中的权限占位符
+        /// <para>如：select id from sysuser where parentId = {loginUser}</para>
+        /// <para>替换后：select id from sysuser where parentId = '123'</para>
+        /// <para>如：select id from sysuser where parentId = {loginUser}</para>
+        /// <para>替换后：select id from sysuser where parentId = '123'</para>
         /// </summary>
         /// <param name="sql"></param>
         /// <returns></returns>
         private string ReplaceSql(string sql){
             var loginUser = AutofacContainerModule.GetService<IAuth>().GetCurrentUser();
-            var res = sql.Replace(Define.DATAPRIVILEGE_LOGINUSER, loginUser.User.Id);
-            res = res.Replace(Define.DATAPRIVILEGE_LOGINROLE, string.Join(',', loginUser.Roles.Select(u => u.Id)));
-            res = res.Replace(Define.DATAPRIVILEGE_LOGINORG, string.Join(',', loginUser.Orgs.Select(u => u.Id)));
+            var res = sql.Replace(Define.DATAPRIVILEGE_LOGINUSER, $"'{loginUser.User.Id}'");
+            res = res.Replace(Define.DATAPRIVILEGE_LOGINROLE, string.Join(',', loginUser.Roles.Select(u => $"'{u.Id}'")));
+            res = res.Replace(Define.DATAPRIVILEGE_LOGINORG, string.Join(',', loginUser.Orgs.Select(u => $"'{u.Id}'")));
             return res;
         }
 

@@ -71,7 +71,7 @@ namespace OpenAuth.App
                 delOrgIds.AddRange(UnitWork.Find<SysOrg>(u=>u.CascadeId.Contains(cascadeId)).Select(u =>u.Id).ToArray());
             }
             
-            UnitWork.Delete<Relevance>(u =>u.Key == Define.USERORG && delOrgIds.Contains(u.SecondId));
+            UnitWork.Delete<Relevance>(u =>u.RelKey == Define.USERORG && delOrgIds.Contains(u.SecondId));
             UnitWork.Delete<SysOrg>(u => delOrgIds.Contains(u.Id));
             UnitWork.Save();
             
@@ -85,7 +85,7 @@ namespace OpenAuth.App
         {
             var result = from userorg in UnitWork.Find<Relevance>(null)
                 join org in UnitWork.Find<SysOrg>(null) on userorg.SecondId equals org.Id
-                where userorg.FirstId == userId && userorg.Key == Define.USERORG
+                where userorg.FirstId == userId && userorg.RelKey == Define.USERORG
                 select org;
             return result.ToList();
         }

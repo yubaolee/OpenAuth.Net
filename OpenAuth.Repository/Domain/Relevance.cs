@@ -23,7 +23,7 @@ namespace OpenAuth.Repository.Domain
         public Relevance()
         {
           this.Description= string.Empty;
-          this.Key= string.Empty;
+          this.RelKey= string.Empty;
           this.Status= 0;
           this.OperateTime= DateTime.Now;
           this.OperatorId= string.Empty;
@@ -42,7 +42,7 @@ namespace OpenAuth.Repository.Domain
 	    /// 映射标识
 	    /// </summary>
          [Description("映射标识")]
-        public string Key { get; set; }
+        public string RelKey { get; set; }
         /// <summary>
 	    /// 状态
 	    /// </summary>

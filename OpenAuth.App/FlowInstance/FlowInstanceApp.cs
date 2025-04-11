@@ -792,17 +792,17 @@ namespace OpenAuth.App
                             select distinct FirstId as InstanceId
                             from Relevance rel
                                      inner join FlowInstance flow on rel.FirstId = flow.Id and flow.IsFinish = 1
-                            where `key` = '{Define.INSTANCE_NOTICE_USER}'
+                            where RelKey = '{Define.INSTANCE_NOTICE_USER}'
                               and SecondId = '{user.User.Id}'
                             union
                             select distinct a.FirstId as InstanceId
                             from Relevance a
                                      inner join (select SecondId as RoleId
                                                  from Relevance
-                                                 where `key` = 'UserRole'
+                                                 where RelKey = 'UserRole'
                                                    and FirstId = '{user.User.Id}') b on a.SecondId = b.RoleId
                                      inner join FlowInstance flow on a.FirstId = flow.Id and flow.IsFinish = 1
-                            where a.`key` = '{Define.INSTANCE_NOTICE_ROLE}') UniqueInstanceIds
+                            where a.RelKey = '{Define.INSTANCE_NOTICE_ROLE}') UniqueInstanceIds
                                   ON fi.Id = UniqueInstanceIds.InstanceId
                     ";
             }
@@ -810,14 +810,7 @@ namespace OpenAuth.App
             switch (SugarClient.CurrentConnectionConfig.DbType)
             {
                 case DbType.SqlServer:
-                    sql = sql.Replace("`key`", "[Key]");
                     sql = sql.Replace("from dual", "");
-                    break;
-                case DbType.Oracle:
-                    sql = sql.Replace("`key`", "\"KEY\"");
-                    break;
-                case DbType.PostgreSQL:
-                    sql = sql.Replace("`key`", "key");
                     break;
             }
 

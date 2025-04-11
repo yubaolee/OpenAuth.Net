@@ -44,7 +44,7 @@ namespace OpenAuth.App
                 join user2 in UnitWork.Find<SysUser>(null)
                     on user.ParentId equals user2.Id into tempuser
                 from u in tempuser.DefaultIfEmpty() 
-                join relevance in UnitWork.Find<Relevance>(u => u.Key == "UserOrg")
+                join relevance in UnitWork.Find<Relevance>(u => u.RelKey == "UserOrg")
                     on user.Id equals relevance.FirstId into temp
                 from r in temp.DefaultIfEmpty()
                 join org in UnitWork.Find<SysOrg>(null)
@@ -64,7 +64,7 @@ namespace OpenAuth.App
                     user.TypeName,
                     user.ParentId,
                     ParentName = u.Name, //直属上级
-                    r.Key,
+                    Key = r.RelKey,
                     r.SecondId,
                     OrgId = o.Id,
                     OrgName = o.Name
@@ -122,7 +122,7 @@ namespace OpenAuth.App
                join user2 in UnitWork.Find<SysUser>(null)
                    on user.ParentId equals user2.Id into tempuser
                from u in tempuser.DefaultIfEmpty() 
-               join relevance in UnitWork.Find<Relevance>(u => u.Key == "UserOrg")
+               join relevance in UnitWork.Find<Relevance>(u => u.RelKey == "UserOrg")
                    on user.Id equals relevance.FirstId into temp
                from r in temp.DefaultIfEmpty()
                join org in UnitWork.Find<SysOrg>(null)
@@ -142,7 +142,7 @@ namespace OpenAuth.App
                    user.TypeName,
                    user.ParentId,
                    ParentName = u.Name, //直属上级
-                   r.Key,
+                   Key = r.RelKey,
                    r.SecondId,
                    OrgId = o.Id,
                    OrgName = o.Name
@@ -230,7 +230,7 @@ namespace OpenAuth.App
         {
             UnitWork.ExecuteWithTransaction(() =>
             {
-                UnitWork.Delete<Relevance>(u =>(u.Key == Define.USERROLE || u.Key == Define.USERORG) 
+                UnitWork.Delete<Relevance>(u =>(u.RelKey == Define.USERROLE || u.RelKey == Define.USERORG) 
                                                && ids.Contains(u.FirstId));
                 UnitWork.Delete<SysUser>(u => ids.Contains(u.Id));
                 UnitWork.Save();
@@ -255,7 +255,7 @@ namespace OpenAuth.App
         public async Task<TableData> LoadByRole(QueryUserListByRoleReq request)
         {
             var users = from userRole in UnitWork.Find<Relevance>(u =>
-                    u.SecondId == request.roleId && u.Key == Define.USERROLE)
+                    u.SecondId == request.roleId && u.RelKey == Define.USERROLE)
                 join user in UnitWork.Find<SysUser>(null) on userRole.FirstId equals user.Id into temp
                 from c in temp.Where(u =>u.Id != null)
                 select c;
@@ -273,7 +273,7 @@ namespace OpenAuth.App
         public async Task<TableData> LoadByOrg(QueryUserListByOrgReq request)
         {
             var users = from userOrg in UnitWork.Find<Relevance>(u =>
-                    u.SecondId == request.orgId && u.Key == Define.USERORG)
+                    u.SecondId == request.orgId && u.RelKey == Define.USERORG)
                 join user in UnitWork.Find<SysUser>(null) on userOrg.FirstId equals user.Id into temp
                 from c in temp.Where(u =>u.Id != null)
                 select c;
@@ -327,30 +327,16 @@ namespace OpenAuth.App
             from sysuser u
                      join (select distinct SecondId as UserId
                            from Relevance
-                           where `key` = '{Define.INSTANCE_NOTICE_USER}'
+                           where RelKey = '{Define.INSTANCE_NOTICE_USER}'
                              and FirstId = '{instanceId}'
                            union
                            select distinct FirstId as UserId
                            from Relevance a
                                     inner join (select SecondId as RoleId
                                                 from Relevance
-                                                where `key` = '{Define.INSTANCE_NOTICE_ROLE}'
+                                                where RelKey = '{Define.INSTANCE_NOTICE_ROLE}'
                                                   and FirstId = '{instanceId}') b on a.SecondId = b.RoleId
-                           where `key` = 'UserRole') userids on u.Id = userids.UserId";
-
-            if (UnitWork.GetDbContext().Database.GetDbConnection().GetType().Name == "SqlConnection")
-            {
-                sql = sql.Replace("`key`", "[Key]");
-            }
-            else if (UnitWork.GetDbContext().Database.GetDbConnection().GetType().Name == "OracleConnection")
-            {
-                sql = sql.Replace("`key`", "\"KEY\"");
-            }
-            else if (UnitWork.GetDbContext().Database.GetDbConnection().GetType().Name == "NpgsqlConnection")
-            {
-                sql = sql.Replace("`key`", "\"key\"");
-            }
-            
+                           where RelKey = 'UserRole') userids on u.Id = userids.UserId";
             var users = UnitWork.FromSql<SysUser>(sql);
             return users.Select(u=>u.Id).ToList();
         }

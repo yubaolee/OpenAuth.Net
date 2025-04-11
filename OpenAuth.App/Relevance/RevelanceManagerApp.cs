@@ -41,7 +41,7 @@ namespace OpenAuth.App
                 from value in sameVals
                 select new Relevance
                 {
-                    Key = key,
+                    RelKey = key,
                     FirstId = sameVals.Key,
                     SecondId = value,
                     OperateTime = DateTime.Now
@@ -81,7 +81,7 @@ namespace OpenAuth.App
                     _logger.LogInformation($"start=> delete {key} {sameVals.Key} {value}");
                     try
                     {
-                        UnitWork.Delete<Relevance>(u => u.Key == key && u.FirstId == sameVals.Key && u.SecondId == value);
+                        UnitWork.Delete<Relevance>(u => u.RelKey == key && u.FirstId == sameVals.Key && u.SecondId == value);
                     }
                     catch (Exception e)
                     {
@@ -94,7 +94,7 @@ namespace OpenAuth.App
 
         public void DeleteBy(string key, params string[] firstIds)
         {
-            UnitWork.Delete<Relevance>(u => firstIds.Contains(u.FirstId) && u.Key == key);
+            UnitWork.Delete<Relevance>(u => firstIds.Contains(u.FirstId) && u.RelKey == key);
         }
 
 
@@ -109,12 +109,12 @@ namespace OpenAuth.App
         {
             if (returnSecondIds)
             {
-                return Repository.Find(u => u.Key == key
+                return Repository.Find(u => u.RelKey == key
                                             && ids.Contains(u.FirstId)).Select(u => u.SecondId).ToList();
             }
             else
             {
-                return Repository.Find(u => u.Key == key
+                return Repository.Find(u => u.RelKey == key
                                             && ids.Contains(u.SecondId)).Select(u => u.FirstId).ToList();
             }
         }
@@ -128,7 +128,7 @@ namespace OpenAuth.App
         /// <returns></returns>
         public List<string> Get(string key, string firstId, string secondId)
         {
-            return Repository.Find(u => u.Key == key && u.FirstId == firstId && u.SecondId == secondId)
+            return Repository.Find(u => u.RelKey == key && u.FirstId == firstId && u.SecondId == secondId)
                 .Select(u => u.ThirdId).ToList();
         }
 
@@ -148,7 +148,7 @@ namespace OpenAuth.App
             {
                 relevances.Add(new Relevance
                 {
-                    Key = Define.ROLEDATAPROPERTY,
+                    RelKey = Define.ROLEDATAPROPERTY,
                     FirstId = request.RoleId,
                     SecondId = request.ModuleCode,
                     ThirdId = requestProperty,
@@ -181,7 +181,7 @@ namespace OpenAuth.App
             {
                 foreach (var property in request.Properties)
                 {
-                    UnitWork.Delete<Relevance>(u => u.Key == Define.ROLEDATAPROPERTY
+                    UnitWork.Delete<Relevance>(u => u.RelKey == Define.ROLEDATAPROPERTY
                                                     && u.FirstId == request.RoleId
                                                     && u.SecondId == request.ModuleCode
                                                     && u.ThirdId == property);
@@ -198,12 +198,12 @@ namespace OpenAuth.App
             UnitWork.ExecuteWithTransaction(() =>
             {
                 //删除以前的所有用户
-                UnitWork.Delete<Relevance>(u => u.SecondId == request.RoleId && u.Key == Define.USERROLE);
+                UnitWork.Delete<Relevance>(u => u.SecondId == request.RoleId && u.RelKey == Define.USERROLE);
                 //批量分配用户角色
                 UnitWork.BatchAdd((from firstId in request.UserIds
                     select new Relevance
                     {
-                        Key = Define.USERROLE,
+                        RelKey = Define.USERROLE,
                         FirstId = firstId,
                         SecondId = request.RoleId,
                         OperateTime = DateTime.Now
@@ -221,12 +221,12 @@ namespace OpenAuth.App
             UnitWork.ExecuteWithTransaction(() =>
             {
                 //删除以前的所有用户
-                UnitWork.Delete<Relevance>(u => u.SecondId == request.OrgId && u.Key == Define.USERORG);
+                UnitWork.Delete<Relevance>(u => u.SecondId == request.OrgId && u.RelKey == Define.USERORG);
                 //批量分配用户角色
                 UnitWork.BatchAdd((from firstId in request.UserIds
                     select new Relevance
                     {
-                        Key = Define.USERORG,
+                        RelKey = Define.USERORG,
                         FirstId = firstId,
                         SecondId = request.OrgId,
                         OperateTime = DateTime.Now
@@ -244,12 +244,12 @@ namespace OpenAuth.App
             UnitWork.ExecuteWithTransaction(() =>
             {
                 //删除以前的所有资源
-                UnitWork.Delete<Relevance>(u => u.FirstId == request.RoleId && u.Key == Define.ROLERESOURCE);
+                UnitWork.Delete<Relevance>(u => u.FirstId == request.RoleId && u.RelKey == Define.ROLERESOURCE);
                 //批量分配角色资源
                 UnitWork.BatchAdd((from firstId in request.ResourceIds
                     select new Relevance
                     {
-                        Key = Define.ROLERESOURCE,
+                        RelKey = Define.ROLERESOURCE,
                         FirstId = request.RoleId,
                         SecondId = firstId,
                         OperateTime = DateTime.Now
