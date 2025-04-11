@@ -47,7 +47,7 @@ layui.config({
     //初始化节点设置信息
     if (node.setInfo != null) {
         vm.tmp = Object.assign({}, vm.tmp, node.setInfo)
-        datas = node.setInfo.NodeDesignateData.datas;
+        datas = node.setInfo.NodeDesignateData.datas || [];  //如果为空，则赋值为空数组
     }
     // form.render(); //重新渲染，防止radio/select等失效
 
@@ -93,7 +93,7 @@ layui.config({
             },
             callback: {
                 onCheck: function (event, treeId, treeNode) {
-                    users.push(treeNode.Id);
+                    datas.push(treeNode.Id);
                 }
             }
         };
@@ -107,7 +107,7 @@ layui.config({
                 menuTree.addNodes(null, json.data);
                 //如果已经分配了用户，则设置相应的状态
 
-                $.each(users,
+                $.each(datas,
                     function (i) {
                         var that = this;
                         var node = menuTree.getNodeByParam("Id", that, null);

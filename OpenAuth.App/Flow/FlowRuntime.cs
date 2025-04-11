@@ -763,7 +763,7 @@ namespace OpenAuth.App.Flow
         /// 替换SQL中的权限占位符
         /// <para>如当前用户的全部下属：select id from sysuser where parentId = {loginUser}</para>
         /// <para>替换后：select id from sysuser where parentId = '123'</para>
-        /// <para>如d登录用户同部门的人：select id from sysuser where id in (select firstid from relevance where secondid in ({loginOrg}) and relkey = 'UserOrg')</para>
+        /// <para>如登录用户同部门的人：select id from sysuser where id in (select firstid from relevance where secondid in ({loginOrg}) and relkey = 'UserOrg')</para>
         /// <para>替换后： select id from sysuser where id in (select firstid from relevance where secondid in ('123','456') and relkey = 'UserOrg')</para>
         /// </summary>
         /// <param name="sql"></param>
