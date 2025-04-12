@@ -55,7 +55,7 @@ layui.config({
 				$(".hideMenu").css("background-color", skin.split(',')[2]);
 			}
 		} else {
-			$("body").addClass("blue");
+			$("body").addClass("cyan");
 		}
 	}
 	skins();
