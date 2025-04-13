@@ -39,7 +39,6 @@
     <None Include="wwwroot\css\metroStyle\img\metro.gif" />
     <None Include="wwwroot\css\metroStyle\img\metro.png" />
     <None Include="wwwroot\css\metroStyle\metroStyle.css" />
-    <None Include="wwwroot\css\treetable.css" />
     <None Include="wwwroot\images\alipay.jpg" />
     <None Include="wwwroot\images\code.jpg" />
     <None Include="wwwroot\images\face.jpg" />
