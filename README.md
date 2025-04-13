@@ -64,7 +64,7 @@
 ![拖拽表单](snapshot/form.png)
 
 #### layui开源版本效果
-![开源版本效果](snapshot/360%E6%88%AA%E5%9B%BE20250413113846.jpg)
+![开源版本效果](snapshot/layui.jpg)
 
 
 ## 📞官方QQ交流群  
