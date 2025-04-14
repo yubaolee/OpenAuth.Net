@@ -72,6 +72,7 @@
             });
     };
     mainList();
+    clickTableRow(table,'mainList', 'list');
  
     //添加（编辑）对话框
     var editDlg = function () {

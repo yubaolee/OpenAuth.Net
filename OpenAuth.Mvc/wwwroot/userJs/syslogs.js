@@ -1,4 +1,11 @@
-﻿layui.config({
+﻿/*
+ * @Author: yubaolee <yubaolee@163.com> | ahfu~ <954478625@qq.com>
+ * @Date: 2023-12-25 14:43:53
+ * @Description: 
+ * @LastEditTime: 2025-04-14 15:55:51
+ * Copyright (c) 2025 by yubaolee | ahfu~ , All Rights Reserved.  
+ */
+layui.config({
     base: "/js/"
 }).use(['form', 'vue', 'ztree', 'layer', 'jquery', 'table', 'droptree', 'openauth', 'utils'], function () {
     var form = layui.form,
@@ -50,7 +57,7 @@
             });
     };
     mainList();
- 
+    clickTableRow(table,'mainList', 'list');
 
 
     //监听表格内部按钮
