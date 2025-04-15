@@ -4,7 +4,7 @@ heroImage: /logo.png
 heroText: OpenAuth.Net
 tagline: 最好用的.net权限工作流框架,最实用的.net/vue前后端分离方案
 actionText: 快速上手 →
-actionLink: /core/start/
+actionLink: /core/start
 features:
 - title: 简洁至上
   details: 源于Martin Fowler企业级应用开发思想及最新技术组合。
