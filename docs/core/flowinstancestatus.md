@@ -37,76 +37,63 @@
 
 ```javascript
 {
- 
-    "title":"newFlow_1",
-    "nodes":[
+    "nodes": [
         {
-            "name":"node_1",
-            "left":75,
-            "top":90,
-            "type":"start round mix",
-            "id":1521797877921,
-            "width":26,
-            "height":26,
-            "alt":true
-        },
-        {
-            "name":"审核",
-            "left":235,
-            "top":97,
-            "type":"node",
-            "id":1521797879744,
-            "width":104,
-            "height":26,
-            "alt":true,
-            "setInfo":{
-                "NodeDesignateData":{
-                    "users":[
-                        "49df1602-f5f3-4d52-afb7-3802da619558",
-                        "6ba79766-faa0-4259-8139-a4a6d35784e0"
+            "type": "node",  //节点类型，开始，普通，网关，会签等
+            "name": "任务节点", //节点名称
+            "icon": "iconfont icon-jiaoseguanli", //节点图标
+            "belongto": "commonNodes", //节点样式类型：普通四边形节点，菱形网关
+            "id": "node-011c37dd1db34596b9cbd6812971b8a6", //节点id
+            "setInfo": {
+                "NodeRejectType": 0, //节点驳回类型：0-不驳回，1-驳回
+                "NodeConfluenceType": "", //节点会签/网关类型：""-不会签，"AND"-与，"OR"-或
+                "NodeDesignate": "SPECIAL_ROLE",//执行权限类型：指定角色、指定用户等
+                "ThirdPartyUrl": "",//执行完成后回调地址
+                "NodeDesignateData": {  //根据NodeDesignate不同，表示不同的权限数据：角色、用户等
+                    "datas": [
+                        "77e6d0c3-f9e1-4933-92c3-c1c6eef75593"
                     ],
-                    "role":{
-                    },
-                    "org":{
-                    }
+                    "Texts": "神"
                 },
-                "NodeCode":"FIRST",
-                "NodeName":"审核"
+                "CanWriteFormItemIds":  //可写表单项id
+                [
+                    "radio113860", 
+                    "radio74071"
+                ]
             }
-        },
-        {
-            "name":"node_3",
-            "left":268,
-            "top":209,
-            "type":"end round",
-            "id":1521797881216,
-            "width":26,
-            "height":26,
-            "alt":true
         }
     ],
-    "lines":[
+    "lines": [
         {
-            "type":"sl",
-            "from":"1521797877921",
-            "to":"1521797879744",
-            "id":1521797883552,
-            "name":"",
-            "dash":false
-        },
+            "type": "sl",  //原有gooflow里面的值："sl":直线, "lr":中段可左右移动型折线, "tb":中段可上下移动型折线
+            "id": "link-6351c01fd31d4e6d85d476be6e0b0ae2",
+            "from": "start round mix-3fcaf7e8577644ff8b52fabaf975437e",
+            "to": "node-011c37dd1db34596b9cbd6812971b8a6",
+            "label": "值>3",  //连线上面显示的文字
+            "cls": {
+                "linkType": "Flowchart",
+                "linkColor": "#2a2929",
+                "linkThickness": 1
+            },
+            "Compares": [{  //连线条件
+                "FieldName": "Age", //表单项id
+                "Operation": ">", //条件类型
+                "Value": "3" //条件值
+            }]
+        }, 
         {
-            "type":"sl",
-            "from":"1521797879744",
-            "to":"1521797881216",
-            "id":1521797884536,
-            "name":"",
-            "dash":false
+            "type": "sl",
+            "id": "link-785f8823a60e4472884f482b16c16f26",
+            "from": "node-011c37dd1db34596b9cbd6812971b8a6",
+            "to": "end round-a749ef5b89bb49d588009b71f53316f5",
+            "label": "",
+            "cls": {
+                "linkType": "Flowchart",
+                "linkColor": "#2a2929",
+                "linkThickness": 1
+            }
         }
-    ],
-    "areas":{
-    },
-    "initNum":7
- 
+    ]
 }
 
 ```
