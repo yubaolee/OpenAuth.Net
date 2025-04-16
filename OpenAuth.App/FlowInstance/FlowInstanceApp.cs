@@ -477,7 +477,7 @@ namespace OpenAuth.App
                     }
                 }
 
-                if (wfruntime.currentNode.setInfo.NodeDesignate == Setinfo.RUNTIME_MANY_PARENTS)
+                if (wfruntime.currentNode.setInfo.NodeDesignate == Define.RUNTIME_MANY_PARENTS)
                 {
                     List<string> roles;
                     if (user.Id != tag.UserId)
@@ -619,8 +619,8 @@ namespace OpenAuth.App
         /// <exception cref="Exception"></exception>
         private void CheckNodeDesignate(NodeDesignateReq request)
         {
-            if ((request.NodeDesignateType == Setinfo.RUNTIME_SPECIAL_ROLE
-                 || request.NodeDesignateType == Setinfo.RUNTIME_SPECIAL_USER) && request.NodeDesignates.Length == 0)
+            if ((request.NodeDesignateType == Define.RUNTIME_SPECIAL_ROLE
+                 || request.NodeDesignateType == Define.RUNTIME_SPECIAL_USER) && request.NodeDesignates.Length == 0)
             {
                 throw new Exception("下个节点需要选择执行人或执行角色");
             }
@@ -860,8 +860,8 @@ namespace OpenAuth.App
             var wfruntime = new FlowRuntime(flowInstance);
             var user = _auth.GetCurrentUser();
 
-            if (wfruntime.nextNode.setInfo.NodeDesignate == Setinfo.RUNTIME_SPECIAL_USER
-                || wfruntime.nextNode.setInfo.NodeDesignate == Setinfo.RUNTIME_SPECIAL_ROLE)
+            if (wfruntime.nextNode.setInfo.NodeDesignate == Define.RUNTIME_SPECIAL_USER
+                || wfruntime.nextNode.setInfo.NodeDesignate == Define.RUNTIME_SPECIAL_ROLE)
             {
                 throw new Exception("暂不支持【第二执行节点为运行时指定角色/账号执行】的流程恢复");
             }

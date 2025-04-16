@@ -71,7 +71,7 @@ namespace OpenAuth.App.Flow
                     Nodes.Add(node.id, node);
                 }
 
-                if (node.type == FlowNode.START)
+                if (node.type == Define.NODE_TYPE_START)
                 {
                     this.startNodeId = node.id;
                 }
@@ -174,16 +174,16 @@ namespace OpenAuth.App.Flow
             switch (Nodes[nodeId].type)
             {
                 //会签开始节点
-                case FlowNode.FORK:
+                case Define.NODE_TYPE_FORK:
                     return 0;
                 //会签结束节点
-                case FlowNode.JOIN:
+                case Define.NODE_TYPE_JOIN:
                     return 1;
                 //结束节点
-                case FlowNode.END:
+                case Define.NODE_TYPE_END:
                     return 4;
                 //开始节点
-                case FlowNode.START:
+                case Define.NODE_TYPE_START:
                     return 3;
 
                 default:
@@ -234,7 +234,7 @@ namespace OpenAuth.App.Flow
             {
                 if (tag.Taged == (int)TagState.Ok)
                 {
-                    if (nextNode.type == FlowNode.JOIN) //下一个节点是会签结束，则该线路结束
+                    if (nextNode.type == Define.NODE_TYPE_JOIN) //下一个节点是会签结束，则该线路结束
                     {
                         res = GetNextNodeId(nextNode.id);
                     }
@@ -277,7 +277,7 @@ namespace OpenAuth.App.Flow
                 }
                 else if (tag.Taged == (int)TagState.Ok)
                 {
-                    if (nextNode.type == FlowNode.JOIN) //这种模式下只有坚持到【会签结束】节点之前才有意义，是否需要判定这条线所有的节点都通过，不然直接执行这个节点？？
+                    if (nextNode.type == Define.NODE_TYPE_JOIN) //这种模式下只有坚持到【会签结束】节点之前才有意义，是否需要判定这条线所有的节点都通过，不然直接执行这个节点？？
                     {
                         if (forkNode.setInfo.ConfluenceOk == null)
                         {
@@ -533,7 +533,7 @@ namespace OpenAuth.App.Flow
                 result = tag.Taged, //1：通过;2：不通过；3驳回
                 description = tag.Description,
                 execTime = tag.TagedTime,
-                isFinish = node.type == FlowNode.END
+                isFinish = node.type == Define.NODE_TYPE_END
             };
 
             var url = node.setInfo.ThirdPartyUrl;
@@ -568,7 +568,7 @@ namespace OpenAuth.App.Flow
                 throw new Exception("流程已结束，不能撤销");
             }
 
-            if(Nodes[previousId].type == FlowNode.START)
+            if(Nodes[previousId].type == Define.NODE_TYPE_START)
             {
                 throw new Exception("没有任何审批，不能撤销!你可以删除或召回这个流程");
             }
@@ -628,7 +628,7 @@ namespace OpenAuth.App.Flow
             {
                 makerList = GetForkNodeMakers(nextNodeId);
             }
-            else if (nextNode.setInfo.NodeDesignate == Setinfo.RUNTIME_SPECIAL_ROLE)
+            else if (nextNode.setInfo.NodeDesignate == Define.RUNTIME_SPECIAL_ROLE)
             {
                 //如果是运行时指定角色
                 if (nextNode.setInfo.NodeDesignate != request.NodeDesignateType)
@@ -640,7 +640,7 @@ namespace OpenAuth.App.Flow
                 var users = revelanceApp.Get(Define.USERROLE, false, request.NodeDesignates);
                 makerList = GenericHelpers.ArrayToString(users, makerList);
             }
-            else if (nextNode.setInfo.NodeDesignate == Setinfo.RUNTIME_SPECIAL_USER)
+            else if (nextNode.setInfo.NodeDesignate == Define.RUNTIME_SPECIAL_USER)
             {
                 //如果是运行时指定用户
                 if (nextNode.setInfo.NodeDesignate != request.NodeDesignateType)
@@ -650,7 +650,7 @@ namespace OpenAuth.App.Flow
 
                 makerList = GenericHelpers.ArrayToString(request.NodeDesignates, makerList);
             }
-            else if (nextNode.setInfo.NodeDesignate == Setinfo.SPECIAL_SQL)
+            else if (nextNode.setInfo.NodeDesignate == Define.SPECIAL_SQL)
             {
                 //如果是指定SQL
                 if (nextNode.setInfo.NodeDesignate != request.NodeDesignateType)
@@ -663,8 +663,8 @@ namespace OpenAuth.App.Flow
                 var result = sugarClient.Ado.SqlQuery<string>(sql);
                 makerList = GenericHelpers.ArrayToString(result, makerList);
             }
-            else if (nextNode.setInfo.NodeDesignate == Setinfo.RUNTIME_PARENT
-                     || nextNode.setInfo.NodeDesignate == Setinfo.RUNTIME_MANY_PARENTS)
+            else if (nextNode.setInfo.NodeDesignate == Define.RUNTIME_PARENT
+                     || nextNode.setInfo.NodeDesignate == Define.RUNTIME_MANY_PARENTS)
             {
                 //如果是上一节点执行人的直属上级或连续多级直属上级
                 if (nextNode.setInfo.NodeDesignate != request.NodeDesignateType)
@@ -684,7 +684,7 @@ namespace OpenAuth.App.Flow
 
                 makerList = GenericHelpers.ArrayToString(new[] { parentId }, makerList);
             }
-            else if (nextNode.setInfo.NodeDesignate == Setinfo.RUNTIME_CHAIRMAN)
+            else if (nextNode.setInfo.NodeDesignate == Define.RUNTIME_CHAIRMAN)
             {
                 //如果是发起人的部门负责人
                 if (nextNode.setInfo.NodeDesignate != request.NodeDesignateType)
@@ -716,28 +716,28 @@ namespace OpenAuth.App.Flow
         public string GetNodeMarkers(FlowNode node, string flowinstanceCreateUserId = "")
         {
             string makerList = "";
-            if (node.type == FlowNode.START && (!string.IsNullOrEmpty(flowinstanceCreateUserId))) //如果是开始节点，通常情况下是驳回到开始了
+            if (node.type == Define.NODE_TYPE_START && (!string.IsNullOrEmpty(flowinstanceCreateUserId))) //如果是开始节点，通常情况下是驳回到开始了
             {
                 makerList = flowinstanceCreateUserId;
             }
             else if (node.setInfo != null)
             {
                 if (string.IsNullOrEmpty(node.setInfo.NodeDesignate) ||
-                    node.setInfo.NodeDesignate == Setinfo.ALL_USER) //所有成员
+                    node.setInfo.NodeDesignate == Define.ALL_USER) //所有成员
                 {
                     makerList = "1";
                 }
-                else if (node.setInfo.NodeDesignate == Setinfo.SPECIAL_USER) //指定成员
+                else if (node.setInfo.NodeDesignate == Define.SPECIAL_USER) //指定成员
                 {
                     makerList = GenericHelpers.ArrayToString(node.setInfo.NodeDesignateData.datas, makerList);
                 }
-                else if (node.setInfo.NodeDesignate == Setinfo.SPECIAL_ROLE) //指定角色
+                else if (node.setInfo.NodeDesignate == Define.SPECIAL_ROLE) //指定角色
                 {
                     var revelanceApp = AutofacContainerModule.GetService<RevelanceManagerApp>();
                     var users = revelanceApp.Get(Define.USERROLE, false, node.setInfo.NodeDesignateData.datas);
                     makerList = GenericHelpers.ArrayToString(users, makerList);
                 }
-                else if (node.setInfo.NodeDesignate == Setinfo.SPECIAL_SQL) //指定SQL
+                else if (node.setInfo.NodeDesignate == Define.SPECIAL_SQL) //指定SQL
                 {
                     //如果是指定SQL，则需要执行SQL，并返回结果
                     var sql = ReplaceSql(node.setInfo.NodeDesignateData.datas[0]);
@@ -745,8 +745,8 @@ namespace OpenAuth.App.Flow
                     var result = sugarClient.Ado.SqlQuery<string>(sql);
                     makerList = GenericHelpers.ArrayToString(result, makerList);
                 }
-                else if (node.setInfo.NodeDesignate == Setinfo.RUNTIME_SPECIAL_ROLE
-                         || node.setInfo.NodeDesignate == Setinfo.RUNTIME_SPECIAL_USER)
+                else if (node.setInfo.NodeDesignate == Define.RUNTIME_SPECIAL_ROLE
+                         || node.setInfo.NodeDesignate == Define.RUNTIME_SPECIAL_USER)
                 {
                     //如果是运行时选定的用户，则暂不处理。由上个节点审批时选定
                 }
@@ -798,7 +798,7 @@ namespace OpenAuth.App.Flow
                 }
 
                 node = GetNextNode(node.id);
-            } while (node.type != FlowNode.JOIN);
+            } while (node.type != Define.NODE_TYPE_JOIN);
 
             return canCheckId;
         }
@@ -837,7 +837,7 @@ namespace OpenAuth.App.Flow
             {
                 if (node.setInfo != null && node.setInfo.Taged != null)
                 {
-                    if (node.type != FlowNode.FORK && node.setInfo.Taged != (int)TagState.Ok) //如果节点是不同意或驳回，则不用再找了
+                    if (node.type != Define.NODE_TYPE_FORK && node.setInfo.Taged != (int)TagState.Ok) //如果节点是不同意或驳回，则不用再找了
                     {
                         break;
                     }
@@ -864,7 +864,7 @@ namespace OpenAuth.App.Flow
 
                 markers += marker;
                 break;
-            } while (node.type != FlowNode.JOIN);
+            } while (node.type != Define.NODE_TYPE_JOIN);
 
             return markers;
         }

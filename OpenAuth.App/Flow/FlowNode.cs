@@ -5,11 +5,6 @@
     /// </summary>
     public class FlowNode
     {
-        public const string START = "start round mix";
-        public const string END = "end round";
-        public const string NODE = "node";
-        public const string FORK = "fork"; //会签开始节点
-        public const string JOIN = "join"; //会签结束节点
 
         public string id { get; set; }
 
@@ -32,27 +27,7 @@
 
     public class Setinfo
     {
-        public const string ALL_USER = "ALL_USER"; //所有用户
-        public const string SPECIAL_ROLE = "SPECIAL_ROLE"; //指定角色
-        public const string SPECIAL_USER = "SPECIAL_USER"; //指定用户
-        public const string SPECIAL_SQL = "SPECIAL_SQL"; //指定SQL
-        /// <summary>
-        /// 连续多级直属上级
-        /// <para>不同于钉钉的各上级部门负责人审批，OpenAuth以用户的各级直属上级审批模式</para>
-        /// </summary>
-        public const string RUNTIME_MANY_PARENTS = "RUNTIME_MANY_PARENTS"; 
-        /// <summary>
-        /// 部门负责人
-        /// </summary>
-        public const string RUNTIME_CHAIRMAN = "RUNTIME_CHAIRMAN"; 
-        /// <summary>
-        /// 上一节点执行人的直属上级
-        /// </summary>
-        public const string RUNTIME_PARENT = "RUNTIME_PARENT"; 
-
-        public const string RUNTIME_SPECIAL_ROLE = "RUNTIME_SPECIAL_ROLE"; //运行时指定角色
-        public const string RUNTIME_SPECIAL_USER = "RUNTIME_SPECIAL_USER"; //运行时指定用户
-
+       
         /// <summary>
         /// 节点执行权限类型
         /// </summary>
