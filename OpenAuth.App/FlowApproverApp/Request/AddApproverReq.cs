@@ -28,9 +28,9 @@ namespace OpenAuth.App.Request
 
 
         /// <summary>
-        ///类型（0顺序，1并行且，2并行或）
+        ///类型（sequential顺序，all并行且，one并行或）
         /// </summary>
-        public int ApproveType { get; set; }
+        public string ApproveType { get; set; }
 
         /// <summary>
         ///父节点ID，应对多次加签

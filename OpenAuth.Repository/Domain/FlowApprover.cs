@@ -27,7 +27,7 @@ namespace OpenAuth.Repository.Domain
             this.VerifyComment = "";
             this.CascadeId = "";
             this.ApproverId = "";
-            this.ApproveType = 0;
+            this.ApproveType = "";
             this.CreateDate = DateTime.Now;
             this.CreateUserName = "";
             this.ParentId = "";
@@ -70,10 +70,10 @@ namespace OpenAuth.Repository.Domain
         public string ApproverId { get; set; }
 
         /// <summary>
-        ///类型（0顺序，1并行且，2并行或）
+        ///类型（sequential顺序，all并行且，one并行或）
         /// </summary>
-        [Description("类型（0顺序，1并行且，2并行或）")]
-        public int ApproveType { get; set; }
+        [Description("类型（sequential顺序，all并行且，one并行或）")]
+        public string ApproveType { get; set; }
 
         /// <summary>
         ///加签时间

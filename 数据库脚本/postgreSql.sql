@@ -466,7 +466,7 @@ CREATE TABLE "public"."flowapprover" (
   "createuserid" varchar(50) COLLATE "pg_catalog"."default",
   "createusername" varchar(50) COLLATE "pg_catalog"."default",
   "status" int4 NOT NULL,
-  "approvetype" int4 NOT NULL,
+  "approvetype" varchar(50) COLLATE "pg_catalog"."default" NOT NULL,
   "approverid" varchar(50) COLLATE "pg_catalog"."default" NOT NULL,
   "approvername" varchar(50) COLLATE "pg_catalog"."default",
   "orderno" int4,

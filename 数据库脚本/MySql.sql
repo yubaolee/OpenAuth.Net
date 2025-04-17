@@ -327,7 +327,7 @@ CREATE TABLE `flowapprover`  (
   `createuserid` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '加签人Id',
   `createusername` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '加签人',
   `status` int(11) NOT NULL COMMENT '状态（0未处理，1通过，2未通过，3驳回）',
-  `approvetype` int(11) NOT NULL COMMENT '类型（0顺序，1并行且，2并行或）',
+  `approvetype` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '类型（sequential顺序，all并行且，one并行或）',
   `approverid` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '审批人ID',
   `approvername` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '审批人',
   `orderno` int(11) NULL DEFAULT NULL COMMENT '顺序号（当类型为0时）',

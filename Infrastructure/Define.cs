@@ -79,6 +79,11 @@
         public const string RUNTIME_SPECIAL_ROLE = "RUNTIME_SPECIAL_ROLE"; //运行时指定角色
         public const string RUNTIME_SPECIAL_USER = "RUNTIME_SPECIAL_USER"; //运行时指定用户
 
+        //加签类型
+        public const string APPROVE_TYPE_SEQUENTIAL = "sequential"; //顺序
+        public const string APPROVE_TYPE_ALL = "all"; //并行且
+        public const string APPROVE_TYPE_ONE = "one"; //并行或
+
 
 
         public const string API = "API_RESOURCE";

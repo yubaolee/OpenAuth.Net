@@ -112,7 +112,7 @@ namespace OpenAuth.App
             }
             
             //如果是顺序执行，取第一个人
-            if (query.First().ApproveType == 0)
+            if (query.First().ApproveType == Define.APPROVE_TYPE_SEQUENTIAL)
             {
                 var result = query.OrderBy(u => u.OrderNo).First();
                 return new[] { result };
@@ -138,7 +138,7 @@ namespace OpenAuth.App
                 VerifyDate = DateTime.Now
             }, u => u.Id == verifyApproverReq.Id);
 
-            if (approve.ApproveType == 2)
+            if (approve.ApproveType == Define.APPROVE_TYPE_ONE)
             {
                 //如果是并行或，只需要一个审批通过即可
                 return Repository.IsAny(u => u.InstanceId == approve.InstanceId

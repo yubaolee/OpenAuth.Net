@@ -1449,7 +1449,7 @@ CREATE TABLE [dbo].[FlowApprover] (
   [CreateUserId] varchar(50) COLLATE Chinese_PRC_CI_AS  NULL,
   [CreateUserName] varchar(50) COLLATE Chinese_PRC_CI_AS  NULL,
   [Status] int  NOT NULL,
-  [ApproveType] int  NOT NULL,
+  [ApproveType] varchar(50) COLLATE Chinese_PRC_CI_AS  NOT NULL,
   [ApproverId] varchar(50) COLLATE Chinese_PRC_CI_AS  NOT NULL,
   [ApproverName] varchar(50) COLLATE Chinese_PRC_CI_AS  NULL,
   [OrderNo] int  NULL,
@@ -1523,7 +1523,7 @@ EXEC sp_addextendedproperty
 GO
 
 EXEC sp_addextendedproperty
-'MS_Description', N'类型（0顺序，1并行且，2并行或）',
+'MS_Description', N'类型（sequential顺序，all并行且，one并行或）',
 'SCHEMA', N'dbo',
 'TABLE', N'FlowApprover',
 'COLUMN', N'ApproveType'
