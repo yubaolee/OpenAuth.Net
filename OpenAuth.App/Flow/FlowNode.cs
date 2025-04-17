@@ -53,18 +53,18 @@
         public string Description { get; set; }
         public string TagedTime { get; set; }
 
-        //节点会签方式，
+        //网关审批通过的方式，
         //all/空：默认为全部通过
         //one ：至少有一个通过
         public string NodeConfluenceType { get; set; }
 
         /// <summary>
-        /// 会签通过的个数
+        /// 网关通过的个数
         /// </summary>
         public int? ConfluenceOk { get; set; }
 
         /// <summary>
-        /// 会签拒绝的个数
+        /// 网关拒绝的个数
         /// </summary>
         public int? ConfluenceNo { get; set; }
         

@@ -39,7 +39,7 @@ namespace OpenAuth.App.Flow
             previousId = instance.PreviousId;
             flowInstanceId = instance.Id;
 
-            //会签开始节点和流程结束节点没有下一步
+            //网关开始节点和流程结束节点没有下一步
             if (GetCurrentNodeType() == Define.NODE_TYPE_FORK || GetCurrentNodeType() == Define.NODE_TYPE_END)
             {
                 nextNodeId = "-1";
@@ -156,9 +156,8 @@ namespace OpenAuth.App.Flow
         }
 
         /// <summary>
-        /// 获取实例接下来运行的状态
+        /// 获取实例接下来运行的节点类型
         /// </summary>
-        /// <returns>-1无法运行,0会签开始,1会签结束,2一般节点,4流程运行结束</returns>
         public string GetNextNodeType()
         {
             if (nextNodeId != "-1")
@@ -169,7 +168,7 @@ namespace OpenAuth.App.Flow
         }
 
         /// <summary>
-        /// 获取节点类型 0会签开始,1会签结束,2一般节点,开始节点,4流程运行结束
+        /// 获取节点类型
         /// </summary>
         /// <param name="nodeId"></param>
         /// <returns></returns>
@@ -188,23 +187,23 @@ namespace OpenAuth.App.Flow
         }
 
         /// <summary>
-        /// 节点会签审核
+        /// 审批网关开始节点
         /// </summary>
-        /// <param name="nodeId">会签时，currentNodeId是会签开始节点。这个表示当前正在处理的节点</param>
+        /// <param name="nodeId">currentNodeId是网关开始节点。这个表示当前正在处理的节点</param>
         /// <param name="tag"></param>
         /// <returns>-1不通过,1等待,其它通过</returns>
-        public string NodeConfluence(HttpClient httpClient, Tag tag)
+        public string VerifyGatewayStart(HttpClient httpClient, Tag tag)
         {
             var user = AutofacContainerModule.GetService<IAuth>().GetCurrentUser().User;
-            //会签时的【当前节点】一直是会签开始节点
-            //TODO: 标记会签节点的状态，这个地方感觉怪怪的
+            //审批网关时的【当前节点】一直是网关开始节点
+            //TODO: 标记网关节点的状态，这个地方感觉怪怪的
             MakeTagNode(currentNodeId, tag);
 
             string canCheckId = ""; //寻找当前登录用户可审核的节点Id
             foreach (string fromForkStartNodeId in FromNodeLines[currentNodeId]
                          .Select(u => u.to))
             {
-                var fromForkStartNode = Nodes[fromForkStartNodeId]; //与会前开始节点直接连接的节点
+                var fromForkStartNode = Nodes[fromForkStartNodeId]; //与网关开始节点直接连接的节点
                 canCheckId = GetOneForkLineCanCheckNodeId(fromForkStartNode, tag);
                 if (!string.IsNullOrEmpty(canCheckId)) break;
             }
@@ -221,18 +220,18 @@ namespace OpenAuth.App.Flow
 
             MakeTagNode(canCheckId, tag); //标记审核节点状态
 
-            var forkNode = Nodes[currentNodeId]; //会签开始节点
+            var forkNode = Nodes[currentNodeId]; //网关开始节点
             FlowNode nextNode = GetNextNode(canCheckId); //获取当前处理的下一个节点
 
-            int forkNumber = FromNodeLines[currentNodeId].Count; //直接与会签节点连接的点，即会签分支数目
-            string res = string.Empty; //记录会签的结果,默认正在会签
+            int forkNumber = FromNodeLines[currentNodeId].Count; //直接与网关节点连接的点，即网关分支数目
+            string gatewayResult = string.Empty; //记录网关审批的的结果,为空表示仍然在网关内部处理
             if (forkNode.setInfo.NodeConfluenceType == "one") //有一个步骤通过即可
             {
                 if (tag.Taged == (int)TagState.Ok)
                 {
-                    if (nextNode.type == Define.NODE_TYPE_JOIN) //下一个节点是会签结束，则该线路结束
+                    if (nextNode.type == Define.NODE_TYPE_JOIN) //下一个节点是网关结束，则该线路结束
                     {
-                        res = GetNextNodeId(nextNode.id);
+                        gatewayResult = GetNextNodeId(nextNode.id);
                     }
                 }
                 else if (tag.Taged == (int)TagState.No)
@@ -243,13 +242,13 @@ namespace OpenAuth.App.Flow
                     }
                     else if (forkNode.setInfo.ConfluenceNo == (forkNumber - 1))
                     {
-                        res = TagState.No.ToString("D");
+                        gatewayResult = TagState.No.ToString("D");
                     }
                     else
                     {
-                        bool isFirst = true; //是不是从会签开始到现在第一个
+                        bool isFirst = true; //是不是从网关开始到现在第一个
                         var preNode = GetPreNode(canCheckId);
-                        while (preNode.id != forkNode.id) //反向一直到会签开始节点
+                        while (preNode.id != forkNode.id) //反向一直到网关开始节点
                         {
                             if (preNode.setInfo != null && preNode.setInfo.Taged == (int)TagState.No)
                             {
@@ -265,23 +264,23 @@ namespace OpenAuth.App.Flow
                     }
                 }
             }
-            else //默认所有步骤通过
+            else //所有步骤通过
             {
                 if (tag.Taged == (int)TagState.No) //只要有一个不同意，那么流程就结束
                 {
-                    res = TagState.No.ToString("D");
+                    gatewayResult = TagState.No.ToString("D");
                 }
                 else if (tag.Taged == (int)TagState.Ok)
                 {
-                    if (nextNode.type == Define.NODE_TYPE_JOIN) //这种模式下只有坚持到【会签结束】节点之前才有意义，是否需要判定这条线所有的节点都通过，不然直接执行这个节点？？
+                    if (nextNode.type == Define.NODE_TYPE_JOIN) //这种模式下只有坚持到【网关结束】节点之前才有意义，是否需要判定这条线所有的节点都通过，不然直接执行这个节点？？
                     {
                         if (forkNode.setInfo.ConfluenceOk == null)
                         {
                             forkNode.setInfo.ConfluenceOk = 1;
                         }
-                        else if (forkNode.setInfo.ConfluenceOk == (forkNumber - 1)) //会签成功
+                        else if (forkNode.setInfo.ConfluenceOk == (forkNumber - 1)) //网关成功
                         {
-                            res = GetNextNodeId(nextNode.id);
+                            gatewayResult = GetNextNodeId(nextNode.id);
                         }
                         else
                         {
@@ -291,28 +290,28 @@ namespace OpenAuth.App.Flow
                 }
             }
 
-            if (res == TagState.No.ToString("D"))
+            if (gatewayResult == TagState.No.ToString("D"))
             {
                 tag.Taged = (int)TagState.No;
                 MakeTagNode(nextNode.id, tag);
             }
-            else if (!string.IsNullOrEmpty(res)) //会签结束，标记合流节点
+            else if (!string.IsNullOrEmpty(gatewayResult)) //网关结束，标记合流节点
             {
                 tag.Taged = (int)TagState.Ok;
                 MakeTagNode(nextNode.id, tag);
-                nextNodeId = res;
+                nextNodeId = gatewayResult;
             }
             else
             {
                 nextNodeId = nextNode.id;
             }
 
-            if (!string.IsNullOrEmpty(res)) //会签结束节点配置了回调，则发起通知
+            if (!string.IsNullOrEmpty(gatewayResult)) //网关结束节点配置了回调，则发起通知
             {
                 NotifyThirdParty(httpClient, nextNode, tag);
             }
 
-            return res;
+            return gatewayResult;
         }
 
         //获取上一个节点
@@ -615,7 +614,7 @@ namespace OpenAuth.App.Flow
                 throw new Exception("无法寻找到下一个节点");
             }
 
-            if (GetNextNodeType() == Define.NODE_TYPE_FORK) //如果是会签节点
+            if (GetNextNodeType() == Define.NODE_TYPE_FORK) //如果是网关节点
             {
                 makerList = GetForkNodeMakers(nextNodeId);
             }
@@ -768,7 +767,7 @@ namespace OpenAuth.App.Flow
         }
 
         /// <summary>
-        /// 会签时，获取一条会签分支上面是否有用户可审核的节点
+        /// 网关时，获取一条网关分支上面是否有用户可审核的节点
         /// </summary>
         /// <param name="fromForkStartNode"></param>
         /// <param name="tag"></param>
@@ -777,7 +776,7 @@ namespace OpenAuth.App.Flow
         {
             string canCheckId = "";
             var node = fromForkStartNode;
-            do //沿一条分支线路执行，直到遇到会签结束节点
+            do //沿一条分支线路执行，直到遇到网关结束节点
             {
                 var makerList = GetNodeMarkers(node);
 
@@ -795,16 +794,16 @@ namespace OpenAuth.App.Flow
         }
 
         /// <summary>
-        /// 获取会签开始节点的所有可执行者
+        /// 获取网关开始节点的所有可执行者
         /// </summary>
-        /// <param name="forkNodeId">会签开始节点</param>
+        /// <param name="forkNodeId">网关开始节点</param>
         /// <returns></returns>
         public string GetForkNodeMakers(string forkNodeId)
         {
             string makerList = "";
             foreach (string fromForkStartNodeId in FromNodeLines[forkNodeId].Select(u => u.to))
             {
-                var fromForkStartNode = Nodes[fromForkStartNodeId]; //与会签开始节点直接连接的节点
+                var fromForkStartNode = Nodes[fromForkStartNodeId]; //与网关开始节点直接连接的节点
                 if (makerList != "")
                 {
                     makerList += ",";
@@ -817,9 +816,9 @@ namespace OpenAuth.App.Flow
         }
 
         /// <summary>
-        /// 获取会签一条线上的审核者,该审核者应该是已审核过的节点的下一个人
+        /// 获取网关一条线上的审核者,该审核者应该是已审核过的节点的下一个人
         /// </summary>
-        /// <param name="fromForkStartNode">与会签开始节点直接连接的节点</param>
+        /// <param name="fromForkStartNode">与网关开始节点直接连接的节点</param>
         private string GetOneForkLineMakers(FlowNode fromForkStartNode)
         {
             string markers = "";
@@ -845,7 +844,7 @@ namespace OpenAuth.App.Flow
 
                 if (marker == "1")
                 {
-                    throw new Exception($"节点{node.name}是会签节点，不能用所有人,请检查!");
+                    throw new Exception($"节点{node.name}是网关节点，不能用所有人,请检查!");
                 }
 
                 if (markers != "")

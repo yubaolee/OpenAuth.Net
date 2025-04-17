@@ -2,7 +2,7 @@
  * @Author: yubaolee <yubaolee@163.com> | ahfu~ <954478625@qq.com>
  * @Date: 2024-12-13 16:55:17
  * @Description: 工作流实例表操作
- * @LastEditTime: 2025-04-10 00:02:15
+ * @LastEditTime: 2025-04-17 21:37:03
  * Copyright (c) 2024 by yubaolee | ahfu~ , All Rights Reserved.
  */
 
@@ -330,7 +330,7 @@ namespace OpenAuth.App
 
             if (wfruntime.GetCurrentNodeType() == Define.NODE_TYPE_FORK) //当前节点是网关开始节点
             {
-                CounterSign(wfruntime, tag, flowInstance);
+                VerifyGatewayStart(wfruntime, tag, flowInstance);
             }
             else
             {
@@ -388,17 +388,17 @@ namespace OpenAuth.App
         }
 
         /// <summary>
-        /// 会签
+        /// 网关
         /// </summary>
-        private void CounterSign(FlowRuntime wfruntime, Tag tag, FlowInstance flowInstance)
+        private void VerifyGatewayStart(FlowRuntime wfruntime, Tag tag, FlowInstance flowInstance)
         {
-            string res = wfruntime.NodeConfluence(_httpClientFactory.CreateClient(), tag);
+            string res = wfruntime.VerifyGatewayStart(_httpClientFactory.CreateClient(), tag);
 
             if (res == TagState.No.ToString("D"))
             {
                 flowInstance.IsFinish = FlowInstanceStatus.Disagree;
             }
-            else if (!string.IsNullOrEmpty(res)) //会签结束，当前活动节点变为会签结束节点的下一个节点
+            else if (!string.IsNullOrEmpty(res)) //网关结束，当前活动节点变为网关结束节点的下一个节点
             {
                 flowInstance.PreviousId = flowInstance.ActivityId;
                 flowInstance.ActivityId = wfruntime.nextNodeId;
@@ -413,7 +413,7 @@ namespace OpenAuth.App
             }
             else
             {
-                //会签过程中，需要更新用户
+                //网关过程中，需要更新用户
                 flowInstance.MakerList = wfruntime.GetForkNodeMakers(wfruntime.currentNodeId);
                 wfruntime.SaveTransitionHis();
             }

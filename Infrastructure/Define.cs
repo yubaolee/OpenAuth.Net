@@ -50,7 +50,7 @@
         public const string NODE_TYPE_TASK = "node"; //任务节点
         public const string NODE_TYPE_FORK = "fork"; //网关开始
         public const string NODE_TYPE_JOIN = "join"; //网关结束
-        public const string NODE_TYPE_MULTI_INSTANCE = "multiInstance"; //多实例/会签节点
+        public const string NODE_TYPE_MULTI_INSTANCE = "multiInstance"; //多实例、会签节点
 
         //流程实例知会用户
         public const string INSTANCE_NOTICE_USER = "INSTANCE_NOTICE_USER"; 
