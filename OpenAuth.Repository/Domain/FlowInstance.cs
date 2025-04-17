@@ -70,11 +70,6 @@ namespace OpenAuth.Repository.Domain
     [Description("当前节点ID")]
     public string ActivityId { get; set; }
     /// <summary>
-    /// 当前节点类型（0会签节点）
-    /// </summary>
-    [Description("当前节点类型（0会签节点）")]
-    public int? ActivityType { get; set; }
-    /// <summary>
     /// 当前节点名称
     /// </summary>
     [Description("当前节点名称")]

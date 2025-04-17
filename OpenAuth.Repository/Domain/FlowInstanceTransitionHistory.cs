@@ -50,7 +50,7 @@ namespace OpenAuth.Repository.Domain
     /// 开始节点类型
     /// </summary>
     [Description("开始节点类型")]
-    public int? FromNodeType { get; set; }
+    public string FromNodeType { get; set; }
     /// <summary>
     /// 开始节点名称
     /// </summary>
@@ -65,7 +65,7 @@ namespace OpenAuth.Repository.Domain
     /// 结束节点类型
     /// </summary>
     [Description("结束节点类型")]
-    public int? ToNodeType { get; set; }
+    public string ToNodeType { get; set; }
     /// <summary>
     /// 结束节点名称
     /// </summary>

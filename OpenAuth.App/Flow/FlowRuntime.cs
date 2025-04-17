@@ -33,7 +33,6 @@ namespace OpenAuth.App.Flow
             InitNodes(schemeContentJson);
 
             currentNodeId = instance.ActivityId == "" ? startNodeId : instance.ActivityId;
-            currentNodeType = GetNodeType(currentNodeId);
             FrmData = instance.FrmData;
             title = schemeContentJson.title;
             initNum = schemeContentJson.initNum ?? 0;
@@ -41,15 +40,13 @@ namespace OpenAuth.App.Flow
             flowInstanceId = instance.Id;
 
             //会签开始节点和流程结束节点没有下一步
-            if (currentNodeType == 0 || currentNodeType == 4)
+            if (GetCurrentNodeType() == Define.NODE_TYPE_FORK || GetCurrentNodeType() == Define.NODE_TYPE_END)
             {
                 nextNodeId = "-1";
-                nextNodeType = -1;
             }
             else
             {
                 nextNodeId = GetNextNodeId(); //下一个节点
-                nextNodeType = GetNodeType(nextNodeId);
             }
         }
 
@@ -154,14 +151,14 @@ namespace OpenAuth.App.Flow
         /// 获取实例接下来运行的状态
         /// </summary>
         /// <returns>-1无法运行,0会签开始,1会签结束,2一般节点,4流程运行结束</returns>
-        public int GetNextNodeType()
+        public string GetNextNodeType()
         {
             if (nextNodeId != "-1")
             {
                 return GetNodeType(nextNodeId);
             }
 
-            return -1;
+            return "error";
         }
 
         /// <summary>
@@ -169,26 +166,18 @@ namespace OpenAuth.App.Flow
         /// </summary>
         /// <param name="nodeId"></param>
         /// <returns></returns>
-        public int GetNodeType(string nodeId)
+        public string GetNodeType(string nodeId)
         {
-            switch (Nodes[nodeId].type)
-            {
-                //会签开始节点
-                case Define.NODE_TYPE_FORK:
-                    return 0;
-                //会签结束节点
-                case Define.NODE_TYPE_JOIN:
-                    return 1;
-                //结束节点
-                case Define.NODE_TYPE_END:
-                    return 4;
-                //开始节点
-                case Define.NODE_TYPE_START:
-                    return 3;
+            return Nodes[nodeId].type;
+        }
 
-                default:
-                    return 2;
-            }
+        /// <summary>
+        /// 获取当前节点类型
+        /// </summary>
+        /// <returns></returns>
+        public string GetCurrentNodeType()
+        {
+            return GetNodeType(currentNodeId);
         }
 
         /// <summary>
@@ -305,12 +294,10 @@ namespace OpenAuth.App.Flow
                 tag.Taged = (int)TagState.Ok;
                 MakeTagNode(nextNode.id, tag);
                 nextNodeId = res;
-                nextNodeType = GetNodeType(res);
             }
             else
             {
                 nextNodeId = nextNode.id;
-                nextNodeType = GetNodeType(nextNode.id);
             }
 
             if (!string.IsNullOrEmpty(res)) //会签结束节点配置了回调，则发起通知
@@ -378,7 +365,6 @@ namespace OpenAuth.App.Flow
             {
                 flowInstance.PreviousId = flowInstance.ActivityId;
                 flowInstance.ActivityId = rejectNode;
-                flowInstance.ActivityType = GetNodeType(rejectNode);
                 flowInstance.ActivityName = Nodes[rejectNode].name;
                 flowInstance.MakerList =
                     GetNodeMarkers(Nodes[rejectNode], flowInstance.CreateUserId);
@@ -409,7 +395,6 @@ namespace OpenAuth.App.Flow
             flowInstance.IsFinish = FlowInstanceStatus.Draft;
             flowInstance.PreviousId = flowInstance.ActivityId;
             flowInstance.ActivityId = startNodeId;
-            flowInstance.ActivityType = GetNodeType(startNodeId);
             flowInstance.ActivityName = Nodes[startNodeId].name;
             flowInstance.MakerList = GetNodeMarkers(Nodes[startNodeId], flowInstance.CreateUserId);
 
@@ -501,11 +486,11 @@ namespace OpenAuth.App.Flow
                 CreateUserName = user.Name,
                 FromNodeId = currentNodeId,
                 FromNodeName = currentNode.name,
-                FromNodeType = currentNodeType,
+                // FromNodeType = GetCurrentNodeType(),
                 ToNodeId = nextNodeId,
                 ToNodeName = nextNode?.name,
-                ToNodeType = nextNodeType,
-                IsFinish = nextNodeType == 4 ? FlowInstanceStatus.Finished : FlowInstanceStatus.Running,
+                // ToNodeType = GetNextNodeType(),
+                IsFinish = GetNextNodeType() == Define.NODE_TYPE_END ? FlowInstanceStatus.Finished : FlowInstanceStatus.Running,
                 TransitionSate = 0
             };
 
@@ -576,7 +561,6 @@ namespace OpenAuth.App.Flow
             // 恢复到上一个节点
             currentNodeId = flowInstance.PreviousId;
             flowInstance.ActivityId = currentNodeId;
-            flowInstance.ActivityType = GetNodeType(currentNodeId);
             flowInstance.ActivityName = Nodes[currentNodeId].name;
             //向前查找ActivityId的前一个结点，即连线指向ActivityId的节点
             flowInstance.PreviousId = GetPreNode().id;
@@ -624,7 +608,7 @@ namespace OpenAuth.App.Flow
                 throw new Exception("无法寻找到下一个节点");
             }
 
-            if (nextNodeType == 0) //如果是会签节点
+            if (GetNextNodeType() == Define.NODE_TYPE_FORK) //如果是会签节点
             {
                 makerList = GetForkNodeMakers(nextNodeId);
             }
@@ -908,12 +892,7 @@ namespace OpenAuth.App.Flow
         /// 到达节点的线段集合
         /// </summary>
         private Dictionary<string, List<FlowLine>> ToNodeLines { get; set; }
-
-        /// <summary>
-        /// 当前节点类型 0会签开始,1会签结束,2一般节点,开始节点,4流程运行结束
-        /// </summary>
-        private int currentNodeType { get; set; }
-
+        
         /// <summary>
         /// 表单数据
         /// </summary>
@@ -938,12 +917,6 @@ namespace OpenAuth.App.Flow
         /// 下一个节点
         /// </summary>
         public string nextNodeId { get; set; }
-
-        /// <summary>
-        /// 下一个节点类型 -1无法运行,0会签开始,1会签结束,2一般节点,4流程运行结束
-        /// </summary>
-        /// <value>The type of the next node.</value>
-        public int nextNodeType { get; set; }
 
         /// <summary>
         /// 下一个节点对象

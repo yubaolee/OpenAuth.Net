@@ -112,7 +112,6 @@ namespace OpenAuth.App
 
             #region 根据运行实例改变当前节点状态
             flowInstance.ActivityId = wfruntime.nextNodeId;
-            flowInstance.ActivityType = wfruntime.GetNextNodeType();
             flowInstance.ActivityName = wfruntime.nextNode.name;
             flowInstance.PreviousId = wfruntime.currentNodeId;
             flowInstance.CreateUserId = user.User.Id;
@@ -121,8 +120,8 @@ namespace OpenAuth.App
             addFlowInstanceReq.CreateUserName = user.User.Account;
 
             flowInstance.MakerList =
-                wfruntime.GetNextNodeType() != 4 ? wfruntime.GetNextMakers(addFlowInstanceReq) : "";
-            flowInstance.IsFinish = wfruntime.GetNextNodeType() == 4
+                wfruntime.GetNextNodeType() != Define.NODE_TYPE_END ? wfruntime.GetNextMakers(addFlowInstanceReq) : "";
+            flowInstance.IsFinish = wfruntime.GetNextNodeType() == Define.NODE_TYPE_END
                 ? FlowInstanceStatus.Finished
                 : FlowInstanceStatus.Running;
 
@@ -329,7 +328,7 @@ namespace OpenAuth.App
 
             FlowRuntime wfruntime = new FlowRuntime(flowInstance);
 
-            if (flowInstance.ActivityType == 0) //当前节点是会签节点
+            if (wfruntime.GetCurrentNodeType() == Define.NODE_TYPE_FORK) //当前节点是网关开始节点
             {
                 CounterSign(wfruntime, tag, flowInstance);
             }
@@ -403,13 +402,12 @@ namespace OpenAuth.App
             {
                 flowInstance.PreviousId = flowInstance.ActivityId;
                 flowInstance.ActivityId = wfruntime.nextNodeId;
-                flowInstance.ActivityType = wfruntime.nextNodeType;
                 flowInstance.ActivityName = wfruntime.nextNode.name;
-                flowInstance.IsFinish = wfruntime.nextNodeType == 4
+                flowInstance.IsFinish = wfruntime.GetNextNodeType() == Define.NODE_TYPE_END
                     ? FlowInstanceStatus.Finished
                     : FlowInstanceStatus.Running;
                 flowInstance.MakerList =
-                    wfruntime.nextNodeType == 4 ? "" : wfruntime.GetNextMakers();
+                    wfruntime.GetNextNodeType() == Define.NODE_TYPE_END ? "" : wfruntime.GetNextMakers();
 
                 wfruntime.SaveTransitionHis();
             }
@@ -503,10 +501,9 @@ namespace OpenAuth.App
                 {
                     flowInstance.PreviousId = flowInstance.ActivityId;
                     flowInstance.ActivityId = wfruntime.nextNodeId;
-                    flowInstance.ActivityType = wfruntime.nextNodeType;
                     flowInstance.ActivityName = wfruntime.nextNode.name;
-                    flowInstance.MakerList = wfruntime.nextNodeType == 4 ? "" : wfruntime.GetNextMakers(request);
-                    flowInstance.IsFinish = wfruntime.nextNodeType == 4
+                    flowInstance.MakerList = wfruntime.GetNextNodeType() == Define.NODE_TYPE_END ? "" : wfruntime.GetNextMakers(request);
+                    flowInstance.IsFinish = wfruntime.GetNextNodeType() == Define.NODE_TYPE_END
                         ? FlowInstanceStatus.Finished
                         : FlowInstanceStatus.Running;
                 }
@@ -515,7 +512,6 @@ namespace OpenAuth.App
             {
                 flowInstance.IsFinish = FlowInstanceStatus.Disagree;
                 wfruntime.nextNodeId = "-1";
-                wfruntime.nextNodeType = 4;
             }
 
             var content =
@@ -641,7 +637,7 @@ namespace OpenAuth.App
                 resp.CanWriteFormItemIds = runtime.currentNode.setInfo.CanWriteFormItemIds;
             }
 
-            if (runtime.nextNode != null && runtime.nextNode.setInfo != null && runtime.nextNodeType != 4)
+            if (runtime.nextNode != null && runtime.nextNode.setInfo != null && runtime.GetNextNodeType() != Define.NODE_TYPE_END)
             {
                 resp.NextNodeDesignateType = runtime.nextNode.setInfo.NodeDesignate;
                 resp.CanWriteFormItemIds = runtime.currentNode.setInfo.CanWriteFormItemIds;
@@ -869,13 +865,12 @@ namespace OpenAuth.App
             #region 根据运行实例改变当前节点状态
 
             flowInstance.ActivityId = wfruntime.nextNodeId;
-            flowInstance.ActivityType = wfruntime.GetNextNodeType();
             flowInstance.ActivityName = wfruntime.nextNode.name;
             flowInstance.PreviousId = wfruntime.currentNodeId;
             flowInstance.CreateUserId = user.User.Id;
             flowInstance.CreateUserName = user.User.Account;
-            flowInstance.MakerList = wfruntime.GetNextNodeType() != 4 ? wfruntime.GetNextMakers() : "";
-            flowInstance.IsFinish = wfruntime.GetNextNodeType() == 4
+            flowInstance.MakerList = wfruntime.GetNextNodeType() != Define.NODE_TYPE_END ? wfruntime.GetNextMakers() : "";
+            flowInstance.IsFinish = wfruntime.GetNextNodeType() == Define.NODE_TYPE_END
                 ? FlowInstanceStatus.Finished
                 : FlowInstanceStatus.Running;
 
