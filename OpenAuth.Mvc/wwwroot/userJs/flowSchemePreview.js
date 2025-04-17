@@ -16,7 +16,7 @@
         OpenNode: function (object) {
             FlowDesignObject = object;  //为NodeInfo窗口提供调用
 
-            if (object.type == 'start round mix' || object.type == 'end round') {
+            if (object.type == 'start' || object.type == 'end') {
                 layer.msg("开始节点与结束节点不能设置");
                 return false;
             }

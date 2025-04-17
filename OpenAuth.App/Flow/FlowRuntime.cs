@@ -140,6 +140,14 @@ namespace OpenAuth.App.Flow
         #endregion 私有方法
 
         #region 共有方法
+        
+        /// <summary>
+        /// 判断流程是否完成
+        /// </summary>
+        public bool  IsFinish()
+        {
+            return GetNextNodeType() == Define.NODE_TYPE_END;
+        }
 
         //获取下一个节点
         public FlowNode GetNextNode(string nodeId = null)
@@ -157,8 +165,7 @@ namespace OpenAuth.App.Flow
             {
                 return GetNodeType(nextNodeId);
             }
-
-            return "error";
+            return Define.NODE_TYPE_END;
         }
 
         /// <summary>
@@ -490,7 +497,7 @@ namespace OpenAuth.App.Flow
                 ToNodeId = nextNodeId,
                 ToNodeName = nextNode?.name,
                 // ToNodeType = GetNextNodeType(),
-                IsFinish = GetNextNodeType() == Define.NODE_TYPE_END ? FlowInstanceStatus.Finished : FlowInstanceStatus.Running,
+                IsFinish = IsFinish() ? FlowInstanceStatus.Finished : FlowInstanceStatus.Running,
                 TransitionSate = 0
             };
 

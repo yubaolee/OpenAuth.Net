@@ -36,7 +36,7 @@
                 OpenNode: function (object) {
                     FlowDesignObject = object; //为NodeInfo窗口提供调用
 
-                    if (object.type == 'start round mix' || object.type == 'end round') {
+                    if (object.type == 'start' || object.type == 'end') {
                         return false;
                     }
 

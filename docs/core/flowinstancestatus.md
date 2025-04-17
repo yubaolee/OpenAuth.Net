@@ -17,20 +17,6 @@
 
 #### ActivityId: 当前活动节点，即待审批的节点
 
-#### ActivityType：当前节点的类型
-
-- -1 无法运行,
-
-- 0 会签开始,
-
-- 1 会签结束,
-
-- 2 一般节点,
-
-- 3 开始节点，
-
-- 4 流程运行结束
-
 #### SchemeContent：流程实例的具体内容
 
 该字段存储的是一个JSON对象，具体内容如下所示：
@@ -45,8 +31,8 @@
             "belongto": "commonNodes", //节点样式类型：普通四边形节点，菱形网关
             "id": "node-011c37dd1db34596b9cbd6812971b8a6", //节点id
             "setInfo": {
-                "NodeRejectType": 0, //节点驳回类型：0-不驳回，1-驳回
-                "NodeConfluenceType": "", //节点会签/网关类型：""-不会签，"AND"-与，"OR"-或
+                "NodeRejectType": 0, //节点驳回类型：
+                "NodeConfluenceType": "", //节点会签/网关类型
                 "NodeDesignate": "SPECIAL_ROLE",//执行权限类型：指定角色、指定用户等
                 "ThirdPartyUrl": "",//执行完成后回调地址
                 "NodeDesignateData": {  //根据NodeDesignate不同，表示不同的权限数据：角色、用户等
@@ -67,7 +53,7 @@
         {
             "type": "sl",  //原有gooflow里面的值："sl":直线, "lr":中段可左右移动型折线, "tb":中段可上下移动型折线
             "id": "link-6351c01fd31d4e6d85d476be6e0b0ae2",
-            "from": "start round mix-3fcaf7e8577644ff8b52fabaf975437e",
+            "from": "start-3fcaf7e8577644ff8b52fabaf975437e",
             "to": "node-011c37dd1db34596b9cbd6812971b8a6",
             "label": "值>3",  //连线上面显示的文字
             "cls": {
@@ -85,7 +71,7 @@
             "type": "sl",
             "id": "link-785f8823a60e4472884f482b16c16f26",
             "from": "node-011c37dd1db34596b9cbd6812971b8a6",
-            "to": "end round-a749ef5b89bb49d588009b71f53316f5",
+            "to": "end-a749ef5b89bb49d588009b71f53316f5",
             "label": "",
             "cls": {
                 "linkType": "Flowchart",
@@ -97,19 +83,50 @@
 }
 
 ```
-其中：nodes为流程实例的所有节点。lines为流程实例的所有连线。节点的type属性为节点的类型属性，对应上面提到的ActivityType：
+其中：nodes为流程实例的所有节点。lines为流程实例的所有连线。节点属性如下：
 
-- -1：无法运行；
 
-- 0：会签开始，即type为：‘fork’；
+## 基础属性
 
-- 1：会签结束,即type为：’join’；
+| 属性名 | 类型 | 说明 | 可选值 |
+|--------|------|------|---------|
+| type | 字符串 | 节点类型 | start：开始节点<br>node：普通节点<br>fork：分支节点<br>join：合并节点<br>end：结束节点 |
+| name | 字符串 | 节点名称 | - |
+| icon | 字符串 | 节点图标 | - |
+| belongto | 字符串 | 节点样式类型 | - |
+| id | 字符串 | 节点id | - |
 
-- 2：一般节点,即type为：’node’；
+## 配置信息(setInfo)
 
-- 3：开始节点,即type为：‘start’；
+### 节点驳回配置
 
-- 4：流程运行结束，即type为’end’；
+| 属性名 | 类型 | 说明 | 可选值 |
+|--------|------|------|---------|
+| NodeRejectType | 数字 | 节点驳回类型 | 0：前一步<br>1：第一步<br>2：指定节点 |
+| NodeRejectStep | 字符串 | 驳回节点id | 当NodeRejectType=2时使用 |
+
+### 节点会签/网关配置
+
+| 属性名 | 类型 | 说明 | 可选值 |
+|--------|------|------|---------|
+| NodeConfluenceType | 字符串 | 节点会签/网关类型 | sequential：顺序<br>all：全部通过<br>one：至少一个通过 |
+
+### 执行权限配置
+
+| 属性名 | 类型 | 说明 | 可选值 |
+|--------|------|------|---------|
+| NodeDesignate | 字符串 | 执行权限类型 | SPECIAL_ROLE：指定角色<br>SPECIAL_USER：指定用户<br>SPECIAL_SQL：指定SQL<br>RUNTIME_SPECIAL_ROLE：运行时指定角色<br>RUNTIME_SPECIAL_USER：运行时指定用户 |
+| NodeDesignateData | 对象 | 执行权限数据 | - |
+| NodeDesignateData.datas | 数组 | 执行权限数据 | - |
+| NodeDesignateData.Texts | 字符串 | 执行权限数据 | - |
+
+### 其他配置
+
+| 属性名 | 类型 | 说明 |
+|--------|------|------|
+| ThirdPartyUrl | 字符串 | 执行完成后回调地址 |
+| CanWriteFormItemIds | 数组 | 可写表单项id |
+
 
 与流程实例密切相关的还有两个表：流程实例的操作记录FlowInstanceOperationHistory及流转记录FlowInstanceTransitionHistory。它们有不同的作用：
 

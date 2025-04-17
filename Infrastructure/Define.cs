@@ -45,8 +45,8 @@
 
 
         //节点类型
-        public const string NODE_TYPE_START = "start round mix"; //开始节点
-        public const string NODE_TYPE_END = "end round"; //结束节点
+        public const string NODE_TYPE_START = "start"; //开始节点
+        public const string NODE_TYPE_END = "end"; //结束节点
         public const string NODE_TYPE_TASK = "node"; //任务节点
         public const string NODE_TYPE_FORK = "fork"; //网关开始
         public const string NODE_TYPE_JOIN = "join"; //网关结束

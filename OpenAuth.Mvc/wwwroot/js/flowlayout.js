@@ -17,7 +17,7 @@
                 haveHead: false,
                 haveTool: true,
                 headLabel: true,
-                toolBtns: ["start round mix", "end round", "node", "join", "fork"],
+                toolBtns: ["start", "end", "node", "join", "fork"],
                 haveGroup: true,
                 useOperStack: true
             };
@@ -78,14 +78,14 @@
                     var _node = data.nodes[j];
                     var _flag = false;
                     switch (_node.type) {
-                        case "start round mix":
+                        case "start":
                             startroundFlag++;
                             if (fromlines[_node.id] == undefined) {
                                 layer.msg("开始节点无法流转到下一个节点");
                                 return -1;
                             }
                             break;
-                        case "end round":
+                        case "end":
                             endroundFlag++;
                             if (tolines[_node.id] == undefined) {
                                 layer.msg("无法流转到结束节点");
@@ -173,7 +173,7 @@
                 $.each(options.nodeData,
                     function (i, item) {
                         $("#" + item.id).css("background", "#999");
-                        if (item.type == "start round mix") {
+                        if (item.type == "start") {
                             $("#" + item.id).css("background", "#5cb85c");
                         } else {
                             if (item.id == options.activityId) {

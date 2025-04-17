@@ -120,8 +120,8 @@ namespace OpenAuth.App
             addFlowInstanceReq.CreateUserName = user.User.Account;
 
             flowInstance.MakerList =
-                wfruntime.GetNextNodeType() != Define.NODE_TYPE_END ? wfruntime.GetNextMakers(addFlowInstanceReq) : "";
-            flowInstance.IsFinish = wfruntime.GetNextNodeType() == Define.NODE_TYPE_END
+                (!wfruntime.IsFinish()) ? wfruntime.GetNextMakers(addFlowInstanceReq) : "";
+            flowInstance.IsFinish = wfruntime.IsFinish()
                 ? FlowInstanceStatus.Finished
                 : FlowInstanceStatus.Running;
 
@@ -403,11 +403,11 @@ namespace OpenAuth.App
                 flowInstance.PreviousId = flowInstance.ActivityId;
                 flowInstance.ActivityId = wfruntime.nextNodeId;
                 flowInstance.ActivityName = wfruntime.nextNode.name;
-                flowInstance.IsFinish = wfruntime.GetNextNodeType() == Define.NODE_TYPE_END
+                flowInstance.IsFinish = wfruntime.IsFinish()
                     ? FlowInstanceStatus.Finished
                     : FlowInstanceStatus.Running;
                 flowInstance.MakerList =
-                    wfruntime.GetNextNodeType() == Define.NODE_TYPE_END ? "" : wfruntime.GetNextMakers();
+                    wfruntime.IsFinish() ? "" : wfruntime.GetNextMakers();
 
                 wfruntime.SaveTransitionHis();
             }
@@ -502,8 +502,8 @@ namespace OpenAuth.App
                     flowInstance.PreviousId = flowInstance.ActivityId;
                     flowInstance.ActivityId = wfruntime.nextNodeId;
                     flowInstance.ActivityName = wfruntime.nextNode.name;
-                    flowInstance.MakerList = wfruntime.GetNextNodeType() == Define.NODE_TYPE_END ? "" : wfruntime.GetNextMakers(request);
-                    flowInstance.IsFinish = wfruntime.GetNextNodeType() == Define.NODE_TYPE_END
+                    flowInstance.MakerList = wfruntime.IsFinish() ? "" : wfruntime.GetNextMakers(request);
+                    flowInstance.IsFinish = wfruntime.IsFinish()
                         ? FlowInstanceStatus.Finished
                         : FlowInstanceStatus.Running;
                 }
@@ -869,8 +869,8 @@ namespace OpenAuth.App
             flowInstance.PreviousId = wfruntime.currentNodeId;
             flowInstance.CreateUserId = user.User.Id;
             flowInstance.CreateUserName = user.User.Account;
-            flowInstance.MakerList = wfruntime.GetNextNodeType() != Define.NODE_TYPE_END ? wfruntime.GetNextMakers() : "";
-            flowInstance.IsFinish = wfruntime.GetNextNodeType() == Define.NODE_TYPE_END
+            flowInstance.MakerList = (!wfruntime.IsFinish()) ? wfruntime.GetNextMakers() : "";
+            flowInstance.IsFinish = wfruntime.IsFinish()
                 ? FlowInstanceStatus.Finished
                 : FlowInstanceStatus.Running;
 
