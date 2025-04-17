@@ -493,10 +493,10 @@ namespace OpenAuth.App.Flow
                 CreateUserName = user.Name,
                 FromNodeId = currentNodeId,
                 FromNodeName = currentNode.name,
-                // FromNodeType = GetCurrentNodeType(),
+                FromNodeType = GetCurrentNodeType(),
                 ToNodeId = nextNodeId,
                 ToNodeName = nextNode?.name,
-                // ToNodeType = GetNextNodeType(),
+                ToNodeType = GetNextNodeType(),
                 IsFinish = IsFinish() ? FlowInstanceStatus.Finished : FlowInstanceStatus.Running,
                 TransitionSate = 0
             };
