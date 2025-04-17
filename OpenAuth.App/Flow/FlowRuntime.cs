@@ -40,7 +40,8 @@ namespace OpenAuth.App.Flow
             flowInstanceId = instance.Id;
 
             //网关开始节点和流程结束节点没有下一步
-            if (GetCurrentNodeType() == Define.NODE_TYPE_FORK || GetCurrentNodeType() == Define.NODE_TYPE_END)
+            if (GetCurrentNodeType() == Define.NODE_TYPE_FORK 
+            || GetCurrentNodeType() == Define.NODE_TYPE_END)
             {
                 nextNodeId = "-1";
             }
@@ -618,6 +619,10 @@ namespace OpenAuth.App.Flow
             {
                 makerList = GetForkNodeMakers(nextNodeId);
             }
+            else if (GetNextNodeType() == Define.NODE_TYPE_MULTI_INSTANCE) //如果是多实例、会签节点
+            {
+                makerList = GetMultiInstanceNodeMakers(nextNodeId);
+            }
             else if (nextNode.setInfo.NodeDesignate == Define.RUNTIME_SPECIAL_ROLE)
             {
                 //如果是运行时指定角色
@@ -696,6 +701,65 @@ namespace OpenAuth.App.Flow
             }
 
             return makerList;
+        }
+
+        /// <summary>           
+        /// 计算多实例、会签节点的执行人
+        /// </summary>
+        /// <param name="nodeId"></param>
+        /// <returns></returns>
+        private string GetMultiInstanceNodeMakers(string nodeId)
+        {
+            if(GetNodeType(nodeId) != Define.NODE_TYPE_MULTI_INSTANCE)
+            {
+                throw new Exception("当前节点不是会签节点，请联系管理员");  
+            }
+
+            var node = Nodes[nodeId];
+            string[] makerList = Array.Empty<string>(); // 执行人列表
+            var sugarClient = AutofacContainerModule.GetService<ISqlSugarClient>();
+
+         if (node.setInfo.NodeDesignate == Define.SPECIAL_USER) //指定成员
+                {
+                    makerList = node.setInfo.NodeDesignateData.datas;
+                }
+                else if (node.setInfo.NodeDesignate == Define.SPECIAL_ROLE) //指定角色
+                {
+                    var revelanceApp = AutofacContainerModule.GetService<RevelanceManagerApp>();
+                    makerList = revelanceApp.Get(Define.USERROLE, false, node.setInfo.NodeDesignateData.datas).ToArray();
+                }
+                else if (node.setInfo.NodeDesignate == Define.SPECIAL_SQL) //指定SQL
+                {
+                    //如果是指定SQL，则需要执行SQL，并返回结果
+                    var sql = ReplaceSql(node.setInfo.NodeDesignateData.datas[0]);
+                    
+                    makerList = sugarClient.Ado.SqlQuery<string>(sql).ToArray();
+                }
+                else
+                {
+                    throw new Exception("会签节点，不支持该类型，请重新设计流程模板");  
+                }
+
+                //写入到FlowApprover
+                var users = sugarClient.Queryable<SysUser>().Where(u => makerList.Contains(u.Id)).ToList();
+                int order = 1;
+                foreach (var user in users)
+                {
+                    var flowApprover = new FlowApprover
+                    {
+                        InstanceId = flowInstanceId,
+                        ActivityId = nodeId,
+                        ApproverId = user.Id,
+                        ApproverName = user.Name,
+                        OrderNo = order++,
+                        ApproveType = node.setInfo.NodeConfluenceType,
+                        ReturnToSignNode = false,
+                        Reason = "",
+                        CreateDate = DateTime.Now
+                    };
+                    sugarClient.Insertable(flowApprover).ExecuteCommand();
+                }
+            return GenericHelpers.ArrayToString(makerList, "");  
         }
 
         /// <summary>
