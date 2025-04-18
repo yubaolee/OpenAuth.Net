@@ -40,7 +40,7 @@ namespace OpenAuth.App.Flow
             flowInstanceId = instance.Id;
 
             //网关开始节点和流程结束节点没有下一步
-            if (GetCurrentNodeType() == Define.NODE_TYPE_FORK 
+            if (GetCurrentNodeType() == Define.NODE_TYPE_FORK
             || GetCurrentNodeType() == Define.NODE_TYPE_END)
             {
                 nextNodeId = "-1";
@@ -118,9 +118,9 @@ namespace OpenAuth.App.Flow
             {
                 throw new Exception("无法寻找到下一个节点");
             }
-            
+
             //URL表单暂时不支持URL表单
-            if(flowInstance.FrmType == Define.FORM_TYPE_URL) return lines[0].to;
+            if (flowInstance.FrmType == Define.FORM_TYPE_URL) return lines[0].to;
 
             if (FrmData == "" || FrmData == "{}") return lines[0].to;
 
@@ -141,11 +141,11 @@ namespace OpenAuth.App.Flow
         #endregion 私有方法
 
         #region 共有方法
-        
+
         /// <summary>
         /// 判断流程是否完成
         /// </summary>
-        public bool  IsFinish()
+        public bool IsFinish()
         {
             return GetNextNodeType() == Define.NODE_TYPE_END;
         }
@@ -379,7 +379,7 @@ namespace OpenAuth.App.Flow
             }
 
             flowInstance.SchemeContent = JsonHelper.Instance.Serialize(ToSchemeObj());
-            
+
             var sugarClient = AutofacContainerModule.GetService<ISqlSugarClient>();
             sugarClient.Updateable(flowInstance).ExecuteCommand();
 
@@ -398,7 +398,7 @@ namespace OpenAuth.App.Flow
             {
                 item.Value.setInfo = null;
             }
-            
+
             flowInstance.IsFinish = FlowInstanceStatus.Draft;
             flowInstance.PreviousId = flowInstance.ActivityId;
             flowInstance.ActivityId = startNodeId;
@@ -409,9 +409,9 @@ namespace OpenAuth.App.Flow
 
             var sugarClient = AutofacContainerModule.GetService<ISqlSugarClient>();
             sugarClient.Updateable(flowInstance).ExecuteCommand();
-            
+
             SaveOperationHis($"【撤回】备注：{request.Description}");
-            
+
             sugarClient.Ado.CommitTran();
         }
 
@@ -553,14 +553,14 @@ namespace OpenAuth.App.Flow
         /// </summary>
         public void UndoVerification()
         {
-             // 已结束的流程不能撤销
-            if (flowInstance.IsFinish == FlowInstanceStatus.Finished 
+            // 已结束的流程不能撤销
+            if (flowInstance.IsFinish == FlowInstanceStatus.Finished
                 || flowInstance.IsFinish == FlowInstanceStatus.Rejected)
             {
                 throw new Exception("流程已结束，不能撤销");
             }
 
-            if(Nodes[previousId].type == Define.NODE_TYPE_START)
+            if (Nodes[previousId].type == Define.NODE_TYPE_START)
             {
                 throw new Exception("没有任何审批，不能撤销!你可以删除或召回这个流程");
             }
@@ -572,7 +572,7 @@ namespace OpenAuth.App.Flow
             //向前查找ActivityId的前一个结点，即连线指向ActivityId的节点
             flowInstance.PreviousId = GetPreNode().id;
             flowInstance.MakerList = GetNodeMarkers(Nodes[currentNodeId]);
-            
+
             // 清除当前节点的审批状态
             currentNode.setInfo.Taged = null;
             currentNode.setInfo.UserId = "";
@@ -710,56 +710,66 @@ namespace OpenAuth.App.Flow
         /// <returns></returns>
         private string GetMultiInstanceNodeMakers(string nodeId)
         {
-            if(GetNodeType(nodeId) != Define.NODE_TYPE_MULTI_INSTANCE)
+            if (GetNodeType(nodeId) != Define.NODE_TYPE_MULTI_INSTANCE)
             {
-                throw new Exception("当前节点不是会签节点，请联系管理员");  
+                throw new Exception("当前节点不是会签节点，请联系管理员");
             }
 
             var node = Nodes[nodeId];
             string[] makerList = Array.Empty<string>(); // 执行人列表
             var sugarClient = AutofacContainerModule.GetService<ISqlSugarClient>();
 
-         if (node.setInfo.NodeDesignate == Define.SPECIAL_USER) //指定成员
-                {
-                    makerList = node.setInfo.NodeDesignateData.datas;
-                }
-                else if (node.setInfo.NodeDesignate == Define.SPECIAL_ROLE) //指定角色
-                {
-                    var revelanceApp = AutofacContainerModule.GetService<RevelanceManagerApp>();
-                    makerList = revelanceApp.Get(Define.USERROLE, false, node.setInfo.NodeDesignateData.datas).ToArray();
-                }
-                else if (node.setInfo.NodeDesignate == Define.SPECIAL_SQL) //指定SQL
-                {
-                    //如果是指定SQL，则需要执行SQL，并返回结果
-                    var sql = ReplaceSql(node.setInfo.NodeDesignateData.datas[0]);
-                    
-                    makerList = sugarClient.Ado.SqlQuery<string>(sql).ToArray();
-                }
-                else
-                {
-                    throw new Exception("会签节点，不支持该类型，请重新设计流程模板");  
-                }
+            if (node.setInfo.NodeDesignate == Define.SPECIAL_USER) //指定用户
+            {
+                makerList = node.setInfo.NodeDesignateData.datas;
+            }
+            else if (node.setInfo.NodeDesignate == Define.SPECIAL_ROLE) //指定角色
+            {
+                var revelanceApp = AutofacContainerModule.GetService<RevelanceManagerApp>();
+                makerList = revelanceApp.Get(Define.USERROLE, false, node.setInfo.NodeDesignateData.datas).ToArray();
+            }
+            else if (node.setInfo.NodeDesignate == Define.SPECIAL_SQL) //指定SQL
+            {
+                //如果是指定SQL，则需要执行SQL，并返回结果
+                var sql = ReplaceSql(node.setInfo.NodeDesignateData.datas[0]);
 
-                //写入到FlowApprover
-                var users = sugarClient.Queryable<SysUser>().Where(u => makerList.Contains(u.Id)).ToList();
-                int order = 1;
-                foreach (var user in users)
+                makerList = sugarClient.Ado.SqlQuery<string>(sql).ToArray();
+            }
+            else
+            {
+                throw new Exception("会签节点，不支持该类型，请重新设计流程模板");
+            }
+
+            //将所有的会签人员写入到FlowApprover，后续审批的时候，按加签的逻辑处理
+            var users = sugarClient.Queryable<SysUser>()
+                .Where(u => makerList.Contains(u.Id))
+                .ToList()
+                .OrderBy(u => Array.IndexOf(makerList, u.Id))
+                .ToList();
+            int order = 1;
+            foreach (var user in users)
+            {
+                var flowApprover = new FlowApprover
                 {
-                    var flowApprover = new FlowApprover
-                    {
-                        InstanceId = flowInstanceId,
-                        ActivityId = nodeId,
-                        ApproverId = user.Id,
-                        ApproverName = user.Name,
-                        OrderNo = order++,
-                        ApproveType = node.setInfo.NodeConfluenceType,
-                        ReturnToSignNode = false,
-                        Reason = "",
-                        CreateDate = DateTime.Now
-                    };
-                    sugarClient.Insertable(flowApprover).ExecuteCommand();
-                }
-            return GenericHelpers.ArrayToString(makerList, "");  
+                    InstanceId = flowInstanceId,
+                    ActivityId = nodeId,
+                    ApproverId = user.Id,
+                    ApproverName = user.Name,
+                    OrderNo = order++,
+                    ApproveType = node.setInfo.NodeConfluenceType,
+                    ReturnToSignNode = false,
+                    Reason = "",
+                    CreateDate = DateTime.Now
+                };
+                sugarClient.Insertable(flowApprover).ExecuteCommand();
+            }
+            //如果是顺序执行，取第一个人
+            if (node.setInfo.NodeConfluenceType == Define.APPROVE_TYPE_SEQUENTIAL)
+            {
+                return makerList[0];
+            }
+            //否则并行且/并行或都是返回所有加签人
+            return GenericHelpers.ArrayToString(makerList, "");
         }
 
         /// <summary>
@@ -822,7 +832,8 @@ namespace OpenAuth.App.Flow
         /// </summary>
         /// <param name="sql"></param>
         /// <returns></returns>
-        private string ReplaceSql(string sql){
+        private string ReplaceSql(string sql)
+        {
             var loginUser = AutofacContainerModule.GetService<IAuth>().GetCurrentUser();
             var res = sql.Replace(Define.DATAPRIVILEGE_LOGINUSER, $"'{loginUser.User.Id}'");
             res = res.Replace(Define.DATAPRIVILEGE_LOGINROLE, string.Join(',', loginUser.Roles.Select(u => $"'{u.Id}'")));
@@ -942,7 +953,7 @@ namespace OpenAuth.App.Flow
         /// 上一个节点
         /// </summary>
         private string previousId { get; set; }
-        
+
         /// <summary>
         /// 实例节点集合
         /// </summary>
@@ -962,7 +973,7 @@ namespace OpenAuth.App.Flow
         /// 到达节点的线段集合
         /// </summary>
         private Dictionary<string, List<FlowLine>> ToNodeLines { get; set; }
-        
+
         /// <summary>
         /// 表单数据
         /// </summary>

@@ -2,7 +2,7 @@
  * @Author: yubaolee <yubaolee@163.com> | ahfu~ <954478625@qq.com>
  * @Date: 2024-12-13 16:55:17
  * @Description: 工作流实例表操作
- * @LastEditTime: 2025-04-17 21:37:03
+ * @LastEditTime: 2025-04-18 17:30:07
  * Copyright (c) 2024 by yubaolee | ahfu~ , All Rights Reserved.
  */
 
@@ -460,6 +460,11 @@ namespace OpenAuth.App
                     if (!isfinish) //如果没有完成，不能到下一步
                     {
                         canNext = false;
+                        flowInstance.MakerList = GenericHelpers.ArrayToString(_flowApproverApp.GetApproverIds(new QueryApproverReq()
+                        {
+                            FlowInstanceId = flowInstance.Id,
+                            ActivityId = flowInstance.ActivityId
+                        }), "");
                     }
                     else if (approverInfo.ReturnToSignNode == null || !approverInfo.ReturnToSignNode.Value)
                     {
