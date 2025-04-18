@@ -773,7 +773,7 @@ namespace OpenAuth.App.Flow
         }
 
         /// <summary>
-        /// 计算节点执行人
+        /// 这里专门处理由前端选择相关的节点执行人
         /// </summary>
         /// <param name="node"></param>
         /// <returns></returns>

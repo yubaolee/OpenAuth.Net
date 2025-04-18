@@ -2,7 +2,7 @@
  * @Author: yubaolee <yubaolee@163.com> | ahfu~ <954478625@qq.com>
  * @Date: 2024-12-13 16:55:17
  * @Description: 工作流实例表操作
- * @LastEditTime: 2025-04-18 17:30:07
+ * @LastEditTime: 2025-04-19 00:23:47
  * Copyright (c) 2024 by yubaolee | ahfu~ , All Rights Reserved.
  */
 
@@ -696,22 +696,22 @@ namespace OpenAuth.App
             else if (SugarClient.CurrentConnectionConfig.DbType == DbType.Oracle)
             {
                 groupConcatSql = $@" (select listagg(Account, ',') within group (order by Account)
-                          from SysUser
-                          where fi.MakerList like '%' || Id || '%') ";
+                        from SysUser
+                        where fi.MakerList like '%' || Id || '%') ";
             }
             else if (SugarClient.CurrentConnectionConfig.DbType == DbType.PostgreSQL)
             {
                 groupConcatSql = $@" (select string_agg(Account, ',')
-                          from SysUser
-                          where fi.MakerList like '%' || Id || '%') ";
+                        from SysUser
+                        where fi.MakerList like '%' || Id || '%') ";
             }
 
             string sql = String.Empty;
 
             if (request.type == "wait") //待办事项（即需要我处理的流程）
             {
-                sql = $@"
-                SELECT fi.Id,
+                sql =$@"
+                    SELECT fi.Id,
                     fi.CreateUserName,
                     fi.ActivityName,
                     fi.CreateDate,
@@ -722,24 +722,38 @@ namespace OpenAuth.App
                     CASE
                         WHEN fi.MakerList = '1' THEN '所有人'
                         WHEN fi.MakerList = '00000000-0000-0000-0000-000000000000' THEN 'System'
-                        ELSE   {groupConcatSql}    
+                        ELSE    {groupConcatSql}     
                         END AS MakerList 
                 FROM FlowInstance fi
                 JOIN (SELECT fith.Id
-                   FROM FlowInstance fith
-                   WHERE (MakerList = '1' or MakerList LIKE '%{user.User.Id}%') 
-                     and (fith.IsFinish = {FlowInstanceStatus.Running} or fith.IsFinish = {FlowInstanceStatus.Rejected}) 
-                      and not exists (select 1
-                                     from flowapprover
-                                     where fith.Id = InstanceId
-                                       and fith.ActivityId = ActivityId
-                                       and Status = 0)
-                   UNION
-                   SELECT fa.InstanceId
-                   FROM FlowApprover fa 
-                   WHERE fa.Status = 0 
-                     AND fa.ApproverId = '{user.User.Id}') UniqueInstanceIds
-                  ON fi.Id = UniqueInstanceIds.Id";
+                    FROM FlowInstance fith
+                    WHERE (MakerList = '1' or MakerList LIKE '%00000000-0000-0000-0000-000000000000%') 
+                        and (fith.IsFinish = {FlowInstanceStatus.Running} or fith.IsFinish = {FlowInstanceStatus.Rejected}) 
+                        and not exists (select 1
+                                        from flowapprover
+                                        where fith.Id = InstanceId
+                                        and fith.ActivityId = ActivityId
+                                        and Status = 0)
+                union
+                select fa.instanceid
+                from flowapprover fa
+                where fa.status = 0
+                    and fa.approverid = '{user.User.Id}'
+                    and fa.approvetype <> '{Define.APPROVE_TYPE_SEQUENTIAL}'
+                union
+                select fa.instanceid
+                from flowapprover fa
+                where not exists (select 1
+                                    from flowapprover fa2
+                                    where fa2.instanceid = fa.instanceid
+                                    and fa2.orderno < fa.orderno
+                                    and fa2.status = 0
+                                    and fa2.approvetype = '{Define.APPROVE_TYPE_SEQUENTIAL}')
+                    and fa.status = 0
+                    and fa.approverid = '{user.User.Id}'
+                    and fa.approvetype = '{Define.APPROVE_TYPE_SEQUENTIAL}') UniqueInstanceIds
+                    ON fi.Id = UniqueInstanceIds.Id
+                ";
             }
             else if (request.type == "disposed") //已办事项（即我参与过的流程）
             {
@@ -758,15 +772,15 @@ namespace OpenAuth.App
                 ELSE   {groupConcatSql} 
                 END AS MakerList
                     FROM FlowInstance fi
-                             JOIN (SELECT fith.InstanceId
-                                   FROM FlowInstanceOperationHistory fith
-                                   WHERE fith.CreateUserId = '{user.User.Id}' 
-                                   UNION
-                                   SELECT fa.InstanceId
-                                   FROM FlowApprover fa 
-                                   WHERE fa.Status <> 0 
-                                     AND fa.ApproverId = '{user.User.Id}') UniqueInstanceIds
-                                  ON fi.Id = UniqueInstanceIds.InstanceId
+                            JOIN (SELECT fith.InstanceId
+                                FROM FlowInstanceOperationHistory fith
+                                WHERE fith.CreateUserId = '{user.User.Id}' 
+                                UNION
+                                SELECT fa.InstanceId
+                                FROM FlowApprover fa 
+                                WHERE fa.Status <> 0 
+                                    AND fa.ApproverId = '{user.User.Id}') UniqueInstanceIds
+                                ON fi.Id = UniqueInstanceIds.InstanceId
                     ";
             }
             else //我的流程（我创建的及知会我的）
@@ -786,25 +800,25 @@ namespace OpenAuth.App
                     ELSE   {groupConcatSql} 
                     END AS MakerList 
                     FROM FlowInstance fi
-                             JOIN (select Id as InstanceId
+                            JOIN (select Id as InstanceId
                             from FlowInstance
                             where CreateUserId = '{user.User.Id}'
                             union
                             select distinct FirstId as InstanceId
                             from Relevance rel
-                                     inner join FlowInstance flow on rel.FirstId = flow.Id and flow.IsFinish = 1
+                                    inner join FlowInstance flow on rel.FirstId = flow.Id and flow.IsFinish = 1
                             where RelKey = '{Define.INSTANCE_NOTICE_USER}'
-                              and SecondId = '{user.User.Id}'
+                            and SecondId = '{user.User.Id}'
                             union
                             select distinct a.FirstId as InstanceId
                             from Relevance a
-                                     inner join (select SecondId as RoleId
-                                                 from Relevance
-                                                 where RelKey = 'UserRole'
-                                                   and FirstId = '{user.User.Id}') b on a.SecondId = b.RoleId
-                                     inner join FlowInstance flow on a.FirstId = flow.Id and flow.IsFinish = 1
+                                    inner join (select SecondId as RoleId
+                                                from Relevance
+                                                where RelKey = 'UserRole'
+                                                and FirstId = '{user.User.Id}') b on a.SecondId = b.RoleId
+                                    inner join FlowInstance flow on a.FirstId = flow.Id and flow.IsFinish = 1
                             where a.RelKey = '{Define.INSTANCE_NOTICE_ROLE}') UniqueInstanceIds
-                                  ON fi.Id = UniqueInstanceIds.InstanceId
+                                ON fi.Id = UniqueInstanceIds.InstanceId
                     ";
             }
 
