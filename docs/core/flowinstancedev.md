@@ -1,21 +1,52 @@
-# 流程实例
+# 流程相关的代码
 
-流程实例指正在运行的一个流程。数据存放在FlowInstance表中，该表核心字段如下：
+## 流程审批逻辑
 
-#### IsFinish：流程的当前状态
+当最终用户在【待处理流程】中审批一个流程实例时，流程实例会经过下面步骤进行处理：
 
-- -1 草稿/召回：流程发起人主动召回流程；
+@startuml
+skinparam handwritten true
+skinparam backgroundColor #EEEBDC
 
-- 0 正在运行；
+start
+if (当前活动节点类型为会签) then (yes)
+  :标识当前节点状态;
+  :从所有的分支中找到一个用户可以审批的节点canCheckId;
+  if (没找到?) then (yes)
+    stop
+  endif
+  :标识canCheckId节点状态;
+  #HotPink:进行会签,结果为res;
+  if(res == TagState.No) then (yes)
+    :修改流程最终状态为不同意;
+  else if(res != string.Empty) then (yes)
+    stop
+  else (no)
+    :修改流程最终状态，修改活动节点，修改可执行人;
+    :添加扭转记录;
+  endif
 
-- 1 完成：流程结束，同时所有的审批都通过；
+else (no)
+  :标识当前节点状态;
+  if (同意) then (yes)
+    :修改流程最终状态，修改活动节点，修改可执行人;
+    :添加扭转记录;
+  else
+    :修改流程最终状态为不同意;
+  endif
+  :操作记录;
+endif
+stop
 
-- 3 不同意：即流程结束，同时审批人员没有通过；
+@enduml
 
-- 4 驳回：流程结束，可能发起的流程内容有问题，要求被驳回重新提交；
+## 流程模板
 
+流程模板指流程的定义。数据存放在FlowScheme表中，该表核心字段如下：
 
-#### ActivityId: 当前活动节点，即待审批的节点
+#### FrmId：流程模版关联的表单id
+
+#### FrmType：表单类型
 
 #### SchemeContent：流程实例的具体内容
 
@@ -127,6 +158,25 @@
 | ThirdPartyUrl | 字符串 | 执行完成后回调地址 |
 | CanWriteFormItemIds | 数组 | 可写表单项id |
 
+
+## 流程实例
+
+流程实例指正在运行的一个流程。数据存放在FlowInstance表中，该表核心字段如下：
+
+#### IsFinish：流程的当前状态
+
+- -1 草稿/召回：流程发起人主动召回流程；
+
+- 0 正在运行；
+
+- 1 完成：流程结束，同时所有的审批都通过；
+
+- 3 不同意：即流程结束，同时审批人员没有通过；
+
+- 4 驳回：流程结束，可能发起的流程内容有问题，要求被驳回重新提交；
+
+
+#### ActivityId: 当前活动节点，即待审批的节点
 
 与流程实例密切相关的还有两个表：流程实例的操作记录FlowInstanceOperationHistory及流转记录FlowInstanceTransitionHistory。它们有不同的作用：
 
