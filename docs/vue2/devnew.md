@@ -1,4 +1,4 @@
-# 企业版代码生成器
+# Vue2代码生成器
 
 本章节视频讲解请参考：[OpenAuth.Net视频合集--使用企业版代码生成器](https://www.bilibili.com/video/BV1JCuyeaEFp/)
 
