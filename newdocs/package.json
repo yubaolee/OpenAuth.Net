@@ -1,0 +1,27 @@
+{
+  "name": "openauth-net-docs",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "最好用的.net权限工作流框架,最实用的.net/vue前后端分离方案",
+  "author": "yubaolee <yubaolee@163.com>",
+  "license": "MIT",
+  "engines": {
+    "node": "^18.19.0 || ^20.6.0 || >=22.0.0"
+  },
+  "scripts": {
+    "docs:dev": "vuepress dev docs",
+    "docs:dev-clean": "vuepress dev docs --clean-cache --clean-temp",
+    "docs:build": "vuepress build docs --clean-cache --clean-temp",
+    "docs:preview": "http-server docs/.vuepress/dist",
+    "vp-update": "npx vp-update"
+  },
+  "devDependencies": {
+    "@vuepress/bundler-vite": "2.0.0-rc.21",
+    "vuepress": "2.0.0-rc.21",
+    "vuepress-theme-plume": "1.0.0-rc.143",
+    "http-server": "^14.1.1",
+    "vue": "^3.5.13",
+    "sass-embedded": "^1.86.3",
+    "typescript": "^5.8.3"
+  }
+}
