@@ -2,7 +2,7 @@
  * @Author: yubaolee <yubaolee@163.com> | ahfu~ <954478625@qq.com>
  * @Date: 2024-12-13 16:55:17
  * @Description: 工作流实例表操作
- * @LastEditTime: 2025-04-19 00:23:47
+ * @LastEditTime: 2025-04-21 10:54:45
  * Copyright (c) 2024 by yubaolee | ahfu~ , All Rights Reserved.
  */
 
@@ -727,7 +727,7 @@ namespace OpenAuth.App
                 FROM FlowInstance fi
                 JOIN (SELECT fith.Id
                     FROM FlowInstance fith
-                    WHERE (MakerList = '1' or MakerList LIKE '%00000000-0000-0000-0000-000000000000%') 
+                    WHERE (MakerList = '1' or MakerList LIKE '%{user.User.Id}%') 
                         and (fith.IsFinish = {FlowInstanceStatus.Running} or fith.IsFinish = {FlowInstanceStatus.Rejected}) 
                         and not exists (select 1
                                         from flowapprover
