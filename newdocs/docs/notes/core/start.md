@@ -153,11 +153,11 @@ OpenAuth.Repository -> OpenAuthDB : 仓储层进行数据库操作
 
 启动openauth.mvc项目。
 
-![启动](/startmvc.png "启动")
+![启动](http://img.openauth.net.cn/2025-04-24-00-07-51.png)
 
 启动成功后使用浏览器打开[http://localhost:1802](http://localhost:1802) 即可访问，如下图所示：
 
-![说明](/mvcmain.png "说明")
+![说明](http://img.openauth.net.cn/2025-04-24-00-08-18.png)
 
 
 ## 编译运行WebApi
