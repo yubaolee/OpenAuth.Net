@@ -1,7 +1,7 @@
 /*
  * @Author: yubaolee <yubaolee@163.com> | ahfu~ <954478625@qq.com>
  * @Date: 2025-04-23 20:26:48
- * @LastEditTime: 2025-04-23 23:30:36
+ * @LastEditTime: 2025-04-23 23:46:59
  * @Description: 笔记配置
  * Copyright (c) 2025 by yubaolee | ahfu~ , All Rights Reserved.  
  */
@@ -45,8 +45,78 @@ const coreNote = defineNoteConfig({
   ],
 })
 
+// vue3版本
+const proNote = defineNoteConfig({
+  dir: 'pro',
+  link: '/pro',
+  sidebar: [
+    '',
+    'deploy',
+    'structure',
+    'devnew',
+    {
+      text: '基础开发',
+      collapsed: false,
+      items: [ 'router','openurl','keepalive']
+    },
+    'datapropertyrule',
+    'printerplan',
+    {
+      text: '表单设计',
+      collapsed: true,
+      items: ['startform','urlform','dragform','dragformdetail']
+    },
+    {
+      text: '工作流',
+      collapsed: true,
+      items: ['startflow','form']
+    },
+    {
+      text: '其他',
+      collapsed: true,
+      items: ['components','faq']
+    }
+    
+  ]
+})
+
+// vue3版本
+const vue2Note = defineNoteConfig({
+  dir: 'vue2',
+  link: '/vue2',
+  sidebar: [
+    '',
+    'deploy',
+    'structure',
+    'devnew',
+    {
+      text: '基础开发',
+      collapsed: false,
+      items: [ 'router','openurl','keepalive']
+    },
+    'datapropertyrule',
+    'printerplan',
+    {
+      text: '表单设计',
+      collapsed: true,
+      items: ['startform','dragform','dragformdetail']
+    },
+    {
+      text: '工作流',
+      collapsed: true,
+      items: ['startflow','form']
+    },
+    {
+      text: '其他',
+      collapsed: true,
+      items: ['components','faq']
+    }
+    
+  ]
+})
+
 export const notes = defineNotesConfig({
   dir: 'notes',
   link: '/',
-  notes: [coreNote],
+  notes: [coreNote, proNote, vue2Note],
 })
