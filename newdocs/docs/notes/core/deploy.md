@@ -11,7 +11,7 @@ permalink: /core/deploy/
 ## 生成发布文件
 
 * 修改部署环境的连接字符串信息,特别注意是`appsettings.Production.json`文件：
-![说明](/configmvc.png "说明")
+![说明](http://img.openauth.net.cn/2025-04-24-00-20-11.png)
 
 ::: warning 注意
 决定系统部署后读取`appsettings.json`还是`appsettings.Production.json`是通过操作系统的环境变量`ASPNETCORE_ENVIRONMENT`来控制的。
@@ -36,7 +36,7 @@ source /etc/profile
 
 * 直接在解决方案资源管理器中，选中OpenAuth.Mvc右键【发布】，出现下面的配置框，使用文件系统即可：
 
-![说明](http://pj.openauth.net.cn/zentao/file-read-8.png "说明")
+![2025-04-24-00-21-09](http://img.openauth.net.cn/2025-04-24-00-21-09.png)
 
 * 发布完成后可以在输出目录看到发布详情（红色框内即为发布的文件夹）：
 
@@ -53,7 +53,7 @@ source /etc/profile
 
 OpenAuth.Net采用的是gitee托管源码，只需使用Gitee WebHook构建触发器。配置如下：
 
-![说明](/giteesource.png "说明")
+![2025-04-24-00-22-55](http://img.openauth.net.cn/2025-04-24-00-22-55.png)
 
 做好上面的配置后，代码提交时就会触发jenkins工作。剩下的就是编写自己的构建脚本。增加构建步骤，选择执行Shell。并输入以下脚本：
 

@@ -1,9 +1,8 @@
 ---
-title: 开源后端
+title: 框架简介
 createTime: 2025/04/20 21:49:49
 permalink: /core/
 ---
-
 ![LOGO](/logocore.png "1.png")
 
 OpenAuth.Net是基于最新版.Net的开源权限工作流快速开发框架。源于Martin Fowler企业级应用开发思想及最新技术组合（SqlSugar、EF、Quartz、AutoFac、WebAPI、Swagger、Mock、NUnit、Vue2/3、Element-ui/plus、IdentityServer等）。核心模块包括：角色授权、代码生成、API鉴权、智能打印、表单设计、工作流、定时任务等。
@@ -22,13 +21,6 @@ gitee上面两个版本。其中：
 
 .Net目前SDK升级特别方便。请参考：[3分钟的时间把.net core 3.1的升级到.NET 5](https://www.cnblogs.com/yubaolee/p/Net3ToNet5.html)，所以不要纠结SDK版本问题。
 :::
-
-
-## 技术栈
-
-![](https://img.shields.io/badge/release-6.0-blue) ![](https://img.shields.io/badge/SqlSugar-5.1.4-blue) ![](https://img.shields.io/badge/IdentityServer4-3.0.1-blue) ![](https://img.shields.io/badge/quartz-3.0.7-blue) ![](https://img.shields.io/badge/Autofac-5.2-blue) ![](https://img.shields.io/badge/NUnit-3.13.1-blue) ![](https://img.shields.io/badge/SwaggerUI-OAS%203.0-blue) ![](https://img.shields.io/badge/Moq-4.13-blue) ![](https://img.shields.io/badge/log4net-2.0.12-blue)
-
-![](https://img.shields.io/badge/vue-2.6.10-brightgreen) ![](https://img.shields.io/badge/vue-3.3.4-brightgreen) ![](https://img.shields.io/badge/vite-4.4.9-brightgreen) ![](https://img.shields.io/badge/element--ui-2.10.1-brightgreen) ![](https://img.shields.io/badge/element--plus-2.3.9-brightgreen) ![](https://img.shields.io/badge/node-%3E%3D4.0-brightgreen) ![](https://img.shields.io/badge/npm-9.7.1-brightgreen) ![](https://img.shields.io/badge/layui-2.8.6-brightgreen)
 
 ## 核心看点
 

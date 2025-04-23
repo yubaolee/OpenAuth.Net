@@ -88,11 +88,11 @@ permalink: /core/log/
 
 框架集成mini profiler工具，在swagger中或其他客户端调用WebApi接口时，可以直接在swagger中显示日志信息（需要刷新）。如下图：
 
-![](/miniprofiler1.png)
+![2025-04-24-00-23-43](http://img.openauth.net.cn/2025-04-24-00-23-43.png)
 
 点击`sql`列的时间，查看详细的sql执行情况
 
-![](/miniprofiler2.png)
+![2025-04-24-00-23-53](http://img.openauth.net.cn/2025-04-24-00-23-53.png)
 
 如果需要订制日志信息，查看更详细的日志情况，可以自己调整代码实现。以登录接口为例，添加以下代码：
 

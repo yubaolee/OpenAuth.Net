@@ -29,12 +29,10 @@ OpenAuth.Net支持两种登录认证方式：token认证和自己搭建的OpenAu
 ## OpenAuth.Mvc OAuth认证
 
 当启用了Identity时，系统启动后界面如下：
-
-![MVC启用identity](/mvcidentity.png "mvcidentity")
+![2025-04-24-00-24-28](http://img.openauth.net.cn/2025-04-24-00-24-28.png)
 
 这时点击登录超链接，会跳转到OpenAuth.Identity登录界面。效果如下：
-
-![](/identity.png)
+![2025-04-24-00-24-40](http://img.openauth.net.cn/2025-04-24-00-24-40.png)
 
 
 ## OpenAuth.WebApi OAuth

@@ -85,6 +85,6 @@ return result;
 
 完成代码编写后，在【基础配置】--【角色管理】--【为角色分配模块】最后为角色分配【可见字段】中分配权限
 
-![](/roleassignproperty.png)
+![2025-04-24-00-27-37](http://img.openauth.net.cn/2025-04-24-00-27-37.png)
 
 

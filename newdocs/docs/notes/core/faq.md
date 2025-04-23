@@ -23,7 +23,7 @@ public string Account { get; set; }
 
 ## 项目显示不可用
 
-![](/notavailable.png)
+![2025-04-24-00-29-43](http://img.openauth.net.cn/2025-04-24-00-29-43.png)
 
 这种情况一般是开发工具或SDK的版本号不对。严格按照下面的提示打开项目：
 

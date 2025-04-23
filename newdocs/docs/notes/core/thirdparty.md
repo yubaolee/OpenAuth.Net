@@ -5,12 +5,11 @@ permalink: /core/thirdparty/
 ---
 * 在OpenAuth中设计表单，注意表单中的控件名称，在步骤3调用OpenAuth创建流程实例接口时，frmData参数中的属性必须严格按该命名提交。
 
-![](/formthirdparty.png "表单设计说明")
+![2025-04-24-00-28-51](http://img.openauth.net.cn/2025-04-24-00-28-51.png)
 
 
 * 在OpenAuth中设计流程，制定相关的工作流程，并在每个流程节点配置回调URL路径，如下：
-
-![](/flowthirdparty.png "三方URL设置")
+![2025-04-24-00-28-38](http://img.openauth.net.cn/2025-04-24-00-28-38.png)
 
 * 三方已有系统界面，提交表单时，调用创建流程实例接口：http://localhost:52789/api/FlowInstances/Add，在OpenAuth中创建一条新的流程实例； 接口参数如下：
 

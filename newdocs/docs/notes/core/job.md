@@ -39,7 +39,7 @@ namespace OpenAuth.App.Jobs
 
 编写完任务的执行代码后即可运行系统，在界面【基础配置】-【定时任务】中添加任务的执行规则，如图：
 
-![](/addjob.png)
+![2025-04-24-00-26-19](http://img.openauth.net.cn/2025-04-24-00-26-19.png)
 
 添加任务规则后，在界面直接点击`启用`即可
 
@@ -47,6 +47,6 @@ namespace OpenAuth.App.Jobs
 ::: tip 提示
 企业版提供可视化的CRON编辑界面,如图：
 
-![](/addjobpro.png)
+![2025-04-24-00-26-34](http://img.openauth.net.cn/2025-04-24-00-26-34.png)
 :::
 
