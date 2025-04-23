@@ -3,7 +3,6 @@ title: 动态API
 createTime: 2025/04/23 21:03:10
 permalink: /core/dynamicapi/
 ---
-# 动态API
 
 加快系统开发速度，框架提供动态API功能，可以实现无代码调整操作数据库。
 

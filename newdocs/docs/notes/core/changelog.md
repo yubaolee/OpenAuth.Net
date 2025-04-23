@@ -3,7 +3,6 @@ title: 版本发布
 createTime: 2025/04/23 21:03:10
 permalink: /core/changelog/
 ---
-# 版本发布
 
 ### v7.0
 

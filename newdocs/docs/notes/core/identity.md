@@ -1,9 +1,8 @@
 ---
-title: identity
+title: 登录认证
 createTime: 2025/04/23 21:03:10
 permalink: /core/identity/
 ---
-# 登录认证
 
 OpenAuth.Net支持两种登录认证方式：token认证和自己搭建的OpenAuth.IdentityServer认证。
 

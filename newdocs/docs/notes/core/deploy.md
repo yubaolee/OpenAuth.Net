@@ -1,9 +1,8 @@
 ---
-title: 部署
+title: 部署MVC
 createTime: 2025/04/23 21:03:10
 permalink: /core/deploy/
 ---
-# 部署MVC
 
 ::: tip 提示
 因.net core内部有自托管的Web服务器，推荐使用控制台方式部署。本内容基于控制台命令的方式。如果部署到IIS请自行百度:cold_sweat:

@@ -3,7 +3,6 @@ title: 登录信息
 createTime: 2025/04/23 21:03:10
 permalink: /core/logininfo/
 ---
-# 登录信息
 
 框架在应用层任意业务逻辑中，均可以通过`IAuth`接口判断是否登录和获取登录信息。所有继承BaseApp的业务逻辑可以直接使用`_auth`成员变量直接获取登录用户信息。
 

@@ -1,9 +1,8 @@
 ---
-title: 配置多数据库
+title: 多数据库
 createTime: 2025/04/23 21:03:10
 permalink: /core/multidbs/
 ---
-# 配置多数据库
 
 框架支持同时访问多个数据库。具体操作如下：
 

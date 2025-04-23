@@ -3,7 +3,6 @@ title: 日常提交
 createTime: 2025/04/23 21:03:10
 permalink: /core/routineupdate/
 ---
-# 日常提交(针对dev分支)
 
 * 2025.03.17  代码生成加上外部数据源支持
 

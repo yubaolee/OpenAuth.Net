@@ -3,7 +3,6 @@ title: 快速开始
 createTime: 2025/04/23 21:03:10
 permalink: /core/start/
 ---
-# 快速开始
 
 ## 下载代码
 

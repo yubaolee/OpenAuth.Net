@@ -3,7 +3,6 @@ title: 数据库实体
 createTime: 2025/04/23 21:03:10
 permalink: /core/entity/
 ---
-# 数据库实体
 
 ## 更换主键名称
 

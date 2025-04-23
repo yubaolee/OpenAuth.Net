@@ -3,7 +3,6 @@ title: 缓存机制
 createTime: 2025/04/23 21:03:10
 permalink: /core/cache/
 ---
-# 缓存机制
 
 ## 服务器缓存
 

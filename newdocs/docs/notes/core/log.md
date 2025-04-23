@@ -3,7 +3,6 @@ title: 日志操作
 createTime: 2025/04/23 21:03:10
 permalink: /core/log/
 ---
-# 日志操作
 
 ## 普通日志
 

@@ -3,7 +3,6 @@ title: 模块/菜单权限
 createTime: 2025/04/23 21:03:10
 permalink: /core/moduleauth/
 ---
-# 模块/菜单权限
 
 网络上流行的经典的权限设计是【主体】- 【领域】 - 【权限】( who、what、how问题原型 ) 的设计思想，其中：
 

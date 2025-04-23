@@ -3,7 +3,6 @@ title: 数据库读写及事务处理
 createTime: 2025/04/23 21:03:10
 permalink: /core/unitwork/
 ---
-# 数据库读写及事务处理
 
 OpenAuth.Net使用Repository和Unitwork两种方式访问数据库。
 

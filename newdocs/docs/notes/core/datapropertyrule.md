@@ -4,8 +4,6 @@ createTime: 2025/04/23 21:03:10
 permalink: /core/datapropertyrule/
 ---
 
-# 字段权限
-
 ::: warning 注意
 字段权限只针对【非系统模块】有效，即在添加新模块的时候，需要设置模块属性“是否系统”为false。
 :::

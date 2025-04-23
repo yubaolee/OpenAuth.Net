@@ -3,8 +3,6 @@ title: 三方对接
 createTime: 2025/04/23 21:03:10
 permalink: /core/thirdparty/
 ---
-# 三方对接
-
 * 在OpenAuth中设计表单，注意表单中的控件名称，在步骤3调用OpenAuth创建流程实例接口时，frmData参数中的属性必须严格按该命名提交。
 
 ![](/formthirdparty.png "表单设计说明")

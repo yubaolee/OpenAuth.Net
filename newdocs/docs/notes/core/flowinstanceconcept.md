@@ -3,7 +3,6 @@ title: 工作流中的概念
 createTime: 2025/04/23 21:03:10
 permalink: /core/flowinstanceconcept/
 ---
-# 工作流中的概念
 
 
 ## 并行网关

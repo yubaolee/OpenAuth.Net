@@ -3,7 +3,6 @@ title: 多租户
 createTime: 2025/04/23 21:03:10
 permalink: /core/multitenant/
 ---
-# 多租户
 
 目前市面上主流的多租户方案有三种：
 

@@ -1,9 +1,8 @@
 ---
-title: 前端结构
+title: MVC前端
 createTime: 2025/04/23 21:03:10
 permalink: /core/wwwarchitect/
 ---
-# 前端结构
 
 OpenAuth.Mvc前端采用典型的mvc结构部署，其中：
 

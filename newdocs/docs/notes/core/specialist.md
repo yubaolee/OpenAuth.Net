@@ -3,7 +3,6 @@ title: 后端开发规范
 createTime: 2025/04/23 21:03:10
 permalink: /core/specialist/
 ---
-# 后端开发规范
 
 ## 数据库表及字段命名
 

@@ -3,7 +3,7 @@ title: 工作流实例
 createTime: 2025/04/23 21:03:10
 permalink: /core/flowinstance/
 ---
-# 工作流介绍
+
 
 OpenAuth.Net工作流基于国际标准的BPMN2.0规范，并在此基础上做了一些扩展，以满足国内各种需求。系统工作流分为两个大类：
 

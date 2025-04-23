@@ -3,7 +3,6 @@ title: 切换sdk版本
 createTime: 2025/04/23 21:03:10
 permalink: /core/changesdk/
 ---
-# 切换sdk版本
 
 OpenAuth.Net最新版默认使用.Net SDK 9.0.100。如果你使用的是其他版本的sdk（如.net 6.0/7.0等）打开项目，需要调整csproj项目文件的TargetFramework。用记事本等工具，打开 `Infrastructure.csproj` `OpenAuth.Repository.csproj` `OpenAuth.App.csproj` `OpenAuth.Mvc.csproj` `OpenAuth.WebApi.csproj` `OpenAuth.IdentityServer.csproj`，将
 ```csharp
