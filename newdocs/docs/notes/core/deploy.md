@@ -46,8 +46,7 @@ source /etc/profile
 
 将发布后的文件拷贝到服务器文件夹。直接使用`dotnet  openauth.mvc.dll` 命令启动。启动成功后使用浏览器打开http://localhost:1802 即可访问，如下图所示：
 
-![说明](/mvcmain.png "说明")
-
+![2025-04-24-00-32-42](http://img.openauth.net.cn/2025-04-24-00-32-42.png)
 
 ## jenkins部署OpenAuth.Mvc
 

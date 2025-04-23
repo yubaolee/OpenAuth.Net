@@ -8,6 +8,6 @@ permalink: /vue2/faq/
 
 在启动企业版的时候，如果提示下面错误：
 
-![](/oidcerror.png)
+![2025-04-24-00-35-45](http://img.openauth.net.cn/2025-04-24-00-35-45.png)
 
 请使用`npm run dev`命令来启动项目

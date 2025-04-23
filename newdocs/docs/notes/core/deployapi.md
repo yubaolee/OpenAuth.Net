@@ -52,7 +52,7 @@ source /etc/profile
 
 OpenAuth.Net采用的是gitee托管源码，只需使用Gitee WebHook构建触发器。配置如下：
 
-![说明](/giteesource.png "说明")
+![2025-04-24-00-33-15](http://img.openauth.net.cn/2025-04-24-00-33-15.png)
 
 做好上面的配置后，代码提交时就会触发jenkins工作。剩下的就是编写自己的构建脚本。增加构建步骤，选择执行Shell。并输入以下脚本：
 
