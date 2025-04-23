@@ -82,8 +82,6 @@ H~2~O
 
 [外部链接](https://github.com/pengzhanbo)
 
-![plume](/plume.svg)
-
 **Badge：**
 
 - <Badge type="info" text="info badge" />
