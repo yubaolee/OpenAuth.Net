@@ -41,14 +41,26 @@ source /etc/profile
 
 ![20220101235436](http://img.openauth.net.cn/20220101235436.png)
 
-## 部署OpenAuth.WebApi
+## 部署&启动
 
-将发布后的文件拷贝到服务器文件夹。直接使用`dotnet  OpenAuth.WebApi.dll` 命令启动。启动成功后使用浏览器打开[http://localhost:52789/swagger/index.html](http://localhost:52789/swagger/index.html) 即可访问，如下图所示：
+如果是windows系统，可以直接运行`OpenAuth.Mvc.exe`启动。
+如果是linux系统，将发布后的文件拷贝到服务器文件夹。直接使用`dotnet  OpenAuth.WebApi.dll` 命令启动。
+启动成功后使用浏览器打开[http://localhost:52789/swagger/index.html](http://localhost:52789/swagger/index.html) 即可访问，如下图所示：
 
 ![20220101233542](http://img.openauth.net.cn/20220101233542.png)
 
+## docker部署
 
-## jenkins部署OpenAuth.WebApi
+框架自带的dockerfile文件，会同时生成webapi、mvc、identity三个项目，可以根据需要调整后使用。使用方式如下：
+```shell
+# 构建镜像
+docker build -f Dockerfile -t openauthapi-img .
+
+# 运行容器
+docker run --network="host"  -d -p 52789:52789 -p 1802:1802 -p 12796:12796 openauthapi-img
+```
+
+## jenkins无容器部署
 
 OpenAuth.Net采用的是gitee托管源码，只需使用Gitee WebHook构建触发器。配置如下：
 
@@ -86,6 +98,28 @@ nohup dotnet /data/openauthapi/OpenAuth.WebApi.dll &
 
 #cp ./bin/Debug/netcoreapp2.0/您的项目路径.xml $WORKSPACE/jenkins_publish/ # 拷贝swagger注释
 echo '============================end build======================================='
+```
+
+## jenkins容器部署
+
+如果需要jenkins配合自动部署启动，可以将上面的shell调整如下：
+
+```shell
+# 停止并删除所有与 openauthapi-img 镜像相关的容器
+docker ps -a --filter "ancestor=openauthapi-img" --format "{{.ID}}" | xargs -r docker stop
+
+# 删除所有与 openauthapi-img 镜像相关的容器
+docker ps -a --filter "ancestor=openauthapi-img" --format "{{.ID}}" | xargs -r docker rm
+
+#docker rmi $(docker images | grep "^<none>" | awk "{print $3}")
+
+cd /var/lib/jenkins/workspace/openauth.webapi
+
+# 构建镜像
+docker build -f Dockerfile -t openauthapi-img .
+
+# 运行容器
+docker run --network="host"  -d -p 52789:52789 -p 1802:1802 -p 12796:12796 openauthapi-img
 ```
 
 
