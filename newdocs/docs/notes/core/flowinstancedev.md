@@ -48,11 +48,11 @@ stop
 
 流程模板指流程的定义。数据存放在FlowScheme表中，该表核心字段如下：
 
-#### FrmId：流程模版关联的表单id
+### FrmId：流程模版关联的表单id
 
-#### FrmType：表单类型
+### FrmType：表单类型
 
-#### SchemeContent：流程实例的具体内容
+### SchemeContent：流程实例的具体内容
 
 该字段存储的是一个JSON对象，具体内容如下所示：
 
@@ -120,8 +120,9 @@ stop
 ```
 其中：nodes为流程实例的所有节点。lines为流程实例的所有连线。节点属性如下：
 
+### 节点属性
 
-###### 基础属性
+#### 基础属性
 
 | 属性名 | 类型 | 说明 | 可选值 |
 |--------|------|------|---------|
@@ -131,22 +132,22 @@ stop
 | belongto | 字符串 | 节点样式类型 | - |
 | id | 字符串 | 节点id | - |
 
-###### 配置信息(setInfo)
+#### 配置信息(setInfo)
 
-####### 节点驳回配置
+##### 节点驳回配置
 
 | 属性名 | 类型 | 说明 | 可选值 |
 |--------|------|------|---------|
 | NodeRejectType | 数字 | 节点驳回类型 | 0：前一步<br>1：第一步<br>2：指定节点 |
 | NodeRejectStep | 字符串 | 驳回节点id | 当NodeRejectType=2时使用 |
 
-###### 节点会签/网关配置
+##### 节点会签/网关配置
 
 | 属性名 | 类型 | 说明 | 可选值 |
 |--------|------|------|---------|
 | NodeConfluenceType | 字符串 | 节点会签/网关类型 | sequential：顺序<br>all：全部通过<br>one：至少一个通过 |
 
-###### 执行权限配置
+##### 执行权限配置
 
 | 属性名 | 类型 | 说明 | 可选值 |
 |--------|------|------|---------|
@@ -155,7 +156,7 @@ stop
 | NodeDesignateData.datas | 数组 | 执行权限数据 | - |
 | NodeDesignateData.Texts | 字符串 | 执行权限数据 | - |
 
-###### 其他配置
+##### 其他配置
 
 | 属性名 | 类型 | 说明 |
 |--------|------|------|
@@ -167,7 +168,7 @@ stop
 
 流程实例指正在运行的一个流程。数据存放在FlowInstance表中，该表核心字段如下：
 
-#### IsFinish：流程的当前状态
+### IsFinish：流程的当前状态
 
 - -1 草稿/召回：流程发起人主动召回流程；
 
@@ -180,12 +181,12 @@ stop
 - 4 驳回：流程结束，可能发起的流程内容有问题，要求被驳回重新提交；
 
 
-#### ActivityId: 当前活动节点，即待审批的节点
+### ActivityId: 当前活动节点，即待审批的节点
 
 与流程实例密切相关的还有两个表：流程实例的操作记录FlowInstanceOperationHistory及流转记录FlowInstanceTransitionHistory。它们有不同的作用：
 
-### 操作记录FlowInstanceOperationHistory
+## 操作记录FlowInstanceOperationHistory
 该表记录了流程实例的所有操作记录，包括流程的创建、撤回、驳回、同意、不同意等操作。
 
-### 流转记录FlowInstanceTransitionHistory
+## 流转记录FlowInstanceTransitionHistory
 记录某个流程实例所有已审批的从一个活动节点到下一个活动节点的操作人、操作时间。
