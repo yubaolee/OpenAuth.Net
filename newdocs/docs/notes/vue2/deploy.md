@@ -4,7 +4,7 @@ createTime: 2025/04/23 23:43:26
 permalink: /vue2/deploy/
 ---
 
-后端接口部署请参考：[部署API](/core/deployapi.html)，前端打包流程如下：
+后端接口部署请参考：[部署API](/core/deployapi/)，前端打包流程如下：
 
 使用`npm run build`进行打包构建：
 

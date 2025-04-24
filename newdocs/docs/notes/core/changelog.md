@@ -50,13 +50,13 @@ permalink: /core/changelog/
 
 ### v6.1
 
-* 全网最好用的打印解决方案。详情：[智能打印](http://doc.openauth.net.cn/pro/printerplan.html)；
+* 全网最好用的打印解决方案。详情：[智能打印](http://doc.openauth.net.cn/pro/printerplan)；
   
 * 增加PDManer数据结构说明;
 
 ### v6.0
 
-* 全面支持SqlSugar Orm。详情：[sqlsugar访问数据库](http://doc.openauth.net.cn/core/sqlsugar.html)；
+* 全面支持SqlSugar Orm。详情：[sqlsugar访问数据库](http://doc.openauth.net.cn/core/sqlsugar)；
   
 * 全面更新mvc版本，升级layui版本至最新v2.8.11；
   
@@ -122,7 +122,7 @@ permalink: /core/changelog/
 
 * 【新增】调整APP层文件结构，按功能划分
 
-* 【新增】支持同时配置多个类型数据库的连接字符串，详见:[这里](http://doc.openauth.net.cn/core/multidbs.html)
+* 【新增】支持同时配置多个类型数据库的连接字符串，详见:[这里](http://doc.openauth.net.cn/core/multidbs)
 
 ### v3.0
 
@@ -170,7 +170,7 @@ permalink: /core/changelog/
 
 * 【新增】企业版代码生成器，可以快速生成带有头/明细结构的页面；
 
-* 【新增】数据权限控制，超强的自定义权限控制功能。详见:[这里](https://www.cnblogs.com/yubaolee/p/DataPrivilege.html)
+* 【新增】数据权限控制，超强的自定义权限控制功能。详见:[这里](https://www.cnblogs.com/yubaolee/p/DataPrivilege)
 
 * 【新增】完整的字段权限控制，可以控制字段可见及API是否返回字段值；
 

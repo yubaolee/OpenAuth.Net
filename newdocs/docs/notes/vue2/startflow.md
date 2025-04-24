@@ -14,7 +14,7 @@ permalink: /vue2/startflow/
 
 ::: warning 注意
 
-流程模版使用的表单，需要在【基础配置/表单设计】中添加，具体查看[表单设计-基本介绍](/pro/startform.html)
+流程模版使用的表单，需要在【基础配置/表单设计】中添加，具体查看[表单设计-基本介绍](/pro/startform/)
 
 :::
 

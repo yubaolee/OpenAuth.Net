@@ -4,7 +4,7 @@ createTime: 2025/04/23 23:43:26
 permalink: /pro/deploy/
 ---
 
-后端接口部署请参考：[部署API](/core/deployapi.html)，前端打包流程如下：
+后端接口部署请参考：[部署API](/core/deployapi/)，前端打包流程如下：
 
 首先修改配置文件`.env.production`，打包构建前请调整为自己的接口地址：
 

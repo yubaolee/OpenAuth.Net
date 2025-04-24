@@ -32,7 +32,7 @@ permalink: /pro/devnew/
 
 #### 动态头部
 
-如果启用动态头部，表示前端渲染列表（或表单）时，列表的列定义是从后端返回。通常用于控制前端字段显示权限。配合后端：[权限控制/字段权限](http://doc.openauth.net.cn/pro/datapropertyrule.html#%E5%AD%97%E6%AE%B5%E6%9D%83%E9%99%90) 如：常见的前端代码如下：
+如果启用动态头部，表示前端渲染列表（或表单）时，列表的列定义是从后端返回。通常用于控制前端字段显示权限。配合后端：[权限控制/字段权限](http://doc.openauth.net.cn/pro/datapropertyrule/#%E5%AD%97%E6%AE%B5%E6%9D%83%E9%99%90) 如：常见的前端代码如下：
 ```html
   <auth-table  ref="mainTable" :table-fields="headerList"></auth-table>
 ```
@@ -93,7 +93,7 @@ create table stock
 
 ```
 
-* 使用Visual Studio 以开发模式启动后端。参考：[编译运行webapi](http://doc.openauth.net.cn/core/start.html#%E7%BC%96%E8%AF%91%E8%BF%90%E8%A1%8Cwebapi)
+* 使用Visual Studio 以开发模式启动后端。参考：[编译运行webapi](http://doc.openauth.net.cn/core/start/#%E7%BC%96%E8%AF%91%E8%BF%90%E8%A1%8Cwebapi)
 
 * 启动企业版前端。参考：[启动前端](http://doc.openauth.net.cn/pro/#%E5%90%AF%E5%8A%A8%E5%89%8D%E7%AB%AF)
 

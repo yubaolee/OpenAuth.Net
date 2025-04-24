@@ -38,9 +38,9 @@ permalink: /core/routineupdate/
 
 * 2024.11.16  添加dockerfile,为.net 9做准备
 
-* 2024.10.10  增加知会功能。详情：[知会](http://doc.openauth.net.cn/core/flowinstance.html#%E7%9F%A5%E4%BC%9A)；
+* 2024.10.10  增加知会功能。详情：[知会](http://doc.openauth.net.cn/core/flowinstance/#%E7%9F%A5%E4%BC%9A)；
 
-* 2024.09.29  新增增加签逻辑。详情：[加签](http://doc.openauth.net.cn/core/flowinstance.html#%E5%8A%A0%E7%AD%BE)；
+* 2024.09.29  新增增加签逻辑。详情：[加签](http://doc.openauth.net.cn/core/flowinstance/#%E5%8A%A0%E7%AD%BE)；
 
 * 2024.07.20  mvc项目去掉vue，采用原生layui；
 
@@ -78,7 +78,7 @@ permalink: /core/routineupdate/
   
 * 2024.01.06  update layui to 2.9.3
   
-* 2023.12.30  模块增加配置是否缓存。请参考[界面缓存](http://doc.openauth.net.cn/pro/keepalive.html)；
+* 2023.12.30  模块增加配置是否缓存。请参考[界面缓存](http://doc.openauth.net.cn/pro/keepalive/)；
 
 * 2023.12.27  登录账号旁边实时显示未读消息条数
   
@@ -90,7 +90,7 @@ permalink: /core/routineupdate/
   
 * 2023.11.20  打印导出PDF时，数据为空
   
-* 2023.10.04  全面完成智能打印板块功能开发。请参考[智能打印](http://doc.openauth.net.cn/pro/printerplan.html)；
+* 2023.10.04  全面完成智能打印板块功能开发。请参考[智能打印](http://doc.openauth.net.cn/pro/printerplan/)；
   
 * 2023.10.02  fix #I82FO6 完成业务功能配置打印方案
 
@@ -106,7 +106,7 @@ permalink: /core/routineupdate/
   
 * 2023.09.01  fix #I7XLQK checkbox控件值表单条件判断
 
-* 2023.08.27  fix issue #I7A7XF 全面支持SqlSugar Orm。详情：[sqlsugar访问数据库](http://doc.openauth.net.cn/core/sqlsugar.html)
+* 2023.08.27  fix issue #I7A7XF 全面支持SqlSugar Orm。详情：[sqlsugar访问数据库](http://doc.openauth.net.cn/core/sqlsugar/)
   
 * 2023.08.18  fix #I7U1BM 左侧展开图标丢失
   
@@ -216,7 +216,7 @@ permalink: /core/routineupdate/
 
 * 2021.05.26 流程处理增加消息通知；
 
-* 2021.05.24 集成miniprofiler，可以监控API运行情况。[查看使用说明](http://doc.openauth.net.cn/core/log.html#%E5%9C%A8swagger%E4%B8%AD%E8%BE%93%E5%87%BA%E6%97%A5%E5%BF%97 )；
+* 2021.05.24 集成miniprofiler，可以监控API运行情况。[查看使用说明](http://doc.openauth.net.cn/core/log/#%E5%9C%A8swagger%E4%B8%AD%E8%BE%93%E5%87%BA%E6%97%A5%E5%BF%97 )；
 
 * 2021.05.23 [模块管理页面加载时默认显示第一条](https://gitee.com/dotnetchina/OpenAuth.Net/issues/I3RUOR)；
 

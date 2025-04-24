@@ -45,7 +45,7 @@ vue2版源代码获取方式：[http://old.openauth.net.cn/question/detail.html?
 
 ## 启动后端
 
-启动后端请参考：[快速开始](/core/start.html)
+启动后端请参考：[快速开始](/core/start/)
 
 ## 启动前端
 

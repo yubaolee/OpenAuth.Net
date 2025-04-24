@@ -1,7 +1,7 @@
 /*
  * @Author: yubaolee <yubaolee@163.com> | ahfu~ <954478625@qq.com>
  * @Date: 2025-04-23 20:26:48
- * @LastEditTime: 2025-04-23 23:46:59
+ * @LastEditTime: 2025-04-24 10:21:45
  * @Description: 笔记配置
  * Copyright (c) 2025 by yubaolee | ahfu~ , All Rights Reserved.  
  */
@@ -51,15 +51,11 @@ const proNote = defineNoteConfig({
   link: '/pro',
   sidebar: [
     '',
-    'deploy',
-    'structure',
-    'devnew',
     {
       text: '基础开发',
       collapsed: false,
-      items: [ 'router','openurl','keepalive']
+      items: ['start','deploy','structure','devnew', 'router','openurl','keepalive','datapropertyrule']
     },
-    'datapropertyrule',
     'printerplan',
     {
       text: '表单设计',

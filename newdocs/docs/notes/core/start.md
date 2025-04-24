@@ -8,7 +8,7 @@ permalink: /core/start/
 
 gitee上面两个版本。其中：
 
-* [OpenAuth.Net](https://gitee.com/dotnetchina/OpenAuth.Net) 默认SDK版本为.Net 9.0.100，如果需要切换到.Net其他版本请参考：[切换sdk版本](http://doc.openauth.net.cn/core/changesdk.html)
+* [OpenAuth.Net](https://gitee.com/dotnetchina/OpenAuth.Net) 默认SDK版本为.Net 9.0.100，如果需要切换到.Net其他版本请参考：[切换sdk版本](http://doc.openauth.net.cn/core/changesdk/)
 
 * [OpenAuth.Core](https://gitee.com/yubaolee/OpenAuth.Core) 的SDK版本为.Net Core 3.1.100，已停止维护，不推荐使用。
 
