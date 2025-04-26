@@ -1,7 +1,7 @@
 ---
 title: 登录认证
 createTime: 2025/04/23 21:03:10
-headerDepth: 4
+outline: [2,4]
 permalink: /core/identity/
 ---
 
@@ -29,16 +29,15 @@ OpenAuth.Net支持两种登录认证方式：token认证和自己搭建的OpenAu
 
 ## OpenAuth.IdentityServer认证
 
-不同于其他项目的统一登录（如微信登录、支付宝登录等）,OpenAuth.Net的统一登录指的是自己搭建一套OAuth登录服务，提供给其他项目使用。即OpenAuth.IdentityServer。
-当我们启动OpenAuth.WebApi/Mvc时，如果IdentityServerUrl为空，则采用OAuth认证：
+不同于其他项目的统一登录（如微信登录、支付宝登录等）,OpenAuth.Net的统一登录指的是自己搭建一套OAuth登录服务，提供给其他项目使用。即OpenAuth.IdentityServer。启动后，直接访问[http://localhost:12796](http://localhost:12796)，效果如下：
+![2025-03-18-23-12-18](http://img.openauth.net.cn/2025-03-18-23-12-18.png)
+
+这时我们修改OpenAuth.WebApi/Mvc的IdentityServerUrl配置：
 ```json
 "IdentityServerUrl": "http://localhost:12796", //IdentityServer服务器地址。
 ```
-这种模式下，需要先启动OpenAuth.Identity项目，OpenAuth.Mvc或OpenAuth.WebApi项目才能正常运行。
 
-![2025-03-18-23-12-18](http://img.openauth.net.cn/2025-03-18-23-12-18.png)
-
-### OpenAuth.Mvc接入
+### OpenAuth.Mvc效果
 
 当启用了Identity时，mvc启动后界面如下：
 ![2025-04-24-00-24-28](http://img.openauth.net.cn/2025-04-24-00-24-28.png)
@@ -47,13 +46,13 @@ OpenAuth.Net支持两种登录认证方式：token认证和自己搭建的OpenAu
 ![2025-04-24-00-24-40](http://img.openauth.net.cn/2025-04-24-00-24-40.png)
 
 
-### OpenAuth.WebApi接入
+### OpenAuth.WebApi效果
 
-当启用了Identity时，客户端调用API需要先通过OpenAuth.IdentityServer服务器的OAuth验证，才能调用接口。OpenAuth.Net调用API的客户端有两种：
+当启用了Identity时，客户端调用API需要先通过OpenAuth.IdentityServer服务器的OAuth验证，才能调用接口。目前调用OpenAuth.WebApi的客户端有两种：
 
-#### OpenAuth.Pro vue3
+#### vue版本
 
-在使用企业版vue界面访问OpenAuth.WebApi时，已经在文件`.env.dev`中配置好相关选项，可以直接使用，无需其他处理。
+在使用vue前端访问OpenAuth.WebApi时，已经在文件`.env.dev`中配置好相关选项，可以直接使用，无需其他处理。
 
 ```python
 VITE_OIDC_AUTHORITY = http://localhost:12796 #Identity服务器地址
