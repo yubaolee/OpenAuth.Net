@@ -3,7 +3,7 @@ title: vue2版本介绍
 createTime: 2025/04/23 23:43:26
 permalink: /vue2/
 ---
-::: warning 注意事项
+::: warning 注意
 如果你使用的是vue3版本，请参考：[OpenAuth.Pro Vue3版本](/pro/)
 :::
 
@@ -57,7 +57,7 @@ vue2版源代码获取方式：[http://old.openauth.net.cn/question/detail.html?
 安装程序运行所需的第三方包。使用npm install 命令经行安装，如下图：
 ![20211214232207](http://img.openauth.net.cn/20211214232207.png)
 
-::: warning 注意事项
+::: warning 注意
 4.6.4及以后的版本默认Node 18进行编译，如果使用的是Node 18以前的版本，请尝试把package.json中scripts改为下面内容：
 
 ```javascript
@@ -78,7 +78,7 @@ VUE_APP_BASE_API = http://localhost:52789/api
 VUE_APP_BASE_IMG_URL = http://localhost:52789
 ```
 
-::: warning 注意事项
+::: warning 注意
 如果是发布打包，调整的文件为`.env.prod`
 :::
 

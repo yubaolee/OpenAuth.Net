@@ -34,12 +34,12 @@ public static void InitAutofac(ContainerBuilder builder)
 _cacheContext.Set(currentSession.Token, currentSession, DateTime.Now.AddDays(10));
 ```
 
-::: warning 注意事项1
+::: warning 注意1
 默认使用的是.net的内存Cache，在用IIS发布后，由于IIS本身存在自动回收的机制，会导致系统缓存20分钟就会失效。
 
 :::
 
-::: warning 注意事项2
+::: warning 注意2
 如果使用Redis缓存，注意调整配置文件中关于redis的配置
 
 ```csharp

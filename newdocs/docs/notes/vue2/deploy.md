@@ -10,7 +10,7 @@ permalink: /vue2/deploy/
 
 ![20211214232752](http://img.openauth.net.cn/20211214232752.png)
 
-::: warning 注意事项
+::: warning 注意
 前端部署时使用的配置文件为`.env.prod`，打包构建前请调整为自己的接口地址：
 
 ```javascript

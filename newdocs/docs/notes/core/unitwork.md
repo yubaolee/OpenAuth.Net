@@ -1,10 +1,23 @@
 ---
-title: 数据库读写及事务处理
+title: EF操作数据库
 createTime: 2025/04/23 21:03:10
 permalink: /core/unitwork/
 ---
 
-OpenAuth.Net使用Repository和Unitwork两种方式访问数据库。
+OpenAuth.Net支持EF操作数据库，提供了IRepository和IUnitWork两个接口，分别用于单表操作和事务操作。框架自带的`BaseApp`、`BaseStringApp`、`BaseLongApp`等基类，都包含有这两个接口的实例：
+
+```csharp
+/// <summary>
+/// 用于普通的数据库操作
+/// </summary>
+protected IRepository<T, TDbContext> Repository;
+
+/// <summary>
+/// 用于事务操作
+/// </summary>
+protected IUnitWork<TDbContext> UnitWork;
+```
+因此，当我们编写应用层代码时，只要继承`BaseApp`、`BaseStringApp`、`BaseLongApp`等基类，就可以使用这两个接口。
 
 ## 使用场景
 

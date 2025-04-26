@@ -21,7 +21,7 @@ permalink: /pro/start/
 VITE_BASE_API = http://localhost:52789/api
 VITE_BASE_IMG_URL = http://localhost:52789
 ```
-::: warning 注意事项
+::: warning 注意
 如果是发布打包，调整的文件为`.env.production`
 :::
 使用`npm install`命令安装程序运行所需的第三方包。再用`npm run dev`命令运行。如下图：

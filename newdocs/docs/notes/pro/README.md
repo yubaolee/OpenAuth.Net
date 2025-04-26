@@ -3,7 +3,7 @@ title: vue3版本介绍
 createTime: 2025/04/23 23:43:26
 permalink: /pro/
 ---
-::: warning 注意事项
+::: warning 注意
 如果你使用的是vue2版本，请参考：[OpenAuth.Pro Vue2版本](/vue2/)
 :::
 

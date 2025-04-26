@@ -6,7 +6,7 @@ permalink: /core/multidbs/
 
 框架支持同时访问多个数据库。具体操作如下：
 
-## 添加新数据库连接字符串
+## 添加新连接字符串
 
 在配置文件appsettings.json中，添加新的连接字符串`OpenAuthDBContext2`
 
@@ -23,7 +23,7 @@ permalink: /core/multidbs/
   }
 ```
 
-## 添加新的数据上下文
+## 添加数据上下文
 
 在OpenAuth.Repository中添加新的数据库上下文，比如`OpenAuthDBContext2`
 

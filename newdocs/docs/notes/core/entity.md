@@ -1,8 +1,10 @@
 ---
-title: 数据库实体
+title: 数据库主键
 createTime: 2025/04/23 21:03:10
 permalink: /core/entity/
 ---
+
+目前框架主键默认为`Id`，类型为String，如果需要修改主键名称或类型，可以参考本章节内容。
 
 ## 更换主键名称
 
@@ -19,9 +21,9 @@ permalink: /core/entity/
  
 - `StringEntity`：针对数据库主键为varchar类型的数据表,主键按guid方式生成;
 
-- `LongEntity`：针对数据库主键为numberic(15)的数据表，主键按雪花算法生成；【新功能，官方推荐使用方式👍】
+- `LongEntity`：针对数据库主键为numberic(15)的数据表，主键按雪花算法生成；
 
-- `IntAutoGenEntity`：针对数据库主键为numberic且为数据库自动生成的类型表，通常为SqlServer的自动增长类型和Oracle的Sequence生成；【新功能】
+- `IntAutoGenEntity`：针对数据库主键为numberic且为数据库自动生成的类型表，通常为SqlServer的自动增长类型和Oracle的Sequence生成；
 
 这三个基类可以覆盖90%以上的业务场景。如果这两个不能满足需求，可以自己按需求扩展。参考代码如下：
 
@@ -122,10 +124,4 @@ namespace OpenAuth.App
 
 
 然后就可以像其他应用服务一样使用这个服务
-
-::: warning 注意
-最新版才支持，以前的版本（2.0或以前的版本）可以参考BaseEntity进行改造
-
-:::
-
 

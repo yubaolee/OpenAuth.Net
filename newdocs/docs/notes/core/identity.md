@@ -1,9 +1,11 @@
 ---
 title: 登录认证
 createTime: 2025/04/23 21:03:10
+headerDepth: 4
 permalink: /core/identity/
 ---
 
+## 前言
 OpenAuth.Net支持两种登录认证方式：token认证和自己搭建的OpenAuth.IdentityServer认证。
 
 这两种方式通过配置webapi或mvc的appsettings.json可以自由切换:
@@ -11,8 +13,13 @@ OpenAuth.Net支持两种登录认证方式：token认证和自己搭建的OpenAu
 ```json
 "IdentityServerUrl": "http://localhost:12796", //IdentityServer服务器地址。如果为空，则不启用OAuth认证
 ```
+## token认证
 
-1. 当IdentityServerUrl为空时，采用普通的token认证，这时不需要OpenAuth.Identity启动支持。无论是OpenAuth.Mvc还是OpenAuth.WebApi，都会在请求头中添加X-Token字段，携带token值。以OpenAuth.WebApi为例，客户端在访问的接口时，先调用登录接口,得到授权token：
+当我们启动OpenAuth.WebApi/Mvc时，如果IdentityServerUrl为空，则采用普通的token认证，这时不需要启动OpenAuth.Identity项目：
+```json
+"IdentityServerUrl": "", //如果为空，则采用普通的token认证
+```
+这时前端发出请求时会在请求头中添加X-Token字段，携带token值。以OpenAuth.WebApi为例，客户端在访问的接口时，先调用登录接口,得到授权token：
 
 ![20220119182845](http://img.openauth.net.cn/20220119182845.png)
 
@@ -20,22 +27,27 @@ OpenAuth.Net支持两种登录认证方式：token认证和自己搭建的OpenAu
 
 ![20220119182853](http://img.openauth.net.cn/20220119182853.png)
 
-2. 当IdentityServerUrl配置了地址时，则采用自己搭建的OpenAuth.IdentityServer认证方式。
+## OpenAuth.IdentityServer认证
 
-不同于其他项目的统一登录（如微信登录、支付宝登录等）,OpenAuth.Net的统一登录指的是自己搭建一套OAuth登录服务，提供给其他项目使用。即OpenAuth.IdentityServer。这种模式下，无论是OpenAuth.Mvc还是OpenAuth.WebApi，都只是它的客户端。
+不同于其他项目的统一登录（如微信登录、支付宝登录等）,OpenAuth.Net的统一登录指的是自己搭建一套OAuth登录服务，提供给其他项目使用。即OpenAuth.IdentityServer。
+当我们启动OpenAuth.WebApi/Mvc时，如果IdentityServerUrl为空，则采用OAuth认证：
+```json
+"IdentityServerUrl": "http://localhost:12796", //IdentityServer服务器地址。
+```
+这种模式下，需要先启动OpenAuth.Identity项目，OpenAuth.Mvc或OpenAuth.WebApi项目才能正常运行。
 
 ![2025-03-18-23-12-18](http://img.openauth.net.cn/2025-03-18-23-12-18.png)
 
-## OpenAuth.Mvc OAuth认证
+### OpenAuth.Mvc接入
 
-当启用了Identity时，系统启动后界面如下：
+当启用了Identity时，mvc启动后界面如下：
 ![2025-04-24-00-24-28](http://img.openauth.net.cn/2025-04-24-00-24-28.png)
 
 这时点击登录超链接，会跳转到OpenAuth.Identity登录界面。效果如下：
 ![2025-04-24-00-24-40](http://img.openauth.net.cn/2025-04-24-00-24-40.png)
 
 
-## OpenAuth.WebApi OAuth
+### OpenAuth.WebApi接入
 
 当启用了Identity时，客户端调用API需要先通过OpenAuth.IdentityServer服务器的OAuth验证，才能调用接口。OpenAuth.Net调用API的客户端有两种：
 
