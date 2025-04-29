@@ -1,0 +1,29 @@
+{
+    "mcpServers": {
+        "PostgreSQL": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@modelcontextprotocol/server-postgres",
+                "postgresql://postgres:AwxBRx1_5kljfy@172.30.144.46/openauthpro"
+            ],
+            "env": {}
+        },
+        "mysql": {
+            "type": "stdio",
+            "command": "uvx",
+            "args": [
+                "--from",
+                "mysql-mcp-server",
+                "mysql_mcp_server"
+            ],
+            "env": {
+                "MYSQL_HOST": "localhost",
+                "MYSQL_PORT": "3306",
+                "MYSQL_USER": "root",
+                "MYSQL_PASSWORD": "000000",
+                "MYSQL_DATABASE": "openauthpro"
+            }
+        }
+    }
+}
