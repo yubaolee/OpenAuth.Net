@@ -32,6 +32,10 @@ namespace OpenAuth.App
             {
                 objs = objs.Where(u => u.Name.Contains(request.key));
             }
+            if (!string.IsNullOrEmpty(request.sqlWhere))
+            {
+                objs = objs.Where(request.sqlWhere);
+            }
 
             result.data = objs.OrderBy(u => u.Name)
                 .Skip((request.page - 1) * request.limit)

@@ -569,6 +569,9 @@ namespace OpenAuth.App
                 {
                     return "DateTime.Now";
                 }
+                else if (type == "bool"){
+                    return "false";
+                }
                 return Activator.CreateInstance(t).ToString();
             }
 

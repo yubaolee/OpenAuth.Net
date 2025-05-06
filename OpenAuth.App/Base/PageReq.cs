@@ -15,6 +15,11 @@
 
         public string key { get; set; }
 
+        /// <summary>
+        /// 自定义sql条件
+        /// </summary>
+        public string sqlWhere { get; set; }
+
         public PageReq()
         {
             page = 1;
