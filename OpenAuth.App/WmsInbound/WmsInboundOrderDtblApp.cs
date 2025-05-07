@@ -9,15 +9,12 @@ using OpenAuth.App.Response;
 using OpenAuth.Repository;
 using OpenAuth.Repository.Domain;
 using OpenAuth.Repository.Interface;
-
+using SqlSugar;
 
 namespace OpenAuth.App
 {
-    public class WmsInboundOrderDtblApp : BaseStringApp<WmsInboundOrderDtbl,OpenAuthDBContext>
+    public class WmsInboundOrderDtblApp : SqlSugarBaseApp<WmsInboundOrderDtbl>
     {
-        private RevelanceManagerApp _revelanceApp;
-        private DbExtension _dbExtension;
-
         /// <summary>
         /// 加载列表
         /// </summary>
@@ -29,19 +26,19 @@ namespace OpenAuth.App
             {
                 throw new CommonException("登录已过期", Define.INVALID_TOKEN);
             }
-            
+
             var properties = loginContext.GetTableColumns("WmsInboundOrderDtbl");
             if (properties == null || properties.Count == 0)
             {
                 throw new Exception("请在代码生成界面配置WmsInboundOrderDtbl表的字段属性");
             }
             var result = new TableData();
-            var objs = UnitWork.Find<WmsInboundOrderDtbl>(null);
+            var objs = SugarClient.Queryable<WmsInboundOrderDtbl>();
             if (!string.IsNullOrEmpty(request.InboundOrderId))
             {
                 objs = objs.Where(u => u.OrderId == request.InboundOrderId);
             }
-            
+
             if (!string.IsNullOrEmpty(request.key))
             {
                 objs = objs.Where(u => u.GoodsId.Contains(request.key));
@@ -51,7 +48,7 @@ namespace OpenAuth.App
             result.columnFields = properties;
             result.data = objs.OrderBy(u => u.Id)
                 .Skip((request.page - 1) * request.limit)
-                .Take(request.limit).Select($"new ({propertyStr})");
+                .Take(request.limit).Select($"{propertyStr}").ToList();
             result.count = await objs.CountAsync();
             return result;
         }
@@ -59,9 +56,9 @@ namespace OpenAuth.App
         public void Add(AddOrUpdateWmsInboundOrderDtblReq req)
         {
             AddNoSave(req);
-            UnitWork.Save();
+            SugarClient.Ado.CommitTran();
         }
-        
+
         public void AddNoSave(AddOrUpdateWmsInboundOrderDtblReq req)
         {
             var obj = req.MapTo<WmsInboundOrderDtbl>();
@@ -70,13 +67,13 @@ namespace OpenAuth.App
             var user = _auth.GetCurrentUser().User;
             obj.CreateUserId = user.Id;
             obj.CreateUserName = user.Name;
-            UnitWork.Add(obj);
+            SugarClient.Insertable(obj);
         }
 
-         public void Update(AddOrUpdateWmsInboundOrderDtblReq obj)
+        public void Update(AddOrUpdateWmsInboundOrderDtblReq obj)
         {
             var user = _auth.GetCurrentUser().User;
-            UnitWork.Update<WmsInboundOrderDtbl>(u => u.Id == obj.Id, u => new WmsInboundOrderDtbl
+            Repository.Update(u => new WmsInboundOrderDtbl
             {
                 Price = obj.Price,
                 PriceNoTax = obj.PriceNoTax,
@@ -98,15 +95,12 @@ namespace OpenAuth.App
                 UpdateUserId = user.Id,
                 UpdateUserName = user.Name
                 //todo:补充或调整自己需要的字段
-            });
+            }, u => u.Id == obj.Id);
 
         }
 
-        public WmsInboundOrderDtblApp(IUnitWork<OpenAuthDBContext> unitWork, IRepository<WmsInboundOrderDtbl,OpenAuthDBContext> repository,
-            RevelanceManagerApp app, IAuth auth, DbExtension dbExtension) : base(unitWork, repository,auth)
+        public WmsInboundOrderDtblApp(ISqlSugarClient client, IAuth auth) : base(client, auth)
         {
-            _dbExtension = dbExtension;
-            _revelanceApp = app;
         }
     }
 }
