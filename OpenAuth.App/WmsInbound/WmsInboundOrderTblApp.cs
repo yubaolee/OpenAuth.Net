@@ -2,13 +2,10 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Infrastructure;
-using Microsoft.EntityFrameworkCore;
 using OpenAuth.App.Interface;
 using OpenAuth.App.Request;
 using OpenAuth.App.Response;
-using OpenAuth.Repository;
 using OpenAuth.Repository.Domain;
-using OpenAuth.Repository.Interface;
 using SqlSugar;
 
 
@@ -16,7 +13,6 @@ namespace OpenAuth.App
 {
     public class WmsInboundOrderTblApp : SqlSugarBaseApp<WmsInboundOrderTbl>
     {
-        private RevelanceManagerApp _revelanceApp;
         private WmsInboundOrderDtblApp _wmsInboundOrderDtblApp;
 
         /// <summary>
@@ -69,7 +65,7 @@ namespace OpenAuth.App
             obj.CreateUserId = user.Id;
             obj.CreateUserName = user.Name;
             SugarClient.Ado.BeginTran();
-            SugarClient.Insertable(obj);
+            SugarClient.Insertable(obj).ExecuteCommand();
             if (req.WmsInboundOrderDtblReqs != null && req.WmsInboundOrderDtblReqs.Any())
             {
                 foreach (var detail in req.WmsInboundOrderDtblReqs)
@@ -103,7 +99,7 @@ namespace OpenAuth.App
                     .Where(u => !string.IsNullOrEmpty(u)).ToList();
                 if (containids.Any())
                 {
-                    SugarClient.Deleteable<WmsInboundOrderDtbl>(u => (!containids.Contains(u.Id)) && u.OrderId == obj.Id);
+                    SugarClient.Deleteable<WmsInboundOrderDtbl>(u => (!containids.Contains(u.Id)) && u.OrderId == obj.Id).ExecuteCommand();
                 }
 
                 //更新id相同的
@@ -142,9 +138,8 @@ namespace OpenAuth.App
         }
 
         public WmsInboundOrderTblApp(ISqlSugarClient client, IAuth auth,
-            RevelanceManagerApp app, WmsInboundOrderDtblApp wmsInboundOrderDtblApp) : base(client, auth)
+            WmsInboundOrderDtblApp wmsInboundOrderDtblApp) : base(client, auth)
         {
-            _revelanceApp = app;
             _wmsInboundOrderDtblApp = wmsInboundOrderDtblApp;
         }
     }
