@@ -1,7 +1,7 @@
 /*
  * @Author: yubaolee <yubaolee@163.com> | ahfu~ <954478625@qq.com>
  * @Date: 2025-04-23 20:26:48
- * @LastEditTime: 2025-05-07 19:13:26
+ * @LastEditTime: 2025-05-07 20:18:08
  * @Description: 笔记配置
  * Copyright (c) 2025 by yubaolee | ahfu~ , All Rights Reserved.  
  */
@@ -59,7 +59,7 @@ const proNote = defineNoteConfig({
     {
       text: '内置组件',
       collapsed: false,
-      items: ['components','querybuilder']
+      items: ['table','querybuilder','columnsettings','components']
     },
     'printerplan',
     {
