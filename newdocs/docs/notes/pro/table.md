@@ -46,7 +46,7 @@ const dataList = ref([
 ])
 const loading = ref(false)
 
-// 主表id模板,点击跳转详情
+// 如果需要自定义展示，可以设置。比如：主表id模板,点击跳转详情
 const idtemplate = defineComponent({
   props: ['row'],
   methods: {

@@ -109,8 +109,26 @@ const handleSearch = () => {
 - 根据字段类型自动切换输入控件（文本、数字、日期、时间区间等）。
 - 支持 SQL 条件一键复制。
 - 查询条件自动本地缓存，关闭弹窗/刷新页面后可恢复。
-
 ---
+
+## 后端接口
+
+后端接口需要继承 `SqlSugarBaseApp` 类，并在 `Load` 方法中处理前端生成的sql查询条件。
+
+```csharp
+public class XXApp : SqlSugarBaseApp<XX>
+{
+  public async Task<TableData> Load(QueryXXListReq request)
+    {
+        //...
+        if (!string.IsNullOrEmpty(request.sqlWhere))
+        {
+            objs = objs.Where(request.sqlWhere);
+        }
+        //...
+    }
+}
+```
 
 ## 常见问题
 
