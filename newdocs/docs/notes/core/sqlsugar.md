@@ -85,18 +85,18 @@ SugarClient.Ado.BeginTran();
 // 更新从表中的字段
 if (obj.SubTableReqs != null && obj.SubTableReqs.Any())
 {
-    //id为空时添加
-    foreach (var detail in obj.SubTableReqs.Where(u => string.IsNullOrEmpty(u.Id)))
-    {
-        _subTableApp.Add(detail);
-    }
-
     //id比数据库少的，删除
     var containids = obj.SubTableReqs.Select(u => u.Id)
         .Where(u => !string.IsNullOrEmpty(u)).ToList();
     if (containids.Any())
     {
         SugarClient.Deleteable<SubTable>(u => !containids.Contains(u.Id) && u.MainTableId == obj.Id).ExecuteCommand();
+    }
+
+    //id为空时添加
+    foreach (var detail in obj.SubTableReqs.Where(u => string.IsNullOrEmpty(u.Id)))
+    {
+        _subTableApp.Add(detail);
     }
 
     //更新id相同的

@@ -76,18 +76,18 @@ namespace OpenAuth.App
             SugarClient.Ado.BeginTran();
             if (request.WmsInboundOrderDtblReqs != null && request.WmsInboundOrderDtblReqs.Any())
             {
-                //id为空的添加
-                foreach (var detail in request.WmsInboundOrderDtblReqs.Where(u => string.IsNullOrEmpty(u.Id)))
-                {
-                    detail.OrderId = request.Id;
-                    _wmsInboundOrderDtblApp.Add(detail);
-                }
-                //id比数据库少的，删除
+                //请求的id不在数据库的记录，需要删除
                 var containids = request.WmsInboundOrderDtblReqs.Select(u => u.Id)
                     .Where(u => !string.IsNullOrEmpty(u)).ToList();
                 if (containids.Any())
                 {
                     SugarClient.Deleteable<WmsInboundOrderDtbl>(u => (!containids.Contains(u.Id)) && u.OrderId == request.Id).ExecuteCommand();
+                }
+                //id为空的添加
+                foreach (var detail in request.WmsInboundOrderDtblReqs.Where(u => string.IsNullOrEmpty(u.Id)))
+                {
+                    detail.OrderId = request.Id;
+                    _wmsInboundOrderDtblApp.Add(detail);
                 }
                 //更新id相同的
                 foreach (var detail in request.WmsInboundOrderDtblReqs.Where(u => !string.IsNullOrEmpty(u.Id)))
