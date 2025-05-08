@@ -39,7 +39,7 @@ OpenAuth.Net工作流基于国际标准的BPMN2.0规范，并在此基础上做�
 
 4. 流程审批：【流程中心/待处理流程】中进行审批；
 
-这里只介绍开源版本的操作流程，vue版本操作流程请参考👉[操作手册](/pro/startflow.md)
+这里只介绍开源版本的操作流程，vue版本操作流程请参考👉[操作手册](/pro/startflow/)
 
 ## 流程设计
 
@@ -63,13 +63,13 @@ OpenAuth.Net工作流基于国际标准的BPMN2.0规范，并在此基础上做�
     * 指定用户：指定用户审批，当选中这项时需要选择指定的用户
     * 指定角色：指定角色审批，当选中这项时需要选择指定的角色
 
-👉使用[vue版本](/pro/startflow)，解锁更多类型：指定SQL、上一节点执行人的直属上级、连续多级直属上级、部门负责人、运行时指定角色、运行时指定用户等等，当然你也可以为[开源版本](https://gitee.com/dotnetchina/OpenAuth.Net)贡献代码，添加更多类型。
+👉使用[vue版本](/pro/startflow/)，解锁更多类型：指定SQL、上一节点执行人的直属上级、连续多级直属上级、部门负责人、运行时指定角色、运行时指定用户等等，当然你也可以为[开源版本](https://gitee.com/dotnetchina/OpenAuth.Net)贡献代码，添加更多类型。
 
-👉使用[vue版本](/pro/startflow)，设置连线条件属性。你也可以为[开源版本](https://gitee.com/dotnetchina/OpenAuth.Net)贡献代码，让它支持该属性。
+👉使用[vue版本](/pro/startflow/)，设置连线条件属性。你也可以为[开源版本](https://gitee.com/dotnetchina/OpenAuth.Net)贡献代码，让它支持该属性。
 
 ## 流程发起
 
-开源版本只能发起无业务关联的流程，使用[vue版本](/pro/startflow)，解锁有业务类型关联的流程。当然你也可以为[开源版本](https://gitee.com/dotnetchina/OpenAuth.Net)贡献代码，支持更多类型。
+开源版本只能发起无业务关联的流程，使用[vue版本](/pro/startflow/)，解锁有业务类型关联的流程。当然你也可以为[开源版本](https://gitee.com/dotnetchina/OpenAuth.Net)贡献代码，支持更多类型。
 
 ### 无业务关联流程
 
@@ -97,7 +97,7 @@ OpenAuth.Net工作流基于国际标准的BPMN2.0规范，并在此基础上做�
 
 * 驳回：可以驳回到指定的步骤，该步骤的人可以重新审批提交；
 
-👉使用[vue版本](/pro/startflow)，解锁更多加签、撤销审批操作。你也可以为[开源版本](https://gitee.com/dotnetchina/OpenAuth.Net)贡献代码，让它支持这些功能。
+👉使用[vue版本](/pro/startflow/)，解锁更多加签、撤销审批操作。你也可以为[开源版本](https://gitee.com/dotnetchina/OpenAuth.Net)贡献代码，让它支持这些功能。
 
 
 
