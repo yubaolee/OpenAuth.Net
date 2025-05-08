@@ -1,0 +1,17 @@
+# Add directories or file patterns to ignore during indexing (e.g. foo/ or *.csv)
+/OpenAuth.App/bin
+/OpenAuth.App/obj
+/OpenAuth.Mvc/bin
+/OpenAuth.Mvc/obj
+/OpenAuth.WebApi/bin
+/OpenAuth.WebApi/obj
+/Infrastructure/bin
+/Infrastructure/obj
+/OpenAuth.Identity/bin
+/OpenAuth.Identity/obj
+/newdocs/node_modules
+/newdocs/docs/.vuepress/.cache
+/newdocs/docs/.vuepress/.temp
+/newdocs/docs/.vuepress/dist
+
+
