@@ -74,3 +74,45 @@ public class ResourceApp:SqlSugarBaseApp<Resource>
     }
 ```
 
+## 事务
+
+SqlSugar提供了强大的事务功能，在OpenAuth.Net中，只需要在业务开始时，调用`SugarClient.Ado.BeginTran()`开启事务，在业务结束时，调用`SugarClient.Ado.CommitTran()`提交事务，即可使用事务。
+
+比如一个复杂的主从表业务，无论中间过程使用的是SugarClient还是Repository，都可以用这种方式来实现事务：
+```csharp
+SugarClient.Ado.BeginTran();
+
+// 更新从表中的字段
+if (obj.SubTableReqs != null && obj.SubTableReqs.Any())
+{
+    //id为空时添加
+    foreach (var detail in obj.SubTableReqs.Where(u => string.IsNullOrEmpty(u.Id)))
+    {
+        _subTableApp.Add(detail);
+    }
+
+    //id比数据库少的，删除
+    var containids = obj.SubTableReqs.Select(u => u.Id)
+        .Where(u => !string.IsNullOrEmpty(u)).ToList();
+    if (containids.Any())
+    {
+        SugarClient.Deleteable<SubTable>(u => !containids.Contains(u.Id) && u.MainTableId == obj.Id).ExecuteCommand();
+    }
+
+    //更新id相同的
+    foreach (var detail in obj.SubTableReqs.Where(u => !string.IsNullOrEmpty(u.Id)))
+    {
+        _subTableApp.Update(detail);
+    }
+}
+
+// 更新主表中的字段
+Repository.Update(u => new MainTable
+{
+    NeedUpdateField = obj.NeedUpdateField,
+    //todo:补充或调整自己需要的字段
+}, u => u.Id == obj.Id);
+
+SugarClient.Ado.CommitTran();
+
+```

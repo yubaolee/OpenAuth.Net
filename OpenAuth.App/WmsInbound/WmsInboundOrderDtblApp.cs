@@ -6,9 +6,7 @@ using OpenAuth.App.Interface;
 using OpenAuth.App.Request;
 using OpenAuth.App.Response;
 using OpenAuth.Repository.Domain;
-
 using SqlSugar;
-
 namespace OpenAuth.App
 {
     public class WmsInboundOrderDtblApp : SqlSugarBaseApp<WmsInboundOrderDtbl>
@@ -18,13 +16,11 @@ namespace OpenAuth.App
         /// </summary>
         public async Task<TableData> Load(QueryWmsInboundOrderDtblListReq request)
         {
-
             var loginContext = _auth.GetCurrentUser();
             if (loginContext == null)
             {
                 throw new CommonException("登录已过期", Define.INVALID_TOKEN);
             }
-
             var properties = loginContext.GetTableColumns("WmsInboundOrderDtbl");
             if (properties == null || properties.Count == 0)
             {
@@ -36,12 +32,10 @@ namespace OpenAuth.App
             {
                 objs = objs.Where(u => u.OrderId == request.InboundOrderId);
             }
-
             if (!string.IsNullOrEmpty(request.key))
             {
                 objs = objs.Where(u => u.GoodsId.Contains(request.key));
             }
-
             var propertyStr = string.Join(',', properties.Select(u => u.ColumnName));
             result.columnFields = properties;
             result.data = objs.OrderBy(u => u.Id)
@@ -50,17 +44,9 @@ namespace OpenAuth.App
             result.count = await objs.CountAsync();
             return result;
         }
-
-        public void Add(AddOrUpdateWmsInboundOrderDtblReq req)
+        public void Add(AddOrUpdateWmsInboundOrderDtblReq request)
         {
-            SugarClient.Ado.BeginTran();
-            AddNoSave(req);
-            SugarClient.Ado.CommitTran();
-        }
-
-        public void AddNoSave(AddOrUpdateWmsInboundOrderDtblReq req)
-        {
-            var obj = req.MapTo<WmsInboundOrderDtbl>();
+            var obj = request.MapTo<WmsInboundOrderDtbl>();
             //todo:补充或调整自己需要的字段
             obj.CreateTime = DateTime.Now;
             var user = _auth.GetCurrentUser().User;
@@ -69,36 +55,33 @@ namespace OpenAuth.App
             obj.CreateUserName = user.Name;
             SugarClient.Insertable(obj).ExecuteCommand();
         }
-
-        public void Update(AddOrUpdateWmsInboundOrderDtblReq obj)
+        public void Update(AddOrUpdateWmsInboundOrderDtblReq request)
         {
             var user = _auth.GetCurrentUser().User;
             Repository.Update(u => new WmsInboundOrderDtbl
             {
-                Price = obj.Price,
-                PriceNoTax = obj.PriceNoTax,
-                InStockStatus = obj.InStockStatus,
-                AsnStatus = obj.AsnStatus,
-                GoodsId = obj.GoodsId,
-                GoodsBatch = obj.GoodsBatch,
-                QualityFlg = obj.QualityFlg,
-                OrderNum = obj.OrderNum,
-                InNum = obj.InNum,
-                LeaveNum = obj.LeaveNum,
-                HoldNum = obj.HoldNum,
-                ProdDate = obj.ProdDate,
-                ExpireDate = obj.ExpireDate,
-                TaxRate = obj.TaxRate,
-                OwnerId = obj.OwnerId,
-                Remark = obj.Remark,
+                Price = request.Price,
+                PriceNoTax = request.PriceNoTax,
+                InStockStatus = request.InStockStatus,
+                AsnStatus = request.AsnStatus,
+                GoodsId = request.GoodsId,
+                GoodsBatch = request.GoodsBatch,
+                QualityFlg = request.QualityFlg,
+                OrderNum = request.OrderNum,
+                InNum = request.InNum,
+                LeaveNum = request.LeaveNum,
+                HoldNum = request.HoldNum,
+                ProdDate = request.ProdDate,
+                ExpireDate = request.ExpireDate,
+                TaxRate = request.TaxRate,
+                OwnerId = request.OwnerId,
+                Remark = request.Remark,
                 UpdateTime = DateTime.Now,
                 UpdateUserId = user.Id,
                 UpdateUserName = user.Name
                 //todo:补充或调整自己需要的字段
-            }, u => u.Id == obj.Id);
-
+            }, u => u.Id == request.Id);
         }
-
         public WmsInboundOrderDtblApp(ISqlSugarClient client, IAuth auth) : base(client, auth)
         {
         }
