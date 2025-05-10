@@ -273,31 +273,61 @@ namespace OpenAuth.App
             CheckExistsModule(sysTableInfo.ModuleCode);
 
             string domainContent = string.Empty;
-            if (sysTableInfo.IsDynamicHeader)   //使用动态头部的模版
-            {
-                domainContent = FileHelper.ReadFile(@"Template\\SingleTable\\BuildAppWithDynamicHeader.html");
-            }
-            else
-            {
-                domainContent = FileHelper.ReadFile(@"Template\\SingleTable\\BuildApp.html");
-            }
-            domainContent = domainContent
-            .Replace("{TableName}", sysTableInfo.TableName)
-            .Replace("{ModuleCode}", sysTableInfo.ModuleCode)
-            .Replace("{ModuleName}", sysTableInfo.ModuleName)
-            .Replace("{ClassName}", sysTableInfo.ClassName)
-            .Replace("{StartName}", StratName);
+            //查找是否存在子表的情况
+            var subTable = Repository.FirstOrDefault(u => u.ParentTableId == sysTableInfo.Id);
 
-            if (!string.IsNullOrEmpty(sysTableInfo.ForeignKey))
-            {   //替换外键模版
-                var foreignTemplate = $"objs = objs.Where(u => u.{sysTableInfo.ForeignKey} == request.{sysTableInfo.ForeignKey});";
+            if (subTable == null)  //如果子表不存在，则用单模版生成
+            {
+                if (sysTableInfo.IsDynamicHeader)   //使用动态头部的模版
+                {
+                    domainContent = FileHelper.ReadFile(@"Template\\SingleTable\\BuildAppWithDynamicHeader.html");
+                }
+                else
+                {
+                    domainContent = FileHelper.ReadFile(@"Template\\SingleTable\\BuildApp.html");
+                }
+
                 domainContent = domainContent
-                    .Replace("{ForeignKeyTemplate}", foreignTemplate);
+                .Replace("{TableName}", sysTableInfo.TableName)
+                .Replace("{ModuleCode}", sysTableInfo.ModuleCode)
+                .Replace("{ModuleName}", sysTableInfo.ModuleName)
+                .Replace("{ClassName}", sysTableInfo.ClassName)
+                .Replace("{StartName}", StratName);
+                
+                //如果有外键（是一个子表）
+                if (!string.IsNullOrEmpty(sysTableInfo.ForeignKey))
+                {   //替换外键模版
+                    var foreignTemplate = $"objs = objs.Where(u => u.{sysTableInfo.ForeignKey} == request.{sysTableInfo.ForeignKey});";
+                    domainContent = domainContent
+                        .Replace("{ForeignKeyTemplate}", foreignTemplate);
+                }
+                else
+                {
+                    domainContent = domainContent
+                        .Replace("{ForeignKeyTemplate}", "");
+                }
             }
             else
             {
+                if (sysTableInfo.IsDynamicHeader)   //使用动态头部的模版
+                {
+                    domainContent = FileHelper.ReadFile(@"Template\\MultiTable\\BuildAppWithDynamicHeader.html");
+                }
+                else
+                {
+                    domainContent = FileHelper.ReadFile(@"Template\\MultiTable\\BuildApp.html");
+                }
+
                 domainContent = domainContent
-                    .Replace("{ForeignKeyTemplate}", "");
+                .Replace("{TableName}", sysTableInfo.TableName)
+                .Replace("{ModuleCode}", sysTableInfo.ModuleCode)
+                .Replace("{ModuleName}", sysTableInfo.ModuleName)
+                .Replace("{ClassName}", sysTableInfo.ClassName)
+                .Replace("{SubForeignKey}", subTable.ForeignKey)
+                .Replace("{SubClassName}", subTable.ClassName)
+                .Replace("{SubModuleCode}", subTable.ModuleCode)
+                .Replace("{StartName}", StratName);
+
             }
 
             var primarykey = sysColumns.FirstOrDefault(u => u.IsKey);
@@ -537,9 +567,6 @@ namespace OpenAuth.App
                 mapPath +
                 $"\\OpenAuth.Repository\\Domain\\", tableInfo.ClassName + ".cs",
                 domainContent);
-
-            string openAuthDBContextPath = mapPath + "\\OpenAuth.Repository\\OpenAuthDBContext.cs";
-            FileHelper.RegxAddContentByParenthesis(openAuthDBContextPath, "public virtual DbSet<" + tableInfo.ClassName + "> " + tableInfo.TableName + "s { get; set; }");
         }
 
         Dictionary<string, Type> PrimitiveTypes = new Dictionary<string, Type>()
@@ -569,7 +596,8 @@ namespace OpenAuth.App
                 {
                     return "DateTime.Now";
                 }
-                else if (type == "bool"){
+                else if (type == "bool")
+                {
                     return "false";
                 }
                 return Activator.CreateInstance(t).ToString();
