@@ -413,6 +413,15 @@ namespace OpenAuth.App
                 attributeBuilder.Append("\r\n\r\n       ");
             }
 
+             //查找是否存在子表的情况
+            var subTable = Repository.FirstOrDefault(u => u.ParentTableId == sysTableInfo.Id);
+
+            if (subTable != null)  //如果子表存在，需要加子表的请求参数
+            {
+                attributeBuilder.Append($"       public List<AddOrUpdate{subTable.ClassName}Req> {subTable.ClassName}Reqs {{ get; set; }}");
+                attributeBuilder.Append("\r\n\r\n       ");
+            }
+                
             domainContent = domainContent.Replace("{ClassName}", sysTableInfo.ClassName)
                 .Replace("{AttributeList}", attributeBuilder.ToString());
 

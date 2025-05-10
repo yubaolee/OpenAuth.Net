@@ -60,7 +60,6 @@ namespace OpenAuth.App
             Repository.Update(u => new {ClassName}
             {
                 //todo: 根据业务需要调整字段
-                {ClassName} = obj.{ClassName},
                 Updatetime = DateTime.Now,
                 Updateuserid = user.Id,
                 Updateusername = user.Name
