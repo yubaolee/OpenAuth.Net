@@ -1,395 +1,490 @@
 ﻿<!--
- * @Author: yubaolee <yubaolee@163.com> | ahfu~ <954478625@qq.com>
- * @Description: 代码生成界面,采用的是固定头部结构
- * @
- * @Copyright (c) 2024 by yubaolee | ahfu~ , All Rights Reserved. 
+ * @Description: 代码生成器，多表模版，动态头部
+ * @Copyright (c) 2025 by yubaolee | ahfu~ , All Rights Reserved. 
 -->
 <template>
-  <div class="flex-column flex">
+  <div class="flex flex-column">
     <sticky>
       <div class="search-box">
-        <el-input @keyup.enter="handleFilter" size="small" class="w-200 custom-input" :placeholder="'名称'"
-                  v-model="firstQuery.key"></el-input>
-        <el-button class="filter-item custom-button" icon="el-icon-search" size="small" @click="handleFilter">
-          搜索
-        </el-button>
+        <div class="flex items-center">
+          <query-builder storageName="{FirstTableName}s_query_conditions" :columns="firstHeaderList"
+            :query-options="firstQuery" @search="handleFilter" class="flex-1" />
+          <column-setting storageName="{FirstTableName}s_column_settings" :columns="firstHeaderList"
+            @update:columns="handleColumnsUpdate" class="ml-2" />
+        </div>
       </div>
       <permission-btn v-on:btn-event="onBtnClicked"></permission-btn>
     </sticky>
     <div class="flex-item flex flex-column main-context">
-      <el-card shadow="never" class="custom-card flex-item flex flex-column">
-        <auth-table size="small" ref="mainTable" :select-type="'radio'" :table-fields="firstHeaderList" :data="mainList"
-                    :v-loading="listLoading" @row-click="rowClickFirstTable"></auth-table>
-      </el-card>
-      <div class="flex flex-direction-r b-w p-r-10 p-t-10 p-b-10">
-        <el-pagination v-show="firstTotal > 0" :total="firstTotal" v-model:currentPage="firstQuery.page"
-                       v-model:page-size="firstQuery.limit" @current-change="handleCurrentChange" />
-      </div>
-      <div class="flex-item flex">
-        <div v-if="showTitleDialog" class="flex flex-column" style="width: 500px;">
-          <el-card shadow="never" class="demo-card custom-card fh">
-            <template #header>
-              <div>
-                <span v-if="radio == ''" class="f-12 f-b">表信息</span>
-                <span v-else class="f-12 f-b">{{ tableName }}表信息</span>
-              </div>
-            </template>
-            <auth-form ref="dataForm" :rules="mainRules" :edit-model="editModel" :form-fields="firstHeaderList"
-                       v-model="firstTemp" :data="firstTemp" :col-num="2"></auth-form>
-          </el-card>
+      <!-- 主表 -->
+      <div class="flex-item flex flex-column b-w" v-show="showNotFullScreen && !showDetailInTable">
+        <auth-table size="small" ref="mainTable" id="mainTable" :table-fields="firstHeaderList" :data="mainList" :v-loading="listLoading" @row-click="rowClickFirstTable"
+          @row-dblclick="rowDblClickFirstTable"></auth-table>
+        <div class="flex flex-direction-r p-r-10 b-w p-b-5 p-t-5">
+          <el-pagination size="small" background v-show="firstTotal > 0" v-model:currentPage="firstQuery.page"
+            v-model:page-size="firstQuery.limit" :page-sizes="[10, 20, 50]"
+            layout="total, sizes, prev, pager, next, jumper" :total="firstTotal" @size-change="handleSizeChange"
+            @current-change="handleCurrentChange" />
         </div>
-        <div class="flex-item flex flex-column">
-          <el-card shadow="never" class="custom-card flex-item flex flex-column" id="secondCard">
+      </div>
+
+      <!-- 主表表单(双击显示在主表位置) -->
+      <div class="flex-item flex flex-column b-w" v-show="showNotFullScreen && showDetailInTable">
+        <el-card shadow="never" class="custom-card flex-item flex flex-column">
             <template #header>
               <div class="flex flex-center">
-                <el-icon v-if="showTitleDialog" @click="showTitleDialog = !showTitleDialog" :size="14">
-                  <ArrowLeftBold />
-                </el-icon>
-                <el-icon v-else @click="showTitleDialog = !showTitleDialog" :size="14">
-                  <ArrowRightBold />
-                </el-icon>
+
+              <el-button size="small" class="custom-button" :icon="ArrowLeft" @click="returnToList">
+                返回列表
+              </el-button>
+              <el-button size="small" v-if="editModel" :icon="Close" class="custom-button" @click="cancelEdit">取消</el-button>
+              <el-button size="small" class="custom-button" :icon="Check" v-if="editModel && dialogStatus == 'create'" type="primary"
+                @click="createData">
+                确认
+              </el-button>
+              <el-button size="small" class="custom-button" :icon="Check" v-else-if="editModel" type="primary"
+                @click="updateData">确认</el-button>
+
+            </div>
+          </template>
+          <auth-form ref="dataForm" :rules="mainRules" :edit-model="editModel" :form-fields="firstHeaderList"
+            v-model="firstTemp" :data="firstTemp" :col-num="4"></auth-form>
+        </el-card>
+      </div>
+
+      <!-- 明细列表 -->
+      <div class="flex-item flex">
+        <div class="flex flex-column flex-item b-w" id="secondCard">
+          <el-card shadow="never" class="custom-card flex-item flex flex-column">
+            <template #header>
+              <div class="flex flex-center">
                 <span v-if="radio == ''" class="flex-item f-12 f-b">
-                  表字段信息（修改后，编辑框内回车生效）
+                  明细列表（修改后，编辑框内回车生效）
                 </span>
                 <span v-else class="flex-item f-12 f-b">
-                  {{ tableName }}表字段信息（修改后，编辑框内回车生效）
+                  {{ tableName }}明细列表（修改后，编辑框内回车生效）
                 </span>
+                <el-button size="small" v-if="editModel" :icon="Plus" @click="onBtnClicked('btnAddDetail')">
+                  添加
+                </el-button>
                 <el-button size="small" v-if="editModel" :icon="Delete" @click="onBtnClicked('btnDelDetail')">
                   删除
                 </el-button>
+                <column-setting buttonClass="filter-item" storageName="{SecondTableName}s_column_settings"
+                  :columns="secondHeaderList" @update:columns="updateSecondColumns" class="ml-2" />
+                <el-button size="small" :icon="showNotFullScreen ? FullScreen : Close"
+                  @click="showNotFullScreen = !showNotFullScreen">
+                  {{ showNotFullScreen ? '全屏' : '退出全屏' }}
+                </el-button>
+
               </div>
             </template>
             <auth-table size="small" ref="secondTable" :editModel="editModel" :table-fields="secondHeaderList"
-                        :data="secondList" @row-click="rowClickSecondTable" @selection-change="selChangeSecondTable"
-                        @item-change="handleUpdateDetail"></auth-table>
+              :data="secondList" @row-click="rowClickSecondTable" @selection-change="selChangeSecondTable"
+              @item-change="handleUpdateDetail"></auth-table>
           </el-card>
           <div class="flex flex-direction-r p-r-10 b-w p-b-5 p-t-5">
-            <el-pagination v-show="secondTotal > 0" :total="secondTotal" v-model:page="secondQuery.page"
-                           v-model:limit="secondQuery.limit" @current-change="handleSecondPage" />
+            <el-pagination size="small" background v-show="secondTotal > 0" :currentPage="secondQuery.page"
+              :page-size="secondQuery.limit" :total="secondTotal" @current-change="handleSecondPage" />
           </div>
         </div>
       </div>
-      <div v-if="editModel" class="p-t-5 p-b-5 t-r b-w p-r-10 border-t-2">
-        <el-button @click="editModel = false">取消</el-button>
-        <el-button v-if="dialogStatus == 'create'" type="primary" @click="createData">
-          确认
-        </el-button>
-        <el-button v-else type="primary" @click="updateData">确认</el-button>
-      </div>
     </div>
+
+    <print-preview ref="preView" />
   </div>
 </template>
 <script setup>
-  //引入核心框架
-  import { ElMessage, ElNotification } from 'element-plus'
-  import { Refresh, Delete } from '@element-plus/icons-vue'
-  import { onMounted, ref, reactive, nextTick, computed } from 'vue'
-  import { mapGetters, useStore } from 'vuex'
-  //引入API，共用方法
-  import * as {FirstTableName}s from '@/api/{FirstTableName}s'
-  import * as {SecondTableName}s from '@/api/{SecondTableName}s'
-  import ColumnDefine from '@/interface/columnDefine'
-  import { typeLists } from '@/utils/const.js'
-  import { parseTime, defaultVal } from '@/utils/index'
-  import { delrows } from '@/utils/delRows.js'
-  //引入组件
-  import Sticky from '@/components/Sticky/index.vue'
-  import permissionBtn from '@/components/PermissionBtn/index.vue'
-  import AuthForm from '../../components/Base/AuthForm.vue'
-  import AuthTable from '../../components/Base/AuthTable.vue'
-  const firstHeaderList = ref([]) //列表头
-  const secondHeaderList = ref([]) //明细列表头
-  const multipleSelection = ref([]) //明细中checkbox选中的值
-  const mainList = ref([]) //主列表值
-  const secondList = ref([]) //明细列表值
-  const firstTotal = ref(0) //主列表总条数
-  const secondTotal = ref(0) //主列表总条数
-  const listLoading = ref(true) //进度条
-  const editModel = ref(false) //是否为编辑状态
-  const editType = ref('edit')
-  const dialogStatus = ref('') //主修改对话框状态create/update
-  const radio = ref('') //主列表选项值
-  const tableName = ref('')
-  let firstTemp = reactive({}) //当前选中的头信息
-  let selectRow = reactive({})
-  const firstQuery = reactive({
-    // 查询条件
-    page: 1,
-    limit: 20,
-    key: undefined,
-  })
-  const secondQuery = reactive({
-    // 明细查询条件
-    page: 1,
-    limit: 20,
-    customerKey: undefined,
-  })
-  const showTitleDialog = ref(true) //是否显示左下主列表详情值
-  const mainRules = reactive({
-    Id: [
-      {
-        required: true,
-        message: 'id不能为空'
-      },
-    ],
-  })
-  //组件refs
-  const mainTable = ref(null)
-  const dataForm = ref(null)
-  const secondTable = ref(null)
-  const store = useStore()
-  const defaultorgid = computed(() => store.getters.defaultorgid)
-  onMounted(() => {
-    initCfg()
-    getList()
-  })
-  const initCfg = function () {
+//引入核心框架
+import { ElMessage, ElNotification } from 'element-plus'
+import { Plus, Delete, FullScreen, Close, Check, ArrowLeft } from '@element-plus/icons-vue'
+import { onMounted, ref, reactive, nextTick, computed, defineComponent, watch } from 'vue'
+import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
+
+//引入API，共用方法
+import * as {FirstTableName}s from '@/api/{FirstTableName}s'
+import * as {SecondTableName}s from '@/api/{SecondTableName}s'
+import { parseTime, defaultVal } from '@/utils/index'
+import common from "@/extensions/common.js"
+import { getItem } from '@/utils/storage'
+
+//引入组件
+import Sticky from '@/components/Sticky/index.vue'
+import permissionBtn from '@/components/PermissionBtn/index.vue'
+import AuthForm from '../../components/Base/AuthForm.vue'
+import AuthTable from '../../components/Base/AuthTable.vue'
+import QueryBuilder from '@/components/QueryBuilder/index.vue'
+import ColumnSetting from '@/components/ColumnSetting/index.vue'
+
+const firstHeaderList = ref([]) //列表头
+const secondHeaderList = ref([]) //明细列表头
+const multipleSelection = ref([]) //明细中checkbox选中的值
+const mainList = ref([]) //主列表值
+const secondList = ref([]) //明细列表值
+const firstTotal = ref(0) //主列表总条数
+const secondTotal = ref(0) //主列表总条数
+const listLoading = ref(true) //进度条
+const editModel = ref(false) //是否为编辑状态
+const editType = ref('edit')
+const dialogStatus = ref('') //主修改对话框状态create/update
+const radio = ref('') //主列表选项值
+const tableName = ref('')
+const showDetailInTable = ref(false) // 是否在主表位置显示详情
+let firstTemp = reactive({}) //当前选中的主表项
+let selectRow = reactive({}) //当前选中的主表项
+//组件refs
+const mainTable = ref(null)
+const dataForm = ref(null)
+const secondTable = ref(null)
+const preView = ref(null)
+
+const store = useStore()
+const router = useRouter()
+const defaultorgid = computed(() => store.getters.defaultorgid)
+const { showPreview, printPreview, createFlowInstance } = common()
+
+const firstQuery = reactive({
+  // 查询条件
+  page: 1,
+  limit: 20,
+  key: undefined,
+})
+const secondQuery = reactive({
+  // 明细查询条件
+  page: 1,
+  limit: 20,
+  customerKey: undefined,
+})
+
+const showNotFullScreen = ref(true) //明细列表是否全屏
+watch(showNotFullScreen, () => {
+  secondQuery.limit = showNotFullScreen.value ? 10 : 20
+  querySecondList(radio.value)
+})
+
+const mainRules = reactive({
+  Id: [
+    {
+      required: true,
+      message: '入库通知单号不能为空',
+      trigger: 'change',
+    },
+  ],
+})
+
+onMounted(() => {
+  initCfg()
+  getList()
+})
+
+const initCfg = function () {
     firstHeaderList.value = [
       {FirstHeaderList}
     ]
     secondHeaderList.value = [
       {SecondHeaderList}
     ]
-  }
-  // ------------------------通用处理函数-------------------------------------
-  const onBtnClicked = function (domId, callback) {
-    switch (domId) {
-      case 'btnAdd': // 添加新记录
-        resetFirstTemp()
-        secondList.value = []
-        dialogStatus.value = 'create'
-        editModel.value = true
-        tableName.value = '新建'
-        editType.value = 'add'
-        nextTick(() => {
-          dataForm.value.clearValidate()
-        })
-        break
-      case 'btnEdit': // 编辑头
-        Object.assign(firstTemp, selectRow)
-        if (firstTemp.id === '') {
-          editModel.value = false
-          ElMessage({
-            message: '请选择要修改的项',
-            type: 'error',
-          })
-          return
-        }
-        dialogStatus.value = 'update'
-        editModel.value = true
-        editType.value = 'edit'
-        nextTick(() => {
-          dataForm.value.clearValidate()
-        })
-        break
-      case 'btnDel': // 删除主表
-        if (firstTemp.id === '') {
-          ElMessage({
-            message: '请选择要删除的项',
-            type: 'error',
-          })
-          return
-        }
-        handleFirstDel(firstTemp)
-        break
-      case 'btnAddDetail': // 添加明细行
-        handleAddOrderDetail()
-        break
-      case 'btnDelDetail': // 删除明细行
-        if (multipleSelection.value.length < 1) {
-          ElMessage({
-            message: '至少删除一个',
-            type: 'error',
-          })
-          return
-        }
-        handleSecondDel(multipleSelection.value)
-        break
-      case 'btnExport':
-        mainTable.value.exportExcel(`表结构${parseTime(new Date())}`, callback)
-        break
-      default:
-        break
+
+    // 尝试从存储中加载列设置
+    const savedSettings = getItem('{FirstTableName}s_column_settings')
+    if (savedSettings) {
+      // 将保存的设置合并到当前列表
+      firstHeaderList.value = savedSettings
     }
-  }
 
-  // ------------------------主数据列表处理------------------------------------
-  const getList = function () {
-    listLoading.value = true
-    {FirstTableName}s.getList(firstQuery).then(response => {
-      mainList.value = response.data
-      firstTotal.value = response.count
-      if (firstTotal.value > 0) {
-        rowClickFirstTable(mainList.value[0])
+    secondHeaderList.value = res.columnFields
+      // 尝试从存储中加载列设置
+      const secondSavedSettings = getItem('{SecondTableName}s_column_settings')
+      if (secondSavedSettings) {
+        // 将保存的设置合并到当前列表
+        secondHeaderList.value = secondSavedSettings
       }
-      listLoading.value = false
-    })
-  }
-  const rowClickFirstTable = function (row) {
-    // 点击行
-    radio.value = row.id
-    tableName.value = row.tableName
-    secondQuery.page = 1
-    secondQuery.limit = 10
-    querySecondList(radio.value)
-    showTitleDetail(row)
-  }
-  const handleFilter = function () {
-    firstQuery.page = 1
-    getList()
-  }
-  const handleSizeChange = function (val) {
-    firstQuery.limit = val
-    getList()
-  }
-  const handleCurrentChange = function (val) {
-    firstQuery.page = val
-    getList()
-  }
-  const resetFirstTemp = function () {
-    firstHeaderList.value.forEach(item => {
-      firstTemp[item.columnName] = defaultVal(item.entityType)
-    })
-    firstTemp.namespace = 'OpenAuth.Repository.Domain'
   }
 
-  const setDetails = tempData => {
-    // 处理明细
-    tempData.{SecondTableName}Reqs = []
-    secondList.value.length > 0 &&
+// ------------------------通用处理函数-------------------------------------
+const onBtnClicked = (domId, args, callback) => {
+  switch (domId) {
+    case 'btnAdd': // 添加
+      resetFirstTemp()
+      secondList.value = []
+      dialogStatus.value = 'create'
+      editModel.value = true
+      tableName.value = '新建'
+      editType.value = 'add'
+      showDetailInTable.value = true // 显示详情编辑界面
+      nextTick(() => {
+        dataForm.value.clearValidate()
+      })
+      break
+    case 'btnEdit': // 编辑
+      Object.assign(firstTemp, selectRow)
+      if (firstTemp.id === '') {
+        editModel.value = false
+        ElMessage.error('请选择要修改的项')
+        return
+      }
+      dialogStatus.value = 'update'
+      editModel.value = true
+      editType.value = 'edit'
+      showDetailInTable.value = true // 编辑时显示详情界面
+      nextTick(() => {
+        dataForm.value.clearValidate()
+      })
+      break
+    case 'btnDel': // 删除
+      if (firstTemp.id === '') {
+        ElMessage.error('请选择要删除的项')
+        return
+      }
+      handleFirstDel(firstTemp)
+      break
+    case 'btnPrint':
+      if (firstTemp.id === '') {
+        ElMessage.error('请选择要打印的内容')
+        return
+      }
+      showPreview(preView.value, args, firstTemp);
+      break
+    case 'btnFlowscheme':
+      if (firstTemp.id === '') {
+        ElMessage.error('请选择要送审的内容')
+        return
+      }
+      createFlowInstance(args, firstTemp);
+      break
+    case 'btnAddDetail': // 添加明细行
+      handleAddOrderDetail()
+      break
+    case 'btnDelDetail': // 删除明细行
+      if (multipleSelection.value.length < 1) {
+        ElMessage.error('至少删除一个')
+        return
+      }
+      handleSecondDel(multipleSelection.value)
+      break
+    case 'btnExport': //导出
+      mainTable.value.exportExcel(`表结构${parseTime(new Date())}`, callback)
+      break
+    default:
+      break
+  }
+}
+
+// ------------------------主数据列表处理------------------------------------
+
+const getList = () => {
+  listLoading.value = true
+  {FirstTableName}s.getList(firstQuery).then(response => {
+    mainList.value = response.data
+    firstTotal.value = response.count
+    if (firstTotal.value > 0) {
+      rowClickFirstTable(mainList.value[0])
+    }
+    listLoading.value = false
+  })
+}
+
+// 处理列设置更新
+const handleColumnsUpdate = (columns) => {
+  if (columns) {
+    // 更新列显示配置
+    firstHeaderList.value = columns
+  } else {
+    // 如果是null，则重置回默认配置
+    initCfg()
+  }
+}
+
+const updateSecondColumns = (columns) => {
+  if (columns) {
+    // 更新列显示配置
+    secondHeaderList.value = columns
+  } else {
+    // 如果是null，则重置回默认配置
+    initCfg()
+  }
+}
+
+const rowClickFirstTable = row => {
+  // 点击行
+  mainTable.value.clearSelection()
+  mainTable.value.toggleRowSelection(row)
+
+  radio.value = row.id
+  tableName.value = row.id
+  secondQuery.page = 1
+  secondQuery.limit = 10
+  querySecondList(radio.value)
+  showTitleDetail(row)
+}
+
+const handleFilter = () => {
+  firstQuery.page = 1
+  getList()
+}
+const handleSizeChange = val => {
+  firstQuery.limit = val
+  getList()
+}
+
+const handleCurrentChange = val => {
+  firstQuery.page = val
+  getList()
+}
+const resetFirstTemp = () => {
+  firstHeaderList.value.forEach(item => {
+    firstTemp[item.columnName] = defaultVal(item.entityType)
+  })
+}
+const createData = () => {
+  // 保存提交
+  dataForm.value.validate(() => {
+    let tempData = Object.assign({}, firstTemp)
+    tempData = setDetails(tempData)
+    tempData.OrgId = defaultorgid.value
+    {FirstTableName}s.add(tempData).then(resp => {
+      if (resp.result != undefined) {
+        //如果服务器返回生成的ID
+        tempData.id = resp.result
+      }
+      mainList.value.unshift(tempData)
+      editModel.value = false
+      showDetailInTable.value = false // 保存后返回列表视图
+      rowClickFirstTable(tempData)
+      ElNotification.success('创建成功')
+    })
+  })
+}
+const showTitleDetail = row => {
+  // 弹出编辑框
+  Object.assign(selectRow, row) // 新增订单时保存当前选中行
+  Object.assign(firstTemp, row) // copy obj
+  nextTick(() => {
+    dataForm.value.clearValidate()
+  })
+}
+const setDetails = tempData => {
+  // 处理明细
+  tempData.{SecondTableName}Reqs = []
+  secondList.value.length > 0 &&
     secondList.value.forEach(item => {
       const obj = {}
 
       secondHeaderList.value.forEach(header => {
         obj[header.columnName] =
-                item[header.columnName] || defaultVal(header.entityType)
+          item[header.columnName] || defaultVal(header.entityType)
       })
 
       tempData.{SecondTableName}Reqs.push(obj)
     })
-    return tempData
-  }
-  
-  const createData = function () {
-    // 保存提交
-    dataForm.value.validate(() => {
-      let tempData = Object.assign({}, firstTemp)
-      tempData = setDetails(tempData)
-      tempData.OrgId = defaultorgid.value
-      {FirstTableName}s.add(tempData).then(resp => {
-        tempData.id = resp.result
-        mainList.value.unshift(tempData)
-        editModel.value = false
-        rowClickFirstTable(tempData)
-        ElNotification({
-          title: '成功',
-          message: '创建成功',
-          type: 'success',
-          duration: 2000,
-        })
-      })
-    })
-  }
-  const showTitleDetail = function (row) {
-    // 弹出编辑框
-    Object.assign(selectRow, row) // 新增订单时保存当前选中行
-    Object.assign(firstTemp, row) // copy obj
-    nextTick(() => {
-      dataForm.value.clearValidate()
-    })
-  }
-  const updateData = function () {
-    // 更新提交
-    dataForm.value.validate(() => {
-      let tempData = Object.assign({}, firstTemp)
-      tempData = setDetails(tempData)
-      {FirstTableName}s.update(tempData).then(() => {
-        for (const v of mainList.value) {
-          if (v.id === firstTemp.id) {
-            const index = mainList.value.indexOf(v)
-            mainList.value.splice(index, 1, tempData)
-            break
-          }
+  return tempData
+}
+const updateData = () => {
+  // 更新提交
+  dataForm.value.validate(() => {
+    let tempData = Object.assign({}, firstTemp)
+    tempData = setDetails(tempData)
+    {FirstTableName}s.update(tempData).then(() => {
+      for (const v of mainList.value) {
+        if (v.id === firstTemp.id) {
+          const index = mainList.value.indexOf(v)
+          mainList.value.splice(index, 1, tempData)
+          break
         }
-        editModel.value = false
-        ElNotification({
-          title: '成功',
-          message: '更新成功',
-          type: 'success',
-          duration: 2000,
-        })
-      })
-    })
-  }
-  const handleFirstDel = function (row) {
-    // 删除头
-    {FirstTableName}s.del([row.id]).then(() => {
-      ElNotification({
-        title: '成功',
-        message: '删除成功',
-        type: 'success',
-        duration: 2000,
-      })
-      mainList.value = mainList.value.filter(item => item.id !== row.id)
-      if (mainList.value.length > 0) {
-        nextTick(() => {
-          rowClickFirstTable(mainList.value[0])
-        })
-        return
       }
-      secondList.value = []
-      showTitleDetail({})
+      editModel.value = false
+      showDetailInTable.value = false // 保存后返回列表视图
+      ElNotification.success('更新成功')
     })
-  }
-  // ------------------------明细列表处理-------------------------------------
-  const handleSecondPage = function (e) {
-    secondQuery.page = e
-    querySecondList(radio.value)
-  }
-  const querySecondList = id => {
-    {SecondTableName}s
-            .getList({
-    {ParentTableId}: id,
-            page: secondQuery.page,
-            limit: secondQuery.limit,
-            key: secondQuery.customerKey,
   })
-  .then(res => {
+}
+const handleFirstDel = row => {
+  // 主表删除处理
+  {FirstTableName}s.del([row.id]).then(() => {
+    ElNotification.success('删除成功')
+    mainList.value = mainList.value.filter(item => item.id !== row.id)
+    if (mainList.value.length > 0) {
+      nextTick(() => {
+        rowClickFirstTable(mainList.value[0])
+      })
+      return
+    }
+    secondList.value = []
+    showTitleDetail({})
+  })
+}
+
+//返回列表
+const returnToList = () => {
+  showDetailInTable.value = false
+  cancelEdit()
+}
+
+// 取消编辑
+const cancelEdit = () => {
+  editModel.value = false
+  if (dialogStatus.value === 'create') {
+    showDetailInTable.value = false
+  }
+}
+
+// 主列表双击行事件
+const rowDblClickFirstTable = row => {
+  rowClickFirstTable(row) // 先执行单击行的逻辑
+  showDetailInTable.value = true // 在主表位置显示详情
+}
+
+// ------------------------明细列表处理-------------------------------------
+const handleSecondPage = e => {
+  secondQuery.page = e
+  querySecondList(radio.value)
+}
+
+const querySecondList = id => {
+  {SecondTableName}s
+    .getList({
+      {ParentTableId}: id,
+      page: secondQuery.page,
+      limit: secondQuery.limit,
+      key: secondQuery.customerKey,
+    })
+    .then(res => {
       secondTotal.value = res.count
       secondList.value = res.data
     })
-  }
-  const rowClickSecondTable = function (row) {
-    // 行点击事件
-    secondTable.value.clearSelection()
-    secondTable.value.toggleRowSelection(row)
-  }
-  const handleSecondDel = function (rows) {
-    {SecondTableName}s.del(rows.map(item => item.id)).then(() => {
-      rows.forEach(row => {
-        secondList.value = secondList.value.filter(item => item.id !== row.id)
-      })
-      ElNotification({
-        title: '成功',
-        message: '删除成功',
-        type: 'success',
-        duration: 2000,
-      })
+}
+const rowClickSecondTable = row => {
+  // 行点击事件
+  secondTable.value.clearSelection()
+  secondTable.value.toggleRowSelection(row)
+}
+const handleSecondDel = function (rows) {
+  {SecondTableName}s.del(rows.map(item => item.id)).then(() => {
+    rows.forEach(row => {
+      secondList.value = secondList.value.filter(item => item.id !== row.id)
     })
-  }
-  const selChangeSecondTable = function (val) {
-    // 明细选中事件
-    multipleSelection.value = val
-  }
-  const handleUpdateDetail = function (item) {
-    // 同步表数据结构
-    {SecondTableName}s.update(item).then(() => {
-      ElNotification({
-        title: '成功',
-        message: '更新成功',
-        type: 'success',
-        duration: 2000,
-      })
-    })
-  }
+    ElNotification.success('删除成功')
+  })
+}
+const selChangeSecondTable = val => {
+  // 明细选中事件
+  multipleSelection.value = val
+}
+const handleAddOrderDetail = () => {
+  // 添加明细
+  const obj = {}
+  secondHeaderList.value.forEach(header => {
+    obj[header.columnName] = defaultVal(header.entityType)
+  })
+  obj.orderId = firstTemp.id
+
+  secondList.value.push(Object.assign({}, obj))
+}
+const handleUpdateDetail = item => {
+  // 回车保存明细,如果不需要可以不用
+  {SecondTableName}s.update(item).then(() => {
+    ElNotification.success('成功')
+  })
+}
 </script>
