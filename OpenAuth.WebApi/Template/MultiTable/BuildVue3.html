@@ -108,6 +108,7 @@ import * as {SecondTableName}s from '@/api/{SecondTableName}s'
 import { parseTime, defaultVal } from '@/utils/index'
 import common from "@/extensions/common.js"
 import { getItem } from '@/utils/storage'
+import ColumnDefine from '@/interface/columnDefine'
 
 //引入组件
 import Sticky from '@/components/Sticky/index.vue'
@@ -193,13 +194,11 @@ const initCfg = function () {
       firstHeaderList.value = savedSettings
     }
 
-    secondHeaderList.value = res.columnFields
-      // 尝试从存储中加载列设置
-      const secondSavedSettings = getItem('{SecondTableName}s_column_settings')
-      if (secondSavedSettings) {
-        // 将保存的设置合并到当前列表
-        secondHeaderList.value = secondSavedSettings
-      }
+    const secondSavedSettings = getItem('{SecondTableName}s_column_settings')
+    if (secondSavedSettings) {
+      // 将保存的设置合并到当前列表
+      secondHeaderList.value = secondSavedSettings
+    }
   }
 
 // ------------------------通用处理函数-------------------------------------
