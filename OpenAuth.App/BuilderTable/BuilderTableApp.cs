@@ -100,7 +100,7 @@ namespace OpenAuth.App
             return result;
         }
 
-        public string Add(AddOrUpdateBuilderTableReq req)
+        public void Check(AddOrUpdateBuilderTableReq req)
         {
             if (string.IsNullOrEmpty(req.TableName))
             {
@@ -112,11 +112,18 @@ namespace OpenAuth.App
                 throw new Exception("模块名称不能为空");
             }
 
-            if (string.IsNullOrEmpty(req.Namespace))
+            if(!string.IsNullOrEmpty(req.ParentTableId))
             {
-                throw new Exception("命名空间不能为空");
+                if(string.IsNullOrEmpty(req.ForeignKey))
+                {
+                    throw new Exception("当前表为子表时，外键不能为空");
+                }
             }
+        }
 
+        public string Add(AddOrUpdateBuilderTableReq req)
+        {
+            Check(req);
             var obj = AddTableAndColumns(req.MapTo<BuilderTable>());
 
             UnitWork.Save();
@@ -176,6 +183,7 @@ namespace OpenAuth.App
 
         public void Update(AddOrUpdateBuilderTableReq obj)
         {
+            Check(obj);
             var user = _auth.GetCurrentUser().User;
             UnitWork.Update<BuilderTable>(u => u.Id == obj.Id, u => new BuilderTable
             {
