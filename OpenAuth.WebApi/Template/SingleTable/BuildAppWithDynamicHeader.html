@@ -55,7 +55,10 @@ namespace OpenAuth.App
         public void Add(AddOrUpdate{ClassName}Req req)
         {
             var obj = req.MapTo<{ClassName}>();
-            obj.Id = Guid.NewGuid().ToString();
+            if(obj.KeyIsNull())  //如果主键为空，则生成默认值
+            {
+                obj.GenerateDefaultKeyVal();
+            }
             //todo: 根据业务需要调整字段
             obj.Createtime = DateTime.Now;
             var user = _auth.GetCurrentUser().User;
