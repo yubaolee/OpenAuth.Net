@@ -36,7 +36,7 @@
 
 * Vue2演示地址： http://demo.openauth.net.cn:1803
 
-* 移动H5演示地址（请使用浏览器移动模式或直接用手机打开）： http://demo.openauth.net.cn:1804 
+* 移动H5演示地址： http://demo.openauth.net.cn:1804 
 
 * 开源版演示地址： http://demo.openauth.net.cn:1802
 
@@ -58,6 +58,7 @@
 ![API启动效果图](https://images.gitee.com/uploads/images/2021/0422/012037_ec51b7e6_362401.png "api启动.png")
 
 #### vue版本效果
+![主列表](snapshot/maintable.jpg)
 ![工作流](snapshot/image.png)
 ![打印方案设计](snapshot/sysprinterplan.png)
 ![打印方案挂载业务系统](snapshot/sysprinterplan2.png)
