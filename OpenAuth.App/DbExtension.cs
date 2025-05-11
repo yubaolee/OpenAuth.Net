@@ -85,6 +85,11 @@ namespace OpenAuth.App
         /// <returns></returns>
         public IList<SysTableColumn> GetDbTableStructure(string tableName)
         {
+            if(string.IsNullOrEmpty(tableName))
+            {
+                return new List<SysTableColumn>();
+            }
+
             //如果是空,说明没有通过ProcessExternalDb设置过，直接从本地读取
             if(string.IsNullOrEmpty(_dbTypeStr)){
                 _dbTypeStr = _appConfiguration.Value.DbTypes[_httpContextAccessor.GetTenantId()];
@@ -412,6 +417,22 @@ namespace OpenAuth.App
                 return columnList;
             }
             return new List<SysTableColumn>();
+        }
+
+        /// <summary>
+        /// 通过表名和外部数据源ID获取表结构
+        /// </summary>
+        /// <param name="tableName">表名</param>
+        /// <param name="externalDataSourceId">外部数据源ID</param>
+        /// <returns></returns>
+        public IList<SysTableColumn> GetDbTableStructure(string tableName, string externalDataSourceId){
+            var connection = SugarClient.Queryable<ExternalDataSource>().First(u => u.Id == externalDataSourceId);
+            if (connection != null)
+            {
+                var dbType = connection.Dbtype;
+                SetConnection(connection.Connectionstring, dbType);
+            }
+            return GetDbTableStructure(tableName);
         }
 
         /// <summary>

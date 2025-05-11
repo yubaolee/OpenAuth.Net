@@ -129,7 +129,7 @@ create table stock
 
 选中刚刚添加的`Stock`表，依次点击【生成实体】【生成业务代码】【生成vue页面】;
 
-如果存在子表，也进行相同的操作。即选中刚刚添加的`StockDetail`表，依次点击【生成实体】【生成业务代码】，子表不需要生成vue页面;
+如果存在子表，也进行相同的操作。即选中刚刚添加的`StockDetail`表，依次点击【生成实体】【生成业务代码】【生成vue页面】，子表虽然不需要生成vue页面，但需要生成前端js api;
 
 成功后生成的后端.Net代码位置如下：
 
@@ -139,11 +139,13 @@ OpenAuth.App\StockApp\Request\AddOrUpdateStockReq.cs
 OpenAuth.App\StockApp\Request\QueryStockListReq.cs
 OpenAuth.WebApi\Controllers\StocksController.cs
 
-并且会在OpenAuth.Repository\OpenAuthDBContext.cs中自动添加：
-
+::: warning 注意
+以前代码生成器生成基于EF的代码时，会在OpenAuth.Repository\OpenAuthDBContext.cs中自动添加：
 ```
  public virtual DbSet<Stock> Stocks { get; set; }
 ```
+现在基于SqlSugar的代码生成器，已不需要。如果有其他开发方面需要，可自行手动添加。
+:::
 
 
 前端Vue代码：
