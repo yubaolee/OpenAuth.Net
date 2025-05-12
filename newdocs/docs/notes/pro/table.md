@@ -6,6 +6,8 @@ permalink: /pro/table/
 
 通用表格组件`AuthTable` 是OpenAuth.Net框架的核心组件之一，支持自定义列模板、单选/多选、可编辑、导出 Excel 等功能。
 
+![2025-05-12-16-14-13](http://img.openauth.net.cn/2025-05-12-16-14-13.png)
+
 ## 使用示例
 
 ```vue
