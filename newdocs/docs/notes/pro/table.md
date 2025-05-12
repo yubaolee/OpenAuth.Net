@@ -4,9 +4,7 @@ createTime: 2025/05/07 19:10:57
 permalink: /pro/table/
 ---
 
-## 组件简介
-
-`AuthTable` 是一个通用表格组件，支持自定义列模板、单选/多选、可编辑、导出 Excel 等功能。
+通用表格组件`AuthTable` 是OpenAuth.Net框架的核心组件之一，支持自定义列模板、单选/多选、可编辑、导出 Excel 等功能。
 
 ## 使用示例
 
