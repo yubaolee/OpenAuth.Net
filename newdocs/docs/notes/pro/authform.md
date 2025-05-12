@@ -28,7 +28,7 @@ permalink: /pro/authform/
 | 事件名 | 说明 | 回调参数 |
 | --- | --- | --- |
 | update:data | 表单数据更新时触发 | 更新后的表单数据对象 |
-| field-change | 表单字段值变化时触发 | { fieldName, value } |
+| field-change | 表单字段值变化时触发 | `{ fieldName, value }` |
 
 ## 方法
 
