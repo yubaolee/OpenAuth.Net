@@ -7,10 +7,11 @@
   <div class="flex flex-column">
     <sticky>
       <div class="search-box">
-        <el-input @keyup.enter="handleFilter" size="small" class="custom-input w-200" :placeholder="'名称'"
-          v-model="listQuery.key"></el-input>
-        <el-button size="small" class="custom-button filter-item" icon="el-icon-search"
-          @click="handleFilter">搜索</el-button>
+        <div class="flex items-center">
+          <query-builder storageName="{TableName}_query_conditions" :columns="headerList" :query-options="listQuery" @search="handleFilter" class="flex-1" />
+          <column-setting storageName="{TableName}_column_settings" :columns="headerList"
+            @update:columns="handleColumnsUpdate" class="ml-2" />
+        </div>
       </div>
       <permission-btn v-on:btn-event="onBtnClicked"></permission-btn>
     </sticky>
@@ -59,6 +60,8 @@ const listLoading = ref(true) //进度条
 const dialogFormVisible = ref(false) //是否显示编辑框
 const dialogStatus = ref(0) //0:新增 1:编辑
 let temp = reactive({}) //新增（编辑）绑定对话框
+import ColumnSetting from '@/components/ColumnSetting/index.vue'
+import QueryBuilder from '@/components/QueryBuilder/index.vue'
 const listQuery = reactive({
   // 查询条件
   page: 1,
@@ -118,10 +121,29 @@ const getList = function () {
         item.columnName.substring(1)
     })
     headerList.value = response.columnFields
+
+    // 尝试从存储中加载列设置
+    const savedSettings = getItem('{TableName}_column_settings')
+    if (savedSettings) {
+      // 将保存的设置合并到当前列表
+      headerList.value = savedSettings
+    }
     total.value = response.count
     listLoading.value = false
   })
 }
+
+// 处理列设置更新
+const handleColumnsUpdate = (columns) => {
+  if (columns) {
+    // 更新列显示配置
+    headerList.value = columns
+  } else {
+    // 如果是null，则重置回默认配置
+    getList()
+  }
+}
+
 const handleFilter = function () {
   listQuery.page = 1
   getList()
