@@ -96,6 +96,11 @@ namespace OpenAuth.App
                 resources = resources.Where(u => u.AppId == request.appId);
             }
 
+            if (!string.IsNullOrEmpty(request.sqlWhere))
+            {
+                resources = resources.Where(request.sqlWhere);
+            }
+
             var columnnames = columnFields.Select(u => u.ColumnName);
             
             var propertyStr = string.Join(',', columnnames);

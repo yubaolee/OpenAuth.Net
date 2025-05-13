@@ -2,20 +2,16 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Infrastructure;
-using Microsoft.EntityFrameworkCore;
 using OpenAuth.App.Interface;
 using OpenAuth.App.Request;
 using OpenAuth.App.Response;
-using OpenAuth.Repository;
 using OpenAuth.Repository.Domain;
-using OpenAuth.Repository.Interface;
-
+using SqlSugar;
 
 namespace OpenAuth.App
 {
-    public class DataPrivilegeRuleApp : BaseStringApp<DataPrivilegeRule,OpenAuthDBContext>
+    public class DataPrivilegeRuleApp : SqlSugarBaseApp<DataPrivilegeRule>
     {
-        private RevelanceManagerApp _revelanceApp;
         /// <summary>
         /// 加载列表
         /// </summary>
@@ -34,36 +30,40 @@ namespace OpenAuth.App
             }
 
             var result = new TableData();
-            var objs = UnitWork.Find<DataPrivilegeRule>(null);
+            var objs = SugarClient.Queryable<DataPrivilegeRule>();
             if (!string.IsNullOrEmpty(request.key))
             {
                 objs = objs.Where(u => u.Id.Contains(request.key) || u.SourceCode.Contains(request.key) || u.Description.Contains(request.key));
+            }
+            if (!string.IsNullOrEmpty(request.sqlWhere))
+            {
+                objs = objs.Where(request.sqlWhere);
             }
 
             var propertyStr = string.Join(',', columnFields.Select(u => u.ColumnName));
             result.columnFields = columnFields;
             result.data = objs.OrderBy(u => u.Id)
                 .Skip((request.page - 1) * request.limit)
-                .Take(request.limit).Select($"new ({propertyStr})");
+                .Take(request.limit).Select($"{propertyStr}").ToList();
             result.count = await objs.CountAsync();
             return result;
         }
 
         public void Add(AddOrUpdateDataPriviReq req)
         {
-            if (Repository.Any(u => u.SourceCode == req.SourceCode))
+            if (Repository.IsAny(u => u.SourceCode == req.SourceCode))
             {
                 throw new Exception($"已经存在{req.SourceCode}的数据规则，如果想调整规制请直接修改");
             }
             var obj = req.MapTo<DataPrivilegeRule>();
             obj.CreateUserId = _auth.GetCurrentUser().User.Id;
             obj.CreateTime = DateTime.Now;
-            Repository.Add(obj);
+            SugarClient.Insertable(obj).ExecuteCommand();
         }
         
         public void Update(AddOrUpdateDataPriviReq obj)
         {
-            UnitWork.Update<DataPrivilegeRule>(u => u.Id == obj.Id, u => new DataPrivilegeRule
+             Repository.Update(u => new DataPrivilegeRule
             {
                 SortNo = obj.SortNo,
                 SourceCode = obj.SourceCode,
@@ -73,24 +73,22 @@ namespace OpenAuth.App
                 PrivilegeRules = obj.PrivilegeRules,
                 Enable = obj.Enable
                //todo:要修改的字段赋值
-            });
+            },u => u.Id == obj.Id);
     
         }
 
-        public DataPrivilegeRuleApp(IUnitWork<OpenAuthDBContext> unitWork, IRepository<DataPrivilegeRule,OpenAuthDBContext> repository,
-            RevelanceManagerApp app, IAuth auth) : base(unitWork, repository, auth)
+        public DataPrivilegeRuleApp(ISqlSugarClient client, IAuth auth) : base(client, auth)
         {
-            _revelanceApp = app;
         }
 
         public DataPrivilegeRule GetByModuleName(string moduleName)
         {
-            return Repository.FirstOrDefault(u=>u.SourceCode == moduleName);
+            return Repository.GetFirst(u=>u.SourceCode == moduleName);
         }
 
         public void Clear()
         {
-            Repository.Delete(u =>true);
+            SugarClient.Deleteable<DataPrivilegeRule>(u => true).ExecuteCommand();
         }
     }
 }
