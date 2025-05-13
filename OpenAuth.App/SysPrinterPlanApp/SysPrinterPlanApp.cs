@@ -39,6 +39,11 @@ namespace OpenAuth.App
                 objs = objs.Where(u => u.Name.Contains(request.key));
             }
 
+            if (!string.IsNullOrEmpty(request.sqlWhere))
+            {
+                objs = objs.Where(request.sqlWhere);
+            }
+
             var columnnames = columnFields.Select(u => u.ColumnName);
            
             var propertyStr = string.Join(',', columnnames);
