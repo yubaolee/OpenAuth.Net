@@ -51,6 +51,11 @@ namespace OpenAuth.App
                 objs = objs.Where(u => u.Id.Contains(request.key) || u.Name.Contains(request.key));
             }
 
+            if (!string.IsNullOrEmpty(request.sqlWhere))
+            {
+                objs = objs.Where(request.sqlWhere);
+            }
+
             var propertyStr = string.Join(',', columnFields.Select(u =>u.ColumnName));
             result.columnFields = columnFields;
             result.data = objs.OrderBy(u => u.DtCode)
