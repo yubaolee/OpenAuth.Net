@@ -3,18 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Infrastructure;
-using Microsoft.EntityFrameworkCore;
 using OpenAuth.App.Interface;
 using OpenAuth.App.Request;
 using OpenAuth.App.Response;
-using OpenAuth.Repository;
 using OpenAuth.Repository.Domain;
-using OpenAuth.Repository.Interface;
-
+using SqlSugar;
 
 namespace OpenAuth.App
 {
-    public class CategoryApp : BaseStringApp<Category,OpenAuthDBContext>
+    public class CategoryApp : SqlSugarBaseApp<Category>
     {
         /// <summary>
         /// 加载列表
@@ -40,7 +37,7 @@ namespace OpenAuth.App
             }
             
             var result = new TableData();
-            var objs = UnitWork.Find<Category>(null);
+            var objs = SugarClient.Queryable<Category>();
             if (!string.IsNullOrEmpty(request.TypeId))
             {
                 objs = objs.Where(u => u.TypeId == request.TypeId);
@@ -60,7 +57,7 @@ namespace OpenAuth.App
             result.columnFields = columnFields;
             result.data = objs.OrderBy(u => u.DtCode)
                 .Skip((request.page - 1) * request.limit)
-                .Take(request.limit).Select($"new ({propertyStr})");
+                .Take(request.limit).Select($"{propertyStr}").ToList();
             result.count = await objs.CountAsync();
             return result;
         }
@@ -72,13 +69,13 @@ namespace OpenAuth.App
             var user = _auth.GetCurrentUser().User;
             obj.CreateUserId = user.Id;
             obj.CreateUserName = user.Name;
-            await Repository.AddAsync(obj);
+            await SugarClient.Insertable(obj).ExecuteCommandAsync();
         }
         
         public void Update(AddOrUpdateCategoryReq obj)
         {
             var user = _auth.GetCurrentUser().User;
-            UnitWork.Update<Category>(u => u.Id == obj.Id, u => new Category
+            Repository.Update(u => new Category
             {
                 Name = obj.Name,
                 Enable = obj.Enable,
@@ -89,7 +86,7 @@ namespace OpenAuth.App
                 UpdateUserId = user.Id,
                 UpdateUserName = user.Name,
                 SortNo = obj.SortNo
-            });
+            },u => u.Id == obj.Id);
 
         }
 
@@ -100,10 +97,10 @@ namespace OpenAuth.App
         /// <returns></returns>
         public List<Category> LoadByTypeId(string typeId)
         {
-            return Repository.Find(u => u.TypeId == typeId).ToList();
+            return SugarClient.Queryable<Category>().Where(u => u.TypeId == typeId).ToList();
         }
 
-        public CategoryApp(IUnitWork<OpenAuthDBContext> unitWork, IRepository<Category,OpenAuthDBContext> repository,IAuth auth) : base(unitWork, repository, auth)
+        public CategoryApp(ISqlSugarClient client, IAuth auth) : base(client, auth)
         {
         }
     }
