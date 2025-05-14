@@ -170,11 +170,17 @@ src\views\stocks\index.vue
 
 ## 代码生成功能字段详解
 
-* 模块名称：表示这个生成的模块名称，根据自己需要填写。
+* 模块名称：**必填** 表示这个生成的模块名称，根据自己需要填写。
+
+* 模块编码：**必填** 表示生成的模块业务类名称，比如`XxxxxApp`。
+
+* 命名空间：**必填** 表示生成的实体类的命名空间。默认`OpenAuth.Repository.Domain`。
 
 * 表名：**必填** 表示数据库中对应的表名。
 
-* 父表：表示主/从（父/子）表的父表。如果该项不选，则生成的是单表结构的代码，如果选择了父表，则生成主/从（父/子）表的代码。
+* 实体类名称：**必填** 表示生成的实体类名称。
+
+* 父表：表示主/从表的父表。如果选择了父表，则当前表为子表，与对应的父表自动形成主/从关系。
 
 * 外键：表示与父表关联的外键。如果选择了父表，则该项必填。
 
@@ -182,13 +188,119 @@ src\views\stocks\index.vue
 
 * 动态头部：如果选中，表示前端渲染列表（或表单）时，列表的列定义是从后端返回。通常用于控制前端字段显示权限。
 
-* 实体类名称：**必填** 表示生成的实体类名称。
+* Vue目录: 生成vue代码时，代码存放的目录，一般是vue项目的根目录。比如`D:\openauthvue3`。
 
-* 命名空间：**必填** 表示生成的实体类的命名空间。默认`OpenAuth.Repository.Domain`。
 
-* 模块编码：**必填** 表示生成的模块业务类名称，比如`XxxxxApp`。
+## 生成逻辑详解
 
-* Vue目录: 生成vue代码时，代码存放的目录。比如`D:\openauthvue3`。
+当您在代码生成界面选中一个或多个表，并依次点击【生成实体】、【生成业务代码】、【生成vue页面】（及Vue API）时，系统会执行一系列后端操作来创建所需的代码文件。以下是这些操作的详细解析：
+
+### 1. 生成实体
+
+点击【生成实体】后，系统将为选中的数据库表创建对应的C#实体类。
+
+*   **核心方法**: `BuilderTableApp.CreateEntity(CreateEntityReq req)`
+*   **主要流程**:
+    1.  **数据准备**: 根据请求中的ID加载表定义信息 (`BuilderTable`) 和所有字段定义信息 (`BuilderTableColumn`)。
+    2.  **重复性检查**: 调用 `CheckExistsModule` 方法，通过反射检查项目中是否已存在同名或已映射到同名数据库表的实体类，防止重复创建。
+    3.  **模型创建 (`CreateEntityModel`)**:
+        *   **模板**: 固定使用 `Template\BuildEntity.html`。
+        *   **基类选择**:
+            *   根据主键的数据库类型 (`ColumnType`) 和是否自增 (`IsIncrement`)，实体类会继承自：
+                *   `IntAutoGenEntity`: 若主键为数字类型 (如 `decimal`, `numeric`) 且自增。
+                *   `LongEntity`: 若主键为数字类型 (如 `decimal`, `numeric`) 但不自增 (通常用于雪花ID)。
+                *   `StringEntity`: 若主键为字符串等其他类型。
+        *   **属性生成**:
+            *   遍历表中的每个字段（主键除外）。
+            *   为字段添加 `/// <summary>` XML注释（源自字段备注）和 `[Description("字段备注")]` 特性。
+            *   根据字段是否允许为空 (`IsRequired`) 和其数据类型 (`EntityType`)，正确生成属性类型（例如，值类型若允许为空，则变为可空类型，如 `int?`）。
+            *   生成 `public {字段类型} {字段名} { get; set; }`。
+        *   **构造函数初始化**:
+            *   在实体类的构造函数中，为每个非主键属性赋予初始值 (例如 `string` 类型初始化为 `""`，`DateTime` 初始化为 `DateTime.Now`，`bool` 初始化为 `false` 等)。
+        *   **表注解**:
+            *   为实体类添加 `/// <summary>` XML注释（源自表备注）。
+            *   添加 `[Table("实际数据库表名")]` 特性，将实体类映射到数据库表。
+        *   **文件输出**: 生成的实体类代码最终会写入到 `OpenAuth.Repository\Domain\{实体类名}.cs` 文件。
+
+### 2. 生成业务代码
+
+点击【生成业务代码】后，系统会创建应用服务层（App）、相关的请求对象（Request DTOs）以及WebAPI控制器（Controller）。
+
+*   **核心方法**: `BuilderTableApp.CreateBusiness(CreateBusiReq req)`
+*   **主要流程**: 此方法会依次调用以下三个内部方法：
+
+    *   **A. `GenerateApp` (生成应用服务类)**
+        1.  **路径与检查**: 定位 `.App` 项目路径，并检查模块代码 (`ModuleCode`) 是否已存在。
+        2.  **模板选择**:
+            *   **主从表判断**: 根据当前表是否有子表 (`ParentTableId`)，区分为单表或主从表生成逻辑。
+            *   **动态/固定头部**: 根据表配置的 `IsDynamicHeader` 属性，选择对应的模板。
+                *   单表动态头部: `Template\SingleTable\BuildAppWithDynamicHeader.html`
+                *   单表固定头部: `Template\SingleTable\BuildApp.html`
+                *   主从表动态头部: `Template\MultiTable\BuildAppWithDynamicHeader.html`
+                *   主从表固定头部: `Template\MultiTable\BuildApp.html`
+        3.  **基类选择**:
+            *   应用服务类的基类根据主键类型决定：
+                *   `BaseIntAutoGenApp`: 对应 `IntAutoGenEntity`。
+                *   `BaseLongApp`: 对应 `LongEntity`。
+                *   `BaseStringApp`: 对应 `StringEntity`。
+        4.  **代码生成**:
+            *   替换模板中的占位符，如 `{ClassName}` (实体类名), `{ModuleCode}` (模块代码), `{ModuleName}` (模块名), `{StartName}` (通常为项目主命名空间前缀如 `OpenAuth`)。
+            *   **外键处理**: 如果当前生成的是子表的App服务，会在查询列表中自动加入基于其外键 (`ForeignKey`) 的过滤条件。
+            *   **主从表逻辑**: 如果是主表且有关联子表，模板中会包含对子表操作的逻辑，并替换子表相关占位符如 `{SubClassName}`, `{SubForeignKey}`。
+        5.  **文件输出**: 生成的应用服务类写入到 `OpenAuth.App\{ModuleCode}\{ModuleCode}.cs`。
+
+    *   **B. `GenerateAppReq` (生成请求DTO)**
+        1.  **路径**: 定位 `.App` 项目路径。
+        2.  **查询请求对象 (`Query{ClassName}ListReq.cs`)**:
+            *   模板: `Template\BuildQueryReq.html`。
+            *   内容: 主要包含分页、排序、关键词查询等基础参数。如果当前表是子表，还会自动添加其外键字段作为查询参数。
+            *   文件输出: `OpenAuth.App\{ModuleCode}\Request\Query{ClassName}ListReq.cs`。
+        3.  **添加/更新请求对象 (`AddOrUpdate{ClassName}Req.cs`)**:
+            *   模板: `Template\BuildUpdateReq.html`。
+            *   内容:
+                *   包含表中所有可编辑字段对应的属性，每个属性都有XML注释。
+                *   如果当前是主表且有关联子表，会自动添加一个子表请求对象列表属性，如 `public List<AddOrUpdate{SubClassName}Req> {SubClassName}Reqs { get; set; }`，用于一次性提交主从数据。
+            *   文件输出: `OpenAuth.App\{ModuleCode}\Request\AddOrUpdate{ClassName}Req.cs`。
+
+    *   **C. `GenerateWebApi` (生成控制器)**
+        1.  **路径与检查**: 定位 `.WebApi` 项目路径，控制器名称通常为 `{ClassName}sController` (如 `StocksController`)，并检查是否已存在。
+        2.  **模板**: `Template\BuildControllerApi.html`。
+        3.  **主键类型处理**: 控制器中的 `Get(id)`、`Update(id, req)` 等接口的 `id` 参数类型，会根据实体主键的实际类型（`int`, `long`/`decimal`, `string`）进行适配。
+        4.  **代码生成**: 替换模板占位符，注入对应的App服务。
+        5.  **文件输出**: 生成的控制器写入到 `OpenAuth.WebApi\Controllers\{ClassName}sController.cs`。
+
+### 3. 生成Vue页面与API脚本
+
+点击【生成vue页面】后，系统不仅会为选中的主表创建Vue视图文件，还会为其（以及其子表，如果存在）生成前端调用API的JavaScript文件。
+
+*   **核心方法 (Vue视图)**: `BuilderTableApp.CreateVue(CreateVueReq req)`
+*   **核心方法 (Vue API脚本)**: `BuilderTableApp.CreateVueApi(CreateVueReq req)`
+
+*   **A. `CreateVue` (生成 `.vue` 文件)**:
+    1.  **路径校验**: 确保提供了Vue项目的根目录 (`req.VueProjRootPath`)。
+    2.  **子表跳过**: 如果当前选中的表是子表（即 `ParentTableId` 不为空），则不生成独立的Vue页面，因为子表通常在主表的页面中以内嵌表格形式管理。
+    3.  **模板选择**:
+        *   **主从表判断**: 区分单表和主从表。
+        *   **Vue版本与动态头部**: 根据请求中的Vue版本 (`req.Version`，如 'vue3') 和表的 `IsDynamicHeader` 配置，选择对应的模板：
+            *   Vue3单表动态头: `Template\SingleTable\BuildVue3WithDynamicHeader.html`
+            *   Vue3单表固定头: `Template\SingleTable\BuildVue3.html`
+            *   (Vue2的模板类似，如 `Template\SingleTable\BuildVue.html`)
+            *   主从表模板类似 (如 `Template\MultiTable\BuildVue3.html`)
+    4.  **表头生成 (`BuilderHeader` 辅助方法)**:
+        *   遍历表的字段配置 (`BuilderTableColumn`)。
+        *   为每个需要在列表或表单中显示的字段，生成 `new ColumnDefine(...)` 的JavaScript代码。`ColumnDefine` 对象包含了字段的驼峰命名、显示名（备注）、是否可编辑、是否在列表显示、编辑控件类型 (`EditType`)、数据源 (`DataSource`，用于下拉框等)、原始实体类型、数据库列类型等信息。
+    5.  **代码生成与占位符替换**:
+        *   **单表**: 替换 `{ClassName}` (主表类名), `{TableName}` (主表类名驼峰式), `{HeaderList}` (主表头定义)。
+        *   **主从表**: 替换 `{FirstTableName}` (主表名驼峰), `{SecondTableName}` (子表名驼峰), `{FirstHeaderList}` (主表头), `{SecondHeaderList}` (子表头), `{ParentTableId}` (子表外键驼峰式，用于关联主从数据)。
+    6.  **文件输出**: 生成的Vue文件写入到 `{Vue项目根路径}\src\views\{主表类名小写}s\index.vue`。
+
+*   **B. `CreateVueApi` (生成 `apiname.js` 文件)**:
+    1.  **适用对象**: 无论是主表还是子表，都会为其生成API脚本。
+    2.  **模板**: `Template\BuildVueApi.html`。
+    3.  **代码生成**: 主要替换 `{TableName}` 占位符为表的类名驼峰式。模板中预设了对后端标准CRUD接口的调用函数 (如 `getList`, `add`, `update`, `del` 等)。
+    4.  **文件输出**: 生成的API脚本写入到 `{Vue项目根路径}\src\api\{表类名驼峰式}s.js`。
+
+---
 
 ## 其他
 
