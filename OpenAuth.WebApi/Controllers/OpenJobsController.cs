@@ -68,7 +68,7 @@ namespace OpenAuth.WebApi.Controllers
         /// <param name="obj"></param>
         /// <returns></returns>
        [HttpPost]
-        public Response Update(AddOrUpdateOpenJobReq obj)
+        public Response Update([FromBody]AddOrUpdateOpenJobReq obj)
         {
             var result = new Response();
             try
