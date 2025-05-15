@@ -375,7 +375,6 @@ namespace OpenAuth.App.Flow
                 flowInstance.ActivityName = Nodes[rejectNode].name;
                 flowInstance.MakerList =
                     GetNodeMarkers(Nodes[rejectNode], flowInstance.CreateUserId);
-                SaveTransitionHis();
             }
 
             flowInstance.SchemeContent = JsonHelper.Instance.Serialize(ToSchemeObj());
@@ -404,8 +403,6 @@ namespace OpenAuth.App.Flow
             flowInstance.ActivityId = startNodeId;
             flowInstance.ActivityName = Nodes[startNodeId].name;
             flowInstance.MakerList = GetNodeMarkers(Nodes[startNodeId], flowInstance.CreateUserId);
-
-            SaveTransitionHis();
 
             var sugarClient = AutofacContainerModule.GetService<ISqlSugarClient>();
             sugarClient.Updateable(flowInstance).ExecuteCommand();
@@ -476,32 +473,6 @@ namespace OpenAuth.App.Flow
         {
             var user = AutofacContainerModule.GetService<IAuth>().GetCurrentUser().User;
             SaveOperationHis(user.Id, user.Name, opHis);
-        }
-
-        /// <summary>
-        /// 保存本次扭转记录
-        /// </summary>
-        /// <returns></returns>
-        public void SaveTransitionHis()
-        {
-            var user = AutofacContainerModule.GetService<IAuth>().GetCurrentUser().User;
-            var SugarClient = AutofacContainerModule.GetService<ISqlSugarClient>();
-            var transitionHistory = new FlowInstanceTransitionHistory
-            {
-                InstanceId = flowInstanceId,
-                CreateUserId = user.Id,
-                CreateUserName = user.Name,
-                FromNodeId = currentNodeId,
-                FromNodeName = currentNode.name,
-                FromNodeType = GetCurrentNodeType(),
-                ToNodeId = nextNodeId,
-                ToNodeName = nextNode?.name,
-                ToNodeType = GetNextNodeType(),
-                IsFinish = IsFinish() ? FlowInstanceStatus.Finished : FlowInstanceStatus.Running,
-                TransitionSate = 0
-            };
-
-            SugarClient.Insertable(transitionHistory).ExecuteCommand();
         }
 
         /// <summary>
@@ -580,12 +551,10 @@ namespace OpenAuth.App.Flow
             currentNode.setInfo.Description = "";
             currentNode.setInfo.TagedTime = "";
 
-            //删除当前节点的扭转记录
+            //删除当前节点的审批记录(只删除最新的一条)
             var user = AutofacContainerModule.GetService<IAuth>().GetCurrentUser().User;
             var SugarClient = AutofacContainerModule.GetService<ISqlSugarClient>();
-            SugarClient.Deleteable<FlowInstanceTransitionHistory>().Where(u => u.InstanceId == flowInstanceId && u.CreateUserId == user.Id && u.FromNodeId == currentNodeId).ExecuteCommand();
-
-            //删除当前节点的审批记录(只删除最新的一条)
+            
             var latestRecord = SugarClient.Queryable<FlowInstanceOperationHistory>()
                 .Where(u => u.InstanceId == flowInstanceId && u.CreateUserId == user.Id)
                 .OrderByDescending(u => u.CreateDate)

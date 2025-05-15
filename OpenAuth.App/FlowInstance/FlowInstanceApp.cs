@@ -219,7 +219,6 @@ namespace OpenAuth.App
 
             wfruntime.SaveOperationHis($"【创建】{user.User.Name}创建了流程实例【{addFlowInstanceReq.CustomName}】");
 
-            wfruntime.SaveTransitionHis();
             SugarClient.Ado.CommitTran();
             return flowInstance.Id;
         }
@@ -408,14 +407,11 @@ namespace OpenAuth.App
                     : FlowInstanceStatus.Running;
                 flowInstance.MakerList =
                     wfruntime.IsFinish() ? "" : wfruntime.GetNextMakers();
-
-                wfruntime.SaveTransitionHis();
             }
             else
             {
                 //网关过程中，需要更新用户
                 flowInstance.MakerList = wfruntime.GetForkNodeMakers(wfruntime.currentNodeId);
-                wfruntime.SaveTransitionHis();
             }
 
             flowInstance.SchemeContent = JsonHelper.Instance.Serialize(wfruntime.ToSchemeObj());
@@ -898,7 +894,6 @@ namespace OpenAuth.App
             #endregion 根据运行实例改变当前节点状态
 
             wfruntime.SaveOperationHis($"【启动】由用户{user.User.Name}启动");
-            wfruntime.SaveTransitionHis();
             SugarClient.Ado.CommitTran();
         }
 

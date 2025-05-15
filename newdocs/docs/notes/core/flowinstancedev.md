@@ -183,10 +183,7 @@ stop
 
 ### ActivityId: 当前活动节点，即待审批的节点
 
-与流程实例密切相关的还有两个表：流程实例的操作记录FlowInstanceOperationHistory及流转记录FlowInstanceTransitionHistory。它们有不同的作用：
+与流程实例密切相关的还有：流程实例的操作记录FlowInstanceOperationHistory。
 
 ## 操作记录FlowInstanceOperationHistory
 该表记录了流程实例的所有操作记录，包括流程的创建、撤回、驳回、同意、不同意等操作。
-
-## 流转记录FlowInstanceTransitionHistory
-记录某个流程实例所有已审批的从一个活动节点到下一个活动节点的操作人、操作时间。

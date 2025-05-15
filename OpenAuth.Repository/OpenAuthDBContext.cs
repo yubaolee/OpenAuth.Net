@@ -143,7 +143,6 @@ namespace OpenAuth.Repository
         public virtual DbSet<CategoryType> CategoryTypes { get; set; }
         public virtual DbSet<FlowInstance> FlowInstances { get; set; }
         public virtual DbSet<FlowInstanceOperationHistory> FlowInstanceOperationHistorys { get; set; }
-        public virtual DbSet<FlowInstanceTransitionHistory> FlowInstanceTransitionHistorys { get; set; }
         public virtual DbSet<FlowScheme> FlowSchemes { get; set; }
         public virtual DbSet<Form> Forms { get; set; }
         public virtual DbSet<Module> Modules { get; set; }
