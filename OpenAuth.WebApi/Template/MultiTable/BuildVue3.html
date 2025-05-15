@@ -345,12 +345,12 @@ const createData = () => {
     {FirstTableName}s.add(tempData).then(resp => {
       if (resp.result != undefined) {
         //如果服务器返回生成的ID
-        tempData.id = resp.result
+        firstTemp.id = resp.result
       }
-      mainList.value.unshift(tempData)
+      mainList.value.unshift(firstTemp)
       editModel.value = false
       showDetailInTable.value = false // 保存后返回列表视图
-      rowClickFirstTable(tempData)
+      rowClickFirstTable(firstTemp)
       ElNotification.success('创建成功')
     })
   })
