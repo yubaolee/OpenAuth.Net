@@ -34,27 +34,102 @@ namespace OpenAuth.App.Flow
             bool result = true;
             foreach (var compare in Compares)
             {
-
-                bool isDecimal = decimal.TryParse(compare.Value, out decimal value);
-                var fieldVal = frmDataJson.GetValue(compare.FieldName.ToLower()).ToString();
-
-                if (isDecimal)  //如果是数字或小数
+                // 判断是否为空值操作符
+                if (compare.Operation == DataCompare.IsNull || compare.Operation == DataCompare.IsNotNull)
                 {
-                    decimal frmvalue = 0;
-                    if (fieldVal.Contains("["))//表单中的数据包含[]，为数组,一般是checkbox的值
+                    var fieldExists = frmDataJson.GetValue(compare.FieldName.ToLower()) != null;
+                    var fieldEmpty = !fieldExists || string.IsNullOrWhiteSpace(frmDataJson.GetValue(compare.FieldName.ToLower())?.ToString());
+
+                    if (compare.Operation == DataCompare.IsNull)
                     {
-                        var tempvals = JsonHelper.Instance.Deserialize<List<decimal>>(fieldVal);
-                        frmvalue = tempvals.Max();
+                        result &= fieldEmpty;
                     }
                     else
                     {
-                        frmvalue = decimal.Parse(fieldVal); //表单中填写的值
+                        result &= !fieldEmpty;
+                    }
+                    continue;
+                }
+
+                // 确保字段存在且不为空
+                if (frmDataJson.GetValue(compare.FieldName.ToLower()) == null)
+                {
+                    result = false;
+                    continue;
+                }
+
+                var fieldVal = frmDataJson.GetValue(compare.FieldName.ToLower()).ToString();
+
+                // 范围操作符处理
+                if (compare.Operation == DataCompare.In || compare.Operation == DataCompare.NotIn)
+                {
+                    if (compare.ValueList == null || compare.ValueList.Length == 0)
+                    {
+                        result = false;
+                        continue;
                     }
 
+                    bool inList = compare.ValueList.Contains(fieldVal);
+                    result &= compare.Operation == DataCompare.In ? inList : !inList;
+                    continue;
+                }
+
+                // Between操作符处理
+                if (compare.Operation == DataCompare.Between)
+                {
+                    if (compare.ValueRange == null || compare.ValueRange.Length != 2)
+                    {
+                        result = false;
+                        continue;
+                    }
+
+                    bool isDecimal = decimal.TryParse(fieldVal, out decimal fieldDecimal);
+                    if (isDecimal)
+                    {
+                        decimal min = decimal.Parse(compare.ValueRange[0]);
+                        decimal max = decimal.Parse(compare.ValueRange[1]);
+                        result &= fieldDecimal >= min && fieldDecimal <= max;
+                    }
+                    else
+                    {
+                        string min = compare.ValueRange[0];
+                        string max = compare.ValueRange[1];
+                        result &= string.Compare(fieldVal, min, false) >= 0 && string.Compare(fieldVal, max, false) <= 0;
+                    }
+                    continue;
+                }
+
+                // 文本特殊操作符处理
+                if (compare.Operation == DataCompare.Like || compare.Operation == DataCompare.NotLike ||
+                    compare.Operation == DataCompare.StartWith || compare.Operation == DataCompare.EndWith)
+                {
+                    switch (compare.Operation)
+                    {
+                        case DataCompare.Like:
+                            result &= fieldVal.Contains(compare.Value);
+                            break;
+                        case DataCompare.NotLike:
+                            result &= !fieldVal.Contains(compare.Value);
+                            break;
+                        case DataCompare.StartWith:
+                            result &= fieldVal.StartsWith(compare.Value);
+                            break;
+                        case DataCompare.EndWith:
+                            result &= fieldVal.EndsWith(compare.Value);
+                            break;
+                    }
+                    continue;
+                }
+
+                bool isDecimalValue = decimal.TryParse(compare.Value, out decimal value);
+
+                if (isDecimalValue)  //如果是数字或小数
+                {
+                    decimal frmvalue = decimal.Parse(fieldVal);
                     switch (compare.Operation)
                     {
                         case DataCompare.Equal:
-                            result &= compare.Value == fieldVal;
+                            result &= frmvalue == value;
                             break;
                         case DataCompare.Larger:
                             result &= frmvalue > value;
@@ -68,47 +143,35 @@ namespace OpenAuth.App.Flow
                         case DataCompare.LessEqual:
                             result &= frmvalue <= value;
                             break;
-                        case  DataCompare.NotEqual:
+                        case DataCompare.NotEqual:
                             result &= frmvalue != value;
                             break;
                     }
                 }
-                else //如果只是字符串，只判断相等
+                else //如果只是字符串
                 {
-                    if (fieldVal.Contains("["))//表单中的数据包含[]，为数组,一般是checkbox的值
+                    switch (compare.Operation)
                     {
-                        var tempvals = JsonHelper.Instance.Deserialize<List<string>>(fieldVal);
-                        result &= tempvals.Contains(compare.Value);
+                        case DataCompare.Equal:
+                            result &= compare.Value == fieldVal;
+                            break;
+                        case DataCompare.Larger:
+                            result &= string.Compare(fieldVal, compare.Value, false) > 0;
+                            break;
+                        case DataCompare.Less:
+                            result &= string.Compare(fieldVal, compare.Value, false) < 0;
+                            break;
+                        case DataCompare.LargerEqual:
+                            result &= string.Compare(fieldVal, compare.Value, false) >= 0;
+                            break;
+                        case DataCompare.LessEqual:
+                            result &= string.Compare(fieldVal, compare.Value, false) <= 0;
+                            break;
+                        case DataCompare.NotEqual:
+                            result &= compare.Value != fieldVal;
+                            break;
                     }
-                    else
-                    {
-                        switch (compare.Operation)
-                        {
-                            case DataCompare.Equal:
-                                result &= compare.Value == fieldVal;
-                                break;
-                            case DataCompare.Larger:
-                                result &= string.Compare(compare.Value, fieldVal, false) > 0;
-                                break;
-                            case DataCompare.Less:
-                                result &= string.Compare(compare.Value, fieldVal, false) < 0;
-                                break;
-                            case DataCompare.LargerEqual:
-                                result &= string.Compare(compare.Value, fieldVal, false) >= 0;
-                                break;
-                            case DataCompare.LessEqual:
-                                result &= string.Compare(compare.Value, fieldVal, false) <= 0;
-                                break;
-                            case  DataCompare.NotEqual:
-                                result &= compare.Value != fieldVal;
-                                break;
-                        }
-                        
-                    }
-                    
                 }
-
-                
             }
 
             return result;
@@ -120,12 +183,28 @@ namespace OpenAuth.App.Flow
     /// </summary>
     public class DataCompare
     {
+        // 基本比较操作符
         public const string Larger = ">";
         public const string Less = "<";
         public const string LargerEqual = ">=";
         public const string LessEqual = "<=";
         public const string NotEqual = "!=";
         public const string Equal = "=";
+
+        // 文本操作符
+        public const string Like = "LIKE";
+        public const string NotLike = "NOT LIKE";
+        public const string StartWith = "START_WITH";
+        public const string EndWith = "END_WITH";
+
+        // 范围操作符
+        public const string In = "IN";
+        public const string NotIn = "NOT IN";
+        public const string Between = "BETWEEN";
+
+        // 空值操作符
+        public const string IsNull = "IS NULL";
+        public const string IsNotNull = "IS NOT NULL";
 
         /// <summary>操作类型比如大于/等于/小于</summary>
         public string Operation { get; set; }
@@ -138,5 +217,11 @@ namespace OpenAuth.App.Flow
 
         /// <summary>比较的值</summary>
         public string Value { get; set; }
+
+        /// <summary> 值范围BETWEEN </summary>
+        public string[] ValueRange { get; set; }
+
+        /// <summary>  IN 和 NOT IN 操作符 </summary>
+        public string[] ValueList { get; set; }
     }
 }
