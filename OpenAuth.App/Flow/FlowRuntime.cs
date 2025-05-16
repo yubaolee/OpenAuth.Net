@@ -124,8 +124,14 @@ namespace OpenAuth.App.Flow
 
             if (FrmData == "" || FrmData == "{}") return lines[0].to;
 
-            FrmData = FrmData.ToLower(); //统一转小写
             var frmDataJson = FrmData.ToJObject(); //获取数据内容
+            // 将frmDataJson中的所有key转小写
+            var properties = frmDataJson.Properties().ToList();
+            foreach (var property in properties)
+            {
+                frmDataJson[property.Name.ToLower()] = property.Value;
+                frmDataJson.Remove(property.Name);
+            }
 
             foreach (var l in lines)
             {

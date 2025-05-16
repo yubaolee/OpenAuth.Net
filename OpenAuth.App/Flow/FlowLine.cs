@@ -34,11 +34,31 @@ namespace OpenAuth.App.Flow
             bool result = true;
             foreach (var compare in Compares)
             {
+                object objVal = frmDataJson.GetValue(compare.FieldName.ToLower());
+                string fieldVal = null;
+                List<string> fieldVals = new List<string>();
+                if(compare.FieldType == "checkbox")
+                {
+                    if (objVal is JArray jArray)
+                    {
+                        var tempvals = jArray.ToObject<List<string>>();
+                        if (tempvals != null && tempvals.Any())
+                        {
+                            fieldVals.AddRange(tempvals);
+                        }
+                    }
+                }
+                else
+                {
+                    fieldVal = objVal?.ToString();
+                }
+
+                
                 // 判断是否为空值操作符
                 if (compare.Operation == DataCompare.IsNull || compare.Operation == DataCompare.IsNotNull)
                 {
-                    var fieldExists = frmDataJson.GetValue(compare.FieldName.ToLower()) != null;
-                    var fieldEmpty = !fieldExists || string.IsNullOrWhiteSpace(frmDataJson.GetValue(compare.FieldName.ToLower())?.ToString());
+                    var fieldExists = objVal != null;
+                    var fieldEmpty = !fieldExists || string.IsNullOrWhiteSpace(objVal.ToString());
 
                     if (compare.Operation == DataCompare.IsNull)
                     {
@@ -52,14 +72,48 @@ namespace OpenAuth.App.Flow
                 }
 
                 // 确保字段存在且不为空
-                if (frmDataJson.GetValue(compare.FieldName.ToLower()) == null)
+                if (objVal == null)
                 {
                     result = false;
                     continue;
                 }
 
-                var fieldVal = frmDataJson.GetValue(compare.FieldName.ToLower()).ToString();
+                // checkbox类型特殊处理
+                if (compare.FieldType == "checkbox")
+                {
+                    // 针对checkbox的IN和NOT IN操作
+                    if (compare.Operation == DataCompare.In || compare.Operation == DataCompare.NotIn)
+                    {
+                        if (compare.ValueList == null || compare.ValueList.Length == 0)
+                        {
+                            result = false;
+                            continue;
+                        }
 
+                        // 检查是否有交集
+                        bool hasIntersection = fieldVals.Any(v => compare.ValueList.Contains(v));
+                        result &= compare.Operation == DataCompare.In ? hasIntersection : !hasIntersection;
+                        continue;
+                    }
+                    
+                    // 针对checkbox的相等和不等操作
+                    if (compare.Operation == DataCompare.Equal)
+                    {
+                        result &= fieldVals.Contains(compare.Value);
+                        continue;
+                    }
+                    else if (compare.Operation == DataCompare.NotEqual)
+                    {
+                        result &= !fieldVals.Contains(compare.Value);
+                        continue;
+                    }
+                    
+                    // 其他操作不适用于checkbox，默认为false
+                    result = false;
+                    continue;
+                }
+
+                // 以下是非checkbox类型的处理逻辑
                 // 范围操作符处理
                 if (compare.Operation == DataCompare.In || compare.Operation == DataCompare.NotIn)
                 {
