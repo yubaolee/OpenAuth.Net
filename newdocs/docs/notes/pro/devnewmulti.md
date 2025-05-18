@@ -4,7 +4,7 @@ createTime: 2025/04/23 23:43:26
 permalink: /pro/devnewmulti/
 ---
 
-本章节视频讲解请参考：[OpenAuth.Net视频合集--使用企业版代码生成器](https://www.bilibili.com/video/BV1JCuyeaEFp/)
+本章节视频讲解请参考：[OpenAuth.Net视频合集--多表代码生成](https://www.bilibili.com/video/BV1r4J3zAEsx/)
 
 上节介绍了[单表代码生成](/pro/devnew/)，本节介绍多表代码生成。
 
