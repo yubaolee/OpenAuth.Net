@@ -280,6 +280,43 @@ namespace OpenAuth.App
 
             CheckExistsModule(sysTableInfo.ModuleCode);
 
+            string updateColumns = string.Empty;
+            string insertColumns = string.Empty;
+            foreach (var column in sysColumns)
+            {
+                if(column.ColumnName.ToLower() == "id")
+                {
+                    continue;
+                }
+                if(column.ColumnName.ToLower() == "createtime" || column.ColumnName.ToLower() == "updatetime")
+                {
+                    updateColumns += $"                {column.ColumnName} = DateTime.Now,";
+                    insertColumns += $"                obj.{column.ColumnName} = DateTime.Now;";
+                    updateColumns += "\r\n";
+                    insertColumns += "\r\n";
+                    continue;
+                }
+                if(column.ColumnName.ToLower() == "createuserid" || column.ColumnName.ToLower() == "updateuserid")
+                {
+                    updateColumns += $"                {column.ColumnName} = user.Id,";
+                    insertColumns += $"                obj.{column.ColumnName} = user.Id;";
+                    updateColumns += "\r\n";
+                    insertColumns += "\r\n";
+                    continue;
+                }
+                if(column.ColumnName.ToLower() == "createusername" || column.ColumnName.ToLower() == "updateusername")
+                {
+                    updateColumns += $"                {column.ColumnName} = user.Name,";
+                    insertColumns += $"                obj.{column.ColumnName} = user.Name;";
+                    updateColumns += "\r\n";
+                    insertColumns += "\r\n";
+                    continue;
+                }
+                //insert有map函数，所以不需要处理，只处理update即可
+                updateColumns += $"                {column.ColumnName} = request.{column.ColumnName},";
+                updateColumns += "\r\n";
+            }
+
             string domainContent = string.Empty;
             //查找是否存在子表的情况
             var subTable = Repository.FirstOrDefault(u => u.ParentTableId == sysTableInfo.Id);
@@ -300,6 +337,8 @@ namespace OpenAuth.App
                 .Replace("{ModuleCode}", sysTableInfo.ModuleCode)
                 .Replace("{ModuleName}", sysTableInfo.ModuleName)
                 .Replace("{ClassName}", sysTableInfo.ClassName)
+                .Replace("{UpdateColumns}", updateColumns)
+                .Replace("{InsertColumns}", insertColumns)
                 .Replace("{StartName}", StratName);
                 
                 //如果有外键（是一个子表）
@@ -334,6 +373,8 @@ namespace OpenAuth.App
                 .Replace("{SubForeignKey}", subTable.ForeignKey)
                 .Replace("{SubClassName}", subTable.ClassName)
                 .Replace("{SubModuleCode}", subTable.ModuleCode)
+                .Replace("{UpdateColumns}", updateColumns)
+                .Replace("{InsertColumns}", insertColumns)
                 .Replace("{StartName}", StratName);
 
             }

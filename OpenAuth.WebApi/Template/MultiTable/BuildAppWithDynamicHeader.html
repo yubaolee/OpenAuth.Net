@@ -48,11 +48,9 @@ namespace OpenAuth.App
         public void Add(AddOrUpdate{ClassName}Req request)
         {
             var obj = request.MapTo<{ClassName}>();
-            //todo:补充或调整自己需要的字段
-            obj.CreateTime = DateTime.Now;
             var user = _auth.GetCurrentUser().User;
-            obj.CreateUserId = user.Id;
-            obj.CreateUserName = user.Name;
+            //todo:补充或调整自己需要的字段
+{InsertColumns}
             if(obj.KeyIsNull())  //如果主键为空，则生成默认值
             {
                 obj.GenerateDefaultKeyVal();
@@ -97,9 +95,7 @@ namespace OpenAuth.App
             }
             Repository.Update(u => new {ClassName}
             {
-                UpdateTime = DateTime.Now,
-                UpdateUserId = user.Id,
-                UpdateUserName = user.Name
+{UpdateColumns}
                 //todo:补充或调整自己需要的字段
             }, u => u.Id == request.Id);
             SugarClient.Ado.CommitTran();

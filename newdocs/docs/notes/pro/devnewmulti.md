@@ -10,7 +10,8 @@ permalink: /pro/devnewmulti/
 
 ## 准备工作
 
-* 数据库OpenAuthPro中添加父表ParentTable,子表ChildTable，本文以该数据表为例。参考表结构如下：
+本文以mysql数据库为例，在openauthpro数据库中添加父表parenttable、子表childtable,参考表结构如下：
+
 ```SQL
 CREATE TABLE `parenttable`  (
   `id` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '父表ID',
@@ -18,12 +19,12 @@ CREATE TABLE `parenttable`  (
   `status` int(11) NOT NULL COMMENT '状态',
   `name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '名称',
 
-  `CreateTime` datetime NOT NULL COMMENT '创建时间',
-  `CreateUserId` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '创建人ID',
-  `CreateUserName` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '创建人',
-  `UpdateTime` datetime NULL DEFAULT NULL COMMENT '最后更新时间',
-  `UpdateUserId` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '最后更新人ID',
-  `UpdateUserName` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '最后更新人',
+  `createtime` datetime NOT NULL COMMENT '创建时间',
+  `createuserid` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '创建人ID',
+  `createusername` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '创建人',
+  `updatetime` datetime NULL DEFAULT NULL COMMENT '最后更新时间',
+  `updateuserid` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '最后更新人ID',
+  `updateusername` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '最后更新人',
   `orgid` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '所属部门',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '父表' ROW_FORMAT = DYNAMIC;
@@ -41,13 +42,13 @@ CREATE TABLE `childtable`  (
   `proddate` varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '生产日期',
   `expiredate` varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '失效日期',
 
-  `CreateTime` datetime NOT NULL COMMENT '创建时间',
-  `CreateUserId` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '创建人ID',
-  `CreateUserName` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '创建人',
-  `UpdateTime` datetime NULL DEFAULT NULL COMMENT '最后更新时间',
-  `UpdateUserId` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '最后更新人ID',
-  `UpdateUserName` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '最后更新人',
-  PRIMARY KEY (`id`, `parentid`) USING BTREE
+  `createtime` datetime NOT NULL COMMENT '创建时间',
+  `createuserid` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '创建人ID',
+  `createusername` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '创建人',
+  `updatetime` datetime NULL DEFAULT NULL COMMENT '最后更新时间',
+  `updateuserid` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '最后更新人ID',
+  `updateusername` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '最后更新人',
+  PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '子表' ROW_FORMAT = DYNAMIC;
 ```
 

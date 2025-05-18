@@ -46,31 +46,26 @@ namespace OpenAuth.App
             return result;
         }
 
-        public void Add(AddOrUpdate{ClassName}Req req)
+        public void Add(AddOrUpdate{ClassName}Req request)
         {
-            var obj = req.MapTo<{ClassName}>();
+            var obj = request.MapTo<{ClassName}>();
+            var user = _auth.GetCurrentUser().User;
+            //todo:补充或调整自己需要的字段
+{InsertColumns}
             if(obj.KeyIsNull())  //如果主键为空，则生成默认值
             {
                 obj.GenerateDefaultKeyVal();
             }
-            //todo: 根据业务需要调整字段
-            obj.Createtime = DateTime.Now;
-            var user = _auth.GetCurrentUser().User;
-            obj.Createuserid = user.Id;
-            obj.Createusername = user.Name;
             Repository.Insert(obj);
         }
 
-        public void Update(AddOrUpdate{ClassName}Req obj)
+        public void Update(AddOrUpdate{ClassName}Req request)
         {
             var user = _auth.GetCurrentUser().User;
             Repository.Update(u => new {ClassName}
             {
-                //todo: 根据业务需要调整字段
-                Updatetime = DateTime.Now,
-                Updateuserid = user.Id,
-                Updateusername = user.Name
-            },u => u.Id == obj.Id);
+{UpdateColumns}
+            },u => u.Id == request.Id);
 
         }
 
