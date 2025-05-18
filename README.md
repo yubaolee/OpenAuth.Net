@@ -54,6 +54,8 @@
 
 [OpenAuth.Net视频合集--表单设计](https://www.bilibili.com/video/BV1dagEeFEVA/)
 
+[OpenAuth.Net视频合集--多表代码生成](https://www.bilibili.com/video/BV1r4J3zAEsx/)
+
 
 ## 📸效果预览
 #### 后端启动效果
