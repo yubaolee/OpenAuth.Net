@@ -1,5 +1,5 @@
 ---
-title: vue3代码生成器
+title: 单表代码生成
 createTime: 2025/04/23 23:43:26
 permalink: /pro/devnew/
 ---
@@ -49,7 +49,7 @@ getList() {
 
 #### 固定头部
 
-如果不是上面的情况，则生成的前端列为固定的头部。如下：
+代码生成的时候，按配置生成前端表头，一旦生成完毕，后台就无法通过授权等方式来控制显示的文字等。如下：
 
 ```html
 
@@ -67,6 +67,8 @@ initCfg() {
       ]
 
 ```
+
+只能通过修改前端代码或使用[列设置](/pro/columnsetting/)组件来修改。
 
 ## 准备工作
 
@@ -110,26 +112,9 @@ create table stock
 
 这时，编辑字段具体的属性。如是否【可显示】【可编辑】等。
 
-
-## 子表添加
-
-::: warning 注意
-如果只生成单表结构，可以跳过本节
-:::
-
-如果需要添加主/从（父/子）结构，需要先添加子表信息。代码生成界面，点击`添加`按钮，输入想添加的模块信息。
-
-![20211208001551](http://img.openauth.net.cn/20211208001551.png)
-
-::: warning 注意
-子表的`动态头部`属性务必与父表保持一致，否则会造成生成的代码不能正常运行
-:::
-
 ## 生成模块
 
 选中刚刚添加的`Stock`表，依次点击【生成实体】【生成业务代码】【生成vue页面】;
-
-如果存在子表，也进行相同的操作。即选中刚刚添加的`StockDetail`表，依次点击【生成实体】【生成业务代码】【生成vue页面】，子表虽然不需要生成vue页面，但需要生成前端js api;
 
 成功后生成的后端.Net代码位置如下：
 
@@ -153,9 +138,23 @@ src\api\stocks.js
 src\views\stocks\index.vue
 
 ::: warning 注意
-完成以上步骤后，请重启OpenAuth.WebApi，用来重新加载刚刚生成的后台代码
+1. 完成以上步骤后，请重启OpenAuth.WebApi，用来重新加载刚刚生成的后台代码
 
-子表不需要添加模块
+2. 代码生成器生成的应用层XxxxApp.cs里面的编辑功能，只修改部分属性，且按帕斯卡命名。需要根据业务需要调整要编辑的字段。如：
+```csharp
+ public void Update(AddOrUpdateChildtableReq obj)
+    {
+        var user = _auth.GetCurrentUser().User;
+        Repository.Update(u => new Childtable
+        {
+            //todo: 根据业务需要调整字段
+            Updatetime = DateTime.Now,
+            Updateuserid = user.Id,
+            Updateusername = user.Name
+        },u => u.Id == obj.Id);
+
+    }
+```
 :::
 
 ## 配置模块地址
@@ -167,6 +166,8 @@ src\views\stocks\index.vue
 这样就可以访问刚刚新加的仓储管理功能，到此就完成了添加一个新模块功能：
 
 ![20211208011431](http://img.openauth.net.cn/20211208011431.png)
+
+尝试增加一条记录，看看模块是否能正常运行。
 
 ## 代码生成功能字段详解
 
@@ -192,6 +193,12 @@ src\views\stocks\index.vue
 
 
 ## 生成逻辑详解
+
+::: warning 注意
+如果不想了解我们代码生成器生成代码的逻辑，可以跳过以下内容。
+:::
+
+如果你觉得框架自带的代码生成器没达到你想要的效果，可以自行修改。以下是代码生成器逻辑概述：
 
 当您在代码生成界面选中一个或多个表，并依次点击【生成实体】、【生成业务代码】、【生成vue页面】（及Vue API）时，系统会执行一系列后端操作来创建所需的代码文件。以下是这些操作的详细解析：
 
