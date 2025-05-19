@@ -3,7 +3,9 @@ title: 框架简介
 createTime: 2025/04/20 21:49:49
 permalink: /core/
 ---
-![LOGO](/logocore.png "1.png")
+<div style="text-align: center;">
+  <img src="/logocore.png" alt="1.png" style="width: 300px; height: auto; display: inline-block;" />
+</div>
 
 OpenAuth.Net是基于最新版.Net的开源权限工作流快速开发框架。源于Martin Fowler企业级应用开发思想及最新技术组合（SqlSugar、EF、Quartz、AutoFac、WebAPI、Swagger、Mock、NUnit、Vue2/3、Element-ui/plus、IdentityServer等）。核心模块包括：角色授权、代码生成、API鉴权、智能打印、表单设计、工作流、定时任务等。
 

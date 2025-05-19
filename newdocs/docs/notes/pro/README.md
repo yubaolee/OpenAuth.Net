@@ -27,6 +27,8 @@ vue3版源代码获取方式：[http://old.openauth.net.cn/question/detail.html?
 
 [OpenAuth.Net视频合集--表单设计](https://www.bilibili.com/video/BV1dagEeFEVA/)
 
+[OpenAuth.Net视频合集--多表代码生成](https://www.bilibili.com/video/BV1r4J3zAEsx/)
+
 
 
 
