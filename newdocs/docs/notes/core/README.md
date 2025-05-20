@@ -32,15 +32,15 @@ gitee上面两个版本。其中：
 
 * 超强的自定义权限控制功能，请参考：[通用权限设计与实现](https://www.cnblogs.com/yubaolee/p/DataPrivilege.html)
 
-* 完整API鉴权，可以控制角色可访问的API资源，及模块功能字段可见及是否返回，请参考：[按角色授权API资源](http://doc.openauth.net.cn/core/apiauth.html#%E6%8C%89%E8%A7%92%E8%89%B2%E6%8E%88%E6%9D%83api%E8%B5%84%E6%BA%90) 及 [字段权限](http://doc.openauth.net.cn/core/datapropertyrule)
+* 完整API鉴权，可以控制角色可访问的API资源，及模块功能字段可见及是否返回，请参考：[按角色授权API资源](http://doc.openauth.net.cn/core/apiauth.html#%E6%8C%89%E8%A7%92%E8%89%B2%E6%8E%88%E6%9D%83api%E8%B5%84%E6%BA%90) 及 [字段权限](/core/datapropertyrule/)
 
-* 可拖拽的表单设计。详情：[可拖拽表单](http://doc.openauth.net.cn/pro/dragform)
+* 可拖拽的表单设计。详情：[可拖拽表单](/pro/dragform/)
 
-* 可视化流程设计。[可视化流程设计](http://doc.openauth.net.cn/pro/startflow)  
+* 可视化流程设计。[可视化流程设计](/pro/startflow/)  
   
-* 全网最好用的打印解决方案。详情:[智能打印](http://doc.openauth.net.cn/pro/printerplan)
+* 全网最好用的打印解决方案。详情:[智能打印](/pro/printerplan/)
 
-* 基于Quartz.Net的定时任务控制,可随时启/停，可视化配置Cron表达式功能，请参考：[定时任务](http://doc.openauth.net.cn/core/job)
+* 基于Quartz.Net的定时任务控制,可随时启/停，可视化配置Cron表达式功能，请参考：[定时任务](/core/job/)
 
 * 基于CodeSmith的代码生成功能，可快速生成带有头/明细结构的页面
 
@@ -50,7 +50,7 @@ gitee上面两个版本。其中：
 
 * 支持多租户
 
-* 支持搭建自己的IdentityServer服务器，实现基于OAuth2的登录体系，请参考：[登录认证及OAuth集成](http://doc.openauth.net.cn/core/identity)
+* 支持搭建自己的IdentityServer服务器，实现基于OAuth2的登录体系，请参考：[登录认证及OAuth集成](/core/identity/)
 
 * 建立三方对接规范，已有系统可以无缝对接流程引擎
 
