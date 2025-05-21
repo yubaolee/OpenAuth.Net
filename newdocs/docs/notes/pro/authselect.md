@@ -65,6 +65,7 @@ permalink: /pro/authselect/
 | 事件名称 | 说明 | 回调参数 |
 | --- | --- | --- |
 | change | 选中值发生变化时触发 | 选中项的值 |
+| changeLabel | 选中值发生变化时触发 | 选中项的标签 |
 | update:value | 更新v-model值 | 选中项的值 |
 
 ## 示例
