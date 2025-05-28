@@ -1,7 +1,7 @@
 /*
  * @Author: yubaolee <yubaolee@163.com> | ahfu~ <954478625@qq.com>
  * @Date: 2025-04-23 20:26:48
- * @LastEditTime: 2025-05-24 11:39:48
+ * @LastEditTime: 2025-05-29 00:21:10
  * @Description: 笔记配置
  * Copyright (c) 2025 by yubaolee | ahfu~ , All Rights Reserved.  
  */
@@ -113,8 +113,23 @@ const vue2Note = defineNoteConfig({
   ]
 })
 
+// 移动UniApp版本
+const mobileNote = defineNoteConfig({
+  dir: 'mobile',
+  link: '/mobile',
+  sidebar: [
+    '',
+    {
+      text: '基础开发',
+      collapsed: false,
+      items: ['start', 'structure']
+    }
+  ]
+})
+
+
 export const notes = defineNotesConfig({
   dir: 'notes',
   link: '/',
-  notes: [coreNote, proNote, vue2Note],
+  notes: [coreNote, proNote, vue2Note, mobileNote],
 })
