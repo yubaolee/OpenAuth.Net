@@ -9,11 +9,11 @@ permalink: /core/dynamicapi/
 ## 数据库操作
 在开发过程中，对于有些简单表的处理，如果每次都编写对应的增删改查，会增加工作量，且代码臃肿。这时我们可以使用动态API来处理。只需要前端按规范调用即可，后端无需做任何工作。OpenAuth.Net的动态API支持以下功能：
 
-- 新增记录 `/api/dynamicapi/add`
-- 修改记录 `/api/dynamicapi/update`
-- 删除记录 `/api/dynamicapi/delete`
-- 查询单条 `/api/dynamicapi/get`
-- 查询列表 `/api/dynamicapi/getlist`
+- 新增记录 `/api/dynamic/add`
+- 修改记录 `/api/dynamic/update`
+- 删除记录 `/api/dynamic/delete`
+- 查询单条 `/api/dynamic/get`
+- 查询列表 `/api/dynamic/getlist`
 
 具体的参数可以查询对应的接口文档。我们以一个简单的表`noentity`为例，来说明如何使用动态API。
 ```sql
@@ -28,7 +28,7 @@ CREATE TABLE `noentity` (
 
 #### 新增记录
 
-前端请求方式为`POST`，请求地址为`/api/dynamicapi/add`，请求参数为：
+前端请求方式为`POST`，请求地址为`/api/dynamic/add`，请求参数为：
 
 ```json
 {
@@ -39,7 +39,7 @@ CREATE TABLE `noentity` (
 
 #### 修改记录
 
-前端请求方式为`POST`，请求地址为`/api/dynamicapi/update`，请求参数为：
+前端请求方式为`POST`，请求地址为`/api/dynamic/update`，请求参数为：
 
 ```json
 {
@@ -51,7 +51,7 @@ CREATE TABLE `noentity` (
 
 #### 删除记录
 
-前端请求方式为`POST`，请求地址为`/api/dynamicapi/delete`，请求参数为：
+前端请求方式为`POST`，请求地址为`/api/dynamic/delete`，请求参数为：
 
 ```json
 {
@@ -62,7 +62,7 @@ CREATE TABLE `noentity` (
 
 #### 查询单条记录
 
-前端请求方式为`POST`，请求地址为`/api/dynamicapi/get`，请求参数为：
+前端请求方式为`POST`，请求地址为`/api/dynamic/get`，请求参数为：
 
 ```json
 {
@@ -73,7 +73,7 @@ CREATE TABLE `noentity` (
 
 #### 查询列表
 
-前端请求方式为`POST`，请求地址为`/api/dynamicapi/getlist`，请求参数为：
+前端请求方式为`POST`，请求地址为`/api/dynamic/getlist`，请求参数为：
 
 ```json 
 {

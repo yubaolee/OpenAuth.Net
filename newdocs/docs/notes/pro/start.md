@@ -7,7 +7,7 @@ permalink: /pro/start/
 #### NodeJs
 前端环境为NodeJs，下载地址：[http://nodejs.cn/download/current/](http://nodejs.cn/download/current/)
 #### visual studio code
-下载最新版的vs code，或Cursor、Windsurf、Trae等工具用来作为OpenAuth.Pro Vue3版的开发工具。
+下载最新版的vs code，或Cursor、Windsurf、Trae等工具用来作为OpenAuth.Net Vue3版的开发工具。
 ## 源码下载
 根据授权文件的下载指示，下载Vue3源码。注意：一定要使用下图中的数据库脚本：
 ![2025-04-08-20-53-49](http://img.openauth.net.cn/2025-04-08-20-53-49.png)

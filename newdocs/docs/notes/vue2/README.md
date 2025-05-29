@@ -4,10 +4,10 @@ createTime: 2025/04/23 23:43:26
 permalink: /vue2/
 ---
 ::: warning 注意
-如果你使用的是vue3版本，请参考：[OpenAuth.Pro Vue3版本](/pro/)
+如果你使用的是vue3版本，请参考：[OpenAuth.Net Vue3版本](/pro/)
 :::
 
-OpenAuth.Pro Vue2版本基于vue2 + element-ui。它使用开源版OpenAuth.Net的API接口（即：OpenAuth.WebApi）提供数据服务。二者的关系如下：
+OpenAuth.Net Vue2版本基于vue2 + element-ui。它使用开源版OpenAuth.Net的API接口（即：OpenAuth.WebApi）提供数据服务。二者的关系如下：
 
 ![系统架构](http://img.openauth.net.cn/系统架构.png)
 
@@ -38,7 +38,7 @@ vue2版源代码获取方式：[http://old.openauth.net.cn/question/detail.html?
 
 #### visual studio code
 
-下载最新版的vs code，或Cursor、Windsurf、Trae等工具用来作为OpenAuth.Pro Vue2版的开发工具。
+下载最新版的vs code，或Cursor、Windsurf、Trae等工具用来作为OpenAuth.Net Vue2版的开发工具。
 
 
 ## 创建数据库

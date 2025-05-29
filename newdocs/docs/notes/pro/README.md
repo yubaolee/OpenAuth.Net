@@ -4,10 +4,10 @@ createTime: 2025/04/23 23:43:26
 permalink: /pro/
 ---
 ::: warning 注意
-如果你使用的是vue2版本，请参考：[OpenAuth.Pro Vue2版本](/vue2/)
+如果你使用的是vue2版本，请参考：[OpenAuth.Net Vue2版本](/vue2/)
 :::
 
-OpenAuth.Pro Vue3版本基于vue3 + element-plus。它使用开源版OpenAuth.Net的API接口（即：OpenAuth.WebApi）提供数据服务。二者的关系如下：
+OpenAuth.Net Vue3版本基于vue3 + element-plus。它使用开源版OpenAuth.Net的API接口（即：OpenAuth.WebApi）提供数据服务。二者的关系如下：
 
 ![系统架构](http://img.openauth.net.cn/系统架构.png)
 
