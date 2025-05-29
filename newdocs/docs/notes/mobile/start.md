@@ -19,6 +19,9 @@ permalink: /mobile/start/
 VITE_BASE_API = http://localhost:52789/api
 ```
 
+直接点击HBuilderX的运行按钮，即可启动前端：
+
+![2025-05-29-17-09-49](http://img.openauth.net.cn/2025-05-29-17-09-49.png)
 
 启动成功后，使用浏览器访问[http://localhost:5173/](http://localhost:5173/) 即可打开UniApp版界面：
 
