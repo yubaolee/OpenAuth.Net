@@ -34,13 +34,17 @@
 
 ## ▶️演示直达
 
+#### 开源版本
+
+* 开源Vue2演示地址： http://demo.openauth.net.cn:1803
+
+* 开源MVC演示地址：http://demo.openauth.net.cn:1802
+
+#### 付费订阅
+
 * Vue3演示地址： http://demo.openauth.net.cn:1805
 
-* Vue2演示地址： http://demo.openauth.net.cn:1803
-
-* 移动H5演示地址：http://demo.openauth.net.cn:1804 
-
-* 开源版演示地址：http://demo.openauth.net.cn:1802
+* 移动UniApp演示地址：http://demo.openauth.net.cn:1804 
 
 ## 📺视频教程
 
@@ -61,20 +65,21 @@
 #### 后端启动效果
 ![API启动效果图](https://images.gitee.com/uploads/images/2021/0422/012037_ec51b7e6_362401.png "api启动.png")
 
-#### vue版本效果
+#### 开源MVC效果
+![开源版本效果](snapshot/layui.jpg)
+
+#### 开源Vue2效果
+![vue2](snapshot/vue2.png)
+![拖拽表单](snapshot/form.png)
+
+#### 付费订阅效果
 ![主列表](snapshot/maintable.jpg)
 ![工作流](snapshot/image.png)
 ![打印方案设计](snapshot/sysprinterplan.png)
-![打印方案挂载业务系统](snapshot/sysprinterplan2.png)
-![拖拽表单](snapshot/form.png)
-
-#### layui开源版本效果
-![开源版本效果](snapshot/layui.jpg)
-
 
 ## 📞官方QQ交流群  
 
-1. ***618473076*** **社区VIP专属QQ群，第一时间提供开发进度、使用手册、技术咨询服务等，[如何加入VIP请移步这里](http://old.openauth.net.cn/question/detail.html?id=a2be2d61-7fcb-4df8-8be2-9f296c22a89c)**
+1. ***618473076*** **付费订阅专属QQ群，第一时间提供开发进度、技术咨询服务等，[如何加入请移步这里](http://old.openauth.net.cn/question/detail.html?id=a2be2d61-7fcb-4df8-8be2-9f296c22a89c)**
 
 1. 484498493【已满】
 
@@ -104,7 +109,7 @@
 
 * 零代码动态API接口，详情：[动态API](http://doc.openauth.net.cn/core/dynamicapi/)
 
-* 基于CodeSmith的代码生成功能，可快速生成带有头/明细结构的页面
+* 自带代码生成器，可快速生成带有头/明细结构的页面
 
 * 支持sqlserver、mysql、Oracle、PostgreSql数据库，理论上支持所有数据库
 
@@ -116,7 +121,9 @@
 
 * 建立三方对接规范，已有系统可以无缝对接流程引擎
 
-* 前端采用 vue + layui + element-ui + ztree + gooflow + leipiformdesign
+* MVC前端采用 layui + ztree + gooflow + leipiformdesign
+
+* vue前端采用 vue + element-ui + vform + hiprinter
 
 * 后端采用 .net +EF + sqlsugar + autofac + quartz +IdentityServer4 + nunit + swagger
 

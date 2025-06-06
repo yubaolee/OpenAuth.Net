@@ -1,22 +1,18 @@
-## Project setup
-```
+## 安装
+
+```sh
 npm install
 ```
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+## 使用
 
-### Compiles and minifies for production
-```
+```sh
+# 启动开发环境
+npm run dev
+# 构建生产版本
 npm run build
 ```
 
-### Lints and fixes files
-```
-npm run lint
-```
+## 文档
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+- [vue2版本文档](http://doc.openauth.net.cn/vue2/)
