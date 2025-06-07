@@ -1,7 +1,7 @@
 /*
  * @Author: yubaolee <yubaolee@163.com> | ahfu~ <954478625@qq.com>
  * @Date: 2025-04-23 20:26:48
- * @LastEditTime: 2025-06-07 21:41:34
+ * @LastEditTime: 2025-06-07 21:56:14
  * @Description: 顶部超链接
  * Copyright (c) 2025 by yubaolee | ahfu~ , All Rights Reserved.  
  */
@@ -20,7 +20,7 @@ export const navbar = defineNavbarConfig([
   },
   {
     text: '付费订阅文档',
-    icon: 'logos:opensource',
+    icon: 'ri:vip-crown-2-line',
     items: [
       { text: 'vue3前端', link: '/notes/pro/README.md', icon: 'material-icon-theme:vue' },
       { text: '移动UniApp', link: '/notes/mobile/README.md', icon: 'ri:smartphone-line' }

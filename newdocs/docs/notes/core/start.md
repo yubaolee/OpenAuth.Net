@@ -14,6 +14,10 @@ gitee上面两个版本。其中：
 
 .Net目前SDK升级特别方便。请参考：[3分钟的时间把.net core 3.1的升级到.NET 5](https://www.cnblogs.com/yubaolee/p/Net3ToNet5.html)，所以不要纠结SDK版本问题。
 
+## 系统架构
+
+![系统架构](http://img.openauth.net.cn/系统架构.png)
+
 
 ## 安装sdk
 
@@ -32,7 +36,7 @@ OpenAuth.Net文件夹结构及功能说明如下：
  ┣ 📂mysql初始化脚本       
  ┣ 📂OpenAuth.App         //应用逻辑代码
  ┣ 📂OpenAuth.Identity    //IdentityServer4服务器，提供OAuth服务
- ┣ 📂OpenAuth.Mvc         //开源版Web站点
+ ┣ 📂OpenAuth.Mvc         //开源版Web站点，已弃用⚠️
  ┣ 📂OpenAuth.Repository  //数据库访问相关代码
  ┣ 📂OpenAuth.WebApi      //WebApi接口站点
  ┣ 📂sql server 初始化脚本
@@ -51,39 +55,32 @@ skinparam handwritten true
 
 
 actor 用户
-boundary index.cshtml
+boundary vue2
 control XXController
 entity OpenAuth.App
 entity OpenAuth.Repository
 database OpenAuthDB
-
-box "OpenAuth.Mvc" #LightBlue
-	participant index.cshtml
+participant vue2
+box "OpenAuth.WebApi" #LightBlue
+	
 	participant XXController
 end box
 participant OpenAuth.App
 participant OpenAuth.Repository
 participant OpenAuthDB 
 
-用户 -> index.cshtml : 用户浏览页面
-index.cshtml -> XXController : 前端通过ajax调用数据
+用户 -> vue2 : 用户浏览页面
+vue2 -> XXController : 前端通过ajax调用数据
 XXController -> OpenAuth.App : 调用逻辑层
 OpenAuth.App -> OpenAuth.Repository : 逻辑层调用仓储进行数据读写
 OpenAuth.Repository -> OpenAuthDB : 仓储层进行数据库操作
 
 @enduml
 
-我们以【资源管理】功能为例，该功能涉及的文件如下：
-
-![20220407153729](http://img.openauth.net.cn/20220407153729.png)
 
 ## 初始化数据库
 
-使用数据库脚本`sql server 初始化脚本`或`mysql初始化脚本` 文件夹里面的结构脚本和数据脚本初始化数据库
-
-::: warning 注意
-如果使用企业版的OpenAuth.WebApi,则新建一个空数据库：OpenAuthPro。使用OpenAuth.Pro前端源码文件夹【sql脚本】中，运行`Sql Server脚本.sql`（或mysql脚本）
-:::
+使用数据库脚本`SqlServer脚本`或`mysql脚本` 文件夹里面的结构脚本和数据脚本初始化数据库
 
 ## 打开项目
 
@@ -146,19 +143,6 @@ OpenAuth.Repository -> OpenAuthDB : 仓储层进行数据库操作
        ,"OpenAuthDBContext3":"MySql"
     }, 
 ```
-## 编译运行MVC
-
-使用visualstudio生成解决方案。
-`注：首次启动时，visual studio会启动nuget还原第三方依赖包，请保持网络通畅，并等待一段时间`
-
-启动openauth.mvc项目。
-
-![启动](http://img.openauth.net.cn/2025-04-24-00-07-51.png)
-
-启动成功后使用浏览器打开[http://localhost:1802](http://localhost:1802) 即可访问，如下图所示：
-
-![说明](http://img.openauth.net.cn/2025-04-24-00-08-18.png)
-
 
 ## 编译运行WebApi
 
