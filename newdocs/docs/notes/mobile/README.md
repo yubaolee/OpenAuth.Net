@@ -10,6 +10,7 @@ OpenAuth.Net移动版基于uniapp开发，使用OpenAuth.Net的API接口（即�
 
 演示地址： [http://demo.openauth.net.cn:1804/](http://demo.openauth.net.cn:1804/)
 
+@[bilibili width="320px" ratio="9:16"](BV1t6TLzdE41)
 
 ## OpenAuth.Net系列教学视频
 
