@@ -4,33 +4,12 @@
   <img src="https://gitee.com/uploads/images/2018/0425/163228_7077c3fd_362401.png" alt="LOGO" width="300" />
 </p>
 
-**logo图标含义** OpenAuth中OA字母的结合体；整体像鱼，授人以渔；你非说像咸鱼，那也是积极向上的咸鱼；中心是个笑脸，微笑面对生活(✿◡‿◡)。
+| **官方网站** http://www.openauth.net.cn | **官方文档** http://doc.openauth.net.cn |
+|---|---|
 
-**官方网站** http://www.openauth.net.cn
+## 🏗️ 架构图
 
-**官方文档**  http://doc.openauth.net.cn 
-
-![](https://img.shields.io/badge/release-7.0-blue)
-![](https://img.shields.io/badge/SqlSugar-5.1.4-blue)
-![](https://img.shields.io/badge/IdentityServer4-3.0.1-blue)
-![](https://img.shields.io/badge/quartz-3.0.7-blue)
-![](https://img.shields.io/badge/Autofac-5.2-blue)
-![](https://img.shields.io/badge/NUnit-3.13.1-blue)
-![](https://img.shields.io/badge/SwaggerUI-OAS%203.0-blue)
-![](https://img.shields.io/badge/Moq-4.13-blue)
-![](https://img.shields.io/badge/log4net-2.0.12-blue)
-
-![](https://img.shields.io/badge/vue-2.6.10-brightgreen)
-![](https://img.shields.io/badge/vue-3.3.4-brightgreen)
-![](https://img.shields.io/badge/vite-4.4.9-brightgreen)
-![](https://img.shields.io/badge/element--ui-2.10.1-brightgreen)
-![](https://img.shields.io/badge/element--plus-2.3.9-brightgreen)
-![](https://img.shields.io/badge/node-%3E%3D4.0-brightgreen)
-![](https://img.shields.io/badge/npm-9.7.1-brightgreen)
-![](https://img.shields.io/badge/layui-2.8.6-brightgreen)
-
-
-主分支main默认.Net SDK 9.0.100，如果需要降低sdk版本，请参考[切换sdk版本](http://doc.openauth.net.cn/core/changesdk.html)。使用.Net Core 2.1-3.1的请点[这里](https://gitee.com/yubaolee/OpenAuth.Core) ，已停止维护
+![架构图](snapshot/architect.png)
 
 ## ▶️演示直达
 
@@ -115,8 +94,6 @@
 * 支持搭建自己的IdentityServer服务器，实现基于OAuth2的登录体系，请参考：[登录认证及OAuth集成](http://doc.openauth.net.cn/core/identity/)
 
 * 建立三方对接规范，已有系统可以无缝对接流程引擎
-
-* MVC前端采用 layui + ztree + gooflow + leipiformdesign
 
 * vue前端采用 vue + element-ui + vform + hiprinter
 
