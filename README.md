@@ -36,9 +36,7 @@
 
 #### 开源版本
 
-* 开源Vue2演示地址： http://demo.openauth.net.cn:1803
-
-* 开源MVC演示地址：http://demo.openauth.net.cn:1802
+* 演示地址： http://demo.openauth.net.cn:1803
 
 #### 付费订阅
 
