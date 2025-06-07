@@ -1,8 +1,13 @@
 ---
-title: 字段权限
-createTime: 2025/04/23 21:03:10
+title: 权限控制
+createTime: 2025/04/23 23:43:26
 permalink: /core/datapropertyrule/
 ---
+
+## 数据权限
+
+关于数据权限控制，可以详细查看博文：[通用权限设计与实现](https://www.cnblogs.com/yubaolee/p/DataPrivilege.html)
+## 字段权限
 
 ::: warning 注意
 字段权限只针对【非系统模块】有效，即在添加新模块的时候，需要设置模块属性“是否系统”为false。
@@ -23,10 +28,10 @@ permalink: /core/datapropertyrule/
 针对场景1，在做返回处理的时候，需要过滤数据库查询字段，如下：（本文以Resource表为例）
 
 ```csharp
-var columnFields = loginContext.GetTableColumnsFromDb("Resource");
+var columnFields = loginContext.GetTableColumns("Resource");
 if (columnFields == null || columnFields.Count == 0)
 {
-	throw new Exception("未找到Resource表的字段属性");
+	throw new Exception("请在代码生成界面配置Resource表的字段属性");
 }
 
 var propertyStr = string.Join(',', columnFields.Select(u => u.ColumnName));
@@ -39,52 +44,34 @@ return result;
 ```
 
 ::: warning 注意
-因为开源版没有代码生成器，所以需要直接从数据读取表的字段结构，使用的是loginContext.GetTableColumnsFromDb获取可访问的字段
+企业版表结构是通过【代码生成】功能获取获取表结构并存储在`buildertable`表中，因此需要先在【代码生成】功能添加要控制的表字段。然后使用loginContext.GetTableColumns获取可访问的字段。
 :::
 
 ### 前端代码处理
 
-在做表格的时候需要使用动态列。以`Views/Resources/index.cshtml`为例，如下：
+在做表格的时候需要使用动态列。以`views/Resources/index.vue`为例，如下：
 
 ```HTML
- <table class="layui-table" id="mainList"
-           lay-data="{height: 'full-80', page:true, id:'mainList'}"
-           lay-filter="list" lay-size="sm">
-    </table>
+<auth-table  ref="mainTable" :table-fields="headerList"></auth-table>
 ```
 
-在用户自定义的脚本`wwwroot/userJs/resources.js`中，动态加载列：
+用户加载后台数据时，自动加载表格字段结构，并存储在`headerList`实现字段权限控制，如下：
 
 ```javascript
     //加载表头
-    $.getJSON('/Resources/Load',
-	    { page: 1, limit: 1 },
-	    function (data) {
-		     var columns = data.columnFields.filter(u => u.IsList ===true).map(function (e) {
-			    return {
-                    field: e.ColumnName,
-                    title: e.Remark
-			    };
-		    });
-		    columns.unshift({
-			    type: 'checkbox',
-			    fixed: 'left'
-		    });
-		    table.render({
-			    elem: '#mainList',
-			    page: true,
-                url: '/Resources/Load',
-			    cols: [columns]
-			    , response: {
-				    statusCode: 200 //规定成功的状态码，默认：0
-			    }
-		    });
-        });
+    resources.getList(this.listQuery).then((response) => {
+        this.list = response.data
+        response.columnFields.forEach((item) => {
+          // 首字母小写
+          item.columnName = item.columnName.substring(0, 1).toLowerCase() + item.columnName.substring(1)
+        })
+        this.headerList = response.columnFields
+      })
 ```
 ### 运行界面配置
 
 完成代码编写后，在【基础配置】--【角色管理】--【为角色分配模块】最后为角色分配【可见字段】中分配权限
 
-![2025-04-24-00-27-37](http://img.openauth.net.cn/2025-04-24-00-27-37.png)
+![20211228210554](http://img.openauth.net.cn/20211228210554.png)
 
 

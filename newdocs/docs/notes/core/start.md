@@ -117,7 +117,7 @@ OpenAuth.Repository -> OpenAuthDB : 仓储层进行数据库操作
 
 #### 修改单数据库连接字符串
 
-* 修改OpenAuth.Mvc/appsettings.json连接字符串，如下：
+* 修改OpenAuth.WebApi/appsettings.json连接字符串，如下：
 ```json
   "ConnectionStrings": {
     "OpenAuthDBContext": "Data Source=.;Initial Catalog=OpenAuthPro;User=sa;Password=000000"

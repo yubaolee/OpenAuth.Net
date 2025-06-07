@@ -1,7 +1,7 @@
 /*
  * @Author: yubaolee <yubaolee@163.com> | ahfu~ <954478625@qq.com>
  * @Date: 2025-04-23 20:26:48
- * @LastEditTime: 2025-05-29 00:21:10
+ * @LastEditTime: 2025-06-07 23:11:29
  * @Description: 笔记配置
  * Copyright (c) 2025 by yubaolee | ahfu~ , All Rights Reserved.  
  */
@@ -17,7 +17,7 @@ const coreNote = defineNoteConfig({
       text: '基础开发',
       collapsed: false,
       items: [
-        'start', 'specialist', 'deploy', 'deployapi', 'devnew', 'multidbs', 'multitenant', 'unitwork','sqlsugar', 'entity','dynamicapi', 'datavalidation', 'log', 'identity', 'job', 'cache', 'unittest','changesdk'
+        'start', 'specialist', 'deployapi', 'devnew', 'multidbs', 'multitenant', 'unitwork','sqlsugar', 'entity','dynamicapi', 'datavalidation', 'log', 'identity', 'job', 'cache', 'unittest','changesdk'
       ]
     },
     {
@@ -31,11 +31,6 @@ const coreNote = defineNoteConfig({
       text: '工作流',
       collapsed: true,
       items: ['form','flowinstance','flowinstanceconcept','flowinstancedev', 'thirdparty' ]
-    },
-    {
-      text: '前端开发',
-      collapsed: true,
-      items: ['wwwarchitect']
     },
     {
       text: '其他',
