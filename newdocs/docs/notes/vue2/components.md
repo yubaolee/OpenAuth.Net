@@ -4,7 +4,7 @@ createTime: 2025/04/23 23:43:26
 permalink: /vue2/components/
 ---
 
-OpenAuth.Pro封装了一些组件，方便开发使用，组件全部在`src\components`中定义。目前提供的三大核心组件关系如下：
+OpenAuth.Net封装了一些组件，方便开发使用，组件全部在`src\components`中定义。目前提供的三大核心组件关系如下：
 
 ![20211230063538](http://img.openauth.net.cn/20211230063538.png)
 

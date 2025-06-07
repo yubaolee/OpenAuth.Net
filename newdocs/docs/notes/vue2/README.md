@@ -3,17 +3,18 @@ title: vue2版本介绍
 createTime: 2025/04/23 23:43:26
 permalink: /vue2/
 ---
+![2025-06-07-21-16-20](http://img.openauth.net.cn/2025-06-07-21-16-20.png)
+
 ::: warning 注意
 如果你使用的是vue3版本，请参考：[OpenAuth.Net Vue3版本](/pro/)
-:::
 
-OpenAuth.Net Vue2版本基于vue2 + element-ui。它使用开源版OpenAuth.Net的API接口（即：OpenAuth.WebApi）提供数据服务。二者的关系如下：
+vue2版目前已开源，可在`OpenAuth.Net\Vue2`目录中获取。文档及截图中`OpenAuth.Pro\Client`目录作废。
+:::
+OpenAuth.Net Vue2版本基于vue2 + element-ui。使用OpenAuth.Net的API接口（即：OpenAuth.WebApi）提供数据服务。系统架构如下：
 
 ![系统架构](http://img.openauth.net.cn/系统架构.png)
 
 演示地址： [http://demo.openauth.net.cn:1803/](http://demo.openauth.net.cn:1803/)
-
-vue2版目前已开源，可在`OpenAuth.Net\Vue2`目录中获取。
 
 ## OpenAuth.Net系列教学视频
 
@@ -36,14 +37,9 @@ vue2版目前已开源，可在`OpenAuth.Net\Vue2`目录中获取。
 
 前端环境为NodeJs，下载地址：[http://nodejs.cn/download/current/](http://nodejs.cn/download/current/)
 
-#### visual studio code
+#### 开发工具
 
 下载最新版的vs code，或Cursor、Windsurf、Trae等工具用来作为OpenAuth.Net Vue2版的开发工具。
-
-
-## 创建数据库
-
-* 使用下载的OpenAuth.Pro前端源码文件夹【sql脚本】中，运行`Sql Server脚本.sql`（或mysql脚本）
 
 ## 启动后端
 
@@ -51,7 +47,7 @@ vue2版目前已开源，可在`OpenAuth.Net\Vue2`目录中获取。
 
 ## 启动前端
 
-使用Vs Code（或个人喜欢的工具）打开OpenAuth.Pro/Client文件夹，如下图：
+使用Vs Code（或个人喜欢的工具）打开`OpenAuth.Net\Vue2`文件夹，如下图：
 
 ![20211214232057](http://img.openauth.net.cn/20211214232057.png)
 

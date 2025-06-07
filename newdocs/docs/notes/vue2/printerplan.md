@@ -4,7 +4,7 @@ createTime: 2025/04/23 23:43:26
 permalink: /vue2/printerplan/
 ---
 
-OpenAuth.Pro提供灵活无代码（可能需要写SQL）的打印解决方案，无需开发人员参与即可配置自己需要的打印。
+OpenAuth.Net提供灵活无代码（可能需要写SQL）的打印解决方案，无需开发人员参与即可配置自己需要的打印。
 
 打印模板设计界面如下：
 

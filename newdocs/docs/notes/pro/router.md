@@ -4,7 +4,7 @@ createTime: 2025/04/23 23:43:26
 permalink: /pro/router/
 ---
 
-OpenAuth.Pro采用的是标准vue router来管理页面跳转，基础知识请参考[https://router.vuejs.org/zh/](https://router.vuejs.org/zh/)。如果需要添加页面，可以通过以下两种方式：
+OpenAuth.Net采用的是标准vue router来管理页面跳转，基础知识请参考[https://router.vuejs.org/zh/](https://router.vuejs.org/zh/)。如果需要添加页面，可以通过以下两种方式：
 
 ## 模块管理添加页面
 

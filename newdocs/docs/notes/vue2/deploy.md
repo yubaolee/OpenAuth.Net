@@ -36,11 +36,11 @@ nginx.conf推荐配置如下：
         listen       1803;
         #server_name  pro.openauth.me;
         location / {
-            alias /openauth.pro/Client/dist/;
+            alias /openauth.net/Vue2/dist/;
             expires      1d; 
         }
         
-         access_log  /www/wwwlogs/pro.log;
+         access_log  /www/wwwlogs/openauth.net.log;
     }
 
 ```
