@@ -4,10 +4,11 @@ createTime: 2025/05/29 23:43:26
 permalink: /mobile/
 ---
 
-OpenAuth.Net移动版基于uniapp开发，使用OpenAuth.Net的API接口（即：OpenAuth.WebApi）提供数据服务。
+OpenAuth.Net移动版基于uniapp开发，使用OpenAuth.Net的API接口（即：OpenAuth.WebApi）提供数据服务。系统架构如下：
 
+![系统架构](http://img.openauth.net.cn/系统架构.png)
 
-![2025-05-29-00-08-28](http://img.openauth.net.cn/2025-05-29-00-08-28.png)
+演示地址： [http://demo.openauth.net.cn:1804/](http://demo.openauth.net.cn:1804/)
 
 
 ## OpenAuth.Net系列教学视频
