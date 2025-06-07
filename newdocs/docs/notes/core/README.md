@@ -11,8 +11,6 @@ OpenAuth.Net是基于最新版.Net的开源权限工作流快速开发框架。�
 
 开源Vue2演示：[http://demo.openauth.net.cn:1803/](http://demo.openauth.net.cn:1803/)
 
-开源MVC演示：[http://demo.openauth.net.cn:1802/](http://demo.openauth.net.cn:1802/) 即将弃用⚠️
-
 如果你想了解企业版的内容，请访问：[http://doc.openauth.net.cn/pro](http://doc.openauth.net.cn/pro/)
 
 ::: tip 提示

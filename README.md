@@ -63,9 +63,6 @@
 #### 后端启动效果
 ![API启动效果图](https://images.gitee.com/uploads/images/2021/0422/012037_ec51b7e6_362401.png "api启动.png")
 
-#### 开源MVC效果
-![开源版本效果](snapshot/layui.jpg)
-
 #### 开源Vue2效果
 ![vue2](snapshot/vue2.png)
 ![拖拽表单](snapshot/form.png)

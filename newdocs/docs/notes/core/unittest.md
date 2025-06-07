@@ -10,8 +10,6 @@ permalink: /core/unittest/
 
 * OpenAuth.App: 测试所有业务逻辑，测试级别为各种xxxApp/xxxService等。可以模拟用户登录和前端Cookie提交的信息。在该项目的`TestBase.cs`中配置连接字符串；
 
-* OpenAuth.Mvc: 测试MVC的访问，可以模拟用户登录和前端Cookie提交的信息。使用OpenAuth.App中的测试连接字符串；
-
 * OpenAuth.WebApi: 测试接口WebApi访问，可以模拟用户登录和前端Cookie提交的信息。使用OpenAuth.App中的测试连接字符串；
 
 所有的测试代码均在每个项目的`Test`文件夹中编写。比如`OpenAuth.App\Test\TestAccessObjs.cs`：
