@@ -1,7 +1,7 @@
 <!--
  * @Author: yubaolee <yubaolee@163.com> | ahfu~ <954478625@qq.com>
  * @Date: 2021-06-01 14:10:29
- * @LastEditTime: 2025-06-07 23:54:30
+ * @LastEditTime: 2025-06-08 14:07:28
  * @Description: 
  * @
  * @Copyright (c) 2022 by yubaolee | ahfu~ , All Rights Reserved. 
@@ -17,8 +17,6 @@
         <el-card class="box-card">
           <el-tag type="danger">一些说明</el-tag>
           <p></p>
-          开源版演示地址：<a href="http://demo.openauth.net.cn:1803">http://demo.openauth.net.cn:1803</a>
-          <p></p>
           官方网址：<a href="http://openauth.net.cn">http://openauth.net.cn</a>
           <p></p>
           官方博客：<a href="http://www.cnblogs.com/yubaolee/">http://www.cnblogs.com/yubaolee/</a>
@@ -32,12 +30,12 @@
     </el-row>
     <el-row class="auth-box" :gutter="0">
       <el-col :span="6" class="auth-col">
-        <div class="auth-head" style="line-height: 50px;"><p>功能特权</p></div>
+        <div class="auth-head" style="line-height: 50px;"><p>功能</p></div>
         <div class="auth-item" v-for="(item, index) in auths" :key="index">{{item.name}}</div>
       </el-col>
       <el-col :span="6" v-for="good in goods" :key="good.type" class="auth-col" :class="{'active': good.recomment}">
         <div class="auth-head">
-          <a target="_blank" href="http://old.openauth.net.cn/question/detail.html?id=a2be2d61-7fcb-4df8-8be2-9f296c22a89c">
+          <a target="_blank" href="http://www.openauth.net.cn/newpricing/">
             <span v-if="good.recomment" class="recomment">推荐</span>
             <p>{{good.name}}<br><span class="subTitle">{{good.subTitle}}</span></p>
             <el-button type="warning" plain style="width: 100px;" size="mini">选择</el-button>
@@ -46,9 +44,9 @@
         <div class="auth-item" v-for="(item, index) in auths" :key="index">
           <span v-if="item.belongs.indexOf(good.type) >= 0" class="auth-icon"><i class="el-icon-success"></i></span>
           <span v-else class="auth-icon"><i class="el-icon-error"></i></span>
-          <span v-if="good.type === 'base' && item.baseRemark">{{item.baseRemark}}</span>
-          <span v-else-if="good.type === 'senior' && item.seniorRemark">{{item.seniorRemark}}</span>
-          <span v-else-if="good.type === 'business' && item.businessRemark">{{item.businessRemark}}</span>
+          <span v-if="good.type === 'opensource' && item.opensourceRemark">{{item.opensourceRemark}}</span>
+          <span v-else-if="good.type === 'annual' && item.annualRemark">{{item.annualRemark}}</span>
+          <span v-else-if="good.type === 'lifetime' && item.lifetimeRemark">{{item.lifetimeRemark}}</span>
         </div>
       </el-col>
     </el-row>
@@ -65,79 +63,78 @@
       return {
         auths: [
       {
-        name: '专属QQ群',
-        belongs: ['base', 'senior', 'business'],
+        name: '价格',
+        belongs: ['opensource', 'annual', 'lifetime'],
+        opensourceRemark: '永久免费',
+        annualRemark: '1688元/年',
+        lifetimeRemark: '3000元/永久',
       },
       {
-        name: '专属授权文件',
-        belongs: ['base', 'senior', 'business'],
+        name: '代码获取',
+        belongs: ['opensource', 'annual', 'lifetime'],
+        opensourceRemark: '开源中国、GitHub',
+        annualRemark: '平台下载、持续更新',
+        lifetimeRemark: '平台下载、持续更新',
       },
       {
-        name: '社区VIP',
-        belongs: ['base', 'senior', 'business'],
-        baseRemark: 'VIP标识',
-        seniorRemark: '高级VIP标识',
-        businessRemark: '企业VIP标识',
+        name: '授权域名个数',
+        belongs: ['opensource', 'annual', 'lifetime'],
+        opensourceRemark: '无限制',
+        annualRemark: '无限制',
+        lifetimeRemark: '无限制',
       },
       {
-        name: '分发限制',
-        belongs: ['base', 'senior', 'business'],
-        baseRemark: '仅个人,禁止公司',
-        seniorRemark: '仅个人,禁止公司',
-        businessRemark: '无任何限制',
+        name: '授权项目个数',
+        belongs: ['opensource', 'annual', 'lifetime'],
+        opensourceRemark: '无限制',
+        annualRemark: '无限制',
+        lifetimeRemark: '无限制',
+      },
+      {
+        name: '永久使用',
+        belongs: ['opensource', 'annual', 'lifetime'],
       },
       {
         name: 'Vue2+ElementUI源码',
-        belongs: ['base', 'senior', 'business'],
-        baseRemark: '不支持升级',
+        belongs: ['opensource', 'annual', 'lifetime'],
       },
       {
-        name: '最新的代码生成工具',
-        belongs: ['senior', 'business'],
-      },
-      {
-        name: '永久免费升级',
-        belongs: ['senior', 'business'],
-      },
-      {
-        name: '提供项目管理平台账号',
-        belongs: ['senior', 'business'],
-      },
-      {
-        name: '技术咨询服务',
-        belongs: ['senior', 'business'],
-        seniorRemark: '为个人提供',
-        businessRemark: '为公司团队提供',
-      },
-      {
-        name: 'Vue3+ElementPlus源码',
-        belongs: ['business'],
-      },
-      {
-        name: '移动H5源码',
-        belongs: ['business'],
-      },
-      {
-        name: '远程技术支持',
-        belongs: ['business'],
+        name: '专属QQ群',
+        belongs: ['annual', 'lifetime'],
+        opensourceRemark: '可进大群',
       },
       {
         name: '提供正规发票',
-        belongs: ['business'],
+        belongs: ['annual', 'lifetime'],
+      },
+      {
+        name: 'Vue3+ElementPlus源码',
+        belongs: ['annual', 'lifetime'],
+        annualRemark: '订阅期内有效',
+      },
+      {
+        name: '移动UniApp源码',
+        belongs: ['annual', 'lifetime'],
+        annualRemark: '订阅期内有效',
+      },
+      {
+        name: '技术支持服务',
+        belongs: ['annual', 'lifetime'],
+        annualRemark: '订阅期内有效',
       }
     ],
         goods: [{
-          name: '标准版',
-          subTitle: '500元',
-          type: 'base'
+          name: '开源版',
+          subTitle: '',
+          type: 'opensource'
         },{
-          name: '高级版',
-          subTitle: '800元',
-          type: 'senior'
+          name: '年费订阅',
+          subTitle: '',
+          type: 'annual'
         },{
-          name: '企业版',
-          subTitle: '2000元',
-          type: 'business',
+          name: '终生订阅',
+          subTitle: '',
+          type: 'lifetime',
           recomment: true
         }]
       }

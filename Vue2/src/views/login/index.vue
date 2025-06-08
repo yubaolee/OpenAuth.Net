@@ -4,7 +4,7 @@
       <img class="leftImg" src="~@/assets/login/left.png" alt="">
       <el-form class="login-form" autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm"
         label-position="left">
-        <h3 class="title">OpenAuth.Net Vue2版</h3>
+        <h3 class="title">OpenAuth.Net开源版</h3>
         <p class="tips">powered by vue2/element-ui</p>
         <el-form-item prop="username">
 
