@@ -4,7 +4,7 @@
   <img src="https://gitee.com/uploads/images/2018/0425/163228_7077c3fd_362401.png" alt="LOGO" width="300" />
 </p>
 
-| **官方网站** http://www.openauth.net.cn | **官方文档** http://doc.openauth.net.cn |
+| **官网** http://www.openauth.net.cn | **文档** http://doc.openauth.net.cn |
 |---|---|
 
 ## 🏗️ 架构图
