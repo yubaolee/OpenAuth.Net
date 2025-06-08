@@ -7,11 +7,11 @@ permalink: /pro/
 如果你使用的是vue2版本，请参考：[OpenAuth.Net Vue2版本](/vue2/)
 :::
 
-OpenAuth.Net Vue3版本基于vue3 + element-plus。它使用开源版OpenAuth.Net的API接口（即：OpenAuth.WebApi）提供数据服务。二者的关系如下：
+OpenAuth.Net Vue3版本基于vue3 + element-plus。使用OpenAuth.Net的API接口（即：OpenAuth.WebApi）提供数据服务。系统架构如下：
 
 ![系统架构](http://img.openauth.net.cn/系统架构.png)
 
-vue3版源代码获取方式：[http://old.openauth.net.cn/question/detail.html?id=a2be2d61-7fcb-4df8-8be2-9f296c22a89c](http://old.openauth.net.cn/question/detail.html?id=a2be2d61-7fcb-4df8-8be2-9f296c22a89c)
+vue3版源代码为商业授权方式获取，获取方式：[http://old.openauth.net.cn/question/detail.html?id=a2be2d61-7fcb-4df8-8be2-9f296c22a89c](http://old.openauth.net.cn/question/detail.html?id=a2be2d61-7fcb-4df8-8be2-9f296c22a89c)
 
 演示地址： [http://demo.openauth.net.cn:1805/](http://demo.openauth.net.cn:1805/)
 
