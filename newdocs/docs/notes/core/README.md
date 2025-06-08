@@ -7,11 +7,13 @@ permalink: /core/
   <img src="/logocore.png" alt="1.png" style="width: 300px; height: auto; display: inline-block;" />
 </div>
 
-OpenAuth.Net是基于最新版.Net的开源权限工作流快速开发框架。源于Martin Fowler企业级应用开发思想及最新技术组合（SqlSugar、EF、Quartz、AutoFac、WebAPI、Swagger、Mock、NUnit、Vue2/3、Element-ui/plus、IdentityServer等）。核心模块包括：角色授权、代码生成、API鉴权、智能打印、表单设计、工作流、定时任务等。
+OpenAuth.Net是基于最新版.Net的开源权限工作流快速开发框架。源于Martin Fowler企业级应用开发思想及最新技术组合（SqlSugar、EF、Quartz、AutoFac、WebAPI、Swagger、Mock、NUnit、Vue2/3、Element-ui/plus、IdentityServer等）。核心模块包括：角色授权、代码生成、API鉴权、智能打印、表单设计、工作流、定时任务等。系统整体架构如下：
 
-开源Vue2演示：[http://demo.openauth.net.cn:1803/](http://demo.openauth.net.cn:1803/)
+![系统架构](http://img.openauth.net.cn/系统架构.png)
 
-如果你想了解企业版的内容，请访问：[http://doc.openauth.net.cn/pro](http://doc.openauth.net.cn/pro/)
+开源版演示：[http://demo.openauth.net.cn:1803/](http://demo.openauth.net.cn:1803/)
+
+如果你想了解vue3版本的内容，请访问：[http://doc.openauth.net.cn/pro](http://doc.openauth.net.cn/pro/)
 
 ::: tip 提示
 
@@ -54,7 +56,7 @@ gitee上面两个版本。其中：
 
 * 建立三方对接规范，已有系统可以无缝对接流程引擎
 
-* 前端采用 vue + layui + element-ui + ztree + gooflow + leipiformdesign
+* 前端采用 vue + element-ui + ztree + gooflow + leipiformdesign
 
 * 后端采用 .net +EF + sqlsugar + autofac + quartz +IdentityServer4 + nunit + swagger
 

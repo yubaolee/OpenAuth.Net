@@ -6,43 +6,24 @@ permalink: /core/start/
 
 ## 下载代码
 
-gitee上面两个版本。其中：
-
-* [OpenAuth.Net](https://gitee.com/dotnetchina/OpenAuth.Net) 默认SDK版本为.Net 9.0.100，如果需要切换到.Net其他版本请参考：[切换sdk版本](http://doc.openauth.net.cn/core/changesdk/)
-
-* [OpenAuth.Core](https://gitee.com/yubaolee/OpenAuth.Core) 的SDK版本为.Net Core 3.1.100，已停止维护，不推荐使用。
-
-.Net目前SDK升级特别方便。请参考：[3分钟的时间把.net core 3.1的升级到.NET 5](https://www.cnblogs.com/yubaolee/p/Net3ToNet5.html)，所以不要纠结SDK版本问题。
-
-## 系统架构
-
-![系统架构](http://img.openauth.net.cn/系统架构.png)
-
-
-## 安装sdk
-
-下载安装微软官方SDK，代码地址：https://dotnet.microsoft.com/download
-
-## 项目结构
-
-OpenAuth.Net文件夹结构及功能说明如下：
+OpenAuth.Net源码可以从[https://gitee.com/dotnetchina/OpenAuth.Net](https://gitee.com/dotnetchina/OpenAuth.Net) 下载。下载完成后可以看到文件夹结构如下：
 
 ```
 📦OpenAuth.Net
- ┣ 📂CodeSmith
- ┃ ┗ 📂CSharp
- ┃ ┃ ┗ 📜WebGenerate.cst  //生成Web页面
+ ┣ 📂.cursor              //cursor rules、MCP配置
+ ┣ 📂newdocs              //文档
  ┣ 📂Infrastructure       //基础工具类
- ┣ 📂mysql初始化脚本       
+ ┣ 📂OpenAuth.Repository  //数据库访问相关代码      
  ┣ 📂OpenAuth.App         //应用逻辑代码
  ┣ 📂OpenAuth.Identity    //IdentityServer4服务器，提供OAuth服务
- ┣ 📂OpenAuth.Mvc         //开源版Web站点，已弃用⚠️
- ┣ 📂OpenAuth.Repository  //数据库访问相关代码
  ┣ 📂OpenAuth.WebApi      //WebApi接口站点
- ┣ 📂sql server 初始化脚本
+ ┣ 📂Vue2                 //开源Vue2前端项目
+ ┣ 📂数据库脚本           //数据库脚本
  ┣ 📜.gitattributes
  ┣ 📜.gitignore
  ┣ 📜LICENSE
+ ┣ 📜.cursorignore       //cursor codebase index忽略文件
+ ┣ 📜Dockerfile          //docker文件
  ┣ 📜OpenAuth.Net.sln    //解决方案
  ┗ 📜README.md
 ```
@@ -76,6 +57,10 @@ OpenAuth.App -> OpenAuth.Repository : 逻辑层调用仓储进行数据读写
 OpenAuth.Repository -> OpenAuthDB : 仓储层进行数据库操作
 
 @enduml
+
+## 安装sdk
+
+OpenAuth.Net目前默认SDK版本为.Net 9.0.100，如果需要切换到.Net其他版本请参考：[切换sdk版本](http://doc.openauth.net.cn/core/changesdk/)。可以到[微软官方](https://dotnet.microsoft.com/download)下载安装。
 
 
 ## 初始化数据库
