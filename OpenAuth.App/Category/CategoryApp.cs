@@ -16,7 +16,7 @@ namespace OpenAuth.App
         /// <summary>
         /// 加载列表
         /// </summary>
-        public async Task<TableData> Load(QueryCategoryListReq request)
+        public async Task<PagedDynamicDataResp> Load(QueryCategoryListReq request)
         {
             var loginContext = _auth.GetCurrentUser();
             if (loginContext == null)
@@ -36,7 +36,7 @@ namespace OpenAuth.App
                 };
             }
             
-            var result = new TableData();
+            var result = new PagedDynamicDataResp();
             var objs = SugarClient.Queryable<Category>();
             if (!string.IsNullOrEmpty(request.TypeId))
             {
@@ -54,11 +54,11 @@ namespace OpenAuth.App
             }
 
             var propertyStr = string.Join(',', columnFields.Select(u =>u.ColumnName));
-            result.columnFields = columnFields;
-            result.data = objs.OrderBy(u => u.DtCode)
+            result.ColumnFields = columnFields;
+            result.Data = objs.OrderBy(u => u.DtCode)
                 .Skip((request.page - 1) * request.limit)
                 .Take(request.limit).Select($"{propertyStr}").ToList();
-            result.count = await objs.CountAsync();
+            result.Count = await objs.CountAsync();
             return result;
         }
 

@@ -27,7 +27,7 @@ namespace OpenAuth.WebApi.Controllers
             _app = app;
         }
         [HttpGet]
-        public async Task<TableData> Load([FromQuery]QueryResourcesReq request)
+        public async Task<PagedDynamicDataResp> Load([FromQuery]QueryResourcesReq request)
         {
             return await _app.Load(request);
         }
@@ -77,7 +77,7 @@ namespace OpenAuth.WebApi.Controllers
             try
             {
                 _app.Add(obj);
-                resp.Result = obj.Id;
+                resp.Data = obj.Id;
             }
             catch (Exception e)
             {
@@ -114,7 +114,7 @@ namespace OpenAuth.WebApi.Controllers
             var result = new Response<List<SysResource>>();
             try
             {
-                result.Result = _app.LoadForRole(appId, firstId).ToList();
+                result.Data = _app.LoadForRole(appId, firstId).ToList();
 
             }
             catch (Exception e)
@@ -135,7 +135,7 @@ namespace OpenAuth.WebApi.Controllers
             var result = new Response<List<SysResourceApp>>();
             try
             {
-                result.Result = await _app.GetResourceApps();
+                result.Data = await _app.GetResourceApps();
             }
             catch (Exception e)
             {

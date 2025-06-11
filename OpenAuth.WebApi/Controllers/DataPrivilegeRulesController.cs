@@ -30,7 +30,7 @@ namespace OpenAuth.WebApi.Controllers
             var result = new Response<DataPrivilegeRule>();
             try
             {
-                result.Result = _app.Get(id);
+                result.Data = _app.Get(id);
             }
             catch (Exception ex)
             {
@@ -88,7 +88,7 @@ namespace OpenAuth.WebApi.Controllers
         /// 加载列表
         /// </summary>
         [HttpGet]
-        public async Task<TableData> Load([FromQuery]QueryDataPrivilegeRuleListReq request)
+        public async Task<PagedDynamicDataResp> Load([FromQuery]QueryDataPrivilegeRuleListReq request)
         {
             return await _app.Load(request);
         }

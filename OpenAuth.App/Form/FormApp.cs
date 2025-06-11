@@ -23,19 +23,19 @@ namespace OpenAuth.App
         /// <summary>
         /// 加载列表
         /// </summary>
-        public async Task<TableData> Load(QueryFormListReq request)
+        public async Task<PagedDynamicDataResp> Load(QueryFormListReq request)
         {
-            var result = new TableData();
+            var result = new PagedDynamicDataResp();
             var forms = GetDataPrivilege("u");
             if (!string.IsNullOrEmpty(request.key))
             {
                 forms = forms.Where(u => u.Name.Contains(request.key) || u.Id.Contains(request.key));
             }
 
-            result.data = forms.OrderByDescending(u => u.CreateDate)
+            result.Data = forms.OrderByDescending(u => u.CreateDate)
                 .Skip((request.page - 1) * request.limit)
                 .Take(request.limit).ToList();
-            result.count = await forms.CountAsync();
+            result.Count = await forms.CountAsync();
             return result;
         }
 

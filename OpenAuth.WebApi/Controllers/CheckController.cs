@@ -57,7 +57,7 @@ namespace OpenAuth.WebApi.Controllers
             var resp = new Response<UserView>();
             try
             {
-                resp.Result = _authStrategyContext.User.MapTo<UserView>();
+                resp.Data = _authStrategyContext.User.MapTo<UserView>();
             }
             catch (Exception e)
             {
@@ -80,7 +80,7 @@ namespace OpenAuth.WebApi.Controllers
             var result = new Response<bool>();
             try
             {
-                result.Result = _authUtil.CheckLogin();
+                result.Data = _authUtil.CheckLogin();
             }
             catch (Exception ex)
             {
@@ -99,7 +99,7 @@ namespace OpenAuth.WebApi.Controllers
             var result = new Response<List<Role>>();
             try
             {
-                result.Result = _authStrategyContext.Roles;
+                result.Data = _authStrategyContext.Roles;
             }
             catch (CommonException ex)
             {
@@ -132,7 +132,7 @@ namespace OpenAuth.WebApi.Controllers
             var result = new Response<List<BuilderTableColumn>>();
             try
             {
-                result.Result = _authStrategyContext.GetTableColumns(moduleCode);
+                result.Data = _authStrategyContext.GetTableColumns(moduleCode);
             }
             catch (Exception ex)
             {
@@ -151,7 +151,7 @@ namespace OpenAuth.WebApi.Controllers
             var result = new Response<List<OrgView>>();
             try
             {
-                result.Result = _authStrategyContext.Orgs;
+                result.Data = _authStrategyContext.Orgs;
             }
             catch (CommonException ex)
             {
@@ -179,7 +179,7 @@ namespace OpenAuth.WebApi.Controllers
         /// <param name="orgId">机构ID</param>
         /// <returns></returns>
         [HttpGet]
-        public TableData GetSubOrgs(string orgId)
+        public PagedDynamicDataResp GetSubOrgs(string orgId)
         {
             string cascadeId = ".0.";
             if (!string.IsNullOrEmpty(orgId))
@@ -187,10 +187,10 @@ namespace OpenAuth.WebApi.Controllers
                 var org = _authStrategyContext.Orgs.SingleOrDefault(u => u.Id == orgId);
                 if (org == null)
                 {
-                    return new TableData
+                    return new PagedDynamicDataResp
                     {
-                        msg = "未找到指定的节点",
-                        code = 500,
+                        Message = "未找到指定的节点",
+                        Code = 500,
                     };
                 }
                 cascadeId = org.CascadeId;
@@ -200,10 +200,10 @@ namespace OpenAuth.WebApi.Controllers
                 .Where(u => u.CascadeId.Contains(cascadeId))
                 .OrderBy(u =>u.CascadeId);
 
-            return new TableData
+            return new PagedDynamicDataResp
             {
-                data = query.ToList(),
-                count = query.Count(),
+                Data = query.ToList(),
+                Count = query.Count(),
             };
         }
 
@@ -216,7 +216,7 @@ namespace OpenAuth.WebApi.Controllers
             var result = new Response<List<ModuleView>>();
             try
             {
-                result.Result = _authStrategyContext.Modules;
+                result.Data = _authStrategyContext.Modules;
             }
             catch (CommonException ex)
             {
@@ -247,7 +247,7 @@ namespace OpenAuth.WebApi.Controllers
             var result = new Response<IEnumerable<TreeItem<ModuleView>>>();
             try
             {
-                result.Result = _authStrategyContext.Modules.GenerateTree(u => u.Id, u => u.ParentId);
+                result.Data = _authStrategyContext.Modules.GenerateTree(u => u.Id, u => u.ParentId);
             }
             catch (CommonException ex)
             {
@@ -278,7 +278,7 @@ namespace OpenAuth.WebApi.Controllers
             var result = new Response<List<SysResource>>();
             try
             {
-                result.Result = _authStrategyContext.Resources;
+                result.Data = _authStrategyContext.Resources;
             }
             catch (CommonException ex)
             {
@@ -309,7 +309,7 @@ namespace OpenAuth.WebApi.Controllers
             var result = new Response<string>();
             try
             {
-                result.Result = _authStrategyContext.User.Account;
+                result.Data = _authStrategyContext.User.Account;
             }
             catch (CommonException ex)
             {
@@ -364,11 +364,11 @@ namespace OpenAuth.WebApi.Controllers
             var resp = new Response<bool>();
             try
             {
-                resp.Result = _authUtil.Logout();
+                resp.Data = _authUtil.Logout();
             }
             catch (Exception e)
             {
-                resp.Result = false;
+                resp.Data = false;
                 resp.Message = e.Message;
             }
 

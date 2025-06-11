@@ -38,7 +38,7 @@ namespace OpenAuth.WebApi.Controllers
         {
             return new Response<bool>
             {
-                Result = _appConfiguration.Value.IsIdentityAuth
+                Data = _appConfiguration.Value.IsIdentityAuth
             };
         }
 
@@ -54,7 +54,7 @@ namespace OpenAuth.WebApi.Controllers
             var result = new Response<List<SysTableColumn>>();
             try
             {
-                result.Result = _dbExtension.GetDbTableStructure(tableName, externalDataSourceId).ToList();
+                result.Data = _dbExtension.GetDbTableStructure(tableName, externalDataSourceId).ToList();
             }
             catch (Exception ex)
             {
@@ -71,12 +71,12 @@ namespace OpenAuth.WebApi.Controllers
         /// <param name="externalDataSourceId">外部数据源ID</param>
         /// <returns></returns>
         [HttpGet]
-        public TableData GetDbTableStructureForSelect(string tableName, string externalDataSourceId)
+        public PagedDynamicDataResp GetDbTableStructureForSelect(string tableName, string externalDataSourceId)
         {
-            var result = new TableData();
+            var result = new PagedDynamicDataResp();
             try
             {
-                result.data = _dbExtension.GetDbTableStructure(tableName, externalDataSourceId).Select(u => new
+                result.Data = _dbExtension.GetDbTableStructure(tableName, externalDataSourceId).Select(u => new
                 {
                     Id = u.ColumnName,
                     Name = u.ColumnName
@@ -84,8 +84,8 @@ namespace OpenAuth.WebApi.Controllers
             }
             catch (Exception ex)
             {
-                result.code = 500;
-                result.msg = ex.Message;
+                result.Code = 500;
+                result.Message = ex.Message;
             }
             return result;
         }

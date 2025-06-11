@@ -34,9 +34,9 @@ namespace OpenAuth.WebApi.Controllers
         /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
-        public async Task<TableData> GetList([FromBody] QueryDynamicListReq req)
+        public async Task<PagedDynamicDataResp> GetList([FromBody] QueryDynamicListReq req)
         {
-            TableData result = new TableData();
+            PagedDynamicDataResp result = new PagedDynamicDataResp();
             try
             {
                 // 获取实体类型
@@ -44,8 +44,8 @@ namespace OpenAuth.WebApi.Controllers
             }
             catch (Exception ex)
             {
-                result.code = 500;
-                result.msg = ex.InnerException?.Message ?? ex.Message;
+                result.Code = 500;
+                result.Message = ex.InnerException?.Message ?? ex.Message;
             }
 
             return result;
@@ -160,7 +160,7 @@ namespace OpenAuth.WebApi.Controllers
             var result = new Response<object>();
             try
             {
-                result.Result = await  _app.Invoke(req);
+                result.Data = await  _app.Invoke(req);
             }
             catch (Exception ex)
             {

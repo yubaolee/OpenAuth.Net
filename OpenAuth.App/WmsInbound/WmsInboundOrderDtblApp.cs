@@ -14,7 +14,7 @@ namespace OpenAuth.App
         /// <summary>
         /// 加载列表
         /// </summary>
-        public async Task<TableData> Load(QueryWmsInboundOrderDtblListReq request)
+        public async Task<PagedDynamicDataResp> Load(QueryWmsInboundOrderDtblListReq request)
         {
             var loginContext = _auth.GetCurrentUser();
             if (loginContext == null)
@@ -26,7 +26,7 @@ namespace OpenAuth.App
             {
                 throw new Exception("请在代码生成界面配置WmsInboundOrderDtbl表的字段属性");
             }
-            var result = new TableData();
+            var result = new PagedDynamicDataResp();
             var objs = SugarClient.Queryable<WmsInboundOrderDtbl>();
             if (!string.IsNullOrEmpty(request.InboundOrderId))
             {
@@ -37,11 +37,11 @@ namespace OpenAuth.App
                 objs = objs.Where(u => u.GoodsId.Contains(request.key));
             }
             var propertyStr = string.Join(',', properties.Select(u => u.ColumnName));
-            result.columnFields = properties;
-            result.data = objs.OrderBy(u => u.Id)
+            result.ColumnFields = properties;
+            result.Data = objs.OrderBy(u => u.Id)
                 .Skip((request.page - 1) * request.limit)
                 .Take(request.limit).Select($"{propertyStr}").ToList();
-            result.count = await objs.CountAsync();
+            result.Count = await objs.CountAsync();
             return result;
         }
         public void Add(AddOrUpdateWmsInboundOrderDtblReq request)

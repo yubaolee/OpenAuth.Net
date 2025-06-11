@@ -21,19 +21,19 @@ namespace OpenAuth.App
         /// <summary>
         /// 加载列表
         /// </summary>
-        public async Task<TableData> Load(QueryCategoryTypeListReq request)
+        public async Task<PagedDynamicDataResp> Load(QueryCategoryTypeListReq request)
         {
-            var result = new TableData();
+            var result = new PagedDynamicDataResp();
             var objs = UnitWork.Find<CategoryType>(null);
             if (!string.IsNullOrEmpty(request.key))
             {
                 objs = objs.Where(u => u.Id.Contains(request.key) || u.Name.Contains(request.key));
             }
             
-            result.data =await objs.OrderBy(u => u.Name)
+            result.Data =await objs.OrderBy(u => u.Name)
                 .Skip((request.page - 1) * request.limit)
                 .Take(request.limit).ToListAsync();
-            result.count =await objs.CountAsync();
+            result.Count =await objs.CountAsync();
             return result;
         }
 

@@ -30,7 +30,7 @@ namespace OpenAuth.WebApi.Controllers
             var result = new Response<Category>();
             try
             {
-                result.Result = _app.Get(id);
+                result.Data = _app.Get(id);
             }
             catch (Exception ex)
             {
@@ -88,7 +88,7 @@ namespace OpenAuth.WebApi.Controllers
         /// 加载列表
         /// </summary>
         [HttpGet]
-        public async Task<TableData> Load([FromQuery] QueryCategoryListReq request)
+        public async Task<PagedDynamicDataResp> Load([FromQuery] QueryCategoryListReq request)
         {
             return await _app.Load(request);
         }

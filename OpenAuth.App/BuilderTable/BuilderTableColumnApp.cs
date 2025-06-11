@@ -21,24 +21,24 @@ namespace OpenAuth.App
         /// <summary>
         /// 加载列表
         /// </summary>
-        public async Task<TableResp<BuilderTableColumn>> Load(QueryBuilderTableColumnListReq request)
+        public async Task<PagedListDataResp<BuilderTableColumn>> Load(QueryBuilderTableColumnListReq request)
         {
             if (string.IsNullOrEmpty(request.BuilderTableId))
             {
                 throw new Exception($"缺少必要的参数BuilderTableId");
             }
-            var result = new TableResp<BuilderTableColumn>();
+            var result = new PagedListDataResp<BuilderTableColumn>();
             var objs = Repository.AsQueryable().Where(u => u.TableId == request.BuilderTableId);
             if (!string.IsNullOrEmpty(request.key))
             {
                 objs = objs.Where(u => u.ColumnName.Contains(request.key));
             }
-            result.data = await objs.OrderByDescending(u => u.IsList)
+            result.Data = await objs.OrderByDescending(u => u.IsList)
                 .OrderBy(u => u.Sort)
                 .OrderBy(u => u.ColumnName)
                 .Skip((request.page - 1) * request.limit)
                 .Take(request.limit).ToListAsync();
-            result.count = await objs.CountAsync();
+            result.Count = await objs.CountAsync();
             return result;
         }
         public void Update(AddOrUpdateBuilderTableColumnReq obj)

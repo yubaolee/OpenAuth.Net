@@ -27,7 +27,7 @@ namespace OpenAuth.WebApi.Controllers
             var result = new Response<WmsInboundOrderDtbl>();
             try
             {
-                result.Result = _app.Get(id);
+                result.Data = _app.Get(id);
             }
             catch (Exception ex)
             {
@@ -46,7 +46,7 @@ namespace OpenAuth.WebApi.Controllers
             try
             {
                 _app.Add(obj);
-                result.Result = obj.Id;
+                result.Data = obj.Id;
             }
             catch (Exception ex)
             {
@@ -85,7 +85,7 @@ namespace OpenAuth.WebApi.Controllers
         /// </summary>
         [HttpGet]
         [AllowAnonymous]
-        public async Task<TableData> Load([FromQuery]QueryWmsInboundOrderDtblListReq request)
+        public async Task<PagedDynamicDataResp> Load([FromQuery]QueryWmsInboundOrderDtblListReq request)
         {
             return await _app.Load(request);
         }

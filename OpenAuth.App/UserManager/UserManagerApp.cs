@@ -32,7 +32,7 @@ namespace OpenAuth.App
         /// 加载当前登录用户可访问的一个部门及子部门全部用户
         /// 如果请求的request.OrgId为空，则可以获取到已被删除机构的用户（即：没有分配任何机构的用户）
         /// </summary>
-        public async Task<TableData> Load(QueryUserListReq request)
+        public async Task<PagedDynamicDataResp> Load(QueryUserListReq request)
         {
             var loginUser = _auth.GetCurrentUser();
             IQueryable<SysUser> query = UnitWork.Find<SysUser>(null);
@@ -99,10 +99,10 @@ namespace OpenAuth.App
                 OrganizationIds = string.Join(",", u.Select(x=>x.OrgId))
                 ,Organizations = string.Join(",", u.Select(x=>x.OrgName))
             });
-            return new TableData
+            return new PagedDynamicDataResp
             {
-                count =userViews.Count(),
-                data =userViews.OrderBy(u => u.Name)
+                Count =userViews.Count(),
+                Data =userViews.OrderBy(u => u.Name)
                     .Skip((request.page - 1) * request.limit)
                     .Take(request.limit),
             };
@@ -111,7 +111,7 @@ namespace OpenAuth.App
         /// 获取所有的用户
         /// 为了控制权限，通常只用于流程实例选择执行角色，其他地方请使用Load
         /// </summary>
-        public async Task<TableResp<UserView>> LoadAll(QueryUserListReq request)
+        public async Task<PagedListDataResp<UserView>> LoadAll(QueryUserListReq request)
         {
            IQueryable<SysUser> query = UnitWork.Find<SysUser>(null);
            if (!string.IsNullOrEmpty(request.key))
@@ -166,10 +166,10 @@ namespace OpenAuth.App
                 OrganizationIds = string.Join(",", u.Select(x=>x.OrgId))
                 ,Organizations = string.Join(",", u.Select(x=>x.OrgName))
             });
-            return new TableResp<UserView>()
+            return new PagedListDataResp<UserView>()
             {
-                count = userViews.Count(),
-                data = userViews.OrderBy(u => u.Name)
+                Count = userViews.Count(),
+                Data = userViews.OrderBy(u => u.Name)
                     .Skip((request.page - 1) * request.limit)
                     .Take(request.limit).ToList()
             };
@@ -252,17 +252,17 @@ namespace OpenAuth.App
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<TableData> LoadByRole(QueryUserListByRoleReq request)
+        public async Task<PagedDynamicDataResp> LoadByRole(QueryUserListByRoleReq request)
         {
             var users = from userRole in UnitWork.Find<Relevance>(u =>
                     u.SecondId == request.roleId && u.RelKey == Define.USERROLE)
                 join user in UnitWork.Find<SysUser>(null) on userRole.FirstId equals user.Id into temp
                 from c in temp.Where(u =>u.Id != null)
                 select c;
-            return new TableData
+            return new PagedDynamicDataResp
             {
-                count =await users.CountAsync(),
-                data =await users.Skip((request.page - 1) * request.limit).Take(request.limit).ToListAsync()
+                Count =await users.CountAsync(),
+                Data =await users.Skip((request.page - 1) * request.limit).Take(request.limit).ToListAsync()
             };
         }
         /// <summary>
@@ -270,17 +270,17 @@ namespace OpenAuth.App
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<TableData> LoadByOrg(QueryUserListByOrgReq request)
+        public async Task<PagedDynamicDataResp> LoadByOrg(QueryUserListByOrgReq request)
         {
             var users = from userOrg in UnitWork.Find<Relevance>(u =>
                     u.SecondId == request.orgId && u.RelKey == Define.USERORG)
                 join user in UnitWork.Find<SysUser>(null) on userOrg.FirstId equals user.Id into temp
                 from c in temp.Where(u =>u.Id != null)
                 select c;
-            return new TableData
+            return new PagedDynamicDataResp
             {
-                count =await users.CountAsync(),
-                data =await users.Skip((request.page - 1) * request.limit).Take(request.limit).ToListAsync()
+                Count =await users.CountAsync(),
+                Data =await users.Skip((request.page - 1) * request.limit).Take(request.limit).ToListAsync()
             };
         }
         /// <summary>

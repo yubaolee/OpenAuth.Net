@@ -44,19 +44,19 @@ namespace OpenAuth.App
         /// <summary>
         /// 加载附件列表
         /// </summary>
-        public async Task<TableData> Load(QueryFileListReq request)
+        public async Task<PagedDynamicDataResp> Load(QueryFileListReq request)
         {
-            var result = new TableData();
+            var result = new PagedDynamicDataResp();
             var objs = UnitWork.Find<UploadFile>(null);
             if (!string.IsNullOrEmpty(request.key))
             {
                 objs = objs.Where(u => u.FileName.Contains(request.key) || u.FilePath.Contains(request.key));
             }
 
-            result.data =await objs.OrderByDescending(u => u.CreateTime)
+            result.Data =await objs.OrderByDescending(u => u.CreateTime)
                 .Skip((request.page - 1) * request.limit)
                 .Take(request.limit).ToListAsync();
-            result.count =await objs.CountAsync();
+            result.Count =await objs.CountAsync();
             return result;
         }
         

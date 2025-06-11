@@ -69,7 +69,7 @@ namespace OpenAuth.App
             return SugarClient.Queryable<SysResource>().Where(u => elementIds.Contains(u.Id) && (appId == null || appId =="" || u.AppId == appId)).ToArray();
         }
         
-        public async Task<TableData> Load(QueryResourcesReq request)
+        public async Task<PagedDynamicDataResp> Load(QueryResourcesReq request)
         {
             var loginContext = _auth.GetCurrentUser();
             if (loginContext == null)
@@ -84,7 +84,7 @@ namespace OpenAuth.App
             }
 
 
-            var result = new TableData();
+            var result = new PagedDynamicDataResp();
             var resources = GetDataPrivilege("u");
             if (!string.IsNullOrEmpty(request.key))
             {
@@ -104,11 +104,11 @@ namespace OpenAuth.App
             var columnnames = columnFields.Select(u => u.ColumnName);
             
             var propertyStr = string.Join(',', columnnames);
-            result.columnFields = columnFields;
-            result.data = resources.OrderBy(u => u.TypeId)
+            result.ColumnFields = columnFields;
+            result.Data = resources.OrderBy(u => u.TypeId)
                 .Skip((request.page - 1) * request.limit)
                 .Take(request.limit).Select($"{propertyStr}").ToList();
-            result.count = await resources.CountAsync();
+            result.Count = await resources.CountAsync();
             return result;
         }
 

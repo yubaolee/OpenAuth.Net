@@ -18,41 +18,33 @@ using OpenAuth.Repository.Domain;
 namespace OpenAuth.App.Response
 {
     /// <summary>
-    /// table的返回数据
+    /// 返回动态数据类型的分页数据
+    /// <para>带有列定义</para>
     /// </summary>
-    public class TableData
+    public class PagedDynamicDataResp : Infrastructure.Response
     {
-        /// <summary>
-        /// 状态码
-        /// </summary>
-        public int code { get; set; }
-        /// <summary>
-        /// 操作消息
-        /// </summary>
-        public string msg { get; set; }
-
         /// <summary>
         /// 总记录条数
         /// </summary>
-        public int count { get; set; }
+        public int Count { get; set; }
 
        
         /// <summary>
         ///  返回的表格列定义
         /// 该属性基于代码生成使用的列定义
         /// </summary>
-        public List<BuilderTableColumn> columnFields;
+        public List<BuilderTableColumn> ColumnFields{ get; set; }
 
         /// <summary>
         /// 数据内容
         /// </summary>
-        public dynamic data { get; set; }
+        public dynamic Data { get; set; }
 
-        public TableData()
+        public PagedDynamicDataResp()
         {
-            code = 200;
-            msg = "加载成功";
-            columnFields = new List<BuilderTableColumn>();
+            Code = 200;
+            Message = "加载成功";
+            ColumnFields = new List<BuilderTableColumn>();
         }
     }
 }

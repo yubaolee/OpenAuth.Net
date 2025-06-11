@@ -15,7 +15,7 @@ namespace OpenAuth.App
         /// <summary>
         /// 加载列表
         /// </summary>
-        public async Task<TableData> Load(QueryWmsInboundOrderTblListReq request)
+        public async Task<PagedDynamicDataResp> Load(QueryWmsInboundOrderTblListReq request)
         {
             var loginContext = _auth.GetCurrentUser();
             if (loginContext == null)
@@ -27,8 +27,8 @@ namespace OpenAuth.App
             {
                 throw new Exception("请在代码生成界面配置WmsInboundOrderTbl表的字段属性");
             }
-            var result = new TableData();
-            result.columnFields = columns;
+            var result = new PagedDynamicDataResp();
+            result.ColumnFields = columns;
             var objs = GetDataPrivilege("u");
             if (!string.IsNullOrEmpty(request.key))
             {
@@ -39,10 +39,10 @@ namespace OpenAuth.App
                 objs = objs.Where(request.sqlWhere);
             }
             var propertyStr = string.Join(',', columns.Select(u => u.ColumnName));
-            result.data = objs.OrderBy(u => u.Id)
+            result.Data = objs.OrderBy(u => u.Id)
                 .Skip((request.page - 1) * request.limit)
                 .Take(request.limit).Select($"{propertyStr}").ToList();
-            result.count = await objs.CountAsync();
+            result.Count = await objs.CountAsync();
             return result;
         }
         public void Add(AddOrUpdateWmsInboundOrderTblReq request)

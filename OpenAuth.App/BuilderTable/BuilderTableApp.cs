@@ -78,7 +78,7 @@ namespace OpenAuth.App
         /// <summary>
         /// 加载列表
         /// </summary>
-        public async Task<TableResp<BuilderTable>> Load(QueryBuilderTableListReq request)
+        public async Task<PagedListDataResp<BuilderTable>> Load(QueryBuilderTableListReq request)
         {
             var loginContext = _auth.GetCurrentUser();
             if (loginContext == null)
@@ -86,17 +86,17 @@ namespace OpenAuth.App
                 throw new CommonException("登录已过期", Define.INVALID_TOKEN);
             }
 
-            var result = new TableResp<BuilderTable>();
+            var result = new PagedListDataResp<BuilderTable>();
             var objs = UnitWork.Find<BuilderTable>(null);
             if (!string.IsNullOrEmpty(request.key))
             {
                 objs = objs.Where(u => u.Id.Contains(request.key));
             }
 
-            result.data = await objs.OrderBy(u => u.Id)
+            result.Data = await objs.OrderBy(u => u.Id)
                 .Skip((request.page - 1) * request.limit)
                 .Take(request.limit).ToListAsync();
-            result.count = await objs.CountAsync();
+            result.Count = await objs.CountAsync();
             return result;
         }
 
@@ -864,17 +864,17 @@ namespace OpenAuth.App
         /// 加载所有的主表（parentId为空的）
         /// </summary>
         /// <returns></returns>
-        public async Task<TableData> AllMain()
+        public async Task<PagedDynamicDataResp> AllMain()
         {
-            var result = new TableData();
+            var result = new PagedDynamicDataResp();
             var objs = UnitWork.Find<BuilderTable>(u => string.IsNullOrEmpty(u.ParentTableId)).Select(u => new
             {
                 Id = u.Id,
                 Name = u.TableName
             });
 
-            result.data = await objs.OrderBy(u => u.Id).ToListAsync();
-            result.count = await objs.CountAsync();
+            result.Data = await objs.OrderBy(u => u.Id).ToListAsync();
+            result.Count = await objs.CountAsync();
             return result;
         }
     }

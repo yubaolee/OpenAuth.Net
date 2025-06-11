@@ -59,7 +59,7 @@ namespace OpenAuth.WebApi.Controllers
         /// 加载列表
         /// </summary>
         [HttpGet]
-        public async Task<TableResp<FlowApprover>> Load([FromQuery] QueryApproverReq request)
+        public async Task<PagedListDataResp<FlowApprover>> Load([FromQuery] QueryApproverReq request)
         {
             return await _app.Load(request);
         }

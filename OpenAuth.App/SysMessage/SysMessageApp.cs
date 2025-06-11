@@ -22,7 +22,7 @@ namespace OpenAuth.App
         /// <summary>
         /// 加载列表
         /// </summary>
-        public async Task<TableData> Load(QuerySysMessageListReq request)
+        public async Task<PagedDynamicDataResp> Load(QuerySysMessageListReq request)
         {
             var loginContext = _auth.GetCurrentUser();
             if (loginContext == null)
@@ -30,7 +30,7 @@ namespace OpenAuth.App
                 throw new CommonException("登录已过期", Define.INVALID_TOKEN);
             }
 
-            var result = new TableData();
+            var result = new PagedDynamicDataResp();
             var objs = UnitWork.Find<SysMessage>(u =>u.ToId == loginContext.User.Id && u.ToStatus != -1);
 
             if (!string.IsNullOrEmpty(request.key))
@@ -44,10 +44,10 @@ namespace OpenAuth.App
                 objs = objs.Where(u => u.ToStatus == request.Status);
             }
 
-            result.data =await objs.OrderByDescending(u => u.CreateTime)
+            result.Data =await objs.OrderByDescending(u => u.CreateTime)
                 .Skip((request.page - 1) * request.limit)
                 .Take(request.limit).ToListAsync();
-            result.count = await objs.CountAsync();
+            result.Count = await objs.CountAsync();
             return result;
         }
 

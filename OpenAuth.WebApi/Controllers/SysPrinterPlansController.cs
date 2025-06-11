@@ -28,7 +28,7 @@ namespace OpenAuth.WebApi.Controllers
             var result = new Response<SysPrinterPlan>();
             try
             {
-                result.Result = _app.Get(id);
+                result.Data = _app.Get(id);
             }
             catch (Exception ex)
             {
@@ -46,7 +46,7 @@ namespace OpenAuth.WebApi.Controllers
             var result = new Response<string>();
             try
             {
-                result.Result=_app.Add(obj);
+                result.Data=_app.Add(obj);
 
             }
             catch (Exception ex)
@@ -68,7 +68,7 @@ namespace OpenAuth.WebApi.Controllers
             var result = new Response<List<DbTableInfo>>();
             try
             {
-                result.Result = _app.GetTables();
+                result.Data = _app.GetTables();
             }
             catch (Exception ex)
             {
@@ -90,7 +90,7 @@ namespace OpenAuth.WebApi.Controllers
             var result = new Response<List<DbColumnInfo>>();
             try
             {
-                result.Result = _app.GetColumns(tableViewName);
+                result.Data = _app.GetColumns(tableViewName);
             }
             catch (Exception ex)
             {
@@ -124,7 +124,7 @@ namespace OpenAuth.WebApi.Controllers
         /// 加载列表
         /// </summary>
         [HttpGet]
-        public async Task<TableData> Load([FromQuery]QuerySysPrinterPlanListReq request)
+        public async Task<PagedDynamicDataResp> Load([FromQuery]QuerySysPrinterPlanListReq request)
         {
             return await _app.Load(request);
         }
@@ -133,7 +133,7 @@ namespace OpenAuth.WebApi.Controllers
         /// 打印方案根据数据源获取打印数据
         /// </summary>
         [HttpPost]
-        public async Task<TableData> Query([FromBody] QueryReq request)
+        public async Task<PagedDynamicDataResp> Query([FromBody] QueryReq request)
         {
             return await _app.Query(request);
         }

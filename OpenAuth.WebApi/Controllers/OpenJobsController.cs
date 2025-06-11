@@ -28,7 +28,7 @@ namespace OpenAuth.WebApi.Controllers
             var result = new Response<OpenJob>();
             try
             {
-                result.Result = _app.Get(id);
+                result.Data = _app.Get(id);
             }
             catch (Exception ex)
             {
@@ -89,7 +89,7 @@ namespace OpenAuth.WebApi.Controllers
         /// 加载列表
         /// </summary>
         [HttpGet]
-        public async Task<TableData> Load([FromQuery]QueryOpenJobListReq request)
+        public async Task<PagedDynamicDataResp> Load([FromQuery]QueryOpenJobListReq request)
         {
             return await _app.Load(request);
         }
@@ -124,7 +124,7 @@ namespace OpenAuth.WebApi.Controllers
             var result = new Response<List<string>>();
             try
             {
-                result.Result = _app.QueryLocalHandlers();
+                result.Data = _app.QueryLocalHandlers();
             }
             catch (Exception ex)
             {

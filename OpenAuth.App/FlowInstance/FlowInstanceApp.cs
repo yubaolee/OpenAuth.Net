@@ -672,9 +672,9 @@ namespace OpenAuth.App
             return resp;
         }
 
-        public async Task<TableData> Load(QueryFlowInstanceListReq request)
+        public async Task<PagedDynamicDataResp> Load(QueryFlowInstanceListReq request)
         {
-            var result = new TableData();
+            var result = new PagedDynamicDataResp();
             var user = _auth.GetCurrentUser();
             //行转列专用SQL
             string groupConcatSql = $@" ( SELECT GROUP_CONCAT(Account SEPARATOR ',')
@@ -828,8 +828,8 @@ namespace OpenAuth.App
             var finalQuery = SugarClient.SqlQueryable<FlowInstance>(sql)
                 .WhereIF(!string.IsNullOrEmpty(request.key), t => t.CustomName.Contains(request.key));
 
-            result.count = await finalQuery.CountAsync();
-            result.data = await finalQuery.OrderByDescending(u => u.CreateDate)
+            result.Count = await finalQuery.CountAsync();
+            result.Data = await finalQuery.OrderByDescending(u => u.CreateDate)
                 .ToPageListAsync(request.page, request.limit);
 
             return result;

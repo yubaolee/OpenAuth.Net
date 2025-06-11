@@ -18,7 +18,7 @@ namespace OpenAuth.App
         /// <summary>
         /// 加载列表
         /// </summary>
-        public async Task<TableData> Load(QueryExternalDataSourceListReq request)
+        public async Task<PagedDynamicDataResp> Load(QueryExternalDataSourceListReq request)
         {
             var loginContext = _auth.GetCurrentUser();
             if (loginContext == null)
@@ -26,7 +26,7 @@ namespace OpenAuth.App
                 throw new CommonException("登录已过期", Define.INVALID_TOKEN);
             }
 
-            var result = new TableData();
+            var result = new PagedDynamicDataResp();
             var objs = GetDataPrivilege("u");
             if (!string.IsNullOrEmpty(request.key))
             {
@@ -37,10 +37,10 @@ namespace OpenAuth.App
                 objs = objs.Where(request.sqlWhere);
             }
 
-            result.data = objs.OrderBy(u => u.Name)
+            result.Data = objs.OrderBy(u => u.Name)
                 .Skip((request.page - 1) * request.limit)
                 .Take(request.limit).ToList();
-            result.count = await objs.CountAsync();
+            result.Count = await objs.CountAsync();
             return result;
         }
 
@@ -48,15 +48,15 @@ namespace OpenAuth.App
         /// 获取数据库类型
         /// </summary>
         /// <returns></returns>
-        public TableData GetDbTypes()
+        public PagedDynamicDataResp GetDbTypes()
         {
-            var result = new TableData();
+            var result = new PagedDynamicDataResp();
             // 创建包含键值对的列表
             var dbTypeList = Enum.GetValues(typeof(DbType))
                 .Cast<DbType>()
                 .Select(item => new { label = item.ToString(), value = (int)item })
                 .ToList();
-            result.data = dbTypeList;
+            result.Data = dbTypeList;
             return result;
         }
 

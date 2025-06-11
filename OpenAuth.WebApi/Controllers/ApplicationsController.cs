@@ -25,13 +25,13 @@ namespace OpenAuth.WebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<TableData> Load([FromQuery]QueryAppListReq request)
+        public async Task<PagedDynamicDataResp> Load([FromQuery]QueryAppListReq request)
         {
             var applications =await _app.GetList(request);
-            return new TableData
+            return new PagedDynamicDataResp
             {
-                data = applications,
-                count = applications.Count
+                Data = applications,
+                Count = applications.Count
             };
         }
 

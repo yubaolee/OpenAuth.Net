@@ -24,7 +24,7 @@ namespace OpenAuth.WebApi.Controllers
             var result = new Response<UserView>();
             try
             {
-                result.Result = _app.Get(id);
+                result.Data = _app.Get(id);
             }
             catch (Exception ex)
             {
@@ -89,7 +89,7 @@ namespace OpenAuth.WebApi.Controllers
             try
             {
                 _app.AddOrUpdate(obj);
-                result.Result = obj.Id;   //返回ID
+                result.Data = obj.Id;   //返回ID
             }
             catch (Exception ex)
             {
@@ -106,7 +106,7 @@ namespace OpenAuth.WebApi.Controllers
         /// 获取当前登录用户可访问的一个部门及子部门全部用户
         /// </summary>
         [HttpGet]
-        public async Task<TableData> Load([FromQuery]QueryUserListReq request)
+        public async Task<PagedDynamicDataResp> Load([FromQuery]QueryUserListReq request)
         {
             return await _app.Load(request);
         }
@@ -116,7 +116,7 @@ namespace OpenAuth.WebApi.Controllers
         /// 为了控制权限，通常只用于流程实例选择执行角色，其他地方请使用Load
         /// </summary>
         [HttpGet]
-        public async Task<TableResp<UserView>> LoadAll([FromQuery]QueryUserListReq request)
+        public async Task<PagedListDataResp<UserView>> LoadAll([FromQuery]QueryUserListReq request)
         {
             return await _app.LoadAll(request);
         }
@@ -143,7 +143,7 @@ namespace OpenAuth.WebApi.Controllers
         /// 加载指定角色的用户
         /// </summary>
         [HttpGet]
-        public async Task<TableData> LoadByRole([FromQuery]QueryUserListByRoleReq request)
+        public async Task<PagedDynamicDataResp> LoadByRole([FromQuery]QueryUserListByRoleReq request)
         {
             return await _app.LoadByRole(request);
         }
@@ -153,7 +153,7 @@ namespace OpenAuth.WebApi.Controllers
         /// 不包含下级部门的用户
         /// </summary>
         [HttpGet]
-        public async Task<TableData> LoadByOrg([FromQuery]QueryUserListByOrgReq request)
+        public async Task<PagedDynamicDataResp> LoadByOrg([FromQuery]QueryUserListByOrgReq request)
         {
             return await _app.LoadByOrg(request);
         }

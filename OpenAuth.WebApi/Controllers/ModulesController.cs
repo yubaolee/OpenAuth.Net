@@ -37,7 +37,7 @@ namespace OpenAuth.WebApi.Controllers
             var result = new Response<IEnumerable<Module>>();
             try
             {
-                result.Result = _app.LoadForRole(firstId);
+                result.Data = _app.LoadForRole(firstId);
             }
             catch (Exception ex)
             {
@@ -58,7 +58,7 @@ namespace OpenAuth.WebApi.Controllers
             var result = new Response<IEnumerable<ModuleElement>>();
             try
             {
-                result.Result = _app.LoadMenusForRole(moduleId, firstId);
+                result.Data = _app.LoadMenusForRole(moduleId, firstId);
             }
             catch (Exception ex)
             {
@@ -81,7 +81,7 @@ namespace OpenAuth.WebApi.Controllers
             var result = new Response<IEnumerable<string>>();
             try
             {
-                result.Result = _app.LoadPropertiesForRole(roleId, moduleCode);
+                result.Data = _app.LoadPropertiesForRole(roleId, moduleCode);
             }
             catch (Exception ex)
             {
@@ -105,7 +105,7 @@ namespace OpenAuth.WebApi.Controllers
                 var user = _authUtil.GetCurrentUser();
                 if (string.IsNullOrEmpty(moduleId))
                 {
-                    result.Result = user.ModuleElements;
+                    result.Data = user.ModuleElements;
                 }
                 else
                 {
@@ -115,7 +115,7 @@ namespace OpenAuth.WebApi.Controllers
                         throw new Exception("模块不存在");
                     }
 
-                    result.Result = module.Elements;
+                    result.Data = module.Elements;
                 }
             }
             catch (Exception ex)
@@ -138,7 +138,7 @@ namespace OpenAuth.WebApi.Controllers
             try
             {
                 _app.Add(obj);
-                result.Result = obj;
+                result.Data = obj;
             }
             catch (Exception ex)
             {
@@ -198,7 +198,7 @@ namespace OpenAuth.WebApi.Controllers
             try
             {
                 _app.AddMenu(obj);
-                result.Result = obj;
+                result.Data = obj;
             }
             catch (Exception ex)
             {
@@ -259,7 +259,7 @@ namespace OpenAuth.WebApi.Controllers
             var result = new Response<List<SysPrinterPlan>>();
             try
             {
-                result.Result = _app.LoadPrinterPlans(moduleId).ToList();
+                result.Data = _app.LoadPrinterPlans(moduleId).ToList();
             }
             catch (Exception ex)
             {
@@ -279,7 +279,7 @@ namespace OpenAuth.WebApi.Controllers
             var result = new Response<List<FlowScheme>>();
             try
             {
-                result.Result = _app.LoadFlowSchemes(moduleId).ToList();
+                result.Data = _app.LoadFlowSchemes(moduleId).ToList();
             }
             catch (Exception ex)
             {

@@ -31,11 +31,11 @@ namespace OpenAuth.WebApi.Controllers
             var result = new Response<FormResp>();
             try
             {
-                result.Result = _app.FindSingle(id);
+                result.Data = _app.FindSingle(id);
 
                 if (!string.IsNullOrEmpty(canWriteFormItemIds))
                 {
-                    result.Result.CanWriteFormItemIds = JsonHelper.Instance.Deserialize<string[]>(canWriteFormItemIds);
+                    result.Data.CanWriteFormItemIds = JsonHelper.Instance.Deserialize<string[]>(canWriteFormItemIds);
                 }
             }
             catch (Exception ex)
@@ -89,7 +89,7 @@ namespace OpenAuth.WebApi.Controllers
         /// 加载列表
         /// </summary>
         [HttpGet]
-        public async Task<TableData> Load([FromQuery]QueryFormListReq request)
+        public async Task<PagedDynamicDataResp> Load([FromQuery]QueryFormListReq request)
         {
             return await _app.Load(request);
         }

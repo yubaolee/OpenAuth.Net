@@ -32,7 +32,7 @@ namespace OpenAuth.WebApi.Controllers
             var result = new Response<Role>();
             try
             {
-                result.Result = _app.Get(id);
+                result.Data = _app.Get(id);
             }
             catch (Exception ex)
             {
@@ -53,7 +53,7 @@ namespace OpenAuth.WebApi.Controllers
             try
             {
                 _app.Add(obj);
-                result.Result = obj;
+                result.Data = obj;
 
             }
             catch (Exception ex)
@@ -93,7 +93,7 @@ namespace OpenAuth.WebApi.Controllers
         /// 为了控制权限，通常只用于流程实例选择执行角色，其他地方请使用Load
         /// </summary>
         [HttpGet]
-        public async Task<TableResp<Role>> LoadAll([FromQuery]QueryRoleListReq request)
+        public async Task<PagedListDataResp<Role>> LoadAll([FromQuery]QueryRoleListReq request)
         {
             return await _app.LoadAll(request);
         }
@@ -107,7 +107,7 @@ namespace OpenAuth.WebApi.Controllers
             var result = new Response<List<Role>>();
             try
             {
-                result.Result = _app.Load(request);
+                result.Data = _app.Load(request);
 
             }
             catch (Exception ex)
@@ -128,7 +128,7 @@ namespace OpenAuth.WebApi.Controllers
             var result = new Response<List<string>>();
             try
             {
-                result.Result = _revelanceManagerApp.Get(Define.USERROLE, true, userId);
+                result.Data = _revelanceManagerApp.Get(Define.USERROLE, true, userId);
             }
             catch (Exception e)
             {

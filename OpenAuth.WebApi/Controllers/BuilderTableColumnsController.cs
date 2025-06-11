@@ -26,7 +26,7 @@ namespace OpenAuth.WebApi.Controllers
             var result = new Response<BuilderTableColumn>();
             try
             {
-                result.Result = _app.Get(id);
+                result.Data = _app.Get(id);
             }
             catch (Exception ex)
             {
@@ -83,7 +83,7 @@ namespace OpenAuth.WebApi.Controllers
         /// 加载列表
         /// </summary>
         [HttpGet]
-        public async Task<TableResp<BuilderTableColumn>> Load([FromQuery]QueryBuilderTableColumnListReq request)
+        public async Task<PagedListDataResp<BuilderTableColumn>> Load([FromQuery]QueryBuilderTableColumnListReq request)
         {
             var tableResp = await _app.Load(request);
             return tableResp;

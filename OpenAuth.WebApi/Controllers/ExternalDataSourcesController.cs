@@ -26,7 +26,7 @@ namespace OpenAuth.WebApi.Controllers
             var result = new Response<ExternalDataSource>();
             try
             {
-                result.Result = _app.Get(id);
+                result.Data = _app.Get(id);
             }
             catch (Exception ex)
             {
@@ -98,7 +98,7 @@ namespace OpenAuth.WebApi.Controllers
         /// 加载列表
         /// </summary>
         [HttpGet]
-        public async Task<TableData> Load([FromQuery]QueryExternalDataSourceListReq request)
+        public async Task<PagedDynamicDataResp> Load([FromQuery]QueryExternalDataSourceListReq request)
         {
             return await _app.Load(request);
         }
@@ -108,7 +108,7 @@ namespace OpenAuth.WebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public TableData GetDbTypes()
+        public PagedDynamicDataResp GetDbTypes()
         {
             
             return _app.GetDbTypes();

@@ -17,19 +17,19 @@ namespace OpenAuth.App
         /// <summary>
         /// 加载列表
         /// </summary>
-        public async Task<TableData> Load(QuerySysLogListReq request)
+        public async Task<PagedDynamicDataResp> Load(QuerySysLogListReq request)
         {
-            var result = new TableData();
+            var result = new PagedDynamicDataResp();
             var objs = UnitWork.Find<SysLog>(null);
             if (!string.IsNullOrEmpty(request.key))
             {
                 objs = objs.Where(u => u.Content.Contains(request.key) || u.Id.Contains(request.key));
             }
 
-            result.data = await objs.OrderByDescending(u => u.CreateTime)
+            result.Data = await objs.OrderByDescending(u => u.CreateTime)
                 .Skip((request.page - 1) * request.limit)
                 .Take(request.limit).ToListAsync();
-            result.count = await objs.CountAsync();
+            result.Count = await objs.CountAsync();
             return result;
         }
 

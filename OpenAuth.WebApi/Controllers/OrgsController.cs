@@ -25,7 +25,7 @@ namespace OpenAuth.WebApi.Controllers
             var result = new Response<SysOrg>();
             try
             {
-                result.Result = _app.Get(id);
+                result.Data = _app.Get(id);
             }
             catch (Exception ex)
             {
@@ -49,7 +49,7 @@ namespace OpenAuth.WebApi.Controllers
             try
             {
                 _app.Add(obj);
-                result.Result = obj;
+                result.Data = obj;
             }
             catch (Exception ex)
             {

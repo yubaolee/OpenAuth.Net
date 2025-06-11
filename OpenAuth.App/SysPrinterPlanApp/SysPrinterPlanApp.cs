@@ -17,7 +17,7 @@ namespace OpenAuth.App
         /// <summary>
         /// 加载列表
         /// </summary>
-        public async Task<TableData> Load(QuerySysPrinterPlanListReq request)
+        public async Task<PagedDynamicDataResp> Load(QuerySysPrinterPlanListReq request)
         {
             var loginContext = _auth.GetCurrentUser();
             if (loginContext == null)
@@ -31,7 +31,7 @@ namespace OpenAuth.App
                 throw new Exception("请在代码生成界面配置SysPrinterPlan表的字段属性");
             }
 
-            var result = new TableData();
+            var result = new PagedDynamicDataResp();
             var objs = GetDataPrivilege("u");
             if (!string.IsNullOrEmpty(request.key))
             {
@@ -47,17 +47,17 @@ namespace OpenAuth.App
             var columnnames = columnFields.Select(u => u.ColumnName);
            
             var propertyStr = string.Join(',', columnnames);
-            result.columnFields = columnFields;
-            result.data = objs.OrderByDescending(u => u.CreateTime)
+            result.ColumnFields = columnFields;
+            result.Data = objs.OrderByDescending(u => u.CreateTime)
                 .Skip((request.page - 1) * request.limit)
                 .Take(request.limit).Select($"{propertyStr}").ToList();
-            result.count = await objs.CountAsync();
+            result.Count = await objs.CountAsync();
             return result;
         }
         
-        public async Task<TableData> Query(QueryReq request)
+        public async Task<PagedDynamicDataResp> Query(QueryReq request)
         {
-            var result = new TableData();
+            var result = new PagedDynamicDataResp();
 
             var sugarParams = new List<SugarParameter>();
             if (!string.IsNullOrEmpty(request.ParamJsonStr))
@@ -70,8 +70,8 @@ namespace OpenAuth.App
             }
             
             var objs = await SugarClient.Ado.SqlQueryAsync<dynamic>(request.SourceSql,sugarParams);
-            result.count = SugarClient.Ado.SqlQuery<dynamic>(request.SourceSql, sugarParams).Count;
-            result.data = objs.Skip((request.page - 1) * request.limit)
+            result.Count = SugarClient.Ado.SqlQuery<dynamic>(request.SourceSql, sugarParams).Count;
+            result.Data = objs.Skip((request.page - 1) * request.limit)
                 .Take(request.limit).ToList();
 
             return result;

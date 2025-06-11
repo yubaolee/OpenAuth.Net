@@ -64,19 +64,19 @@ namespace OpenAuth.App
         }
 
 
-        public async Task<TableData> Load(QueryFlowSchemeListReq request)
+        public async Task<PagedDynamicDataResp> Load(QueryFlowSchemeListReq request)
         {
-            var result = new TableData();
+            var result = new PagedDynamicDataResp();
             var objs = GetDataPrivilege("u");
             if (!string.IsNullOrEmpty(request.key))
             {
                 objs = objs.Where(u => u.SchemeName.Contains(request.key) || u.Id.Contains(request.key));
             }
 
-            result.data = await objs.OrderByDescending(u => u.CreateDate)
+            result.Data = await objs.OrderByDescending(u => u.CreateDate)
                 .Skip((request.page - 1) * request.limit)
                 .Take(request.limit).ToListAsync();
-            result.count = await objs.CountAsync();
+            result.Count = await objs.CountAsync();
             return result;
         }
 

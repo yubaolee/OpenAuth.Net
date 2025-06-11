@@ -60,7 +60,7 @@ using OpenAuth.App.Response;
         /// 加载列表
         /// </summary>
         [HttpGet]
-        public async Task<TableData> Load([FromQuery]QueryCategoryTypeListReq request)
+        public async Task<PagedDynamicDataResp> Load([FromQuery]QueryCategoryTypeListReq request)
         {
             return await _app.Load(request);
         }

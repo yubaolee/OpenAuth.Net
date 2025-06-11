@@ -30,7 +30,7 @@ namespace OpenAuth.WebApi.Controllers
             var result = new Response<string>();
             try
             {
-                result.Result = _app.Add(obj);
+                result.Data = _app.Add(obj);
 
             }
             catch (Exception ex)
@@ -69,7 +69,7 @@ namespace OpenAuth.WebApi.Controllers
         /// 加载列表
         /// </summary>
         [HttpGet]
-        public async Task<TableResp<BuilderTable>> Load([FromQuery]QueryBuilderTableListReq request)
+        public async Task<PagedListDataResp<BuilderTable>> Load([FromQuery]QueryBuilderTableListReq request)
         {
             return await _app.Load(request);
         }
@@ -78,7 +78,7 @@ namespace OpenAuth.WebApi.Controllers
         /// 加载所有的主表（parentId为空的）
         /// </summary>
         [HttpGet]
-        public async Task<TableData> AllMain()
+        public async Task<PagedDynamicDataResp> AllMain()
         {
             return await _app.AllMain();
         }

@@ -36,16 +36,16 @@ namespace OpenAuth.App
         /// </summary>
         /// <param name="req">查询参数</param>
         /// <returns></returns>
-        public async Task<TableData> GetList(QueryDynamicListReq req)
+        public async Task<PagedDynamicDataResp> GetList(QueryDynamicListReq req)
         {
-            var result = new TableData();
+            var result = new PagedDynamicDataResp();
             try
             {
                 // 验证表名是否存在
                 if (!TableExists(req.TableName))
                 {
-                    result.code = 500;
-                    result.msg = $"表不存在：{req.TableName}";
+                    result.Code = 500;
+                    result.Message = $"表不存在：{req.TableName}";
                     return result;
                 }
 
@@ -78,13 +78,13 @@ namespace OpenAuth.App
                     .Take(req.limit)
                     .ToListAsync();
 
-                result.data = list;
-                result.count = total;
+                result.Data = list;
+                result.Count = total;
             }
             catch (Exception ex)
             {
-                result.code = 500;
-                result.msg = ex.InnerException?.Message ?? ex.Message;
+                result.Code = 500;
+                result.Message = ex.InnerException?.Message ?? ex.Message;
             }
 
             return result;
@@ -122,7 +122,7 @@ namespace OpenAuth.App
                     return result;
                 }
 
-                result.Result = entity;
+                result.Data = entity;
             }
             catch (Exception ex)
             {

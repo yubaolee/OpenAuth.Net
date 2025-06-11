@@ -33,7 +33,7 @@ namespace OpenAuth.WebApi.Controllers
             var result = new Response<FlowVerificationResp>();
             try
             {
-                result.Result = _app.GetForVerification(id);
+                result.Data = _app.GetForVerification(id);
             }
             catch (Exception ex)
             {
@@ -53,7 +53,7 @@ namespace OpenAuth.WebApi.Controllers
             var result = new Response<List<FlowInstanceOperationHistory>>();
             try
             {
-                result.Result= _app.QueryHistories(request);
+                result.Data= _app.QueryHistories(request);
             }
             catch (Exception ex)
             {
@@ -73,7 +73,7 @@ namespace OpenAuth.WebApi.Controllers
             var result = new Response<string>();
             try
             {
-                result.Result = _app.CreateInstance(obj);
+                result.Data = _app.CreateInstance(obj);
             }
             catch (Exception ex)
             {
@@ -192,7 +192,7 @@ namespace OpenAuth.WebApi.Controllers
         /// 加载列表
         /// </summary>
         [HttpGet]
-        public async Task<TableData> Load([FromQuery]QueryFlowInstanceListReq request)
+        public async Task<PagedDynamicDataResp> Load([FromQuery]QueryFlowInstanceListReq request)
         {
             return await _app.Load(request);
         }

@@ -15,7 +15,7 @@ namespace OpenAuth.App
         /// <summary>
         /// 加载列表
         /// </summary>
-        public async Task<TableData> Load(QueryDataPrivilegeRuleListReq request)
+        public async Task<PagedDynamicDataResp> Load(QueryDataPrivilegeRuleListReq request)
         {
             var loginContext = _auth.GetCurrentUser();
             if (loginContext == null)
@@ -29,7 +29,7 @@ namespace OpenAuth.App
                 throw new Exception("请在代码生成界面配置DataPrivilegeRule表的字段属性");
             }
 
-            var result = new TableData();
+            var result = new PagedDynamicDataResp();
             var objs = SugarClient.Queryable<DataPrivilegeRule>();
             if (!string.IsNullOrEmpty(request.key))
             {
@@ -41,11 +41,11 @@ namespace OpenAuth.App
             }
 
             var propertyStr = string.Join(',', columnFields.Select(u => u.ColumnName));
-            result.columnFields = columnFields;
-            result.data = objs.OrderBy(u => u.Id)
+            result.ColumnFields = columnFields;
+            result.Data = objs.OrderBy(u => u.Id)
                 .Skip((request.page - 1) * request.limit)
                 .Take(request.limit).Select($"{propertyStr}").ToList();
-            result.count = await objs.CountAsync();
+            result.Count = await objs.CountAsync();
             return result;
         }
 

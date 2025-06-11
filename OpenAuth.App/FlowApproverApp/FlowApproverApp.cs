@@ -70,13 +70,13 @@ namespace OpenAuth.App
         /// <summary>
         /// 加载当前节点的加签人
         /// </summary>
-        public async Task<TableResp<FlowApprover>> Load(QueryApproverReq request)
+        public async Task<PagedListDataResp<FlowApprover>> Load(QueryApproverReq request)
         {
             var objs = await Repository.GetListAsync(u =>
                 u.InstanceId == request.FlowInstanceId && u.ActivityId == request.ActivityId);
-            return new TableResp<FlowApprover>()
+            return new PagedListDataResp<FlowApprover>()
             {
-                data = objs
+                Data = objs
             };
         }
 

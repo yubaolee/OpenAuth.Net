@@ -33,7 +33,7 @@ namespace OpenAuth.WebApi.Controllers
         /// 加载附件列表
         /// </summary>
         [HttpGet]
-        public async Task<TableData> Load([FromQuery]QueryFileListReq request)
+        public async Task<PagedDynamicDataResp> Load([FromQuery]QueryFileListReq request)
         {
             return await _app.Load(request);
         }
@@ -74,7 +74,7 @@ namespace OpenAuth.WebApi.Controllers
             var result = new Response<IList<UploadFile>>();
             try
             {
-                result.Result = _app.Add(files);
+                result.Data = _app.Add(files);
             }
             catch (Exception ex)
             {
@@ -99,7 +99,7 @@ namespace OpenAuth.WebApi.Controllers
             try
             {
                 var files = HttpContext.Request.Form.Files;
-                result.Result = _app.Add(files);
+                result.Data = _app.Add(files);
             }
             catch (Exception ex)
             {

@@ -29,6 +29,6 @@
         /// <summary>
         /// 回传的结果
         /// </summary>
-        public T Result { get; set; }
+        public T Data { get; set; }
     }
 }

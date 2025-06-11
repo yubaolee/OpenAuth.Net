@@ -36,19 +36,19 @@ namespace OpenAuth.App
         /// 获取所有的角色
         /// 为了控制权限，通常只用于流程实例选择执行角色，其他地方请使用Load
         /// </summary>
-        public async Task<TableResp<Role>> LoadAll(QueryRoleListReq request)
+        public async Task<PagedListDataResp<Role>> LoadAll(QueryRoleListReq request)
         {
-            var result = new TableResp<Role>();
+            var result = new PagedListDataResp<Role>();
             var objs = UnitWork.Find<Role>(null);
             if (!string.IsNullOrEmpty(request.key))
             {
                 objs = objs.Where(u => u.Name.Contains(request.key));
             }
 
-            result.data = await objs.OrderBy(u => u.Name)
+            result.Data = await objs.OrderBy(u => u.Name)
                 .Skip((request.page - 1) * request.limit)
                 .Take(request.limit).ToListAsync();
-            result.count = await objs.CountAsync();
+            result.Count = await objs.CountAsync();
             return result;
         }
 

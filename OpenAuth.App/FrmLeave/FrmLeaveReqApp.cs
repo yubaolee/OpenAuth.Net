@@ -18,12 +18,12 @@ namespace OpenAuth.App
         /// <summary>
         /// 加载列表
         /// </summary>
-        public async Task<TableData> Load(QueryFrmLeaveReqListReq request)
+        public async Task<PagedDynamicDataResp> Load(QueryFrmLeaveReqListReq request)
         {
-             return new TableData
+             return new PagedDynamicDataResp
             {
-                count = await Repository.CountAsync(null),
-                data = await Repository.Find(request.page, request.limit, "Id desc").ToListAsync()
+                Count = await Repository.CountAsync(null),
+                Data = await Repository.Find(request.page, request.limit, "Id desc").ToListAsync()
             };
         }
 
