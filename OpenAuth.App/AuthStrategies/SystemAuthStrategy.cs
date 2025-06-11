@@ -85,11 +85,6 @@ namespace OpenAuth.App
             return SugarClient.Queryable<BuilderTableColumn>().Where(u => u.TableName.ToLower() == moduleCode.ToLower()).ToList();
         }
 
-        public List<BuilderTableColumn> GetTableColumnsFromDb(string moduleCode)
-        {
-            return _dbExtension.GetTableColumnsFromDb(moduleCode);
-        }
-
 
         public SystemAuthStrategy(ISqlSugarClient client,DbExtension dbExtension) : base(client, null)
         {

@@ -32,53 +32,6 @@ namespace OpenAuth.App
         }
 
         /// <summary>
-        /// 通过实体获取字段定义，因为MVC版本没有代码生成界面，只能通过这种方式
-        /// </summary>
-        /// <param name="moduleName">模块名称/表名</param>
-        /// <returns></returns>
-        [Obsolete("因为MVC版本没有代码生成界面，只能通过这种方式")]
-        public List<BuilderTableColumn> GetTableColumnsFromDb(string moduleName)
-        {
-            var result = new List<BuilderTableColumn>();
-            
-            //获取所有继承了StringEntity的类型
-            //单元测试时，这个一直报错？？？？奇怪
-            var entiTypes = typeof(StringEntity).Assembly.GetTypes().Where(u => typeof(StringEntity).IsAssignableFrom(u) && !u.IsAbstract).ToList();
-
-            var entityType = entiTypes.FirstOrDefault(u => u.Name.ToLower() == moduleName.ToLower());
-            if (entityType == null)
-            {
-                throw new Exception($"未能找到{moduleName}对应的实体类");
-            }
-
-            foreach (var property in entityType.GetProperties())
-            {
-                object[] objs = property.GetCustomAttributes(typeof(DescriptionAttribute), true);
-                object[] browsableObjs = property.GetCustomAttributes(typeof(BrowsableAttribute), true);
-                var description = objs.Length > 0 ? ((DescriptionAttribute)objs[0]).Description : property.Name;
-                if (string.IsNullOrEmpty(description)) description = property.Name;
-                //如果没有BrowsableAttribute或 [Browsable(true)]表示可见，其他均为不可见，需要前端配合显示
-                bool browsable = browsableObjs == null || browsableObjs.Length == 0 ||
-                                 ((BrowsableAttribute)browsableObjs[0]).Browsable;
-                var typeName = property.PropertyType.Name;
-                if (Nullable.GetUnderlyingType(property.PropertyType) != null)
-                {
-                    typeName = Nullable.GetUnderlyingType(property.PropertyType).Name;
-                }
-                result.Add(new BuilderTableColumn
-                {
-                    ColumnName = property.Name,
-                    TableName = moduleName,
-                    Remark = description,
-                    IsList = browsable,
-                    ColumnType = typeName
-                });
-            }
-
-            return result;
-        }
-
-        /// <summary>
         /// 获取数据库表结构信息
         /// </summary>
         /// <param name="tableName"></param>

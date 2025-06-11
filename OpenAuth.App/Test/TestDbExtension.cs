@@ -9,16 +9,6 @@ namespace OpenAuth.App.Test
     class TestDbExtension :TestBase
     {
         private ILog log = LogManager.GetLogger(typeof(TestDbExtension));
-
-        [Test]
-        public void TestGetProperties()
-        {
-           
-            var app = _autofacServiceProvider.GetService<DbExtension>();
-
-            var result = app.GetTableColumnsFromDb("Category");
-            Console.WriteLine(JsonHelper.Instance.Serialize(result));
-        }
         
         [Test]
         public void TestGetTables()
