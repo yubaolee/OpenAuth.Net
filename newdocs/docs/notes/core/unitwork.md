@@ -43,19 +43,19 @@ namespace OpenAuth.App
         /// <summary>
         /// 加载列表
         /// </summary>
-        public TableData Load(QueryStockListReq request)
+        public PagedDynamicDataResp Load(QueryStockListReq request)
         {
-            var result = new TableData();
+            var result = new PagedDynamicDataResp();
             var objs = Repository.Find(null);
             if (!string.IsNullOrEmpty(request.key))
             {
                 objs = objs.Where(u => u.Id.Contains(request.key));
             }
 
-            result.data = objs.OrderBy(u => u.Id)
+            result.Data = objs.OrderBy(u => u.Id)
                 .Skip((request.page - 1) * request.limit)
                 .Take(request.limit);
-            result.count = objs.Count();
+            result.Count = objs.Count();
             return result;
         }
 

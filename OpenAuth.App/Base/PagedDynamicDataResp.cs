@@ -6,7 +6,7 @@
 // Last Modified By : yubaolee
 // Last Modified On : 03-09-2016
 // ***********************************************************************
-// <copyright file="TableData.cs" company="Microsoft">
+// <copyright file="PagedDynamicDataResp.cs" company="Microsoft">
 //     版权所有(C) Microsoft 2015
 // </copyright>
 // <summary>layui datatable数据返回</summary>

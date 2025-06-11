@@ -34,11 +34,11 @@ if (columnFields == null || columnFields.Count == 0)
 }
 
 var propertyStr = string.Join(',', columnFields.Select(u => u.ColumnName));
-result.columnFields = columnFields;
-result.data = resources.OrderBy(u => u.TypeId)
+result.ColumnFields = columnFields;
+result.Data = resources.OrderBy(u => u.TypeId)
 	.Skip((request.page - 1) * request.limit)
 	.Take(request.limit).Select($"new ({propertyStr})");
-result.count = await resources.CountAsync();
+result.Count = await resources.CountAsync();
 return result;
 ```
 

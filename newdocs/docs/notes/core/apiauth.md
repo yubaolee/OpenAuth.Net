@@ -51,7 +51,7 @@ X-Token: e4a5aa00
 ```csharp
 [HttpGet]
 [AllowAnonymous]
-public async Task<TableData> Load([FromQuery]QueryWmsInboundOrderDtblListReq request)
+public async Task<PagedDynamicDataResp> Load([FromQuery]QueryWmsInboundOrderDtblListReq request)
 {
     return await _app.Load(request);
 }

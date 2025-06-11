@@ -79,7 +79,7 @@ namespace OpenAuth.WebApi.Controllers
         /// 加载列表
         /// </summary>
         [HttpGet]
-        public async Task<TableData> Load([FromQuery]Query{ClassName}ListReq request)
+        public async Task<PagedDynamicDataResp> Load([FromQuery]Query{ClassName}ListReq request)
         {
             return await _app.Load(request);
         }

@@ -116,7 +116,7 @@ const handleSearch = () => {
 ```csharp
 public class XXApp : SqlSugarBaseApp<XX>
 {
-  public async Task<TableData> Load(QueryXXListReq request)
+  public async Task<PagedDynamicDataResp> Load(QueryXXListReq request)
     {
         //...
         if (!string.IsNullOrEmpty(request.sqlWhere))
