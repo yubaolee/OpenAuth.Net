@@ -47,7 +47,7 @@ const user = {
     GetInfo({ commit, state }) {
       return new Promise((resolve, reject) => {
         getInfo(state.token).then(response => {
-          commit('SET_NAME', response.result)
+          commit('SET_NAME', response.data)
           resolve(response)
         }).catch(error => {
           reject(error)
@@ -59,7 +59,7 @@ const user = {
     GetDefaultOrg({ commit, state }) {
       return new Promise((resolve, reject) => {
         getOrgs(state.token).then(response => {
-          commit('SET_DEFAULTORG', response.result[0])
+          commit('SET_DEFAULTORG', response.data[0])
           resolve(response)
         }).catch(error => {
           reject(error)
@@ -70,7 +70,7 @@ const user = {
     GetModules({ commit, state }) {
       return new Promise((resolve, reject) => {
         getModules(state.token).then(response => {
-          commit('SET_MODULES', response.result)
+          commit('SET_MODULES', response.data)
           resolve(response)
         }).catch(error => {
           reject(error)
@@ -85,8 +85,8 @@ const user = {
           return
         }
         getModulesTree(state.token).then(response => {
-          commit('SET_MODULES', response.result)
-          resolve(response.result)
+          commit('SET_MODULES', response.data)
+          resolve(response.data)
         }).catch(error => {
           reject(error)
         })

@@ -1,7 +1,7 @@
 <!--
  * @Author: yubaolee <yubaolee@163.com> | ahfu~ <954478625@qq.com>
  * @Date: 2022-05-12 23:34:17
- * @LastEditTime: 2024-02-24 18:56:22
+ * @LastEditTime: 2025-06-11 21:17:23
  * @Description: 为角色分配模块
  * @
  * @Copyright (c) 2024 by yubaolee | ahfu~ , All Rights Reserved. 
@@ -119,7 +119,7 @@ export default {
   mounted() {
     var _this = this
     login.getModules().then(response => {
-      var modules = response.result.map(function (item) {
+      var modules = response.data.map(function (item) {
         let lable = item.name
         if (!item.isSys) {
           lable += '(非系统模块，可分配字段)'
@@ -138,7 +138,7 @@ export default {
     })
     // 获取用户可访问的全部的菜单
     apiModules.loadMenus('').then(response => {
-      _this.menus = response.result
+      _this.menus = response.data
       _this.init()
     })
   },
@@ -156,13 +156,13 @@ export default {
       var _this = this
       apiModules.loadForRole(_this.roleId).then(response => {
         //选中有具体路由的节点，因为el-tree设置了自动级联，会自动选中上面的节点。但需要用tree.getCheckedNodes(false, true)获取
-        _this.$refs.tree.setCheckedKeys(response.result.filter(i => i.url.trim() != "/").map(item => item.id))
+        _this.$refs.tree.setCheckedKeys(response.data.filter(i => i.url.trim() != "/").map(item => item.id))
       })
     },
     getRoleMenuIds() { // 获取角色已分配的菜单
       var _this = this
       apiModules.loadMenusForRole(_this.roleId).then(response => {
-        _this.roleMenuIds = response.result.map(item => item.id)
+        _this.roleMenuIds = response.data.map(item => item.id)
       })
     },
     onChange(val) {

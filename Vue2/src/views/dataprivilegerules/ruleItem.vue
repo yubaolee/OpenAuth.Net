@@ -391,7 +391,7 @@ export default {
     // 获取部门信息
     getPartData() {
       login.getOrgs().then((response) => {
-        this.partDatas = response.result.map(function(item) {
+        this.partDatas = response.data.map(function(item) {
           return {
             id: item.id,
             label: item.name,
@@ -460,7 +460,7 @@ export default {
       this.comonInfo.loading = true
       this.roleInfo.listQuery.key = this.searchKey
       roles.getList(this.listQuery).then((response) => {
-        this.comonInfo.datas = response.result
+        this.comonInfo.datas = response.data
         this.comonInfo.loading = false
         this.setSelectTable()
       })

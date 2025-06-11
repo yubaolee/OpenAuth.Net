@@ -19,8 +19,8 @@ const serverConf = {
         }
 
         isIdentityAuth().then(response => {
-          commit('SET_IDENTITYAUTH', response.result)
-          resolve(response.result)
+          commit('SET_IDENTITYAUTH', response.data)
+          resolve(response.data)
         }).catch(error => {
           reject(error)
         })

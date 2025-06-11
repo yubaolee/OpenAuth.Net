@@ -404,7 +404,7 @@ export default {
     getOrgTree() {
       var _this = this // 记录vuecomponent
       login.getOrgs().then(response => {
-        _this.orgs = response.result.map(function (item) {
+        _this.orgs = response.data.map(function (item) {
           return {
             id: item.id,
             label: item.name,
@@ -461,8 +461,8 @@ export default {
         if (valid) {
           orgs.add(this.temp).then((response) => {
             // 需要回填数据库生成的数据
-            this.temp.id = response.result.id
-            this.temp.cascadeId = response.result.cascadeId
+            this.temp.id = response.data.id
+            this.temp.cascadeId = response.data.cascadeId
             this.list.unshift({...this.temp, ...{chairmanName:this.chairmanName}})
             this.dialogFormVisible = false
             this.$notify({

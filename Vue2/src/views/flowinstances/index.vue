@@ -255,7 +255,7 @@
             id: row.id,
           })
           .then((response) => {
-            var type = response.result.nextNodeDesignateType 
+            var type = response.data.nextNodeDesignateType 
             var secondNodeDync = type === 'RUNTIME_SPECIAL_USER' || type === 'RUNTIME_SPECIAL_ROLE'
             if (secondNodeDync) {
               this.$router.push('/flowinstances/verify/' + row.id)

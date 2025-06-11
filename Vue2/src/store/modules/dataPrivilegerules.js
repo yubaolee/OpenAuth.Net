@@ -16,7 +16,7 @@ const user = {
     getCheckModules({ commit, state }) {
       return new Promise((resolve, reject) => {
         getModules(state.token).then(response => {
-          commit('SET_CHECK_MODULES', response.result)
+          commit('SET_CHECK_MODULES', response.data)
           resolve(response)
         }).catch(error => {
           reject(error)

@@ -73,7 +73,7 @@
     methods: {
       handleChange(file, fileList) {
         this.temp.files = fileList.filter(u => u.status === 'success')
-          .map(u => u.response.result[0])
+          .map(u => u.response.data[0])
           .map(u => {
             return {
               fileName: u.fileName,

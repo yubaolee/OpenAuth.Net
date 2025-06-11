@@ -232,7 +232,7 @@ export default {
           tableViewName: newColView,
         })
         .then((response) => {
-          this.columnList = response.result;
+          this.columnList = response.data;
           this.initPrint();
         });
     }
@@ -241,7 +241,7 @@ export default {
     sysPrinterPlans
       .getTables()
       .then((response) => {
-        this.tableList = response.result;
+        this.tableList = response.data;
       });
     this.initPrint();
     this.id = this.$route.params && this.$route.params.id
@@ -251,11 +251,11 @@ export default {
           id: this.id,
         })
         .then((response) => {
-          this.name = response.result.name;
-          this.columnView = response.result.columnView;
-          this.sourceSql = response.result.sourceSql
-          this.groupBy = response.result.groupBy
-          let template = JSON.parse(response.result.planContent)
+          this.name = response.data.name;
+          this.columnView = response.data.columnView;
+          this.sourceSql = response.data.sourceSql
+          this.groupBy = response.data.groupBy
+          let template = JSON.parse(response.data.planContent)
           hiprintTemplate = new hiprint.PrintTemplate({
             template: template,
             settingContainer: '#PrintElementOptionSetting',
@@ -546,7 +546,7 @@ export default {
           inParamColumn: this.inParamColumns.join(),
           planContent: JSON.stringify(hiprintTemplate.getJson()) //模板内容
         }).then((response) => {
-          this.id = response.result
+          this.id = response.data
           this.$notify({
             title: '成功',
             message: '创建成功',

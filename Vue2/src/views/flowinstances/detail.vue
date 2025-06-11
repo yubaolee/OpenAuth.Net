@@ -102,18 +102,18 @@ export default {
         id: id,
       })
       .then((response) => {
-        _this.postObj = response.result
+        _this.postObj = response.data
         if (_this.postObj.frmType === 2) {
           //拖动表单
-          if (!response.result.frmContentData.includes('widgetList')) {
+          if (!response.data.frmContentData.includes('widgetList')) {
             _this.$message({
               message: '最新版表单设计不支持v4.4及以前版本的拖动表单，新增个表单试试~~',
               type: 'error',
             })
             return
           }
-          _this.formJson = JSON.parse(response.result.frmContentData)
-          _this.formData = JSON.parse(response.result.frmData)
+          _this.formJson = JSON.parse(response.data.frmContentData)
+          _this.formData = JSON.parse(response.data.frmData)
 
           _this.$nextTick(function () {
             this.$refs.vFormRef.disableForm()
@@ -135,7 +135,7 @@ export default {
         flowInstanceId: id,
       })
       .then((response) => {
-        this.histories = response.result
+        this.histories = response.data
       })
       .catch((err) => {
         console.log(err)

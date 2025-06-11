@@ -169,9 +169,9 @@ export default {
         id: id,
       })
       .then((response) => {
-        this.postObj = response.result
-        this.formData = JSON.parse(response.result.frmData)
-        this.formJson = JSON.parse(response.result.frmContentData)
+        this.postObj = response.data
+        this.formData = JSON.parse(response.data.frmData)
+        this.formJson = JSON.parse(response.data.frmContentData)
 
         if (this.postObj.frmType === 1) {
           // 用户自定义的页面,即Vue组件

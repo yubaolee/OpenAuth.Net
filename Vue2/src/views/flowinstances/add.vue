@@ -222,24 +222,24 @@ export default {
           canWriteFormItemIds: JSON.stringify(_this.canWriteFormItemIds),
         })
         .then((response) => {
-          if (response.result.frmType === 1) {
+          if (response.data.frmType === 1) {
             // 用户自定义的页面,即Vue组件
             _this.postObj.frmType = 1
-            _this.postObj.dbName = response.result.webId
+            _this.postObj.dbName = response.data.webId
             let loadComp = () => import(`@/views/forms/userDefine/${this.postObj.dbName}/add`)
             loadComp().then(res => {
               _this.userDefineComp = res.default
             })
 
-          } else if (response.result.frmType === 2) {
+          } else if (response.data.frmType === 2) {
             _this.reLoadVform = false;
             // 拖拽界面
             _this.postObj.frmType = 2
             _this.postObj.dbName = ''
-            response.result.html = response.result.content // 暂无用content替代一下html
+            response.data.html = response.data.content // 暂无用content替代一下html
 
             //拖动表单
-            if (!response.result.contentData.includes('widgetList')) {
+            if (!response.data.contentData.includes('widgetList')) {
               this.$message({
                 message: '最新版表单设计不支持v4.4及以前版本的拖动表单，新增个表单试试~~',
                 type: 'error',
@@ -247,7 +247,7 @@ export default {
               return
             }
 
-            this.formJson = JSON.parse(response.result.contentData)
+            this.formJson = JSON.parse(response.data.contentData)
             this.$nextTick(()=>{
               _this.reLoadVform = true;
               _this.$nextTick(()=>{
@@ -256,20 +256,20 @@ export default {
             })
 
             //读写权限控制
-            if (response.result.canWriteFormItemIds && response.result.canWriteFormItemIds.length > 0) {
+            if (response.data.canWriteFormItemIds && response.data.canWriteFormItemIds.length > 0) {
               _this.$nextTick(function () {
                 _this.$refs.vFormRef.disableForm()
-                _this.$refs.vFormRef.enableWidgets(response.result.canWriteFormItemIds)
+                _this.$refs.vFormRef.enableWidgets(response.data.canWriteFormItemIds)
               })
             }
 
-            _this.frmPreview = response.result.html // 表单预览的数据
-            _this.fields = response.result.fields // 表单属性的个数
+            _this.frmPreview = response.data.html // 表单预览的数据
+            _this.fields = response.data.fields // 表单属性的个数
           } else {
             _this.postObj.frmType = 0
             _this.postObj.dbName = ''
-            _this.frmPreview = response.result.htmlWithCanWriteIds // 表单预览的数据
-            _this.fields = response.result.fields // 表单属性的个数
+            _this.frmPreview = response.data.htmlWithCanWriteIds // 表单预览的数据
+            _this.fields = response.data.fields // 表单属性的个数
           }
         })
     },

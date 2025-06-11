@@ -277,8 +277,8 @@ export default {
           }
           resourcesApi.loadForRole(this.multipleSelection[0].id)
             .then(response => {
-              this.assignedResourceIds = response.result.map(u => u.id)
-              this.assignedResourceNames = response.result.map(u => u.name).join(',')
+              this.assignedResourceIds = response.data.map(u => u.id)
+              this.assignedResourceNames = response.data.map(u => u.name).join(',')
               this.dialogAccessResource = true
             })
           break
@@ -314,8 +314,8 @@ export default {
       this.listLoading = true
       this.list = []
       roles.getList(this.listQuery).then(response => {
-        this.roleList = response.result
-        this.total = response.result.length
+        this.roleList = response.data
+        this.total = response.data.length
         this.listLoading = false
         this.pageFn()
       })
@@ -370,7 +370,7 @@ export default {
         if (valid) {
           roles.add(this.temp).then((response) => {
             this.roleUsers.list.unshift([])
-            this.temp.id = response.result.id
+            this.temp.id = response.data.id
             this.list.unshift(this.temp)
             this.dialogFormVisible = false
             this.$notify({

@@ -279,7 +279,7 @@ export default {
   mounted() {
     var _this = this // 记录vuecomponent
     login.getOrgs().then(response => {
-      _this.orgs = response.result.map(function (item) {
+      _this.orgs = response.data.map(function (item) {
         return {
           id: item.id,
           label: item.name,
@@ -415,7 +415,7 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           users.add(this.temp).then((response) => {
-            this.temp.id = response.result
+            this.temp.id = response.data
             this.list.unshift({...this.temp, ...{parentName:this.parentName}})
             this.dialogFormVisible = false
             this.$notify({
@@ -471,7 +471,7 @@ export default {
       apiRoles.loadForUser(this.temp.id).then(response => {
         _this.dialogRoleStatus = 'update'
         _this.dialogRoleVisible = true
-        _this.selectRoles = response.result
+        _this.selectRoles = response.data
         _this.getRoleList()
         _this.$nextTick(() => {
           _this.$refs['rolesForm'].clearValidate()
@@ -481,7 +481,7 @@ export default {
     // 获取角色
     getRoleList() {
       apiRoles.getList({}).then(response => {
-        this.selectRoleNames = [...response.result].filter(x => this.selectRoles.indexOf(x.id) > -1).map(item => item.name || item.account).join(',')
+        this.selectRoleNames = [...response.data].filter(x => this.selectRoles.indexOf(x.id) > -1).map(item => item.name || item.account).join(',')
       })
     },
     rolesChange(type, val) {

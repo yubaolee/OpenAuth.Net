@@ -245,9 +245,9 @@ export default {
           id: val,
         })
         .then((response) => {
-          _this.postObj.frmType = response.result.frmType
-          if (response.result.frmType === 1) {// 自定义表单
-            let loadComp = () => import(`@/views/forms/userDefine/${response.result.webId}/add`)
+          _this.postObj.frmType = response.data.frmType
+          if (response.data.frmType === 1) {// 自定义表单
+            let loadComp = () => import(`@/views/forms/userDefine/${response.data.webId}/add`)
             loadComp().then(res => {
               _this.userDefineComp = res.default
               _this.$nextTick(() => {
@@ -258,8 +258,8 @@ export default {
 
             return
           }
-          if (response.result.frmType === 2) {
-            if (!response.result.contentData.includes('widgetList')) {
+          if (response.data.frmType === 2) {
+            if (!response.data.contentData.includes('widgetList')) {
               this.$message({
                 message: '最新版表单设计不支持v4.4及以前版本的拖动表单，新增个表单试试~~',
                 type: 'error',
@@ -267,15 +267,15 @@ export default {
               return;
             }
             // 拖动表单
-            _this.formJson = JSON.parse(response.result.contentData)
+            _this.formJson = JSON.parse(response.data.contentData)
             _this.$refs.vFormRef[0].setFormJson(_this.formJson)
             _this.$nextTick(()=>{
             _this.currentForm = _this.$refs.vFormRef[0].getFieldWidgets().map(item=>{return {name:item.field.options.name, title:item.field.options.label}})
             })
             return
           }
-          _this.frmPreview = response.result.html // 默认动态表单
-          _this.currentForm = JSON.parse(response.result.contentData)
+          _this.frmPreview = response.data.html // 默认动态表单
+          _this.currentForm = JSON.parse(response.data.contentData)
         })
     },
     submitForm() {

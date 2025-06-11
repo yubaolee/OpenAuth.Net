@@ -223,7 +223,7 @@ export default {
       forms
         .get(id)
         .then((response) => {
-          this.postForm = response.result
+          this.postForm = response.data
         })
         .catch((err) => {
           console.log(err)

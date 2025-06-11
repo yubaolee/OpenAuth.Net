@@ -437,7 +437,7 @@ export default {
     })
 
     flowschemesApi.loadUrlFormFlowScheme().then((response) => {
-      this.sysFlowschemes = response.result
+      this.sysFlowschemes = response.data
     })
     
   },
@@ -524,14 +524,14 @@ export default {
       this.listLoading = true
       var moduleId = this.currentModule === null ? null : this.currentModule.id
       modules.loadMenus(moduleId).then(response => {
-        this.list = response.result
-        this.total = response.result.length
+        this.list = response.data
+        this.total = response.data.length
         this.listLoading = false
       })
 
       //加载模块对应的打印方案
       modules.loadPrinterPlans(moduleId).then(response => {
-        this.modulePlans = response.result
+        this.modulePlans = response.data
         if(this.modulePlans.length >0){
         this.canSelPrinterPlans = this.canSelPrinterPlans.filter(x => !this.modulePlans.some(b=>b.id == x.id));
         }else{
@@ -541,7 +541,7 @@ export default {
 
       //加载模块对应的送审方案
       modules.loadFlowSchemes(moduleId).then(response => {
-        this.flowschemes = response.result
+        this.flowschemes = response.data
         if(this.flowschemes.length >0){
         this.canSelFlowschemes = this.canSelFlowschemes.filter(x => !this.flowschemes.some(b=>b.id == x.id));
         }else{
@@ -552,7 +552,7 @@ export default {
     getModulesTree() {
       var _this = this // 记录vuecomponent
       login.getModules().then(response => {
-        _this.modules = response.result.map(function (item) {
+        _this.modules = response.data.map(function (item) {
           return {
             sortNo: item.sortNo,
             id: item.id,
@@ -635,8 +635,8 @@ export default {
           _this.temp.parentId = _this.temp.parentId || _this.lastParentId
           modules.add(_this.temp).then(response => {
             // 需要回填数据库生成的数据
-            _this.temp.id = response.result.id
-            _this.temp.cascadeId = response.result.cascadeId
+            _this.temp.id = response.data.id
+            _this.temp.cascadeId = response.data.cascadeId
             _this.list.unshift(_this.temp)
             _this.dialogFormVisible = false
             _this.$notify({
@@ -715,7 +715,7 @@ export default {
         if (valid) {
           modules.addMenu(this.menuTemp).then(response => {
             // 需要回填数据库生成的数据
-            this.menuTemp.id = response.result.id
+            this.menuTemp.id = response.data.id
             this.list.unshift(this.menuTemp)
             this.dialogMenuVisible = false
             this.$notify({

@@ -79,11 +79,11 @@ export default {
     var moduleId = route.meta.moduleId
     //加载模块对应的打印方案
     modules.loadPrinterPlans(moduleId).then(response => {
-      this.modulePlans = response.result
+      this.modulePlans = response.data
     })
      //加载模块对应的送审方案
     modules.loadFlowSchemes(moduleId).then(response => {
-      this.flowschemes = response.result
+      this.flowschemes = response.data
     })
     this.buttons = elements.sort((a, b) => {
       return a.sort - b.sort

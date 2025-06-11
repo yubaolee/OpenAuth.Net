@@ -74,7 +74,7 @@ export default {
         async getMainInfo(id) {
             try {
                 const response = await getMainInfo({id: id})
-                this.firstTemp = response.result
+                this.firstTemp = response.data
             } catch (error) {
                 this.$message.error('获取主表信息失败')
             }

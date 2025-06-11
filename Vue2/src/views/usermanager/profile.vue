@@ -161,14 +161,14 @@
       getUserProfile() {
         var _this = this // 记录vuecomponent
         login.getUserProfile().then(response => {
-          _this.temp = response.result
+          _this.temp = response.data
         })
       },
 
       getModulesTree() {
         var _this = this // 记录vuecomponent
         login.getModules().then(response => {
-          _this.modules = response.result.map(function(item) {
+          _this.modules = response.data.map(function(item) {
             return {
               id: item.id,
               label: item.name,
@@ -183,7 +183,7 @@
       getOrgTree() {
         var _this = this // 记录vuecomponent
         login.getOrgs().then(response => {
-          _this.orgs = response.result.map(function(item) {
+          _this.orgs = response.data.map(function(item) {
             var name = item.name
             if (_this.defaultorgid === item.id) {
               name = name + '✅'

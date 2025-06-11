@@ -278,7 +278,7 @@ export default {
         })
       } else {
         roles.getList(this.tableData.listQuery).then((response) => {
-          this.tableData.datas = response.result
+          this.tableData.datas = response.data
           this.initCurrentPageData()
           this.setSelectTable()
         })
@@ -313,7 +313,7 @@ export default {
      */
     getLeftTree() {
       login.getOrgs().then((response) => {
-        this.leftTreeDatas = response.result.map(function (item) {
+        this.leftTreeDatas = response.data.map(function (item) {
           return {
             id: item.id,
             label: item.name,

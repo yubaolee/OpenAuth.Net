@@ -149,29 +149,29 @@ export default {
         id: id,
       })
       .then((response) => {
-        this.flowObj = response.result
+        this.flowObj = response.data
         if (this.flowObj.frmType === 2) {
           //拖动表单
-          if (!response.result.frmContentData.includes('widgetList')) {
+          if (!response.data.frmContentData.includes('widgetList')) {
             this.$message({
               message: '最新版表单设计不支持v4.4及以前版本的拖动表单，新增个表单试试~~',
               type: 'error',
             })
             return
           }
-          this.formJson = JSON.parse(response.result.frmContentData)
-          this.formData = JSON.parse(response.result.frmData)
+          this.formJson = JSON.parse(response.data.frmContentData)
+          this.formData = JSON.parse(response.data.frmData)
         } else if (this.flowObj.frmType === 1) { //用户自定义表单
           let loadComp = () => import(`@/views/forms/userDefine/${this.flowObj.dbName}/detail`)
           loadComp().then(res => {
             this.userDefineComp = res.default
           })
         }
-        this.postObj.frmType = response.result.frmType
-        this.postObj.NodeDesignateType = response.result.nextNodeDesignateType //节点的执行权限类型，如执行时选定用户或设计时确定用户
+        this.postObj.frmType = response.data.frmType
+        this.postObj.NodeDesignateType = response.data.nextNodeDesignateType //节点的执行权限类型，如执行时选定用户或设计时确定用户
         var nodes = JSON.parse(this.flowObj.schemeContent).nodes
         this.FlowNodes = nodes // 需要过滤条件，应该退回到已经处理过的某个节点
-        this.canWriteFormItemIds = response.result.canWriteFormItemIds
+        this.canWriteFormItemIds = response.data.canWriteFormItemIds
 
         if (this.flowObj.frmType === 2) {
           //控制拖动表单字段读写权限

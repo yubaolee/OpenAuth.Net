@@ -263,7 +263,7 @@ export default {
     this.changeAttrType()
     var _this = this // 记录vuecomponent
     login.getOrgs().then(response => {
-      _this.orgs = response.result.map(function (item) {
+      _this.orgs = response.data.map(function (item) {
         return {
           id: item.id,
           label: item.name,
