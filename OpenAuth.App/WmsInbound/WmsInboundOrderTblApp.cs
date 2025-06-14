@@ -39,7 +39,16 @@ namespace OpenAuth.App
                 objs = objs.Where(request.sqlWhere);
             }
             var propertyStr = string.Join(',', columns.Select(u => u.ColumnName));
-            result.Data = objs.OrderBy(u => u.Id)
+
+            if (!string.IsNullOrEmpty(request.sort))
+            {
+                var sortfields = request.sort.Split(',');
+
+                objs = objs.OrderBy($"{sortfields[0]} {sortfields[1]}");
+            }else{
+                objs = objs.OrderBy(u => u.Id);
+            }
+            result.Data = objs
                 .Skip((request.page - 1) * request.limit)
                 .Take(request.limit).Select($"{propertyStr}").ToList();
             result.Count = await objs.CountAsync();

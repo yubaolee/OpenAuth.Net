@@ -13,5 +13,6 @@
 /newdocs/docs/.vuepress/.cache
 /newdocs/docs/.vuepress/.temp
 /newdocs/docs/.vuepress/dist
+/Vue2/node_modules
 
 

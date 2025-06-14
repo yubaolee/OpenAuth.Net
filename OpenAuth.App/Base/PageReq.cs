@@ -16,6 +16,12 @@
         public string key { get; set; }
 
         /// <summary>
+        /// 排序字段
+        /// </summary>
+        /// <example>sort=id,asc</example>
+        public string sort { get; set; }
+
+        /// <summary>
         /// 自定义sql条件
         /// </summary>
         public string sqlWhere { get; set; }
