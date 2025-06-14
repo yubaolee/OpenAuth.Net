@@ -24,6 +24,7 @@ permalink: /pro/table/
     @row-click="handleRowClick"
     @selection-change="handleSelectionChange"
     @item-change="handleItemChange"
+    @sort-change="handleSortChange"
   />
 </template>
 
@@ -76,6 +77,19 @@ const handleItemChange = val => {
     ElNotification.success("更新成功")
   })
 }
+
+// 如果不需要后端排序，则不需要实现此方法
+const handleSortChange = val => {
+  // 表头排序事件处理
+   listQuery.sort = val.prop + ',' + val.order
+  listLoading.value = true
+  //这里不能直接用getList，因为getList会重新加载列设置
+  wmsinboundordertbls.getList(listQuery).then(response => {
+    mainList.value = response.data
+    listLoading.value = false
+  })
+}
+
 </script>
 ```
 
@@ -105,11 +119,13 @@ const handleItemChange = val => {
 
 ## 事件说明
 
-| 事件名            | 说明                       | 回调参数         |
-| ----------------- | -------------------------- | ---------------- |
-| row-click         | 行点击事件                 | row（当前行数据）|
-| selection-change  | 选择项变化事件             | val（选中项数组）|
-| item-change       | 单元格值变化事件           | val（当前行数据）|
+| 事件名            | 说明                       | 回调参数         |备注|
+| ----------------- | -------------------------- | ---------------- |----|
+| row-click         | 行点击事件                 | row（当前行数据）|  |
+| selection-change  | 选择项变化事件             | val（选中项数组）|  |
+| item-change       | 单元格值变化事件           | val（当前行数据）|  |
+| row-dblclick      | 行双击事件                 | row（当前行数据）|  |
+| sort-change       | 表头排序事件，如果不需要后端排序，则不需要实现此方法  | val（排序字段）| vue3 v5.7及以上版本支持 |
 
 ## 方法说明
 
