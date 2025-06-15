@@ -26,7 +26,7 @@ namespace OpenAuth.WebApi.Controllers
             var result = new Response<{ClassName}>();
             try
             {
-                result.Result = _app.Get(id);
+                result.Data = _app.Get(id);
             }
             catch (Exception ex)
             {
