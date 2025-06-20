@@ -1,7 +1,7 @@
 <!--
  * @Author: yubaolee <yubaolee@163.com> | ahfu~ <954478625@qq.com>
  * @Date: 2022-05-12 23:34:30
- * @LastEditTime: 2025-04-17 14:50:16
+ * @LastEditTime: 2025-06-20 20:59:32
  * @Description: 2021-08-24   采用通用的列表和表单组件改造
  *               2021-09-14   保持和订单界面一致
  * @Copyright (c) 2023 by yubaolee | ahfu~ , All Rights Reserved. 
@@ -363,7 +363,7 @@ export default {
         let tempData = Object.assign({}, this.firstTemp)
         tempData.OrgId = this.defaultorgid
         builderTables.add(tempData).then((resp) => {
-          this.firstTemp.id = resp.result
+          this.firstTemp.id = resp.data
           this.mainList.unshift(this.firstTemp)
           this.editModel = false
           this.rowClickFirstTable(this.firstTemp)

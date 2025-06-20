@@ -343,9 +343,9 @@ const createData = () => {
     tempData = setDetails(tempData)
     tempData.OrgId = defaultorgid.value
     {FirstTableName}s.add(tempData).then(resp => {
-      if (resp.result != undefined) {
+      if (resp.data != undefined) {
         //如果服务器返回生成的ID
-        firstTemp.id = resp.result
+        firstTemp.id = resp.data
       }
       mainList.value.unshift(firstTemp)
       editModel.value = false
