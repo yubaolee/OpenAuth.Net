@@ -15,7 +15,7 @@ protected SqlSugarRepository<T> Repository; //SqlSugar的仓储模式
 
 目前框架大多数模块都已继承`SqlSugarBaseApp`基类，这里以资源管理为例：
 ```csharp
-public class ResourceApp:SqlSugarBaseApp<Resource>
+public class ResourceApp:SqlSugarBaseApp<SysResource>
     {
         public void Add(AddOrUpdateResReq resource)
         {
@@ -25,7 +25,7 @@ public class ResourceApp:SqlSugarBaseApp<Resource>
 
         public void Update(AddOrUpdateResReq obj)
         {
-            Repository.Update(u => new Resource
+            Repository.Update(u => new SysResource
             {
                 Name = obj.Name,
                 //todo:要修改的字段赋值
@@ -52,7 +52,7 @@ public class ResourceApp:SqlSugarBaseApp<Resource>
 ### Repository
 实现的是SqlSugar的仓储模式，详细Api请查看：[SqlSugar使用仓储](https://www.donet5.com/Home/Doc?typeId=1228)。在OpenAuth.Net中：
 ```csharp
-public class ResourceApp:SqlSugarBaseApp<Resource>
+public class ResourceApp:SqlSugarBaseApp<SysResource>
     {
         public void Add(AddOrUpdateResReq resource)
         {
@@ -64,12 +64,12 @@ public class ResourceApp:SqlSugarBaseApp<Resource>
 ### SugarClient
 SqlSugar基础数据库读写用法。详细Api请查看：[SqlSugar入门必看](https://www.donet5.com/Home/Doc?typeId=1181)。在OpenAuth.Net中：
 ```csharp
-public class ResourceApp:SqlSugarBaseApp<Resource>
+public class ResourceApp:SqlSugarBaseApp<SysResource>
     {
-        public List<Resource> Load()
+        public List<SysResource> Load()
         {
             ...
-            return SugarClient.Queryable<Resource>().ToList();
+            return SugarClient.Queryable<SysResource>().ToList();
         }
     }
 ```

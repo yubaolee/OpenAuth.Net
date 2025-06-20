@@ -28,7 +28,7 @@ permalink: /vue2/datapropertyrule/
 针对场景1，在做返回处理的时候，需要过滤数据库查询字段，如下：（本文以Resource表为例）
 
 ```csharp
-var columnFields = loginContext.GetTableColumns("Resource");
+var columnFields = loginContext.GetTableColumns("SysResource");
 if (columnFields == null || columnFields.Count == 0)
 {
 	throw new Exception("请在代码生成界面配置Resource表的字段属性");

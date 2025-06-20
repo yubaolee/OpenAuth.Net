@@ -86,7 +86,7 @@ namespace OpenAuth.App.Test
             app.Clear();
             app.Add(new AddOrUpdateDataPriviReq
             {
-                SourceCode = "Resource",
+                SourceCode = "SysResource",
                 Description = "资源数据规则",
                 PrivilegeRules = JsonHelper.Instance.Serialize(filterGroup)
             });

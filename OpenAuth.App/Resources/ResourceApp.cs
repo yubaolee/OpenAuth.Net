@@ -77,10 +77,10 @@ namespace OpenAuth.App
                 throw new CommonException("登录已过期", Define.INVALID_TOKEN);
             }
 
-            var columnFields = loginContext.GetTableColumns("Resource");
+            var columnFields = loginContext.GetTableColumns("SysResource");
             if (columnFields == null || columnFields.Count == 0)
             {
-                throw new Exception("请在代码生成界面配置Resource表的字段属性");
+                throw new Exception("请在代码生成界面配置SysResource表的字段属性");
             }
 
 

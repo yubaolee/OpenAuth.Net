@@ -10,7 +10,7 @@
         /// </summary>
         public string RoleId { get; set; }
         /// <summary>
-        /// 模块的Code,比如Category/Resource
+        /// 模块的Code,比如Category/SysResource
         /// </summary>
         public string ModuleCode { get; set; }
         /// <summary>

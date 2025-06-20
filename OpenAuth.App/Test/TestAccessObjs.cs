@@ -76,7 +76,7 @@ namespace OpenAuth.App.Test
 
             app.UnAssignData(new AssignDataReq
             {
-                ModuleCode = "Resource",
+                ModuleCode = "SysResource",
                 Properties = new string[]{},
                 RoleId = "09ee2ffa-7463-4938-ae0b-1cb4e80c7c13"
             });
