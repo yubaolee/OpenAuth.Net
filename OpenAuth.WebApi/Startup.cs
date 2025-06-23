@@ -166,8 +166,9 @@ namespace OpenAuth.WebApi
             //在startup里面只能通过这种方式获取到appsettings里面的值，不能用IOptions😰
             var dbtypes = ((ConfigurationSection) Configuration.GetSection("AppSetting:DbTypes")).GetChildren()
                 .ToDictionary(x => x.Key, x => x.Value);
-            var connectionString = Configuration.GetConnectionString("OpenAuthDBContext");
-            logger.LogInformation($"系统配置的数据库类型：{JsonHelper.Instance.Serialize(dbtypes)}，连接字符串：{connectionString}");
+            var connstr = "OpenAuthDBContext";
+            var connectionString = Configuration.GetConnectionString(connstr);
+            logger.LogInformation($"系统配置的数据库类型：{JsonHelper.Instance.Serialize(dbtypes[connstr])}，连接字符串：{connectionString}");
             services.AddDbContext<OpenAuthDBContext>();
 
             services.AddHttpClient();
@@ -176,7 +177,7 @@ namespace OpenAuth.WebApi
 
             var sqlsugarTypes = UtilMethods.EnumToDictionary<SqlSugar.DbType>();
             var dbType = sqlsugarTypes.FirstOrDefault(it =>
-                dbtypes.ToDictionary(u => u.Key, v => v.Value.ToLower()).ContainsValue(it.Key));
+                dbtypes[connstr].ToLower().Contains(it.Key));
 
             services.AddScoped<ISqlSugarClient>(s =>
             {
