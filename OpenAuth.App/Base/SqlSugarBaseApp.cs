@@ -13,7 +13,7 @@ namespace OpenAuth.App
     /// SqlSugar基础类
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public abstract class SqlSugarBaseApp<T> where T : class, new()
+    public abstract class SqlSugarBaseApp<T> where T : BaseEntity, new()
     {
         protected ISqlSugarClient SugarClient;
 

@@ -69,7 +69,7 @@ namespace OpenAuth.App
             var user = _auth.GetCurrentUser().User;
             obj.CreateUserId = user.Id;
             obj.CreateUserName = user.Name;
-            await SugarClient.Insertable(obj).ExecuteCommandAsync();
+            Repository.Insert(obj);
         }
         
         public void Update(AddOrUpdateCategoryReq obj)

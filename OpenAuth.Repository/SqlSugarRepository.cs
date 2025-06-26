@@ -1,4 +1,5 @@
-﻿using SqlSugar;
+﻿using OpenAuth.Repository.Core;
+using SqlSugar;
 
 namespace OpenAuth.Repository
 {
@@ -6,11 +7,21 @@ namespace OpenAuth.Repository
     /// SqlSugar仓储
     /// <para>具体用法参考：https://www.donet5.com/Home/Doc?typeId=1228</para>
     /// </summary>
-    public class SqlSugarRepository<T> : SimpleClient<T> where T : class, new()
+    public class SqlSugarRepository<T> : SimpleClient<T> where T : BaseEntity, new()
     {
         public SqlSugarRepository(ISqlSugarClient client)
         {
             base.Context = client;
+        }
+
+        public new bool Insert(T entity)
+        {
+            if (entity.KeyIsNull())
+            {
+                entity.GenerateDefaultKeyVal();
+            }
+
+            return base.Insert(entity);
         }
     }
 }
