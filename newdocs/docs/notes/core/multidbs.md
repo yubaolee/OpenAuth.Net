@@ -65,7 +65,7 @@ permalink: /core/multidbs/
 ```csharp
 namespace OpenAuth.App
 {
-    public abstract class SqlSugarApp2<T>  : SqlSugarBaseApp<T> where T : class, new()
+    public abstract class SqlSugarApp2<T>  : SqlSugarBaseApp<T> where T : BaseEntity, new()
     {
         public SqlSugarApp2(ISqlSugarClient client, IAuth auth) : base(client, auth)
         {
