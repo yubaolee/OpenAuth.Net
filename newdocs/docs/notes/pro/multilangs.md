@@ -1,6 +1,6 @@
 ---
 title: 多语言
-createTime: 2025/04/23 23:43:26
+createTime: 2025/06/25 23:43:26
 permalink: /pro/multilangs/
 ---
 
@@ -8,28 +8,27 @@ permalink: /pro/multilangs/
 
 ![2025-06-25-23-10-11](http://img.openauth.net.cn/2025-06-25-23-10-11.png)
 
-vue3版本使用 vue-i18n 实现多语言支持，通过 `useI18n()` 钩子访问翻译功能。
+vue3版本集成 vue-i18n 实现多语言支持
 
 ### 使用方法
 
-1. **引入 i18n**
 
-```javascript
-import { useI18n } from 'vue-i18n'
-const i18n = useI18n()
-```
+1. **模板中使用**
 
-2. **模板中使用**
+框架已经全局注册$t方法，所以可以在模板中直接使用，如下：
 ```html
 <div>{{ $t('login.title') }}</div>
 ```
 
-3. **vue setup代码中使用**
+2. **vue script中使用**
 ```javascript
+import { useI18n } from 'vue-i18n'
+const i18n = useI18n()
+
 let title = i18n.t('route.dashboard');
 ```
 
-4. **普通js代码中使用**
+3. **普通js代码中使用**
 
 如果在普通的js（非vue component）代码中使用，需要使用 `i18n.global.t` 方法。
 
