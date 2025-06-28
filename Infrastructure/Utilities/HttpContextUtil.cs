@@ -5,9 +5,10 @@ namespace Infrastructure.Utilities
 {
     public static class HttpContextUtil
     {
-        private static IHttpContextAccessor _accessor=AutofacContainerModule.GetService<IHttpContextAccessor>();
+        // 不要在静态初始化时获取IHttpContextAccessor，而是在需要时获取
+        private static IHttpContextAccessor _accessor => AutofacContainerModule.GetService<IHttpContextAccessor>();
 
-        public static Microsoft.AspNetCore.Http.HttpContext Current => _accessor.HttpContext;
+        public static Microsoft.AspNetCore.Http.HttpContext Current => _accessor?.HttpContext;
         
         /// <summary>
         /// 获取租户ID
@@ -15,7 +16,7 @@ namespace Infrastructure.Utilities
         /// <returns></returns>
         public static string GetTenantId(this IHttpContextAccessor accessor)
         {
-            string tenantId = "OpenAuthDBContext";
+            string tenantId = Define.DEFAULT_TENANT_ID;
             
             if (accessor != null && accessor.HttpContext != null)
             {

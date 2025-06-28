@@ -92,7 +92,7 @@ namespace OpenAuth.WebApi
 
                 logger.LogInformation($"api doc basepath:{AppContext.BaseDirectory}");
                 foreach (var name in Directory.GetFiles(AppContext.BaseDirectory, "*.*",
-                             SearchOption.AllDirectories).Where(f => Path.GetExtension(f).ToLower() == ".xml"))
+                            SearchOption.AllDirectories).Where(f => Path.GetExtension(f).ToLower() == ".xml"))
                 {
                     option.IncludeXmlComments(name, includeControllerXmlComments: true);
                     // logger.LogInformation($"find api file{name}");
@@ -126,9 +126,6 @@ namespace OpenAuth.WebApi
             services.AddControllers(option => { option.Filters.Add<OpenAuthFilter>(); })
                 .ConfigureApiBehaviorOptions(options =>
                 {
-                    // 禁用自动模态验证
-                    // options.SuppressModelStateInvalidFilter = true;
-
                     //启动WebAPI自动模态验证，处理返回值
                     options.InvalidModelStateResponseFactory = (ActionContext context) =>
                     {
@@ -146,67 +143,77 @@ namespace OpenAuth.WebApi
                 });
             services.AddMemoryCache();
             services.AddCors();
-//          todo:如果正式 环境请用下面的方式限制随意访问跨域
-//            var origins = new []
-//            {
-//                "http://localhost:1803",
-//                "http://localhost:52789"
-//            };
-//            if (Environment.IsProduction())
-//            {
-//                origins = new []
-//                {
-//                    "http://demo.openauth.net.cn:1803",
-//                    "http://demo.openauth.net.cn:52789"
-//                };
-//            }
-//            services.AddCors(option=>option.AddPolicy("cors", policy =>
-//                policy.AllowAnyHeader().AllowAnyMethod().AllowCredentials().WithOrigins(origins)));
-
-            //在startup里面只能通过这种方式获取到appsettings里面的值，不能用IOptions😰
-            var dbtypes = ((ConfigurationSection) Configuration.GetSection("AppSetting:DbTypes")).GetChildren()
-                .ToDictionary(x => x.Key, x => x.Value);
-            var connstr = "OpenAuthDBContext";
-            var connectionString = Configuration.GetConnectionString(connstr);
-            logger.LogInformation($"系统配置的数据库类型：{JsonHelper.Instance.Serialize(dbtypes[connstr])}，连接字符串：{connectionString}");
             services.AddDbContext<OpenAuthDBContext>();
 
             services.AddHttpClient();
 
             services.AddDataProtection().PersistKeysToFileSystem(new DirectoryInfo(Configuration["DataProtection"]));
 
+            //在startup里面只能通过这种方式获取到appsettings里面的值，不能用IOptions😰
+            var dbtypes = ((ConfigurationSection) Configuration.GetSection("AppSetting:DbTypes")).GetChildren()
+                .ToDictionary(x => x.Key, x => x.Value);
             var sqlsugarTypes = UtilMethods.EnumToDictionary<SqlSugar.DbType>();
-            var dbType = sqlsugarTypes.FirstOrDefault(it =>
-                dbtypes[connstr].ToLower().Contains(it.Key));
-
             services.AddScoped<ISqlSugarClient>(s =>
             {
-                var sqlSugar = new SqlSugarClient(new ConnectionConfig()
+                // 获取所有连接字符串配置
+                var connectionStrings = Configuration.GetSection("ConnectionStrings").GetChildren()
+                    .ToDictionary(x => x.Key, x => x.Value);
+                
+                // 准备ConnectionConfig列表
+                var connectionConfigs = new List<ConnectionConfig>();
+                
+                // 遍历所有连接字符串
+                foreach (var conn in connectionStrings)
                 {
-                    DbType = dbType.Value,
-                    ConnectionString = connectionString,
-                    IsAutoCloseConnection = true        
-                }, db => { db.Aop.OnLogExecuting = (sql, pars) => { logger.LogInformation(sql); }; });
-
-                 if(dbType.Value != SqlSugar.DbType.PostgreSQL){
-                    return sqlSugar;
-                }
-
-                // 配置bool类型转换为smallint
-                sqlSugar.Aop.OnExecutingChangeSql = (sql, parameters) =>
-                {
-                    foreach (var param in parameters)
+                    // 获取对应的数据库类型
+                    var connDbType = dbtypes.ContainsKey(conn.Key) ? 
+                        sqlsugarTypes.FirstOrDefault(it => dbtypes[conn.Key].ToLower().Contains(it.Key)).Value :
+                        DbType.SqlServer; // 如果没有定义DbType，使用默认类型
+                    
+                    // 创建连接配置
+                    var config = new ConnectionConfig
                     {
-                        if (param.Value is bool boolValue)
-                        {
-                            param.DbType = System.Data.DbType.Int16;
-                            // 将 bool 转换为 smallint
-                            param.Value = boolValue ? (short)1 : (short)0;
-                        }
+                        DbType = connDbType,
+                        ConnectionString = conn.Value,
+                        IsAutoCloseConnection = true,
+                    };
+                    
+                    // 如果不是默认连接，设置ConfigId
+                    if (conn.Key != Define.DEFAULT_TENANT_ID)
+                    {
+                        config.ConfigId = conn.Key;
                     }
-                    // 返回修改后的 SQL 和参数
-                    return new System.Collections.Generic.KeyValuePair<string, SugarParameter[]>(sql, parameters);
-                };
+                    
+                    connectionConfigs.Add(config);
+                    logger.LogInformation($"添加数据库连接: {conn.Key} / {(dbtypes.ContainsKey(conn.Key) ? dbtypes[conn.Key] : "未指定类型")}，连接字符串：{conn.Value}");
+                }
+                
+                var sqlSugar = new SqlSugarClient(connectionConfigs);
+
+                // 配置PostgreSQL数据库处理
+                foreach (var connConfig in connectionConfigs)
+                {
+                    if(connConfig.DbType == SqlSugar.DbType.PostgreSQL)
+                    {
+                        // 配置bool类型转换为smallint
+                        sqlSugar.Aop.OnExecutingChangeSql = (sql, parameters) =>
+                        {
+                            foreach (var param in parameters)
+                            {
+                                if (param.Value is bool boolValue)
+                                {
+                                    param.DbType = System.Data.DbType.Int16;
+                                    // 将 bool 转换为 smallint
+                                    param.Value = boolValue ? (short)1 : (short)0;
+                                }
+                            }
+                            // 返回修改后的 SQL 和参数
+                            return new System.Collections.Generic.KeyValuePair<string, SugarParameter[]>(sql, parameters);
+                        };
+                        break; // 找到一个PostgreSQL连接后就设置一次即可
+                    }
+                }
+                
                 return sqlSugar;
             });
 

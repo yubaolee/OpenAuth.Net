@@ -5,6 +5,11 @@
     /// </summary>
     public static class Define
     {
+        /// <summary>
+        /// 默认租户ID
+        /// </summary>
+        public const string DEFAULT_TENANT_ID = "OpenAuthDBContext";
+
         //Relevance关联KEY
         /// <summary>
         /// 用户角色关联KEY

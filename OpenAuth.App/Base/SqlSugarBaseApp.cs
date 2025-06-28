@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Linq;
 using Infrastructure;
+using Infrastructure.Utilities;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using OpenAuth.App.Interface;
 using OpenAuth.Repository;
 using OpenAuth.Repository.Core;
 using OpenAuth.Repository.Domain;
 using SqlSugar;
+using Autofac;
+using Infrastructure.Extensions.AutofacManager;
 
 namespace OpenAuth.App
 {
@@ -21,8 +26,23 @@ namespace OpenAuth.App
 
         protected IAuth _auth;
 
+        /// <summary>
+        /// 保持向后兼容的构造函数，避免修改子类
+        /// </summary>
         public SqlSugarBaseApp(ISqlSugarClient client, IAuth auth)
         {
+            string tenantId = Define.DEFAULT_TENANT_ID;
+            var httpContextAccessor = AutofacContainerModule.GetService<IHttpContextAccessor>();
+            if (httpContextAccessor != null)
+            {
+                tenantId = httpContextAccessor.GetTenantId();
+            }
+            
+            if(tenantId != Define.DEFAULT_TENANT_ID) //如果不是默认租户，则使用租户id获取连接
+            {
+                client = client.AsTenant().GetConnection(tenantId);
+            }
+
             Repository = new SqlSugarRepository<T>(client); //这里用new而不用注入，可以保证client和repository用的是同一个client
             SugarClient = client;
             _auth = auth;

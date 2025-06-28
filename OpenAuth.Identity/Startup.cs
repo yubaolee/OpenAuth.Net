@@ -76,8 +76,8 @@ namespace OpenAuth.IdentityServer
             //在startup里面只能通过这种方式获取到appsettings里面的值，不能用IOptions😰
             var dbtypes = ((ConfigurationSection)Configuration.GetSection("AppSetting:DbTypes")).GetChildren()
                 .ToDictionary(x => x.Key, x => x.Value);
-            var dbType = dbtypes["OpenAuthDBContext"];
-            var connectionString = Configuration.GetConnectionString("OpenAuthDBContext");
+            var dbType = dbtypes[Define.DEFAULT_TENANT_ID];
+            var connectionString = Configuration.GetConnectionString(Define.DEFAULT_TENANT_ID);
             if (dbType == Define.DBTYPE_SQLSERVER)
             {
                 services.AddDbContext<OpenAuthDBContext>(options =>

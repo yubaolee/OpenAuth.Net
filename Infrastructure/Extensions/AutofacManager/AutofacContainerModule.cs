@@ -16,7 +16,7 @@ namespace Infrastructure.Extensions.AutofacManager
         public static TService GetService<TService>() where TService:class
         {
             Type typeParameterType = typeof(TService);
-            return (TService)_provider.GetService(typeParameterType);
+            return (TService)_provider?.GetService(typeParameterType);
         }
     }
 }
