@@ -19,12 +19,23 @@ permalink: /core/multitenant/
 
 #### 后端添加
 
-后端添加新租户连接字符串即可：
+目前OpenAuth.Net的租户管理直接通过连接字符串配置，如有需要可以改为功能配置，期待你的pull request。
+
+在后端OpenAuth.WebApi的`appsettings.json`中添加新租户连接字符串，并配置数据库类型：
 
 ```javascript
+{
   "ConnectionStrings": {
+    "OpenAuthDBContext": "Data Source=.;Encrypt=false;Initial Catalog=OpenAuthPro;User=sa;Password=000000",  //默认租户id，必须要有，启动项目使用
     "new_tenantid": "server=127.0.0.1;user id=root;database=openauthpro;password=000000" //新租户id对应的连接字符串
   },
+  "AppSetting": {
+    "DbTypes": {
+      "OpenAuthDBContext": "SqlServer",
+      "new_tenantid": "MySql" //新租户id对应的数据库类型
+    }
+  }
+}
 ```
 
 ::: warning 注意
