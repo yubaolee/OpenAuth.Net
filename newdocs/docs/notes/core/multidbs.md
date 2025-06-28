@@ -25,39 +25,7 @@ permalink: /core/multidbs/
 
 ## SqlSugar操作多数据库
 
-### 注入数据库
-
-在项目OpenAuth.WebApi的启动代码`Startup.cs`中，把`ConfigureServices`方法中SqlSugar的注入代码修改为如下：
-
-```csharp
- services.AddScoped<ISqlSugarClient>(s =>
-    {
-        var connstr2 = "OpenAuthDBContext2"; //这里是第二数据库的连接字符串
-        var sqlSugar = new SqlSugarClient
-            (new List<ConnectionConfig>(){
-                new ConnectionConfig()
-                {
-                    DbType = dbType.Value,
-                    ConnectionString = connectionString,
-                    IsAutoCloseConnection = true
-                },
-                new ConnectionConfig()
-                {
-                    DbType = sqlsugarTypes.FirstOrDefault(it =>
-                                dbtypes[connstr2].ToLower().Contains(it.Key)).Value,
-                    ConnectionString = config.GetSection("ConnectionStrings")[connstr2],
-                    IsAutoCloseConnection = true,
-                    ConfigId = connstr2
-                }
-            });
-
-        //其他代码不变，略...
-        if(dbType.Value != SqlSugar.DbType.PostgreSQL){
-            return sqlSugar;
-        }
-    });
-
-```
+当需要使用SqlSugar操作多数据库时，因为框架初始化时会自动识别所有的连接字符串，所以只需要按以下步骤编写业务代码即可。
 
 ### 新建数据库访问基类
 
