@@ -590,6 +590,16 @@ namespace OpenAuth.App.Flow
                 throw new Exception("无法寻找到下一个节点");
             }
 
+            //如果request为空，则应该是草稿状态变为启动，或为网关节点，使用nextNode的setInfo
+            if (request == null)
+            {
+                request = new NodeDesignateReq
+                {
+                    NodeDesignateType = nextNode.setInfo.NodeDesignate,
+                    NodeDesignates = nextNode.setInfo.NodeDesignateData.datas
+                };
+            }
+
             if (GetNextNodeType() == Define.NODE_TYPE_FORK) //如果是网关节点
             {
                 makerList = GetForkNodeMakers(nextNodeId);
