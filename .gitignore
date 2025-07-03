@@ -268,3 +268,4 @@ __pycache__/
 /OpenAuth.Mvc/Properties/PublishProfiles
 *.pubxml
 /OpenAuth.WebApi/temp-keys
+/newdocs/docs/.vuepress/.cache
