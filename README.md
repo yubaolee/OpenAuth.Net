@@ -1,4 +1,4 @@
-🔥.Net权限管理及快速开发框架、最好用的权限工作流系统。源于Martin Fowler企业级应用开发思想及最新技术组合（SqlSugar、EF、Quartz、AutoFac、WebAPI、Swagger、Mock、NUnit、Vue2/3、Element-ui/plus、IdentityServer等）。核心模块包括：角色授权、代码生成、API鉴权、智能打印、表单设计、工作流、定时任务等。架构易扩展，是中小企业的首选。
+🔥.Net权限管理及快速开发框架、最好用的权限工作流系统。源于Martin Fowler企业级应用开发思想及最新技术组合（SqlSugar、EF、Quartz、AutoFac、WebAPI、Swagger、Mock、NUnit、UniApp、Vue2/3、Element-ui/plus、IdentityServer等）。核心模块包括：角色授权、代码生成、API鉴权、智能打印、表单设计、工作流、定时任务等。架构易扩展，是中小企业的首选。
 
 <p align="center">
   <img src="https://gitee.com/uploads/images/2018/0425/163228_7077c3fd_362401.png" alt="LOGO" width="300" />
@@ -65,41 +65,25 @@
 ## 💡核心功能
 项目深入参考《企业应用架构模式》《重构与模式》《ASP.NET设计模式》等巨著完成每一行代码编写。主要特性：
 
-* 支持最新版.Net 9.0.100
-  
-* 同时支持EntityFramework、SqlSugar两款最流行的ORM框架
-
-* 超强的自定义权限控制功能，请参考：[通用权限设计与实现](https://www.cnblogs.com/yubaolee/p/DataPrivilege.html)
-
-* 完整API鉴权，可以控制角色可访问的API资源，及模块功能字段可见及是否返回，请参考：[按角色授权API资源](http://doc.openauth.net.cn/core/apiauth.html#%E6%8C%89%E8%A7%92%E8%89%B2%E6%8E%88%E6%9D%83api%E8%B5%84%E6%BA%90) 及 [字段权限](http://doc.openauth.net.cn/core/datapropertyrule/)
-
-* 可拖拽的表单设计。详情：[可拖拽表单](http://doc.openauth.net.cn/pro/dragform/)
-
-* 可视化流程设计。[可视化流程设计](http://doc.openauth.net.cn/pro/startflow/)  
-  
-* 全网最好用的打印解决方案。详情:[智能打印](http://doc.openauth.net.cn/pro/printerplan/)
-
-* 基于Quartz.Net的定时任务控制,可随时启/停，可视化配置Cron表达式功能，请参考：[定时任务](http://doc.openauth.net.cn/core/job/)
-
-* 零代码动态API接口，详情：[动态API](http://doc.openauth.net.cn/core/dynamicapi/)
-
-* 自带代码生成器，可快速生成带有头/明细结构的页面
-
-* 支持sqlserver、mysql、Oracle、PostgreSql数据库，理论上支持所有数据库
-
-* 支持同时访问多数据源
-
-* 支持多租户
-
-* 支持搭建自己的IdentityServer服务器，实现基于OAuth2的登录体系，请参考：[登录认证及OAuth集成](http://doc.openauth.net.cn/core/identity/)
-
-* 建立三方对接规范，已有系统可以无缝对接流程引擎
-
-* vue前端采用 vue + element-ui + vform + hiprinter
-
-* 后端采用 .net +EF + sqlsugar + autofac + quartz +IdentityServer4 + nunit + swagger
-
-* 设计工具 PowerDesigner +PDManer + Enterprise Architect
+* ✅支持最新版.Net 9
+* ✅同时支持EntityFramework、SqlSugar两款最流行的ORM框架
+* ✅超强的自定义权限控制，详情：[通用权限设计与实现](https://www.cnblogs.com/yubaolee/p/DataPrivilege.html)
+* ✅完整API鉴权，可以控制角色可访问的API资源，及模块功能字段可见及是否返回，详情：[按角色授权API资源](http://doc.openauth.net.cn/core/apiauth.html#%E6%8C%89%E8%A7%92%E8%89%B2%E6%8E%88%E6%9D%83api%E8%B5%84%E6%BA%90) 及 [字段权限](http://doc.openauth.net.cn/core/datapropertyrule/)
+* ✅可拖拽表单设计。详情：[可拖拽表单](http://doc.openauth.net.cn/pro/dragform/)
+* ✅可视化流程设计。详情：[可视化流程设计](http://doc.openauth.net.cn/pro/startflow/)  
+* ✅全网最好用的打印解决方案，详情:[智能打印](http://doc.openauth.net.cn/pro/printerplan/)
+* ✅基于Quartz的定时任务控制,可随时启/停，可视化配置Cron表达式，详情：[定时任务](http://doc.openauth.net.cn/core/job/)
+* ✅零代码动态API接口，详情：[动态API](http://doc.openauth.net.cn/core/dynamicapi/)
+* ✅超好用代码生成器，可快速生成单表、主从表结构的界面
+* ✅支持sqlserver、mysql、Oracle、PostgreSql数据库，理论上支持所有数据库
+* ✅支持多数据源
+* ✅支持多租户
+* ✅支持多语言
+* ✅支持自建OAuth2登录体系，详情：[登录认证及OAuth集成](http://doc.openauth.net.cn/core/identity/)
+* ✅支持已有系统无缝对接本项目流程引擎
+* ✅vue前端采用 vue2/3 + element-ui/plus + vform + hiprint + pinia + axios + uniapp
+* ✅后端采用 .net +EF + sqlsugar + autofac + quartz +IdentityServer4 + nunit + swagger
+* ✅设计工具 PowerDesigner +PDManer + Enterprise Architect
 
 ## 🔜后续
 生命不息，更新不止
