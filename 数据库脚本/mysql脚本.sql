@@ -373,8 +373,8 @@ CREATE TABLE `externaldatasource`  (
 -- ----------------------------
 -- Records of externaldatasource
 -- ----------------------------
-INSERT INTO `externaldatasource` VALUES ('94279d93-cef3-46e0-83af-3b7dc48764fe', '本地SqlServer', 1, 'Data Source=localhost;Encrypt=false;Initial Catalog=openauthpro;User=sa;Password=000000;', 'localhost', NULL, 'openauthpro', 'sa', '000000', 1, '2025-03-15 20:09:35', '2025-03-18 11:42:08', 0, '', '00000000-0000-0000-0000-000000000000', '超级管理员', '00000000-0000-0000-0000-000000000000', '超级管理员');
-INSERT INTO `externaldatasource` VALUES ('94279d93-cef3-46e0-83af-3b7dc48764ff', '本地mysql', 0, 'Server=127.0.0.1;Database=openauthpro;User=root;Password=000000;', '127.0.0.1', 3306, 'openauthpro', 'root', '000000', 1, '2025-03-15 00:02:11', '2025-03-15 20:12:30', 0, '', '00000000-0000-0000-0000-000000000000', '超级管理员', '00000000-0000-0000-0000-000000000000', '超级管理员');
+INSERT INTO `externaldatasource` VALUES ('94279d93-cef3-46e0-83af-3b7dc48764fe', '非默认的SqlServer', 1, 'Data Source=localhost;Encrypt=false;Initial Catalog=openauthpro;User=sa;Password=000000;', 'localhost', NULL, 'openauthpro', 'sa', '000000', 1, '2025-03-15 20:09:35', '2025-03-18 11:42:08', 0, '', '00000000-0000-0000-0000-000000000000', '超级管理员', '00000000-0000-0000-0000-000000000000', '超级管理员');
+INSERT INTO `externaldatasource` VALUES ('94279d93-cef3-46e0-83af-3b7dc48764ff', '非默认的mysql', 0, 'Server=127.0.0.1;Database=openauthpro;User=root;Password=000000;', '127.0.0.1', 3306, 'openauthpro', 'root', '000000', 1, '2025-03-15 00:02:11', '2025-03-15 20:12:30', 0, '', '00000000-0000-0000-0000-000000000000', '超级管理员', '00000000-0000-0000-0000-000000000000', '超级管理员');
 
 -- ----------------------------
 -- Table structure for flowapprover

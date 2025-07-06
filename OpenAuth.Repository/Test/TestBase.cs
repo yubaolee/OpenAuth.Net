@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -67,44 +68,70 @@ namespace OpenAuth.Repository.Test
 
             serviceCollection.AddDbContext<OpenAuthDBContext>();
             
-            var dbtypes = config.GetSection("AppSetting:DbTypes").GetChildren()
-                .ToDictionary(x => x.Key, x => x.Value);
-
-            var connectionString = config.GetSection("ConnectionStrings")["OpenAuthDBContext"];
-            Console.WriteLine($"单元测试数据库信息:{dbtypes[httpContextAccessorMock.Object.GetTenantId()]}/{connectionString}");
-            
+           var dbtypes = config.GetSection("AppSetting:DbTypes").GetChildren()
+                .ToDictionary(x => x.Key, x => x.Value);;
             var sqlsugarTypes = UtilMethods.EnumToDictionary<SqlSugar.DbType>();
-            var dbType = sqlsugarTypes.FirstOrDefault(it =>
-                dbtypes.ToDictionary(u => u.Key, v => v.Value.ToLower()).ContainsValue(it.Key));
-
             serviceCollection.AddScoped<ISqlSugarClient>(s =>
             {
-                var sqlSugar = new SqlSugarClient(new ConnectionConfig()
+                // 获取所有连接字符串配置
+                var connectionStrings = config.GetSection("ConnectionStrings").GetChildren()
+                    .ToDictionary(x => x.Key, x => x.Value);
+                
+                // 准备ConnectionConfig列表
+                var connectionConfigs = new List<ConnectionConfig>();
+                
+                // 遍历所有连接字符串
+                foreach (var conn in connectionStrings)
                 {
-                    DbType = dbType.Value,
-                    ConnectionString = connectionString,
-                    IsAutoCloseConnection = true
-                });
-
-                 if(dbType.Value != SqlSugar.DbType.PostgreSQL){
-                    return sqlSugar;
+                    // 获取对应的数据库类型
+                    var connDbType = dbtypes.ContainsKey(conn.Key) ? 
+                        sqlsugarTypes.FirstOrDefault(it => dbtypes[conn.Key].ToLower().Contains(it.Key)).Value :
+                        DbType.SqlServer; // 如果没有定义DbType，使用默认类型
+                    
+                    // 创建连接配置
+                    var config = new ConnectionConfig
+                    {
+                        DbType = connDbType,
+                        ConnectionString = conn.Value,
+                        IsAutoCloseConnection = true,
+                    };
+                    
+                    // 如果不是默认连接，设置ConfigId
+                    if (conn.Key != Define.DEFAULT_TENANT_ID)
+                    {
+                        config.ConfigId = conn.Key;
+                    }
+                    
+                    connectionConfigs.Add(config);
+                    Console.WriteLine($"添加数据库连接: {conn.Key} / {(dbtypes.ContainsKey(conn.Key) ? dbtypes[conn.Key] : "未指定类型")}，连接字符串：{conn.Value}");
                 }
                 
-                // 配置bool类型转换为smallint
-                sqlSugar.Aop.OnExecutingChangeSql = (sql, parameters) =>
+                var sqlSugar = new SqlSugarClient(connectionConfigs);
+
+                // 配置PostgreSQL数据库处理
+                foreach (var connConfig in connectionConfigs)
                 {
-                    foreach (var param in parameters)
+                    if(connConfig.DbType == SqlSugar.DbType.PostgreSQL)
                     {
-                        if (param.Value is bool boolValue)
+                        // 配置bool类型转换为smallint
+                        sqlSugar.Aop.OnExecutingChangeSql = (sql, parameters) =>
                         {
-                            param.DbType = System.Data.DbType.Int16;
-                            // 将 bool 转换为 smallint
-                            param.Value = boolValue ? (short)1 : (short)0;
-                        }
+                            foreach (var param in parameters)
+                            {
+                                if (param.Value is bool boolValue)
+                                {
+                                    param.DbType = System.Data.DbType.Int16;
+                                    // 将 bool 转换为 smallint
+                                    param.Value = boolValue ? (short)1 : (short)0;
+                                }
+                            }
+                            // 返回修改后的 SQL 和参数
+                            return new System.Collections.Generic.KeyValuePair<string, SugarParameter[]>(sql, parameters);
+                        };
+                        break; // 找到一个PostgreSQL连接后就设置一次即可
                     }
-                    // 返回修改后的 SQL 和参数
-                    return new System.Collections.Generic.KeyValuePair<string, SugarParameter[]>(sql, parameters);
-                };
+                }
+                
                 return sqlSugar;
             });
 
