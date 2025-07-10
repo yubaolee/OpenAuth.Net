@@ -337,6 +337,7 @@ namespace OpenAuth.App
                 .Replace("{ModuleCode}", sysTableInfo.ModuleCode)
                 .Replace("{ModuleName}", sysTableInfo.ModuleName)
                 .Replace("{ClassName}", sysTableInfo.ClassName)
+                .Replace("{Namespace}", sysTableInfo.Namespace)
                 .Replace("{UpdateColumns}", updateColumns)
                 .Replace("{InsertColumns}", insertColumns)
                 .Replace("{StartName}", StratName);
@@ -370,6 +371,7 @@ namespace OpenAuth.App
                 .Replace("{ModuleCode}", sysTableInfo.ModuleCode)
                 .Replace("{ModuleName}", sysTableInfo.ModuleName)
                 .Replace("{ClassName}", sysTableInfo.ClassName)
+                .Replace("{Namespace}", sysTableInfo.Namespace)
                 .Replace("{SubForeignKey}", subTable.ForeignKey)
                 .Replace("{SubClassName}", subTable.ClassName)
                 .Replace("{SubModuleCode}", subTable.ModuleCode)
@@ -508,6 +510,7 @@ namespace OpenAuth.App
             domainContent = FileHelper.ReadFile(@"Template\\BuildControllerApi.html")
                 .Replace("{TableName}", sysTableInfo.TableName)
                 .Replace("{ModuleCode}", sysTableInfo.ModuleCode)
+                .Replace("{Namespace}", sysTableInfo.Namespace)
                 .Replace("{ModuleName}", sysTableInfo.ModuleName)
                 .Replace("{ClassName}", sysTableInfo.ClassName)
                 .Replace("{StartName}", StratName);
@@ -607,6 +610,7 @@ namespace OpenAuth.App
 
             domainContent = domainContent.Replace("{ClassName}", tableInfo.ClassName)
                 .Replace("{AttributeList}", attributeBuilder.ToString())
+                .Replace("{Namespace}", tableInfo.Namespace)
                 .Replace("{Construction}", constructionBuilder.ToString());
 
 
@@ -621,10 +625,29 @@ namespace OpenAuth.App
             tableAttr.Append("       [Table(\"" + tableInfo.TableName + "\")]");
             domainContent = domainContent.Replace("{AttributeManager}", tableAttr.ToString());
 
-            FileHelper.WriteFile(
-                mapPath +
-                $"\\OpenAuth.Repository\\Domain\\", tableInfo.ClassName + ".cs",
-                domainContent);
+            // 检查命名空间是否以OpenAuth.Repository开头
+            if (!tableInfo.Namespace.StartsWith("OpenAuth.Repository"))
+            {
+                throw new Exception("命名空间必须以OpenAuth.Repository开头！");
+            }
+            // 获取OpenAuth.Repository后面的部分
+            var subNamespace = tableInfo.Namespace.Substring("OpenAuth.Repository".Length).TrimStart('.');
+            // 构建目录层级
+            var domainPath = Path.Combine(mapPath, "OpenAuth.Repository");
+            if (!string.IsNullOrEmpty(subNamespace))
+            {
+                foreach (var part in subNamespace.Split('.'))
+                {
+                    domainPath = Path.Combine(domainPath, part);
+                }
+            }
+            // 确保目录存在
+            if (!Directory.Exists(domainPath))
+            {
+                Directory.CreateDirectory(domainPath);
+            }
+
+            FileHelper.WriteFile(domainPath, tableInfo.ClassName + ".cs", domainContent);
         }
 
         Dictionary<string, Type> PrimitiveTypes = new Dictionary<string, Type>()
