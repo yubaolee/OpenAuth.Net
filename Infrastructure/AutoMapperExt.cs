@@ -28,7 +28,13 @@ namespace Infrastructure
         {
             if (obj == null) return default(T);
 
-            var config = new MapperConfiguration(cfg=>cfg.CreateMap(obj.GetType(),typeof(T)));
+            // 当Id为空时，不进行映射
+            var config = new MapperConfiguration(cfg => {
+                cfg.CreateMap(obj.GetType(), typeof(T))
+                .ForMember("Id", opt => opt.Condition((src, dest, srcValue) => 
+                        srcValue != null && !string.IsNullOrEmpty(srcValue.ToString())
+                    ));
+            });
             var mapper = config.CreateMapper();
             return mapper.Map<T>(obj);
         }
