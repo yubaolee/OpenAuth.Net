@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Infrastructure;
 using Microsoft.AspNetCore.Mvc;
@@ -128,6 +129,24 @@ namespace OpenAuth.WebApi.Controllers
             try
             {
                 _app.Delete(ids);
+
+            }
+            catch (Exception ex)
+            {
+                result.Code = 500;
+                result.Message = ex.InnerException?.Message ?? ex.Message;
+            }
+
+            return result;
+        }
+
+        [HttpPost]
+        public Response LoadByIds([FromBody]string[] ids)
+        {
+            var result = new Response<List<UserView>>();
+            try
+            {
+                result.Data = _app.LoadByIds(ids);
 
             }
             catch (Exception ex)

@@ -340,5 +340,49 @@ namespace OpenAuth.App
             var users = UnitWork.FromSql<SysUser>(sql);
             return users.Select(u=>u.Id).ToList();
         }
+
+        public List<UserView> LoadByIds(string[] ids)
+        {
+            var users = Repository.Find(u => ids.Contains(u.Id));
+
+            //获取用户及用户关联的机构
+            var userOrgs = from user in users
+                join relevance in UnitWork.Find<Relevance>(u => u.RelKey == "UserOrg")
+                    on user.Id equals relevance.FirstId into temp
+                from r in temp.DefaultIfEmpty()
+                join org in UnitWork.Find<SysOrg>(null)
+                    on r.SecondId equals org.Id into orgtmp 
+                from o in orgtmp.DefaultIfEmpty()
+                select new
+                {
+                    user.Id,
+                    user.Account,
+                    user.Name,
+                    user.Sex,
+                    user.Status,
+                    user.CreateTime,
+                    user.CreateId,
+                    user.ParentId,
+                    OrgId = o.Id,
+                    OrgName = o.Name
+                };
+
+            var userViews = userOrgs.GroupBy(b => b.Account).Select(u => new UserView
+            {
+                Id = u.First().Id,
+                Account = u.Key,
+                Name = u.First().Name,
+                Sex = u.First().Sex,
+                Status = u.First().Status,
+                CreateTime = u.First().CreateTime,
+                CreateUser = u.First().CreateId,
+                ParentName = u.First().ParentId,
+                ParentId = u.First().ParentId,
+                OrganizationIds = string.Join(",", u.Select(x=>x.OrgId))
+                ,Organizations = string.Join(",", u.Select(x=>x.OrgName))
+            });
+
+            return userViews.ToList();
+        }
     }
 }

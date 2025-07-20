@@ -52,6 +52,16 @@ namespace OpenAuth.App
             return result;
         }
 
+        /// <summary>
+        /// 根据ID加载角色
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        public List<Role> LoadByIds(string[] ids)
+        {
+            return UnitWork.Find<Role>(u => ids.Contains(u.Id)).ToList();
+        }
+
 
         /// <summary>
         /// 添加角色，如果当前登录用户不是System，则直接把新角色分配给当前登录用户

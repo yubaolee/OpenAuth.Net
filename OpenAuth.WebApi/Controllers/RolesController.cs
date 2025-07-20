@@ -43,6 +43,24 @@ namespace OpenAuth.WebApi.Controllers
             return result;
         }
 
+                [HttpPost]
+        public Response LoadByIds([FromBody]string[] ids)
+        {
+            var result = new Response<List<Role>>();
+            try
+            {
+                result.Data = _app.LoadByIds(ids);
+
+            }
+            catch (Exception ex)
+            {
+                result.Code = 500;
+                result.Message = ex.InnerException?.Message ?? ex.Message;
+            }
+
+            return result;
+        }
+
         /// <summary>
         /// 添加角色，如果当前登录用户不是System，则直接把新角色分配给当前登录用户
         /// </summary>
