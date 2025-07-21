@@ -32,18 +32,10 @@ OpenAuth.Net支持两种登录认证方式：Token认证和==自己搭建=={.tip
 不同于其他项目的统一登录（如微信登录、支付宝登录等）,OpenAuth.Net的统一登录指的是自己搭建一套OAuth登录服务，提供给其他项目使用。即OpenAuth.IdentityServer。启动后，直接访问[http://localhost:12796](http://localhost:12796)，效果如下：
 ![2025-03-18-23-12-18](http://img.openauth.net.cn/2025-03-18-23-12-18.png)
 
-这时我们修改OpenAuth.WebApi/Mvc的IdentityServerUrl配置：
+这时我们修改OpenAuth.WebApi的IdentityServerUrl配置：
 ```json
 "IdentityServerUrl": "http://localhost:12796", //IdentityServer服务器地址。
 ```
-
-### OpenAuth.Mvc效果
-
-当启用了Identity时，mvc启动后界面如下：
-![2025-04-24-00-24-28](http://img.openauth.net.cn/2025-04-24-00-24-28.png)
-
-这时点击登录超链接，会跳转到OpenAuth.Identity登录界面。效果如下：
-![2025-04-24-00-24-40](http://img.openauth.net.cn/2025-04-24-00-24-40.png)
 
 
 ### OpenAuth.WebApi效果
@@ -66,7 +58,8 @@ VITE_OIDC_AUTOMATICSILENTRENEW = true #自动续期
 如果服务端启用了Identity认证，则打开登录界面如下：
 ![2025-03-10-14-46-47](http://img.openauth.net.cn/2025-03-10-14-46-47.png)
 
-这时点击登录超链接，操作同OpenAuth.Mvc一样。
+这时点击登录超链接，会跳转到OpenAuth.Identity登录界面。效果如下：
+![2025-04-24-00-24-40](http://img.openauth.net.cn/2025-04-24-00-24-40.png)
 
 
 #### SwaggerUI

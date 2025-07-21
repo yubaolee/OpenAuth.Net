@@ -6,7 +6,7 @@ permalink: /pro/selectusercom/
 
 SelectUsersCom是一个用于选择用户或角色的基础组件。如下图：
 
-![2025-05-24-12-15-46](http://img.openauth.net.cn/2025-05-24-12-15-46.png)
+![2025-07-21-22-58-52](http://img.openauth.net.cn/2025-07-21-22-58-52.png)
 
 一般通过按钮触发弹框进行选择，如下：
 
@@ -31,12 +31,12 @@ const ignoreAuth = ref(false)
 
 还有一种通过输入框触发弹框进行选择，这时需要回填数据到文本框中。如下：
 
-![2025-05-24-11-44-26](http://img.openauth.net.cn/2025-05-24-11-44-26.png)
+![2025-07-21-23-05-22](http://img.openauth.net.cn/2025-07-21-23-05-22.png)
 
 ```vue
  <el-input @click="selectDialog = true" readonly v-model="names" :placeholder="placeholder"></el-input>
   <el-dialog :destroy-on-close="true"  width="850px" title="选择用户" v-model="selectDialog">
-    <selectUsersCom v-if="selectDialog" :ignore-auth="ignoreAuth" v-model:show="selectDialog" :loginKey="'loginUser'"
+    <selectUsersCom v-if="selectDialog" :ignore-auth="ignoreAuth" v-model:show="selectDialog" :selectType="'User'"
       v-model:users="selectUsers" v-model:userNames="names"></selectUsersCom>
   </el-dialog>
 
@@ -71,12 +71,13 @@ const roles = ref([])
 | 属性名 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
 | show | Boolean | false | 控制组件显示/隐藏 |
-| loginKey | String | - | 选择类型，'loginUser'表示选择用户，其他值表示选择角色 |
+| selectType | String | - | 选择类型，'User'表示选择用户，'Role'表示选择角色 |
 | orgId | String | - | 组织ID，如果为空则显示左侧树状结构 |
 | ignoreAuth | Boolean | false | 是否忽略登录用户权限，直接获取全部数据，用于可以跨部门选择用户、角色的场景 |
 | hiddenFooter | Boolean | false | 是否隐藏底部的确定/取消按钮 |
 | userNames | String | - | 已选用户/角色名称，逗号分隔 |
-| users | Array | [] | 已选用户/角色ID列表 |
+| users | Array | [] | 已选用户/角色ID或对象列表 |
+| inType | String | 'id' | 传入的users参数类型，'id'表示ID数组，'object'表示对象数组 |
 
 ## 事件
 
@@ -99,7 +100,7 @@ const roles = ref([])
 ```vue
  <el-input @click="selectDialog = true" readonly v-model="names" :placeholder="placeholder"></el-input>
   <el-dialog :destroy-on-close="true"  width="850px" title="选择角色" v-model="selectDialog">
-    <selectUsersCom v-if="selectDialog" :ignore-auth="ignoreAuth" v-model:show="selectDialog" :loginKey="'loginRole'"
+    <selectUsersCom v-if="selectDialog" :ignore-auth="ignoreAuth" v-model:show="selectDialog" :selectType="'Role'"
       v-model:users="selectRoles" v-model:userNames="names"></selectUsersCom>
   </el-dialog>
 
