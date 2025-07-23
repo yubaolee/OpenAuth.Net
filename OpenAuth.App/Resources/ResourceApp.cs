@@ -68,6 +68,11 @@ namespace OpenAuth.App
             var elementIds = _revelanceApp.Get(Define.ROLERESOURCE, true, roleId);
             return SugarClient.Queryable<SysResource>().Where(u => elementIds.Contains(u.Id) && (appId == null || appId =="" || u.AppId == appId)).ToArray();
         }
+
+        public List<SysResource> LoadByIds(string[] ids)
+        {
+            return SugarClient.Queryable<SysResource>().Where(u => ids.Contains(u.Id)).ToList();
+        }
         
         public async Task<PagedDynamicDataResp> Load(QueryResourcesReq request)
         {
