@@ -70,6 +70,14 @@ namespace OpenAuth.WebApi.Controllers
             return resp;
         }
 
+        [HttpPost]
+        public Response<List<SysResource>> LoadByIds([FromBody]string[] ids)
+        {
+            var result = new Response<List<SysResource>>();
+            result.Data = _app.LoadByIds(ids);
+            return result;
+        }
+
        [HttpPost]
         public Response<string> Add([FromBody] AddOrUpdateResReq obj)
         {
