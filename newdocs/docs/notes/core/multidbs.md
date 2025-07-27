@@ -3,12 +3,17 @@ title: 多数据库
 createTime: 2025/04/23 21:03:10
 permalink: /core/multidbs/
 ---
+::: tip 提示
+* 多数据库指一个应用程序同时连接和操作多个不同的数据库。
+* 多租户是架构设计模式，用户登录时选择租户信息，后面就只能访问该租户对应的数据库，即只访问一个数据库。
+
+:::
 
 框架支持同时访问多个数据库。具体操作如下：
 
 ## 添加新连接字符串
 
-在配置文件appsettings.json中，添加新的连接字符串`OpenAuthDBContext2`
+在配置文件appsettings.json中，添加新的连接字符串 `OpenAuthDBContext2`
 
 ```csharp
  "ConnectionStrings": {
@@ -29,7 +34,8 @@ permalink: /core/multidbs/
 
 ### 新建数据库访问基类
 
-在项目OpenAuth.App中，新建数据库访问基类，比如`SqlSugarApp2`
+在项目OpenAuth.App中，新建数据库访问基类，比如 `SqlSugarApp2`
+
 ```csharp
 namespace OpenAuth.App
 {
@@ -60,7 +66,7 @@ namespace OpenAuth.App
             obj.Application = Assembly.GetEntryAssembly().FullName.Split(',')[0];
             Repository.Insert(obj);
         }
-        
+    
         public void Update(SysLog obj)
         {
             Repository.Update(u => new SysLog
@@ -82,7 +88,7 @@ namespace OpenAuth.App
 
 ### 添加数据上下文
 
-在OpenAuth.Repository中添加新的数据库上下文，比如`OpenAuthDBContext2`
+在OpenAuth.Repository中添加新的数据库上下文，比如 `OpenAuthDBContext2`
 
 ```csharp
  public partial class OpenAuthDBContext2 : DbContext
@@ -119,7 +125,7 @@ namespace OpenAuth.App
 
 ### 注入新数据库
 
-在项目OpenAuth.WebApi的启动代码`Startup.cs`中，把`ConfigureServices`方法中注入刚刚添加的数据库上下文
+在项目OpenAuth.WebApi的启动代码 `Startup.cs`中，把 `ConfigureServices`方法中注入刚刚添加的数据库上下文
 
 ```csharp
  services.AddDbContext<OpenAuthDBContext2>();
