@@ -187,6 +187,15 @@ namespace OpenAuth.WebApi
                     connectionConfigs.Add(config);
                     logger.LogInformation($"添加数据库连接: {conn.Key} / {(dbtypes.ContainsKey(conn.Key) ? dbtypes[conn.Key] : "未指定类型")}，连接字符串：{conn.Value}");
                 }
+
+                //通过ConfigId为空判断是否有默认的连接字符串
+                if(!connectionConfigs.Any(x => x.ConfigId == null))
+                {
+                    throw new Exception($"没有找到默认的连接字符串:{Define.DEFAULT_TENANT_ID}");
+                }
+
+                //把connectionConfigs排序，ConfigId为空的放在最前面，即默认的连接字符串必须排最前面
+                connectionConfigs = connectionConfigs.OrderBy(x => x.ConfigId == null ? 0 : 1).ToList();
                 
                 var sqlSugar = new SqlSugarClient(connectionConfigs);
 
