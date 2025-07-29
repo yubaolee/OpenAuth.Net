@@ -11,9 +11,11 @@ using Microsoft.EntityFrameworkCore;
 using OpenAuth.App.Request;
 using OpenAuth.Repository;
 
+using SqlSugar;
+
 namespace OpenAuth.App
 {
-    public class RoleApp : BaseStringApp<Role,OpenAuthDBContext>
+    public class RoleApp : SqlSugarBaseApp<Role>
     {
         private RevelanceManagerApp _revelanceApp;
 
@@ -39,7 +41,7 @@ namespace OpenAuth.App
         public async Task<PagedListDataResp<Role>> LoadAll(QueryRoleListReq request)
         {
             var result = new PagedListDataResp<Role>();
-            var objs = UnitWork.Find<Role>(null);
+            var objs = SugarClient.Queryable<Role>();
             if (!string.IsNullOrEmpty(request.key))
             {
                 objs = objs.Where(u => u.Name.Contains(request.key));
@@ -59,7 +61,7 @@ namespace OpenAuth.App
         /// <returns></returns>
         public List<Role> LoadByIds(string[] ids)
         {
-            return UnitWork.Find<Role>(u => ids.Contains(u.Id)).ToList();
+            return Repository.GetList(u => ids.Contains(u.Id));
         }
 
 
@@ -68,41 +70,38 @@ namespace OpenAuth.App
         /// </summary>
         public void Add(RoleView obj)
         {
-           UnitWork.ExecuteWithTransaction(() =>
-           {
-               Role role = obj;
-               role.CreateTime = DateTime.Now;
-               UnitWork.Add(role);
-               UnitWork.Save();
-               obj.Id = role.Id;   //要把保存后的ID存入view
-           
-               //如果当前账号不是SYSTEM，则直接分配
-               var loginUser = _auth.GetCurrentUser();
-               if (loginUser.User.Account != Define.SYSTEM_USERNAME)
-               {
-                   _revelanceApp.Assign(new AssignReq
-                   {
-                       type = Define.USERROLE,
-                       firstId = loginUser.User.Id,
-                       secIds = new[] {role.Id}
-                   });
-               }
-           });
+            SugarClient.Ado.BeginTran();
+            Role role = obj;
+            role.CreateTime = DateTime.Now;
+            Repository.Insert(role);
+            obj.Id = role.Id;   //要把保存后的ID存入view
+        
+            //如果当前账号不是SYSTEM，则直接分配
+            var loginUser = _auth.GetCurrentUser();
+            if (loginUser.User.Account != Define.SYSTEM_USERNAME)
+            {
+                _revelanceApp.Assign(new AssignReq
+                {
+                    type = Define.USERROLE,
+                    firstId = loginUser.User.Id,
+                    secIds = new[] {role.Id}
+                });
+            }
+            SugarClient.Ado.CommitTran();
         }
         
         /// <summary>
         /// 删除角色时，需要删除角色对应的权限
         /// </summary>
         /// <param name="ids"></param>
-        public override void Delete(string[] ids)
+        public new void Delete(string[] ids)
         {
-            UnitWork.ExecuteWithTransaction(() =>
-            {
-                UnitWork.Delete<Relevance>(u=>(u.RelKey == Define.ROLEMODULE || u.RelKey == Define.ROLEELEMENT) && ids.Contains(u.FirstId));
-                UnitWork.Delete<Relevance>(u=>u.RelKey == Define.USERROLE && ids.Contains(u.SecondId));
-                UnitWork.Delete<Role>(u =>ids.Contains(u.Id));
-                UnitWork.Save();
-            });
+            SugarClient.Ado.BeginTran();
+            SugarClient.Deleteable<Relevance>().Where(u=>(u.RelKey == Define.ROLEMODULE || u.RelKey == Define.ROLEELEMENT) && ids.Contains(u.FirstId)).ExecuteCommand();
+            SugarClient.Deleteable<Relevance>().Where(u=>u.RelKey == Define.USERROLE && ids.Contains(u.SecondId)).ExecuteCommand();
+            SugarClient.Deleteable<Role>().Where(u =>ids.Contains(u.Id)).ExecuteCommand();
+            SugarClient.Ado.CommitTran();
+          
         }
         
         /// <summary>
@@ -111,19 +110,16 @@ namespace OpenAuth.App
         /// <param name="obj"></param>
         public void Update(RoleView obj)
         {
-            Role role = obj;
-
-            UnitWork.Update<Role>(u => u.Id == obj.Id, u => new Role
+            Repository.Update(u => new Role
             {
-                Name = role.Name,
-                Status = role.Status
-            });
-
+                Name = obj.Name,
+                Status = obj.Status
+            }, u => u.Id == obj.Id);
         }
 
 
-        public RoleApp(IUnitWork<OpenAuthDBContext> unitWork, IRepository<Role,OpenAuthDBContext> repository,
-            RevelanceManagerApp app,IAuth auth) : base(unitWork, repository, auth)
+        public RoleApp(ISqlSugarClient client,
+            RevelanceManagerApp app,IAuth auth) : base(client, auth)
         {
             _revelanceApp = app;
         }

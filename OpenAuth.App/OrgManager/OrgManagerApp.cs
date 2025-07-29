@@ -7,10 +7,11 @@ using OpenAuth.App.Request;
 using OpenAuth.Repository;
 using OpenAuth.Repository.Domain;
 using OpenAuth.Repository.Interface;
+using SqlSugar;
 
 namespace OpenAuth.App
 {
-    public class OrgManagerApp : BaseTreeApp<SysOrg,OpenAuthDBContext>
+    public class OrgManagerApp : SqlSugarBaseTreeApp<SysOrg>
     {
         private RevelanceManagerApp _revelanceApp;
         /// <summary>
@@ -28,22 +29,20 @@ namespace OpenAuth.App
             }
             CaculateCascade(sysOrg);
 
-            UnitWork.ExecuteWithTransaction(() =>
-            {
-                UnitWork.Add(sysOrg);
-                UnitWork.Save();
+            SugarClient.Ado.BeginTran();
+            Repository.Insert(sysOrg);
 
-                //如果当前账号不是SYSTEM，则直接分配
-                if (loginContext.User.Account != Define.SYSTEM_USERNAME)
+            //如果当前账号不是SYSTEM，则直接分配
+            if (loginContext.User.Account != Define.SYSTEM_USERNAME)
+            {
+                _revelanceApp.Assign(new AssignReq
                 {
-                    _revelanceApp.Assign(new AssignReq
-                    {
-                        type = Define.USERORG,
-                        firstId = loginContext.User.Id,
-                        secIds = new[] { sysOrg.Id }
-                    });
-                }
-            });
+                    type = Define.USERORG,
+                    firstId = loginContext.User.Id,
+                    secIds = new[] { sysOrg.Id }
+                });
+            }
+            SugarClient.Ado.CommitTran();
 
             return sysOrg.Id;
         }
@@ -58,23 +57,22 @@ namespace OpenAuth.App
 
             return sysOrg.Id;
         }
-        
+
         /// <summary>
         /// 删除指定ID的部门及其所有子部门
         /// </summary>
         public void DelOrgCascade(string[] ids)
         {
-            var delOrgCascadeIds = UnitWork.Find<SysOrg>(u => ids.Contains(u.Id)).Select(u => u.CascadeId).ToArray();
+            var delOrgCascadeIds = SugarClient.Queryable<SysOrg>().Where(u => ids.Contains(u.Id)).Select(u => u.CascadeId).ToArray();
             var delOrgIds = new List<string>();
             foreach (var cascadeId in delOrgCascadeIds)
             {
-                delOrgIds.AddRange(UnitWork.Find<SysOrg>(u=>u.CascadeId.Contains(cascadeId)).Select(u =>u.Id).ToArray());
+                delOrgIds.AddRange(SugarClient.Queryable<SysOrg>().Where(u => u.CascadeId.Contains(cascadeId)).Select(u => u.Id).ToArray());
             }
-            
-            UnitWork.Delete<Relevance>(u =>u.RelKey == Define.USERORG && delOrgIds.Contains(u.SecondId));
-            UnitWork.Delete<SysOrg>(u => delOrgIds.Contains(u.Id));
-            UnitWork.Save();
-            
+
+            SugarClient.Deleteable<Relevance>().Where(u => u.RelKey == Define.USERORG && delOrgIds.Contains(u.SecondId)).ExecuteCommand();
+            SugarClient.Deleteable<SysOrg>().Where(u => delOrgIds.Contains(u.Id)).ExecuteCommand();
+
         }
 
         /// <summary>
@@ -83,22 +81,22 @@ namespace OpenAuth.App
         /// <param name="userId">The user unique identifier.</param>
         public List<SysOrg> LoadForUser(string userId)
         {
-            var result = from userorg in UnitWork.Find<Relevance>(null)
-                join org in UnitWork.Find<SysOrg>(null) on userorg.SecondId equals org.Id
-                where userorg.FirstId == userId && userorg.RelKey == Define.USERORG
-                select org;
+            var result = SugarClient.Queryable<Relevance>()
+                .LeftJoin<SysOrg>((u, o) => u.SecondId == o.Id)
+                .Where((u, o) => u.FirstId == userId && u.RelKey == Define.USERORG)
+                .Select((u, o) => o);
             return result.ToList();
         }
 
-        public OrgManagerApp(IUnitWork<OpenAuthDBContext> unitWork, IRepository<SysOrg,OpenAuthDBContext> repository,IAuth auth, 
-            RevelanceManagerApp revelanceApp) : base(unitWork, repository, auth)
+        public OrgManagerApp(ISqlSugarClient client, IAuth auth,
+            RevelanceManagerApp revelanceApp) : base(client, auth)
         {
             _revelanceApp = revelanceApp;
         }
 
         public string[] GetChairmanId(string[] orgIds)
         {
-            return Repository.Find(u => orgIds.Contains(u.Id)&&u.ChairmanId!= null).Select(u => u.ChairmanId).ToArray();
+            return SugarClient.Queryable<SysOrg>().Where(u => orgIds.Contains(u.Id) && u.ChairmanId != null).Select(u => u.ChairmanId).ToArray();
         }
     }
 }
