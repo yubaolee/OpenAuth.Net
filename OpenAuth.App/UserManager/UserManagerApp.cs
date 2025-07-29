@@ -29,11 +29,14 @@ namespace OpenAuth.App
         {
             return SugarClient.Queryable<SysUser>().First(u => u.Account == account);
         }
+
         /// <summary>
-        /// 加载当前登录用户可访问的一个部门及子部门全部用户
-        /// 如果请求的request.OrgId为空，则可以获取到已被删除机构的用户（即：没有分配任何机构的用户）
+        /// 加载用户列表
         /// </summary>
-        public async Task<PagedDynamicDataResp> Load(QueryUserListReq request)
+        /// <param name="request"></param>
+        /// <param name="ignoreAuth">是否忽略权限，如果忽略权限，可以获取到所有用户</param>
+        /// <returns></returns>
+        private async Task<PagedListDataResp<UserView>> LoadUsers(QueryUserListReq request, bool ignoreAuth = false)
         {
             var loginUser = _auth.GetCurrentUser();
             var query = SugarClient.Queryable<SysUser>();
@@ -45,41 +48,42 @@ namespace OpenAuth.App
                 .LeftJoin<SysUser>((user, u) => user.ParentId == u.Id)
                 .LeftJoin<Relevance>((user, u, r) => user.Id == r.FirstId && r.RelKey == Define.USERORG)
                 .LeftJoin<SysOrg>((user, u, r, o) => r.SecondId == o.Id);
-                
-            //如果请求的orgId不为空
+
+            //如果请求的orgId不为空，加载用户可以看到的机构及下级的所有用户
             if (!string.IsNullOrEmpty(request.orgId))
             {
                 var org = loginUser.Orgs.SingleOrDefault(u => u.Id == request.orgId);
                 var cascadeId = org.CascadeId;
                 var orgIds = loginUser.Orgs.Where(u => u.CascadeId.Contains(cascadeId)).Select(u => u.Id).ToArray();
                 //只获取机构里面的用户
-                userOrgs = userOrgs.Where((user,u,r,o) => r.RelKey == Define.USERORG && orgIds.Contains(o.Id));
+                userOrgs = userOrgs.Where((user, u, r, o) => r.RelKey == Define.USERORG && orgIds.Contains(o.Id));
             }
-            else  //todo:如果请求的orgId为空，即为跟节点，这时可以额外获取到机构已经被删除的用户，从而进行机构分配。可以根据自己需求进行调整
+            else if (!ignoreAuth)  //如果请求的orgId为空，即为跟节点，如果不忽略权限，只能获取到用户可以看到的机构及未分配机构的用户
             {
                 var orgIds = loginUser.Orgs.Select(u => u.Id).ToArray();
                 //获取用户可以访问的机构的用户和没有任何机构关联的用户（机构被删除后，没有删除这里面的关联关系）
-                userOrgs = userOrgs.Where((user,u,r,o) => (r.RelKey == Define.USERORG && orgIds.Contains(o.Id)) || (o == null));
+                userOrgs = userOrgs.Where((user, u, r, o) => (r.RelKey == Define.USERORG && orgIds.Contains(o.Id)) || (o == null));
             }
 
-            var userOrgs2 = userOrgs.Select((user, u, r, o) => new {
-                    Account = user.Account,
-                    Name = user.Name,
-                    Id = user.Id,
-                    Sex = user.Sex,
-                    Status = user.Status,
-                    BizCode = user.BizCode,
-                    CreateId = user.CreateId,
-                    CreateTime = user.CreateTime,
-                    TypeId = user.TypeId,
-                    TypeName = user.TypeName,
-                    ParentId = user.ParentId,
-                    ParentName = u.Name,
-                    Key = r.RelKey,
-                    OrgId = o.Id,
-                    OrgName = o.Name
-                });
-            var userViews = (await userOrgs2.ToListAsync()).GroupBy(b => b.Account)
+            var userOrgsResult = userOrgs.Select((user, u, r, o) => new
+            {
+                Account = user.Account,
+                Name = user.Name,
+                Id = user.Id,
+                Sex = user.Sex,
+                Status = user.Status,
+                BizCode = user.BizCode,
+                CreateId = user.CreateId,
+                CreateTime = user.CreateTime,
+                TypeId = user.TypeId,
+                TypeName = user.TypeName,
+                ParentId = user.ParentId,
+                ParentName = u.Name,
+                Key = r.RelKey,
+                OrgId = o.Id,
+                OrgName = o.Name
+            });
+            var userViews = (await userOrgsResult.ToListAsync()).GroupBy(b => b.Account)
                 .Select(u => new UserView
                 {
                     Id = u.First().Id,
@@ -91,17 +95,24 @@ namespace OpenAuth.App
                     ParentId = u.First().ParentId,
                     CreateTime = u.First().CreateTime,
                     CreateUser = u.First().CreateId,
-                    OrganizationIds = string.Join(",", u.Select(x => x.OrgId))
-                ,
+                    OrganizationIds = string.Join(",", u.Select(x => x.OrgId)),
                     Organizations = string.Join(",", u.Select(x => x.OrgName))
                 });
-            return new PagedDynamicDataResp
+            return new PagedListDataResp<UserView>
             {
                 Count = userViews.Count(),
                 Data = userViews.OrderBy(u => u.Name)
                     .Skip((request.page - 1) * request.limit)
-                    .Take(request.limit),
+                    .Take(request.limit).ToList(),
             };
+        }
+        /// <summary>
+        /// 加载当前登录用户可访问的一个部门及子部门全部用户
+        /// 如果请求的request.OrgId为空，则可以获取到已被删除机构的用户（即：没有分配任何机构的用户）
+        /// </summary>
+        public async Task<PagedListDataResp<UserView>> Load(QueryUserListReq request)
+        {
+            return await LoadUsers(request, false);
         }
         /// <summary>
         /// 获取所有的用户
@@ -109,60 +120,7 @@ namespace OpenAuth.App
         /// </summary>
         public async Task<PagedListDataResp<UserView>> LoadAll(QueryUserListReq request)
         {
-            var query = SugarClient.Queryable<SysUser>();
-            if (!string.IsNullOrEmpty(request.key))
-            {
-                query = SugarClient.Queryable<SysUser>().Where(u => u.Name.Contains(request.key) || u.Account.Contains(request.key));
-            }
-            var userOrgs = query
-                .LeftJoin<SysUser>((user, u) => user.ParentId == u.Id)
-                .LeftJoin<Relevance>((user, u, r) => user.Id == r.FirstId && r.RelKey == Define.USERORG)
-                .LeftJoin<SysOrg>((user, u, r, o) => r.SecondId == o.Id);
-            //如果请求的orgId不为空
-            if (!string.IsNullOrEmpty(request.orgId))
-            {
-                userOrgs = userOrgs.Where((user,u,r,o) => r.RelKey == Define.USERORG && o.Id == request.orgId);
-            }
-
-            var userOrgs2 = userOrgs.Select((user, u, r, o) => new {    
-                Account = user.Account,
-                    Name = user.Name,
-                    Id = user.Id,
-                    Sex = user.Sex,
-                    Status = user.Status,
-                    BizCode = user.BizCode,
-                    CreateId = user.CreateId,
-                    CreateTime = user.CreateTime,
-                    TypeId = user.TypeId,
-                    TypeName = user.TypeName,
-                    ParentId = user.ParentId,
-                    ParentName = u.Name,
-                    Key = r.RelKey,
-                    OrgId = o.Id,
-                    OrgName = o.Name
-            });
-            var userViews = (await userOrgs2.ToListAsync()).GroupBy(b => b.Account).Select(u => new UserView
-            {
-                Id = u.First().Id,
-                Account = u.Key,
-                Name = u.First().Name,
-                Sex = u.First().Sex,
-                Status = u.First().Status,
-                CreateTime = u.First().CreateTime,
-                CreateUser = u.First().CreateId,
-                ParentName = u.First().ParentName,
-                ParentId = u.First().ParentId,
-                OrganizationIds = string.Join(",", u.Select(x => x.OrgId))
-                ,
-                Organizations = string.Join(",", u.Select(x => x.OrgName))
-            });
-            return new PagedListDataResp<UserView>()
-            {
-                Count = userViews.Count(),
-                Data = userViews.OrderBy(u => u.Name)
-                    .Skip((request.page - 1) * request.limit)
-                    .Take(request.limit).ToList()
-            };
+            return await LoadUsers(request, true);
         }
         public void AddOrUpdate(UpdateUserReq request)
         {
@@ -196,13 +154,13 @@ namespace OpenAuth.App
                     Sex = requser.Sex,
                     Status = requser.Status,
                     ParentId = request.ParentId
-                },u => u.Id == request.Id);
+                }, u => u.Id == request.Id);
                 if (!string.IsNullOrEmpty(requser.Password))  //密码为空的时候，不做修改
                 {
                     Repository.Update(u => new SysUser
                     {
                         Password = requser.Password
-                    },u => u.Id == request.Id);
+                    }, u => u.Id == request.Id);
                 }
             }
             string[] orgIds = request.OrganizationIds.Split(',').ToArray();
@@ -232,7 +190,7 @@ namespace OpenAuth.App
             Repository.Update(u => new SysUser
             {
                 Password = request.Password
-            },u => u.Account == request.Account);
+            }, u => u.Account == request.Account);
         }
         /// <summary>
         /// 获取指定角色包含的用户列表
@@ -284,7 +242,7 @@ namespace OpenAuth.App
             {
                 Name = request.Name,
                 Sex = request.Sex
-            },u => u.Account == request.Account);
+            }, u => u.Account == request.Account);
         }
 
         /// <summary>
@@ -312,18 +270,18 @@ namespace OpenAuth.App
             var sql = $@"
             select u.*
             from sysuser u
-                     join (select distinct SecondId as UserId
-                           from Relevance
-                           where RelKey = '{Define.INSTANCE_NOTICE_USER}'
-                             and FirstId = '{instanceId}'
-                           union
-                           select distinct FirstId as UserId
-                           from Relevance a
-                                    inner join (select SecondId as RoleId
-                                                from Relevance
-                                                where RelKey = '{Define.INSTANCE_NOTICE_ROLE}'
-                                                  and FirstId = '{instanceId}') b on a.SecondId = b.RoleId
-                           where RelKey = 'UserRole') userids on u.Id = userids.UserId";
+                    join (select distinct SecondId as UserId
+                        from Relevance
+                        where RelKey = '{Define.INSTANCE_NOTICE_USER}'
+                            and FirstId = '{instanceId}'
+                        union
+                        select distinct FirstId as UserId
+                        from Relevance a
+                                inner join (select SecondId as RoleId
+                                            from Relevance
+                                            where RelKey = '{Define.INSTANCE_NOTICE_ROLE}'
+                                                and FirstId = '{instanceId}') b on a.SecondId = b.RoleId
+                        where RelKey = '{Define.USERROLE}') userids on u.Id = userids.UserId";
             var users = SugarClient.Ado.SqlQuery<SysUser>(sql);
             return users.Select(u => u.Id).ToList();
         }

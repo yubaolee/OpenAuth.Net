@@ -107,7 +107,7 @@ namespace OpenAuth.WebApi.Controllers
         /// 获取当前登录用户可访问的一个部门及子部门全部用户
         /// </summary>
         [HttpGet]
-        public async Task<PagedDynamicDataResp> Load([FromQuery]QueryUserListReq request)
+        public async Task<PagedListDataResp<UserView>> Load([FromQuery]QueryUserListReq request)
         {
             return await _app.Load(request);
         }
