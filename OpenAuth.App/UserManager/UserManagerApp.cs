@@ -42,28 +42,41 @@ namespace OpenAuth.App
             var query = SugarClient.Queryable<SysUser>();
             if (!string.IsNullOrEmpty(request.key))
             {
-                query = SugarClient.Queryable<SysUser>().Where(u => u.Name.Contains(request.key) || u.Account.Contains(request.key));
+                query = query.Where(u => u.Name.Contains(request.key) || u.Account.Contains(request.key));
             }
+
+            var orgs = SugarClient.Queryable<SysOrg>();
+            if(!ignoreAuth) //如果没有忽略权限，则只能访问自己所在的机构
+            {
+                var orgIds = loginUser.Orgs.Select(u => u.Id).ToArray();
+                orgs = orgs.Where(u => orgIds.Contains(u.Id));
+            }
+
+            if(!string.IsNullOrEmpty(request.orgId))  //如果请求的orgId不为空，加载这个机构及该机构下级的所有用户
+            {
+                var reqorg = SugarClient.Queryable<SysOrg>().First(u => u.Id == request.orgId);
+                var cascadeId = reqorg.CascadeId;
+                var orgIds = orgs.Where(u => u.CascadeId.Contains(cascadeId)).Select(u => u.Id).ToArray();
+                var userIds = SugarClient.Queryable<Relevance>().Where(r => r.RelKey == Define.USERORG 
+                                    && orgIds.Contains(r.SecondId)).Select(r => r.FirstId).Distinct().ToList();
+                query = query.Where(u => userIds.Contains(u.Id));
+
+            }else{
+                if(!ignoreAuth) //如果没有忽略权限，则根据用户所在的机构获取用户
+                {
+                    var orgIds = orgs.Select(o => o.Id).ToArray();
+                    var userIds = SugarClient.Queryable<Relevance>().Where(r => r.RelKey == Define.USERORG 
+                                    && orgIds.Contains(r.SecondId)).Select(r => r.FirstId).Distinct().ToList();
+                    query = query.Where(u => userIds.Contains(u.Id));
+                }
+
+                //没有限制权限、没有传入orgId，则query就是获取最原始的所有用户
+            }
+
             var userOrgs = query
                 .LeftJoin<SysUser>((user, u) => user.ParentId == u.Id)
                 .LeftJoin<Relevance>((user, u, r) => user.Id == r.FirstId && r.RelKey == Define.USERORG)
                 .LeftJoin<SysOrg>((user, u, r, o) => r.SecondId == o.Id);
-
-            //如果请求的orgId不为空，加载用户可以看到的机构及下级的所有用户
-            if (!string.IsNullOrEmpty(request.orgId))
-            {
-                var org = loginUser.Orgs.SingleOrDefault(u => u.Id == request.orgId);
-                var cascadeId = org.CascadeId;
-                var orgIds = loginUser.Orgs.Where(u => u.CascadeId.Contains(cascadeId)).Select(u => u.Id).ToArray();
-                //只获取机构里面的用户
-                userOrgs = userOrgs.Where((user, u, r, o) => r.RelKey == Define.USERORG && orgIds.Contains(o.Id));
-            }
-            else if (!ignoreAuth)  //如果请求的orgId为空，即为跟节点，如果不忽略权限，只能获取到用户可以看到的机构及未分配机构的用户
-            {
-                var orgIds = loginUser.Orgs.Select(u => u.Id).ToArray();
-                //获取用户可以访问的机构的用户和没有任何机构关联的用户（机构被删除后，没有删除这里面的关联关系）
-                userOrgs = userOrgs.Where((user, u, r, o) => (r.RelKey == Define.USERORG && orgIds.Contains(o.Id)) || (o == null));
-            }
 
             var userOrgsResult = userOrgs.Select((user, u, r, o) => new
             {
