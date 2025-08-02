@@ -2,7 +2,9 @@
 using Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using OpenAuth.App;
+using OpenAuth.App.Response;
 using OpenAuth.Repository.Domain;
+using System.Collections.Generic;
 
 namespace OpenAuth.WebApi.Controllers
 {
@@ -74,6 +76,37 @@ namespace OpenAuth.WebApi.Controllers
             {
                 result.Code = 500;
                 result.Message = ex.InnerException?.Message ?? ex.Message;
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// 获取所有机构
+        /// </summary>
+        [HttpGet]
+        public Response<List<OrgView>> LoadAll()
+        {
+            var result = new Response<List<OrgView>>();
+            try
+            {
+                result.Data = _app.LoadAll();
+            }
+            catch (CommonException ex)
+            {
+                if (ex.Code == Define.INVALID_TOKEN)
+                {
+                    result.Code = ex.Code;
+                    result.Message = ex.Message;
+                }
+                else
+                {
+                    result.Code = 500;
+                    result.Message = ex.InnerException != null
+                        ? "OpenAuth.WebAPI数据库访问失败:" + ex.InnerException.Message
+                        : "OpenAuth.WebAPI数据库访问失败:" + ex.Message;
+                }
+
             }
 
             return result;
