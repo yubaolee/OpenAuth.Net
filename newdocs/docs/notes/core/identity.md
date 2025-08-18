@@ -8,14 +8,14 @@ permalink: /core/identity/
 ## 前言
 OpenAuth.Net支持两种登录认证方式：Token认证和==自己搭建=={.tip}的OpenAuth.IdentityServer认证。
 
-这两种方式通过配置webapi或mvc的appsettings.json可以自由切换:
+这两种方式通过配置webapi的appsettings.json可以自由切换:
 
 ```json
 "IdentityServerUrl": "http://localhost:12796", //IdentityServer服务器地址。如果为空，则不启用OAuth认证
 ```
 ## Token认证
 
-当我们启动OpenAuth.WebApi/Mvc时，如果IdentityServerUrl为空，则采用普通的token认证，这时不需要启动OpenAuth.Identity项目：
+当我们启动OpenAuth.WebApi时，如果IdentityServerUrl为空，则采用普通的token认证，这时不需要启动OpenAuth.Identity项目：
 ```json
 "IdentityServerUrl": "", //如果为空，则采用普通的token认证
 ```
