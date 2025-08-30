@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>bin\Debug\net5.0\Infrastructure.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\net9.0\Infrastructure.xml</DocumentationFile>
     <NoWarn>1701;1702;1591;1573;1572;1570</NoWarn>
   </PropertyGroup>
 
