@@ -5,9 +5,15 @@ namespace OpenAuth.App.SSO
 
     public class PassportLoginRequest
     {
+        /// <summary>
+        /// 登录账号
+        /// </summary>
         /// <example>System</example>
         public string Account { get; set; }
 
+        /// <summary>
+        /// 登录密码
+        /// </summary>
         /// <example>123456</example>
         public string Password { get; set; }
 
