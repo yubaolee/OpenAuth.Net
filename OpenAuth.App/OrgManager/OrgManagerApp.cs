@@ -4,6 +4,7 @@ using System.Linq;
 using Infrastructure;
 using OpenAuth.App.Interface;
 using OpenAuth.App.Request;
+using OpenAuth.App.Response;
 using OpenAuth.Repository;
 using OpenAuth.Repository.Domain;
 using OpenAuth.Repository.Interface;
@@ -76,16 +77,18 @@ namespace OpenAuth.App
         }
 
         /// <summary>
-        /// 加载特定用户的部门
+        /// 获取所有机构
         /// </summary>
-        /// <param name="userId">The user unique identifier.</param>
-        public List<SysOrg> LoadForUser(string userId)
+        /// <returns></returns>
+        public List<OrgView> LoadAll()
         {
-            var result = SugarClient.Queryable<Relevance>()
-                .LeftJoin<SysOrg>((u, o) => u.SecondId == o.Id)
-                .Where((u, o) => u.FirstId == userId && u.RelKey == Define.USERORG)
-                .Select((u, o) => o);
-            return result.ToList();
+            return SugarClient.Queryable<SysOrg>()
+                    .LeftJoin<SysUser>((org, user) => org.ChairmanId ==user.Id)
+                    .Select((org,user)=>new OrgView
+                    {
+                        Id = org.Id.SelectAll(),
+                        ChairmanName = user.Name
+                    }).ToList();
         }
 
         public OrgManagerApp(ISqlSugarClient client, IAuth auth,

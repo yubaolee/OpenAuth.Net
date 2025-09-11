@@ -34,6 +34,6 @@ COPY --from=build /app/publish/webapi ./webapi
 # 复制 Identity 发布文件
 COPY --from=build /app/publish/identity ./identity
 
-# 启动 WebApi, Mvc, 和 Identity,就算失败也保持运行，方便查询日志
+# 启动 WebApi 和 Identity,就算失败也保持运行，方便查询日志
 ENTRYPOINT ["sh", "-c", "cd webapi && dotnet OpenAuth.WebApi.dll & cd identity && dotnet OpenAuth.IdentityServer.dll || tail -f /dev/null"]
 
