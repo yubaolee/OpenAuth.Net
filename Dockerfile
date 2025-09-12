@@ -28,6 +28,11 @@ RUN dotnet publish -c Release -o /app/publish/identity
 
 FROM base AS final
 WORKDIR /app
+
+# 设置 Production 环境变量
+ENV ASPNETCORE_ENVIRONMENT=Production
+ENV DOTNET_ENVIRONMENT=Production
+
 # 复制 WebApi 发布文件
 COPY --from=build /app/publish/webapi ./webapi
 

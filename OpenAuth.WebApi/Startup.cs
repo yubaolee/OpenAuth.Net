@@ -275,29 +275,31 @@ namespace OpenAuth.WebApi
                 app.UseMiniProfiler();
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
+
+                // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), 
+                // specifying the Swagger JSON endpoint.
+                app.UseSwaggerUI(c =>
+                {
+                    c.IndexStream = () =>
+                        IntrospectionExtensions.GetTypeInfo(GetType()).Assembly
+                            .GetManifestResourceStream("OpenAuth.WebApi.index.html");
+
+                    foreach (var controller in GetControllers())
+                    {
+                        var groupname = GetSwaggerGroupName(controller);
+
+                        c.SwaggerEndpoint($"/swagger/{groupname}/swagger.json", groupname);
+                    }
+
+                    c.DocExpansion(DocExpansion.List); //默认展开列表
+                    c.OAuthClientId("OpenAuth.WebApi"); //oauth客户端名称
+                    c.OAuthAppName("开源版webapi认证"); // 描述
+                });
             }
 
             
 
-            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), 
-            // specifying the Swagger JSON endpoint.
-            app.UseSwaggerUI(c =>
-            {
-                c.IndexStream = () =>
-                    IntrospectionExtensions.GetTypeInfo(GetType()).Assembly
-                        .GetManifestResourceStream("OpenAuth.WebApi.index.html");
-
-                foreach (var controller in GetControllers())
-                {
-                    var groupname = GetSwaggerGroupName(controller);
-
-                    c.SwaggerEndpoint($"/swagger/{groupname}/swagger.json", groupname);
-                }
-
-                c.DocExpansion(DocExpansion.List); //默认展开列表
-                c.OAuthClientId("OpenAuth.WebApi"); //oauth客户端名称
-                c.OAuthAppName("开源版webapi认证"); // 描述
-            });
+            
         }
 
         /// <summary>
