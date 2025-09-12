@@ -38,6 +38,7 @@ OpenAuth.Net是一个基于.NET 9的企业级权限管理和快速开发框架�
 - 私有字段使用_camelCase，公共属性使用PascalCase
 - 常量使用UPPER_CASE
 - 异步方法必须添加Async后缀
+- 修改完代码后不需要编译
 
 ### 命名规范
 - **Controller**: 以Controller结尾，如`UsersController`

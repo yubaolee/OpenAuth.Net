@@ -61,67 +61,73 @@ namespace OpenAuth.WebApi
                     });
             }
 
-            // 添加MiniProfiler服务
-            services.AddMiniProfiler(options =>
+            // 只在开发环境中添加MiniProfiler服务
+            if (Environment.IsDevelopment())
             {
-                // 设定访问分析结果URL的路由基地址
-                options.RouteBasePath = "/profiler";
+                services.AddMiniProfiler(options =>
+                {
+                    // 设定访问分析结果URL的路由基地址
+                    options.RouteBasePath = "/profiler";
 
-                options.ColorScheme = StackExchange.Profiling.ColorScheme.Auto;
-                options.PopupRenderPosition = StackExchange.Profiling.RenderPosition.BottomLeft;
-                options.PopupShowTimeWithChildren = true;
-                options.PopupShowTrivial = true;
-                options.SqlFormatter = new StackExchange.Profiling.SqlFormatters.InlineFormatter();
-                //  options.IgnoredPaths.Add("/swagger/");
-            }).AddEntityFramework(); //显示SQL语句及耗时
+                    options.ColorScheme = StackExchange.Profiling.ColorScheme.Auto;
+                    options.PopupRenderPosition = StackExchange.Profiling.RenderPosition.BottomLeft;
+                    options.PopupShowTimeWithChildren = true;
+                    options.PopupShowTrivial = true;
+                    options.SqlFormatter = new StackExchange.Profiling.SqlFormatters.InlineFormatter();
+                    //  options.IgnoredPaths.Add("/swagger/");
+                }).AddEntityFramework(); //显示SQL语句及耗时
+            }
 
-            //添加swagger
-            services.AddSwaggerGen(option =>
+            // 只在开发环境中添加swagger
+            if (Environment.IsDevelopment())
             {
-                foreach (var controller in GetControllers())
+                services.AddSwaggerGen(option =>
                 {
-                    var groupname = GetSwaggerGroupName(controller);
-
-                    option.SwaggerDoc(groupname, new OpenApiInfo
+                    foreach (var controller in GetControllers())
                     {
-                        Version = "v1",
-                        Title = groupname,
-                        Description = "by yubaolee"
-                    });
-                }
+                        var groupname = GetSwaggerGroupName(controller);
 
-                logger.LogInformation($"api doc basepath:{AppContext.BaseDirectory}");
-                foreach (var name in Directory.GetFiles(AppContext.BaseDirectory, "*.*",
-                            SearchOption.AllDirectories).Where(f => Path.GetExtension(f).ToLower() == ".xml"))
-                {
-                    option.IncludeXmlComments(name, includeControllerXmlComments: true);
-                    // logger.LogInformation($"find api file{name}");
-                }
-
-                option.OperationFilter<GlobalHttpHeaderOperationFilter>(); // 添加httpHeader参数
-
-                if (!string.IsNullOrEmpty(identityServer))
-                {
-                    //接入identityserver
-                    option.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
-                    {
-                        Type = SecuritySchemeType.OAuth2,
-                        Description = "OAuth2登陆授权",
-                        Flows = new OpenApiOAuthFlows
+                        option.SwaggerDoc(groupname, new OpenApiInfo
                         {
-                            Implicit = new OpenApiOAuthFlow
+                            Version = "v1",
+                            Title = groupname,
+                            Description = "by yubaolee"
+                        });
+                    }
+
+                    logger.LogInformation($"api doc basepath:{AppContext.BaseDirectory}");
+                    foreach (var name in Directory.GetFiles(AppContext.BaseDirectory, "*.*",
+                                SearchOption.AllDirectories).Where(f => Path.GetExtension(f).ToLower() == ".xml"))
+                    {
+                        option.IncludeXmlComments(name, includeControllerXmlComments: true);
+                        // logger.LogInformation($"find api file{name}");
+                    }
+
+                    option.OperationFilter<GlobalHttpHeaderOperationFilter>(); // 添加httpHeader参数
+
+                    if (!string.IsNullOrEmpty(identityServer))
+                    {
+                        //接入identityserver
+                        option.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+                        {
+                            Type = SecuritySchemeType.OAuth2,
+                            Description = "OAuth2登陆授权",
+                            Flows = new OpenApiOAuthFlows
                             {
-                                AuthorizationUrl = new Uri($"{identityServer}/connect/authorize"),
-                                Scopes = new Dictionary<string, string>
+                                Implicit = new OpenApiOAuthFlow
                                 {
-                                    {"openauthapi", "同意openauth.webapi 的访问权限"} //指定客户端请求的api作用域。 如果为空，则客户端无法访问
+                                    AuthorizationUrl = new Uri($"{identityServer}/connect/authorize"),
+                                    Scopes = new Dictionary<string, string>
+                                    {
+                                        {"openauthapi", "同意openauth.webapi 的访问权限"} //指定客户端请求的api作用域。 如果为空，则客户端无法访问
+                                    }
                                 }
                             }
-                        }
-                    });
-                    option.OperationFilter<AuthResponsesOperationFilter>();
-                }
-            });
+                        });
+                        option.OperationFilter<AuthResponsesOperationFilter>();
+                    }
+                });
+            }
             services.Configure<AppSetting>(Configuration.GetSection("AppSetting"));
             services.AddControllers(option => { option.Filters.Add<OpenAuthFilter>(); })
                 .ConfigureApiBehaviorOptions(options =>
@@ -270,34 +276,37 @@ namespace OpenAuth.WebApi
             //配置ServiceProvider
             AutofacContainerModule.ConfigServiceProvider(app.ApplicationServices);
             
+            // 只在开发环境中启用 Swagger 和 MiniProfiler
             if (env.IsDevelopment())
             {
                 app.UseMiniProfiler();
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
+
+                // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), 
+                // specifying the Swagger JSON endpoint.
+                app.UseSwaggerUI(c =>
+                {
+                    c.IndexStream = () =>
+                        IntrospectionExtensions.GetTypeInfo(GetType()).Assembly
+                            .GetManifestResourceStream("OpenAuth.WebApi.index.html");
+
+                    foreach (var controller in GetControllers())
+                    {
+                        var groupname = GetSwaggerGroupName(controller);
+
+                        c.SwaggerEndpoint($"/swagger/{groupname}/swagger.json", groupname);
+                    }
+
+                    c.DocExpansion(DocExpansion.List); //默认展开列表
+                    c.OAuthClientId("OpenAuth.WebApi"); //oauth客户端名称
+                    c.OAuthAppName("开源版webapi认证"); // 描述
+                });
             }
 
             
 
-            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), 
-            // specifying the Swagger JSON endpoint.
-            app.UseSwaggerUI(c =>
-            {
-                c.IndexStream = () =>
-                    IntrospectionExtensions.GetTypeInfo(GetType()).Assembly
-                        .GetManifestResourceStream("OpenAuth.WebApi.index.html");
-
-                foreach (var controller in GetControllers())
-                {
-                    var groupname = GetSwaggerGroupName(controller);
-
-                    c.SwaggerEndpoint($"/swagger/{groupname}/swagger.json", groupname);
-                }
-
-                c.DocExpansion(DocExpansion.List); //默认展开列表
-                c.OAuthClientId("OpenAuth.WebApi"); //oauth客户端名称
-                c.OAuthAppName("开源版webapi认证"); // 描述
-            });
+            
         }
 
         /// <summary>
