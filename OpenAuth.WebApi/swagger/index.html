@@ -109,23 +109,11 @@
         </div>
 
         <div class="info-box">
-            <h3>🚀 快速开始</h3>
-            <p>欢迎使用 OpenAuth.Net API 文档系统！这里提供了完整的 API 接口文档和在线测试功能。</p>
-            <a href="/swagger" class="btn">进入 Swagger UI</a>
-            <a href="https://github.com/yubaolee/OpenAuth.Net" class="btn btn-secondary" target="_blank">GitHub 仓库</a>
+            <h3>⚠️重要提示</h3>
+            <p>在生产环境中，SwaggerUI 默认会被停用以确保安全性。如需在生产环境显示 API 文档，请在OpenAuth.WebApi的Startup Configure中调整 </p>
+            
         </div>
 
-        <div class="warning">
-            <strong>⚠️ 重要提示：</strong>
-            <p>在生产环境中，SwaggerUI 默认会被停用以确保安全性。如需在生产环境显示 API 文档，请在 <code>appsettings.json</code> 中设置 <code>"EnableSwaggerUI": true</code>。</p>
-        </div>
-
-        <div class="info-box">
-            <h3>📖 使用说明</h3>
-            <p><strong>开发环境：</strong>SwaggerUI 默认启用，可直接访问 <a href="/swagger">/swagger</a></p>
-            <p><strong>生产环境：</strong>需要在配置文件中启用，设置 <code>"EnableSwaggerUI": true</code></p>
-            <p><strong>认证：</strong>如果启用了 IdentityServer，请先进行 OAuth2 认证</p>
-        </div>
 
         <div style="text-align: center; margin-top: 30px; color: #666;">
             <p>© 2025 OpenAuth.Net - 开源 .NET 权限工作流框架</p>
