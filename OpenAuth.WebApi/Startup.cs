@@ -247,19 +247,6 @@ namespace OpenAuth.WebApi
         {
             loggerFactory.AddLog4Net();
 
-            //可以访问根目录下面的静态文件
-            var staticfile = new StaticFileOptions
-            {
-                FileProvider = new PhysicalFileProvider(AppContext.BaseDirectory),
-                OnPrepareResponse = (ctx) =>
-                {
-                    //可以在这里为静态文件添加其他http头信息，默认添加跨域信息
-                    ctx.Context.Response.Headers["Access-Control-Allow-Origin"] = "*";
-                }
-            };
-            app.UseStaticFiles(staticfile);
-
-
             //todo:测试可以允许任意跨域，正式环境要加权限
             app.UseCors(builder => builder.AllowAnyOrigin()
                 .AllowAnyMethod()
@@ -271,11 +258,6 @@ namespace OpenAuth.WebApi
             // 启用日志追踪记录和异常友好提示
             app.UseLogMiddleware();
 
-            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
-
-            //配置ServiceProvider
-            AutofacContainerModule.ConfigServiceProvider(app.ApplicationServices);
-            
             // 只在开发环境中启用 Swagger 和 MiniProfiler
             if (env.IsDevelopment())
             {
@@ -303,6 +285,23 @@ namespace OpenAuth.WebApi
                     c.OAuthAppName("开源版webapi认证"); // 描述
                 });
             }
+
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+
+            //配置ServiceProvider
+            AutofacContainerModule.ConfigServiceProvider(app.ApplicationServices);
+
+            //可以访问根目录下面的静态文件
+            var staticfile = new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(AppContext.BaseDirectory),
+                OnPrepareResponse = (ctx) =>
+                {
+                    //可以在这里为静态文件添加其他http头信息，默认添加跨域信息
+                    ctx.Context.Response.Headers["Access-Control-Allow-Origin"] = "*";
+                }
+            };
+            app.UseStaticFiles(staticfile);
 
             
 

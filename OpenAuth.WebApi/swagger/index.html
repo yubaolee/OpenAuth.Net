@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenAuth.Net</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #007acc;
+        }
+        .header h1 {
+            color: #007acc;
+            margin: 0;
+            font-size: 2.5em;
+        }
+        .header p {
+            color: #666;
+            margin: 10px 0 0 0;
+            font-size: 1.1em;
+        }
+        .info-box {
+            background: #e8f4fd;
+            border: 1px solid #007acc;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .info-box h3 {
+            color: #007acc;
+            margin-top: 0;
+        }
+        .btn {
+            display: inline-block;
+            background: #007acc;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            margin: 10px 10px 10px 0;
+        }
+        .btn:hover {
+            background: #005a9e;
+        }
+        .btn-secondary {
+            background: #6c757d;
+        }
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+        .features {
+            margin: 30px 0;
+        }
+        .features h3 {
+            color: #007acc;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+        .features ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .features li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .features li:before {
+            content: "✓ ";
+            color: #28a745;
+            font-weight: bold;
+        }
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            color: #856404;
+        }
+        .warning strong {
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>OpenAuth.Net</h1>
+            <p>最好用的.NET开源权限工作流框架</p>
+        </div>
+
+        <div class="info-box">
+            <h3>🚀 快速开始</h3>
+            <p>欢迎使用 OpenAuth.Net API 文档系统！这里提供了完整的 API 接口文档和在线测试功能。</p>
+            <a href="/swagger" class="btn">进入 Swagger UI</a>
+            <a href="https://github.com/yubaolee/OpenAuth.Net" class="btn btn-secondary" target="_blank">GitHub 仓库</a>
+        </div>
+
+        <div class="warning">
+            <strong>⚠️ 重要提示：</strong>
+            <p>在生产环境中，SwaggerUI 默认会被停用以确保安全性。如需在生产环境显示 API 文档，请在 <code>appsettings.json</code> 中设置 <code>"EnableSwaggerUI": true</code>。</p>
+        </div>
+
+        <div class="info-box">
+            <h3>📖 使用说明</h3>
+            <p><strong>开发环境：</strong>SwaggerUI 默认启用，可直接访问 <a href="/swagger">/swagger</a></p>
+            <p><strong>生产环境：</strong>需要在配置文件中启用，设置 <code>"EnableSwaggerUI": true</code></p>
+            <p><strong>认证：</strong>如果启用了 IdentityServer，请先进行 OAuth2 认证</p>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px; color: #666;">
+            <p>© 2025 OpenAuth.Net - 开源 .NET 权限工作流框架</p>
+        </div>
+    </div>
+</body>
+</html>

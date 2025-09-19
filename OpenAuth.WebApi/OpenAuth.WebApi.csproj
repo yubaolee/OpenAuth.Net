@@ -23,6 +23,9 @@
     <None Remove="log\**" />
     <None Remove="wwwroot\**" />
     <EmbeddedResource Include="index.html" />
+    <None Update="swagger\index.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
