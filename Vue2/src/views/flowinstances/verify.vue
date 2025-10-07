@@ -21,11 +21,13 @@
           </el-select>
         </el-col>
         <el-col :span="6">
-          <select-users v-if="postObj.verificationFinally == '1' && postObj.NodeDesignateType === 'RUNTIME_SPECIAL_USER'"
+          <select-users
+            v-if="postObj.verificationFinally == '1' && postObj.NodeDesignateType === 'RUNTIME_SPECIAL_USER'"
             placeholder="*选择下一个节点执行用户" :userNames.sync="postObj.NodeDesignateTxts" :users="postObj.NodeDesignates"
             :ignore-auth="true" v-on:users-change="usersChange">
           </select-users>
-          <select-roles v-if="postObj.verificationFinally == '1' && postObj.NodeDesignateType === 'RUNTIME_SPECIAL_ROLE'"
+          <select-roles
+            v-if="postObj.verificationFinally == '1' && postObj.NodeDesignateType === 'RUNTIME_SPECIAL_ROLE'"
             placeholder="*选择下一个节点执行角色" :userNames.sync="postObj.NodeDesignateTxts" :roles="postObj.NodeDesignates"
             :ignore-auth="true" v-on:roles-change="rolesChange">
           </select-roles>
@@ -47,6 +49,10 @@
         </v-form-render>
       </div>
     </el-card>
+    <!-- url表单 -->
+    <iframe v-if="flowObj.frmType === 3"
+      :src="flowObj.frmData.startsWith('http') ? flowObj.frmData : ('/#' + flowObj.frmData)"
+      style="width:100%;height:500px;border:none;"></iframe>
     <el-card class="box-card" v-else>
       <!--动态表单渲染-->
       <form ref="frmData">
@@ -54,9 +60,9 @@
         <div v-else>
           <p v-html="flowObj.frmPreviewHtml"></p>
           <!-- 展示只读的数据，但需要隐藏动态表单，不然提交时没有数据 -->
-          <p v-html="flowObj.frmHtml" v-show="false" ></p>
+          <p v-html="flowObj.frmHtml" v-show="false"></p>
         </div>
-        
+
       </form>
     </el-card>
     <el-card class="box-card">
@@ -231,11 +237,13 @@ export default {
           frmdata[_this.$refs.frmData[i].name] = _this.$refs.frmData[i].value
         }
         _this.postObj.frmData = JSON.stringify(frmdata)
-      } else {
+      } else if (_this.postObj.frmType === 2) {
         var frmdata = await _this.$refs.vFormRef.getFormData()
         _this.postObj.frmData = JSON.stringify(frmdata)
 
         return
+      } else {
+        //URL表单暂时没有获取数据的方式
       }
     },
     usersChange(name, val) {
