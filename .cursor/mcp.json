@@ -9,13 +9,11 @@
             ],
             "env": {}
         },
-        "mysql": {
-            "type": "stdio",
-            "command": "uvx",
+        "openauthpro": {
+            "command": "powershell",
             "args": [
-                "--from",
-                "mysql-mcp-server",
-                "mysql_mcp_server"
+                "-Command",
+                "npx -y @f4ww4z/mcp-mysql-server"
             ],
             "env": {
                 "MYSQL_HOST": "localhost",

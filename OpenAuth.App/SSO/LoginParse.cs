@@ -5,6 +5,7 @@
 using System;
 using Infrastructure;
 using Infrastructure.Cache;
+using Infrastructure.Helpers;
 using OpenAuth.Repository;
 using OpenAuth.Repository.Domain;
 using OpenAuth.Repository.Interface;
@@ -76,12 +77,12 @@ namespace OpenAuth.App.SSO
                     Name = sysUserInfo.Name,
                     Token = Guid.NewGuid().ToString().GetHashCode().ToString("x"),
                     AppKey = model.AppKey,
-                    CreateTime = DateTime.Now
+                    CreateTime = TimeHelper.Now
                //    , IpAddress = HttpContext.Current.Request.UserHostAddress
                 };
 
                 //创建Session
-                _cacheContext.Set(currentSession.Token, currentSession, DateTime.Now.AddDays(10));
+                _cacheContext.Set(currentSession.Token, currentSession, TimeHelper.Now.AddDays(10));
 
                 result.Code = 200;
                 result.Token = currentSession.Token;

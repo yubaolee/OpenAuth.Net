@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Infrastructure;
+using Infrastructure.Helpers;
 using Microsoft.Extensions.Logging;
 using OpenAuth.App.Interface;
 using OpenAuth.App.Request;
@@ -44,7 +45,7 @@ namespace OpenAuth.App
                     RelKey = key,
                     FirstId = sameVals.Key,
                     SecondId = value,
-                    OperateTime = DateTime.Now
+                    OperateTime = TimeHelper.Now
                 }).ToArray());
             UnitWork.Save();
         }
@@ -152,7 +153,7 @@ namespace OpenAuth.App
                     FirstId = request.RoleId,
                     SecondId = request.ModuleCode,
                     ThirdId = requestProperty,
-                    OperateTime = DateTime.Now
+                    OperateTime = TimeHelper.Now
                 });
             }
 
@@ -206,7 +207,7 @@ namespace OpenAuth.App
                         RelKey = Define.USERROLE,
                         FirstId = firstId,
                         SecondId = request.RoleId,
-                        OperateTime = DateTime.Now
+                        OperateTime = TimeHelper.Now
                     }).ToArray());
                 UnitWork.Save();
             });
@@ -229,7 +230,7 @@ namespace OpenAuth.App
                         RelKey = Define.USERORG,
                         FirstId = firstId,
                         SecondId = request.OrgId,
-                        OperateTime = DateTime.Now
+                        OperateTime = TimeHelper.Now
                     }).ToArray());
                 UnitWork.Save();
             });
@@ -252,7 +253,7 @@ namespace OpenAuth.App
                         RelKey = Define.ROLERESOURCE,
                         FirstId = request.RoleId,
                         SecondId = firstId,
-                        OperateTime = DateTime.Now
+                        OperateTime = TimeHelper.Now
                     }).ToArray());
                 UnitWork.Save();
             });

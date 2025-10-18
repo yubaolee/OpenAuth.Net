@@ -149,7 +149,7 @@ namespace OpenAuth.App
         /// <exception cref="Exception"></exception>
         private void SaveFile(string fileName, byte[] fileBuffers)
         {
-            string folder = DateTime.Now.ToString("yyyyMMdd");
+            string folder = TimeHelper.Now.ToString("yyyyMMdd");
 
             //判断文件是否为空
             if (string.IsNullOrEmpty(fileName))

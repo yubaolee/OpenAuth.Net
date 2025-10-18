@@ -10,6 +10,7 @@ using OpenAuth.App.Request;
 using OpenAuth.App.Response;
 using OpenAuth.Repository.Domain;
 using SqlSugar;
+using Infrastructure.Helpers;
 
 namespace OpenAuth.App
 {
@@ -34,7 +35,7 @@ namespace OpenAuth.App
         {
             var obj = resource.MapTo<SysResource>();
             CaculateCascade(obj);
-            obj.CreateTime = DateTime.Now;
+            obj.CreateTime = TimeHelper.Now;
             var user = _auth.GetCurrentUser().User;
             obj.CreateUserId = user.Id;
             obj.CreateUserName = user.Name;
@@ -56,7 +57,7 @@ namespace OpenAuth.App
                 TypeId = obj.TypeId,
                 TypeName = obj.TypeName,
                 Description = obj.Description,
-                UpdateTime = DateTime.Now,
+                UpdateTime = TimeHelper.Now,
                 UpdateUserId = user.Id,
                 UpdateUserName = user.Name
                 //todo:要修改的字段赋值
@@ -157,7 +158,7 @@ namespace OpenAuth.App
                     TypeId = Define.API,
                     TypeName = "API接口",
                     Description = api.Summary??"",
-                    CreateTime = DateTime.Now,
+                    CreateTime = TimeHelper.Now,
                     CreateUserId = user.Id,
                     CreateUserName = user.Name
                 };

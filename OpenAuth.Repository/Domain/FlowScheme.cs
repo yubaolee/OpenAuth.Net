@@ -12,6 +12,7 @@ using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using OpenAuth.Repository.Core;
+using Infrastructure.Helpers;
 
 namespace OpenAuth.Repository.Domain
 {
@@ -36,10 +37,10 @@ namespace OpenAuth.Repository.Domain
           this.DeleteMark= 0;
           this.Disabled= 0;
           this.Description= string.Empty;
-          this.CreateDate= DateTime.Now;
+          this.CreateDate= TimeHelper.Now;
           this.CreateUserId= string.Empty;
           this.CreateUserName= string.Empty;
-          this.ModifyDate= DateTime.Now;
+          this.ModifyDate= TimeHelper.Now;
           this.ModifyUserId= string.Empty;
           this.ModifyUserName= string.Empty;
         }

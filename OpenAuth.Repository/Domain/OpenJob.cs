@@ -13,6 +13,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using OpenAuth.Repository.Core;
+using Infrastructure.Helpers;
 
 namespace OpenAuth.Repository.Domain
 {
@@ -27,19 +28,19 @@ namespace OpenAuth.Repository.Domain
           this.JobName= string.Empty;
           this.RunCount= 0;
           this.ErrorCount= 0;
-          this.NextRunTime= DateTime.Now;
-          this.LastRunTime= DateTime.Now;
-          this.LastErrorTime= DateTime.Now;
+          this.NextRunTime= TimeHelper.Now;
+          this.LastRunTime= TimeHelper.Now;
+          this.LastErrorTime= TimeHelper.Now;
           this.JobType= 0;
           this.JobCall= string.Empty;
           this.JobCallParams= string.Empty;
           this.Cron= string.Empty;
           this.Status= 0;
           this.Remark= string.Empty;
-          this.CreateTime= DateTime.Now;
+          this.CreateTime= TimeHelper.Now;
           this.CreateUserId= string.Empty;
           this.CreateUserName= string.Empty;
-          this.UpdateTime= DateTime.Now;
+          this.UpdateTime= TimeHelper.Now;
           this.UpdateUserId= string.Empty;
           this.UpdateUserName= string.Empty;
           this.OrgId= string.Empty;

@@ -10,7 +10,7 @@ using Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using OpenAuth.App.Request;
 using OpenAuth.Repository;
-
+using Infrastructure.Helpers;
 using SqlSugar;
 
 namespace OpenAuth.App
@@ -72,7 +72,7 @@ namespace OpenAuth.App
         {
             SugarClient.Ado.BeginTran();
             Role role = obj;
-            role.CreateTime = DateTime.Now;
+            role.CreateTime = TimeHelper.Now;
             Repository.Insert(role);
             obj.Id = role.Id;   //要把保存后的ID存入view
         

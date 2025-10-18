@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Infrastructure;
+using Infrastructure.Helpers;
 using OpenAuth.App.Interface;
 using OpenAuth.App.Request;
 using OpenAuth.App.Response;
@@ -41,7 +42,7 @@ namespace OpenAuth.App
             {
                 SchemeContent = flowScheme.SchemeContent,
                 SchemeName = flowScheme.SchemeName,
-                ModifyDate = DateTime.Now,
+                ModifyDate = TimeHelper.Now,
                 FrmId = flowScheme.FrmId,
                 FrmType = flowScheme.FrmType,
                 FrmUrlTemplate = flowScheme.FrmUrlTemplate,

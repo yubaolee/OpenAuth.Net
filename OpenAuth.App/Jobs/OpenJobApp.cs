@@ -11,6 +11,7 @@ using OpenAuth.App.Interface;
 using OpenAuth.App.Request;
 using OpenAuth.App.Response;
 using OpenAuth.Repository.Domain;
+using Infrastructure.Helpers;
 using Quartz;
 using SqlSugar;
 
@@ -62,7 +63,7 @@ namespace OpenAuth.App
         public void Add(AddOrUpdateOpenJobReq req)
         {
             var obj = req.MapTo<OpenJob>();
-            obj.CreateTime = DateTime.Now;
+            obj.CreateTime = TimeHelper.Now;
             var user = _auth.GetCurrentUser().User;
             obj.CreateUserId = user.Id;
             obj.CreateUserName = user.Name;
@@ -81,7 +82,7 @@ namespace OpenAuth.App
                 Cron = obj.Cron,
                 Status = obj.Status,
                 Remark = obj.Remark,
-                UpdateTime = DateTime.Now,
+                UpdateTime = TimeHelper.Now,
                 UpdateUserId = user.Id,
                 UpdateUserName = user.Name
             },u => u.Id == obj.Id);
@@ -126,7 +127,7 @@ namespace OpenAuth.App
             var user = _auth.GetCurrentUser().User;
 
             job.Status = req.Status;
-            job.UpdateTime = DateTime.Now;
+            job.UpdateTime = TimeHelper.Now;
             job.UpdateUserId = user.Id;
             job.UpdateUserName = user.Name;
             Repository.Update(job);
@@ -150,7 +151,7 @@ namespace OpenAuth.App
             }
 
             job.RunCount++;
-            job.LastRunTime = DateTime.Now;
+            job.LastRunTime = TimeHelper.Now;
             Repository.Update(job);
 
             _sysLogApp.Add(new SysLog

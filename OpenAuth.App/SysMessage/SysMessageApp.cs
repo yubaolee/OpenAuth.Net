@@ -10,6 +10,7 @@ using OpenAuth.App.Response;
 using OpenAuth.Repository;
 using OpenAuth.Repository.Domain;
 using OpenAuth.Repository.Interface;
+using Infrastructure.Helpers;
 
 
 namespace OpenAuth.App
@@ -90,7 +91,7 @@ namespace OpenAuth.App
                 FromId = Guid.Empty.ToString(),
                 FromName = "系统管理员",
                 Content = message,
-                CreateTime = DateTime.Now
+                CreateTime = TimeHelper.Now
             });
         }
 

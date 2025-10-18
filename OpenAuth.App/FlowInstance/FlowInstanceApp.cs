@@ -2,7 +2,7 @@
  * @Author: yubaolee <yubaolee@163.com> | ahfu~ <954478625@qq.com>
  * @Date: 2024-12-13 16:55:17
  * @Description: 工作流实例表操作
- * @LastEditTime: 2025-04-21 10:54:45
+ * @LastEditTime: 2025-10-18 14:35:01
  * Copyright (c) 2024 by yubaolee | ahfu~ , All Rights Reserved.
  */
 
@@ -199,7 +199,7 @@ namespace OpenAuth.App
                                 val = "";
                                 break;
                             case "DateTime":
-                                val = DateTime.Now.ToString("yyyy-MM-dd");
+                                val = TimeHelper.Now.ToString("yyyy-MM-dd");
                                 break;
                         }
                     }
@@ -516,7 +516,7 @@ namespace OpenAuth.App
             }
 
             var content =
-                $"{user.Account}-{DateTime.Now.ToString("yyyy-MM-dd HH:mm")}审批了【{wfruntime.currentNode.name}】" +
+                $"{user.Account}-{TimeHelper.Now.ToString("yyyy-MM-dd HH:mm")}审批了【{wfruntime.currentNode.name}】" +
                 $"结果：{(tag.Taged == 1 ? "同意" : "不同意")}，备注：{tag.Description}";
             wfruntime.SaveOperationHis(tag.UserId, tag.UserName, content);
 

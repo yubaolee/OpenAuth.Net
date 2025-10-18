@@ -15,6 +15,7 @@ using OpenAuth.App.Interface;
 using OpenAuth.App.Request;
 using SqlSugar;
 using Microsoft.Extensions.Configuration;
+using Infrastructure.Helpers;
 
 namespace OpenAuth.App.Flow
 {
@@ -221,7 +222,7 @@ namespace OpenAuth.App.Flow
             }
 
             var content =
-                $"{user.Account}-{DateTime.Now:yyyy-MM-dd HH:mm}审批了【{Nodes[canCheckId].name}】" +
+                $"{user.Account}-{TimeHelper.Now:yyyy-MM-dd HH:mm}审批了【{Nodes[canCheckId].name}】" +
                 $"结果：{(tag.Taged == 1 ? "同意" : "不同意")}，备注：{tag.Description}";
             SaveOperationHis(content);
 
@@ -389,7 +390,7 @@ namespace OpenAuth.App.Flow
             sugarClient.Updateable(flowInstance).ExecuteCommand();
 
             SaveOperationHis(
-                $"{user.Account}-{DateTime.Now.ToString("yyyy-MM-dd HH:mm")}驳回了【{currentNode.name}】");
+                $"{user.Account}-{TimeHelper.Now.ToString("yyyy-MM-dd HH:mm")}驳回了【{currentNode.name}】");
 
             NotifyThirdParty(client, currentNode, tag);
         }
@@ -437,7 +438,7 @@ namespace OpenAuth.App.Flow
                     item.Value.setInfo.UserId = tag.UserId;
                     item.Value.setInfo.UserName = tag.UserName;
                     item.Value.setInfo.Description = tag.Description;
-                    item.Value.setInfo.TagedTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
+                    item.Value.setInfo.TagedTime = TimeHelper.Now.ToString("yyyy-MM-dd HH:mm");
                     break;
                 }
             }
@@ -462,7 +463,7 @@ namespace OpenAuth.App.Flow
                 InstanceId = flowInstanceId,
                 CreateUserId = userId,
                 CreateUserName = userName,
-                CreateDate = DateTime.Now,
+                CreateDate = TimeHelper.Now,
                 Content = opHis
             }; //操作记录
 
@@ -744,7 +745,7 @@ namespace OpenAuth.App.Flow
                     ApproveType = node.setInfo.NodeConfluenceType,
                     ReturnToSignNode = false,
                     Reason = "",
-                    CreateDate = DateTime.Now
+                    CreateDate = TimeHelper.Now
                 };
                 sugarClient.Insertable(flowApprover).ExecuteCommand();
             }
