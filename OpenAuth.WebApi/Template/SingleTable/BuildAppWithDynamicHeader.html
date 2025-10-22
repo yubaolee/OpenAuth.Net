@@ -39,6 +39,10 @@ namespace OpenAuth.App
                 //增加筛选条件,如：
                 objs = objs.Where(u => u.Name.Contains(request.key));
             }
+            if (!string.IsNullOrEmpty(request.sqlWhere))
+            {
+                objs = objs.Where(request.sqlWhere);
+            }
 
             {ForeignKeyTemplate}
 
