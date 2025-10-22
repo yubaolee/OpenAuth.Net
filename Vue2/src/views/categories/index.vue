@@ -39,7 +39,7 @@
             </div>
           </sticky>
 
-          <auth-table style="height:calc(100% - 60px)" ref="mainTable" :select-type="'checkbox'" :table-fields="headerList" :templates="['privilegeRules']" :data="list" :v-loading="listLoading" @row-click="rowClick" @selection-change="handleSelectionChange"></auth-table>
+          <auth-table style="height:calc(100% - 60px)" ref="mainTable" :select-type="'checkbox'" :table-fields="headerList" :templates="['privilegeRules']" :data="list" :loading="listLoading" @row-click="rowClick" @selection-change="handleSelectionChange"></auth-table>
           <pagination v-show="total > 0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="handleCurrentChange" />
         </el-main>
       </div>

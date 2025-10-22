@@ -17,7 +17,7 @@
     <div class="app-container flex-item flex-column">
       <div class="flex-item">
         <el-card shadow="nerver" class="demo-card fh">
-          <auth-table style="height:calc(100% - 52px)" ref="mainTable" :select-type="'radio'" :table-fields="firstHeaderList" :data="mainList" :v-loading="listLoading" @row-click="rowClickFirstTable"></auth-table>
+          <auth-table style="height:calc(100% - 52px)" ref="mainTable" :select-type="'radio'" :table-fields="firstHeaderList" :data="mainList" :loading="listLoading" @row-click="rowClickFirstTable"></auth-table>
           <pagination v-show="firstTotal > 0" :total="firstTotal" :page.sync="firstQuery.page" :limit.sync="firstQuery.limit" @pagination="handleCurrentChange" />
         </el-card>
       </div>
@@ -249,7 +249,7 @@ export default {
         tempData = this.setDetails(tempData)
         tempData.OrgId = this.defaultorgid
         {FirstTableName}s.add(tempData).then(() => {
-          this.mainList.unshift(this.firstTemp)
+          this.getList()
           this.editModel = false
           this.$notify({
             title: '成功',
@@ -289,13 +289,7 @@ export default {
         let tempData = Object.assign({}, this.firstTemp)
         tempData = this.setDetails(tempData)
         {FirstTableName}s.update(tempData).then(() => {
-          for (const v of this.mainList) {
-            if (v.id === this.firstTemp.id) {
-              const index = this.mainList.indexOf(v)
-              this.mainList.splice(index, 1, this.firstTemp)
-              break
-            }
-          }
+          this.getList()
 
           this.editModel = false
           this.$notify({

@@ -18,7 +18,7 @@ permalink: /pro/table/
     :table-fields="tableFields"
     :data="dataList"
     :edit-model="true"
-    :v-loading="loading"
+    :loading="loading"
     :templates="{'id': idtemplate}"
     select-type="checkbox"
     @row-click="handleRowClick"

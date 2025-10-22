@@ -23,7 +23,7 @@
           :select-type="'null'"
           :table-fields="headerList"
           :data="list"
-          :v-loading="listLoading"
+          :loading="listLoading"
           @row-click="rowClick"
           @selection-change="handleSelectionChange"
         ></auth-table>

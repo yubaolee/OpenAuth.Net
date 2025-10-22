@@ -20,7 +20,7 @@
           :select-type="'checkbox'"
           :table-fields="headerList"
           :data="list"
-          :v-loading="listLoading"
+          :loading="listLoading"
           @row-click="rowClick"
           @selection-change="handleSelectionChange"
         ></auth-table>
@@ -180,7 +180,7 @@ export default {
       // 保存提交
       this.$refs['dataForm'].validate(() => {
         {TableName}s.add(this.temp).then(() => {
-          this.list.unshift(this.temp)
+          this.getList()
           this.dialogFormVisible = false
           this.$notify({
             title: '成功',
@@ -205,13 +205,7 @@ export default {
       this.$refs['dataForm'].validate(() => {
         const tempData = Object.assign({}, this.temp)
         {TableName}s.update(tempData).then(() => {
-          for (const v of this.list) {
-            if (v.id === this.temp.id) {
-              const index = this.list.indexOf(v)
-              this.list.splice(index, 1, this.temp)
-              break
-            }
-          }
+          this.getList()
           this.dialogFormVisible = false
           this.$notify({
             title: '成功',

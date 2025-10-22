@@ -21,7 +21,7 @@
       <div class="flex-item" v-show="showNotFullScreen">
         <el-card shadow="nerver" class="demo-card fh">
           <auth-table style="height:calc(100% - 52px)" ref="mainTable" :select-type="'radio'"
-            :table-fields="firstHeaderList" :data="mainList" :v-loading="listLoading"
+            :table-fields="firstHeaderList" :data="mainList" :loading="listLoading"
             @row-click="rowClickFirstTable"></auth-table>
           <pagination v-show="firstTotal > 0" :total="firstTotal" :page.sync="firstQuery.page"
             :limit.sync="firstQuery.limit" @pagination="handleCurrentChange" />

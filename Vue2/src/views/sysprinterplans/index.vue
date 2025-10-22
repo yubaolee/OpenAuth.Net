@@ -19,7 +19,7 @@
     <div class="app-container flex-item">
       <div class="bg-white" style="height: 100%;">
         <auth-table style="height:calc(100% - 60px)" ref="mainTable" :select-type="'checkbox'" :table-fields="headerList"
-          :data="list" :v-loading="listLoading" @row-click="rowClick"
+          :data="list" :loading="listLoading" @row-click="rowClick"
           @selection-change="handleSelectionChange"></auth-table>
         <pagination v-show="total > 0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit"
           @pagination="handleCurrentChange" />

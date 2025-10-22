@@ -18,7 +18,7 @@
     <div class="flex-item flex flex-column main-context">
       <!-- 主表 -->
       <div class="flex-item flex flex-column b-w" v-show="showNotFullScreen && !showDetailInTable">
-        <auth-table size="small" ref="mainTable" id="mainTable" :table-fields="firstHeaderList" :data="mainList" :v-loading="listLoading" @row-click="rowClickFirstTable"
+        <auth-table size="small" ref="mainTable" id="mainTable" :table-fields="firstHeaderList" :data="mainList" :loading="listLoading" @row-click="rowClickFirstTable"
           @row-dblclick="rowDblClickFirstTable"></auth-table>
         <div class="flex flex-direction-r p-r-10 b-w p-b-5 p-t-5">
           <el-pagination size="small" background v-show="firstTotal > 0" v-model:currentPage="firstQuery.page"
@@ -374,13 +374,7 @@ const updateData = () => {
     let tempData = Object.assign({}, firstTemp)
     tempData = setDetails(tempData)
     {FirstTableName}s.update(tempData).then(() => {
-      for (const v of mainList.value) {
-        if (v.id === firstTemp.id) {
-          const index = mainList.value.indexOf(v)
-          mainList.value.splice(index, 1, tempData)
-          break
-        }
-      }
+      getList()
       editModel.value = false
       showDetailInTable.value = false // 保存后返回列表视图
       ElNotification.success('更新成功')
