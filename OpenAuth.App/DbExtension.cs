@@ -212,21 +212,35 @@ namespace OpenAuth.App
                 , case when con.conname is not null then 1 else 0 end as iskey --是否主键
                 , case when attr.attnotnull is true then 0 else 1 end as isnull --可空
                 , t.typname columntype --类型名称
-                , case
-                    when typname in ('BIT', 'BOOL', 'bit', 'bool') then
-                        'bool'
-                    when typname in ('smallint', 'SMALLINT') then 'short'
-                    when typname in ('tinyint', 'TINYINT') then 'bool'
-                    when typname in ('int4', 'int', 'INT') then
-                        'int'
-                    when typname in ('BIGINT', 'bigint') then
-                        'bigint'
-                    when typname in ('FLOAT', 'DOUBLE', 'DECIMAL', 'float', 'double', 'decimal') then
-                        'decimal'
-                    when typname in ('varchar', 'text') then
-                        'string'
-                    when typname in ('Date', 'DateTime', 'TimeStamp', 'date', 'datetime', 'timestamp') then
-                        'DateTime'
+                ,case
+                    -- 布尔类型
+                    when typname in ('bit', 'bool', 'boolean') then 'bool'
+                    
+                    -- 整数类型
+                    when typname in ('int2', 'smallint') then 'short'
+                    when typname in ('int4', 'int', 'integer') then 'int'
+                    when typname in ('int8', 'bigint') then 'bigint'
+                    
+                    -- 浮点数类型
+                    when typname in ('real', 'float4') then 'float'
+                    when typname in ('float8', 'double precision') then 'double'
+                    when typname in ('numeric', 'decimal') then 'decimal'
+                    
+                    -- 字符串类型
+                    when typname in ('char', 'bpchar', 'character') then 'string'
+                    when typname in ('varchar', 'character varying') then 'string'
+                    when typname in ('text') then 'string'
+                    
+                    -- 日期时间类型
+                    when typname in ('time', 'timetz') then 'TimeSpan'
+                    when typname in ('timestamp', 'timestamptz', 'datetime','date') then 'DateTime'
+                    when typname in ('interval') then 'TimeSpan'
+                    
+                    -- 其他类型
+                    when typname in ('uuid') then 'Guid'
+                    when typname in ('bytea') then 'byte[]'
+                    when typname in ('json', 'jsonb') then 'string'
+                    
                     else 'string'
                 end as entitytype
                 , comment.description as comment
