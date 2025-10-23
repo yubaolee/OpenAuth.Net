@@ -8,9 +8,9 @@
     <sticky>
       <div class="search-box">
         <div class="flex items-center">
-          <query-builder storageName="{TableName}_query_conditions" :columns="headerList" :query-options="listQuery" @search="handleFilter" class="flex-1" />
+          <query-builder storageName="{TableName}_query_conditions" :columns="headerList" :query-options="listQuery" @search="handleFilter"  />
           <column-setting storageName="{TableName}_column_settings" :columns="headerList"
-            @update:columns="handleColumnsUpdate" class="ml-2" />
+            @update:columns="handleColumnsUpdate"  />
         </div>
       </div>
       <permission-btn v-on:btn-event="onBtnClicked"></permission-btn>

@@ -8,9 +8,9 @@
       <div class="search-box">
         <div class="flex items-center">
           <query-builder storageName="{FirstTableName}s_query_conditions" :columns="firstHeaderList"
-            :query-options="firstQuery" @search="handleFilter" class="flex-1" />
+            :query-options="firstQuery" @search="handleFilter"  />
           <column-setting storageName="{FirstTableName}s_column_settings" :columns="firstHeaderList"
-            @update:columns="handleColumnsUpdate" class="ml-2" />
+            @update:columns="handleColumnsUpdate"  />
         </div>
       </div>
       <permission-btn v-on:btn-event="onBtnClicked"></permission-btn>
@@ -71,7 +71,7 @@
                   删除
                 </el-button>
                 <column-setting buttonClass="filter-item" storageName="{SecondTableName}s_column_settings"
-                  :columns="secondHeaderList" @update:columns="updateSecondColumns" class="ml-2" />
+                  :columns="secondHeaderList" @update:columns="updateSecondColumns"  />
                 <el-button size="small" :icon="showNotFullScreen ? FullScreen : Close"
                   @click="showNotFullScreen = !showNotFullScreen">
                   {{ showNotFullScreen ? '全屏' : '退出全屏' }}
