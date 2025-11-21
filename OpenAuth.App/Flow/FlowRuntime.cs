@@ -130,8 +130,12 @@ namespace OpenAuth.App.Flow
             var properties = frmDataJson.Properties().ToList();
             foreach (var property in properties)
             {
-                frmDataJson[property.Name.ToLower()] = property.Value;
-                frmDataJson.Remove(property.Name);
+                // 只有当属性名不是小写时才进行转换
+                if (property.Name != property.Name.ToLower())
+                {
+                    frmDataJson[property.Name.ToLower()] = property.Value;
+                    frmDataJson.Remove(property.Name);
+                }
             }
 
             foreach (var l in lines)
