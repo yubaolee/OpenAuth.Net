@@ -8,7 +8,6 @@ using OpenAuth.App.Response;
 using SqlSugar;
 using OpenAuth.App.Request;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 
 namespace OpenAuth.App
 {
@@ -209,7 +208,7 @@ namespace OpenAuth.App
                 }
 
                 // 将对象转换为字典（使用大小写不敏感的反序列化）
-                var rawDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(req.Obj);
+                var rawDict = JsonHelper.Instance.Deserialize<Dictionary<string, object>>(req.Obj);
                 var dict = ToIgnoreCaseDict(rawDict);
 
                 // 设置ID（大小写不敏感检查）
@@ -282,7 +281,7 @@ namespace OpenAuth.App
                 }
 
                 // 将对象转换为字典（使用大小写不敏感的反序列化）
-                var rawDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(req.Obj);
+                var rawDict = JsonHelper.Instance.Deserialize<Dictionary<string, object>>(req.Obj);
                 var dict = ToIgnoreCaseDict(rawDict);
 
                 // 检查ID是否存在（大小写不敏感）
@@ -462,7 +461,7 @@ namespace OpenAuth.App
                     var json = request.Parameters;
                     
                     // 解析完整的JSON对象（使用大小写不敏感的字典）
-                    var jsonObj = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
+                    var jsonObj = JsonHelper.Instance.Deserialize<Dictionary<string, object>>(json);
                     var ignoreCaseDict = ToIgnoreCaseDict(jsonObj);
                     
                     // 从JSON对象中获取参数值（大小写不敏感查找）
