@@ -8,6 +8,7 @@ using OpenAuth.App.Response;
 using SqlSugar;
 using OpenAuth.App.Request;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace OpenAuth.App
 {
@@ -30,6 +31,59 @@ namespace OpenAuth.App
             _serviceProvider = serviceProvider;
             this.logger = logger;
         }
+
+        #region 辅助方法 - 大小写不敏感的字典操作
+        
+        /// <summary>
+        /// 将普通字典转换为大小写不敏感的字典
+        /// </summary>
+        private Dictionary<string, object> ToIgnoreCaseDict(Dictionary<string, object> source)
+        {
+            var result = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+            if (source != null)
+            {
+                foreach (var kvp in source)
+                {
+                    result[kvp.Key] = kvp.Value;
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 检查字典中是否包含指定键（大小写不敏感）
+        /// </summary>
+        private bool ContainsKeyIgnoreCase(Dictionary<string, object> dict, string key)
+        {
+            return dict.Keys.Any(k => string.Equals(k, key, StringComparison.OrdinalIgnoreCase));
+        }
+
+        /// <summary>
+        /// 获取字典中指定键的值（大小写不敏感）
+        /// </summary>
+        private object GetValueIgnoreCase(Dictionary<string, object> dict, string key)
+        {
+            var kvp = dict.FirstOrDefault(x => string.Equals(x.Key, key, StringComparison.OrdinalIgnoreCase));
+            return kvp.Value;
+        }
+
+        /// <summary>
+        /// 设置字典中指定键的值（保留原始键名，大小写不敏感查找）
+        /// </summary>
+        private void SetValueIgnoreCase(Dictionary<string, object> dict, string key, object value)
+        {
+            var existingKey = dict.Keys.FirstOrDefault(k => string.Equals(k, key, StringComparison.OrdinalIgnoreCase));
+            if (existingKey != null)
+            {
+                dict[existingKey] = value;
+            }
+            else
+            {
+                dict[key] = value;
+            }
+        }
+
+        #endregion
 
         /// <summary>
         /// 获取表数据列表
@@ -154,37 +208,42 @@ namespace OpenAuth.App
                     return result;
                 }
 
-                // 将对象转换为字典
-                var dict = JsonHelper.Instance.Deserialize<Dictionary<string, Object>>(req.Obj);
+                // 将对象转换为字典（使用大小写不敏感的反序列化）
+                var rawDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(req.Obj);
+                var dict = ToIgnoreCaseDict(rawDict);
 
-                // 设置ID
-                if (!dict.ContainsKey("Id"))
-                {
-                    dict["Id"] = Guid.NewGuid().ToString();
-                }
-                else if (string.IsNullOrEmpty(dict["Id"]?.ToString()))
+                // 设置ID（大小写不敏感检查）
+                if (!ContainsKeyIgnoreCase(dict, "Id"))
                 {
                     dict["Id"] = Guid.NewGuid().ToString();
                 }
                 else
                 {
-                    //如果Id不为空,需要判断Id是否存在
-                    var entity = await _client.Queryable<dynamic>()
-                        .AS(req.TableName)
-                        .Where("Id = @id", new { id = dict["Id"] })
-                        .FirstAsync();
-                    if (entity != null)
+                    var idValue = GetValueIgnoreCase(dict, "Id");
+                    if (string.IsNullOrEmpty(idValue?.ToString()))
                     {
-                        result.Code = 500;
-                        result.Message = "Id已存在";
-                        return result;
+                        SetValueIgnoreCase(dict, "Id", Guid.NewGuid().ToString());
+                    }
+                    else
+                    {
+                        //如果Id不为空,需要判断Id是否存在
+                        var entity = await _client.Queryable<dynamic>()
+                            .AS(req.TableName)
+                            .Where("Id = @id", new { id = idValue })
+                            .FirstAsync();
+                        if (entity != null)
+                        {
+                            result.Code = 500;
+                            result.Message = "Id已存在";
+                            return result;
+                        }
                     }
                 }
 
-                //如果有CreateTime字段，自动设置
-                if (dict.ContainsKey("CreateTime"))
+                //如果有CreateTime字段，自动设置（大小写不敏感）
+                if (ContainsKeyIgnoreCase(dict, "CreateTime"))
                 {
-                    dict["CreateTime"] = DateTime.Now.ToString();
+                    SetValueIgnoreCase(dict, "CreateTime", DateTime.Now.ToString());
                 }
 
                 // 添加数据
@@ -222,30 +281,44 @@ namespace OpenAuth.App
                     return result;
                 }
 
-                // 将对象转换为字典
-                var dict =  JsonHelper.Instance.Deserialize<Dictionary<string, Object>>(req.Obj);
+                // 将对象转换为字典（使用大小写不敏感的反序列化）
+                var rawDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(req.Obj);
+                var dict = ToIgnoreCaseDict(rawDict);
 
-                // 检查ID是否存在
-                if (!dict.ContainsKey("Id"))
+                // 检查ID是否存在（大小写不敏感）
+                if (!ContainsKeyIgnoreCase(dict, "Id"))
                 {
                     result.Code = 500;
                     result.Message = "更新数据必须包含Id字段";
                     return result;
                 }
 
-                // 如果有UpdateTime字段，自动设置
-                if (dict.ContainsKey("UpdateTime"))
+                // 确保字典中有 "Id" 键（用于 SqlSugar 的 WhereColumns）
+                if (!dict.ContainsKey("Id"))
                 {
-                    dict["UpdateTime"] = DateTime.Now.ToString();
+                    var idValue = GetValueIgnoreCase(dict, "Id");
+                    // 移除原始的小写 id 键
+                    var originalKey = dict.Keys.FirstOrDefault(k => string.Equals(k, "Id", StringComparison.OrdinalIgnoreCase));
+                    if (originalKey != null && originalKey != "Id")
+                    {
+                        dict.Remove(originalKey);
+                        dict["Id"] = idValue;
+                    }
                 }
 
-                // 如果有用户信息，设置更新用户
+                // 如果有UpdateTime字段，自动设置（大小写不敏感）
+                if (ContainsKeyIgnoreCase(dict, "UpdateTime"))
+                {
+                    SetValueIgnoreCase(dict, "UpdateTime", DateTime.Now.ToString());
+                }
+
+                // 如果有用户信息，设置更新用户（大小写不敏感）
                 var currentUser = _auth.GetCurrentUser();
-                if (dict.ContainsKey("UpdateUserId") && currentUser != null)
+                if (ContainsKeyIgnoreCase(dict, "UpdateUserId") && currentUser != null)
                 {
                     // 设置更新用户信息
-                    dict["UpdateUserId"] = currentUser.User.Id;
-                    dict["UpdateUserName"] = currentUser.User.Name;
+                    SetValueIgnoreCase(dict, "UpdateUserId", currentUser.User.Id);
+                    SetValueIgnoreCase(dict, "UpdateUserName", currentUser.User.Name);
                 }
 
                 // 更新数据
@@ -387,27 +460,21 @@ namespace OpenAuth.App
                 try
                 {
                     var json = request.Parameters;
-                    // 检查参数名是否存在于JSON中
-                    if (json.Contains($"\"{param.Name}\""))
+                    
+                    // 解析完整的JSON对象（使用大小写不敏感的字典）
+                    var jsonObj = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
+                    var ignoreCaseDict = ToIgnoreCaseDict(jsonObj);
+                    
+                    // 从JSON对象中获取参数值（大小写不敏感查找）
+                    if (ContainsKeyIgnoreCase(ignoreCaseDict, param.Name))
                     {
-                        // 解析完整的JSON对象
-                        var jsonObj = JsonHelper.Instance.Deserialize<Dictionary<string, object>>(json);
+                        // 获取参数对应的JSON值并序列化为字符串
+                        var rawValue = GetValueIgnoreCase(ignoreCaseDict, param.Name);
+                        var paramValue = JsonHelper.Instance.Serialize(rawValue);
                         
-                        // 从JSON对象中获取参数值
-                        if (jsonObj.ContainsKey(param.Name))
-                        {
-                            // 获取参数对应的JSON值并序列化为字符串
-                            var paramValue = JsonHelper.Instance.Serialize(jsonObj[param.Name]);
-                            
-                            // 将JSON字符串反序列化为目标类型
-                            var deserializeMethod = typeof(JsonHelper).GetMethod("Deserialize").MakeGenericMethod(param.ParameterType);
-                            paramValues[i] = deserializeMethod.Invoke(JsonHelper.Instance, new object[] { paramValue });
-                        }
-                        else
-                        {
-                            // 参数名存在但获取不到，使用默认值
-                            paramValues[i] = param.HasDefaultValue ? param.DefaultValue : null;
-                        }
+                        // 将JSON字符串反序列化为目标类型
+                        var deserializeMethod = typeof(JsonHelper).GetMethod("Deserialize").MakeGenericMethod(param.ParameterType);
+                        paramValues[i] = deserializeMethod.Invoke(JsonHelper.Instance, new object[] { paramValue });
                     }
                     else
                     {
